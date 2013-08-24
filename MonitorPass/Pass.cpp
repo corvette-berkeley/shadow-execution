@@ -1,7 +1,7 @@
 #define DEBUG_TYPE "hello"
 
 #include "Instrumentation.h"
-#include "llvm/Transforms/MonitorPass.h"
+#include "../MonitorPass.h"
 
 namespace {
 

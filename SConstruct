@@ -89,7 +89,7 @@ SConscript(
 	# 'proposals/oracle',
 	# 'reports/mar-2013',
 	# 'reports/may-2013',
-	'src',
+	'MonitorPass',
         ],
     exports='env',
     )

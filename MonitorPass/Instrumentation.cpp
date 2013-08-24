@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "Instrumentation.h"
 
+#define UNUSED __attribute__((__unused__))
+
 /*******************************************************************************************/
 
 // singleton instance (static)
@@ -27,13 +29,13 @@ Instrumentation::~Instrumentation() {
 
 /*******************************************************************************************/
 
-bool Instrumentation::Initialize(Module &M) {
+bool Instrumentation::Initialize(Module &M UNUSED) {
 	return true;
 }
 
 /*******************************************************************************************/
 
-bool Instrumentation::Finalize(Module &M) {
+bool Instrumentation::Finalize(Module &M UNUSED) {
 	for(InstrumenterPtrList::iterator itr = instrumenters_.begin();
 			itr < instrumenters_.end();
 			itr = instrumenters_.erase(itr)) {
