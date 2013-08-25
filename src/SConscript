@@ -58,10 +58,10 @@ env.AppendUnique(
 env.MergeFlags('!llvm-config --cxxflags --ldflags')
 
 plugin = env.SharedLibrary(
-    'MonitorPass',
+    'libmonitor',
     [
-    'Instrumentation.cpp',
-    'Pass.cpp'
+    'InstructionMonitor.cpp',
+    'Common.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
