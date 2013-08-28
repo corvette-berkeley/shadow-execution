@@ -24,6 +24,11 @@ void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2)
 }
 
+void llvm_alloca() {
+	DISPATCH_TO_OBSERVERS(alloca)
+}
+
+
 /*******************************************************************************************/
 
 ObserverPtrList observers_;

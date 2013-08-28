@@ -14,6 +14,8 @@ extern "C" {
 
 	void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 	void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+
+	void llvm_alloca();
 }
 
 /*******************************************************************************************/

@@ -154,5 +154,24 @@ public:
 
 /*******************************************************************************************/
 
+// Callback: void alloca()
+class AllocaInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(AllocaInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
 #endif // INSTRUMENTERS_H_
 

@@ -42,6 +42,12 @@ public:
 															   KVALUE_ToString(*op1).c_str(),
 															   KVALUE_ToString(*op2).c_str());
 	}
+
+	virtual void alloca() {
+		printf("<<<<< ALLOCA >>>>>\n");
+	}
+
+
 };
 
 

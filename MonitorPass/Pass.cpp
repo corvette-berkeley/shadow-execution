@@ -74,10 +74,11 @@ public:
 /*******************************************************************************************/
 
 // active instrumenters
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
+//REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 REGISTER_INSTRUMENTER(AddInstrumenter, "add")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
+REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
 
 /*******************************************************************************************/
 
