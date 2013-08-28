@@ -79,6 +79,54 @@ public:
 		printf("<<<<< LOAD >>>>>\n");
 	}
 
+	// ***** CmpInst ***** //
+
+	virtual void fcmp() {
+		printf("<<<<< FCMP >>>>>\n");
+	}
+	
+	virtual void icmp() {
+		printf("<<<<< ICMP >>>>>\n");
+	}
+
+
+	virtual void extract_element() {
+		printf("<<<<< EXTRACT_ELEMENT >>>>>\n");
+	}
+
+	virtual void fence() {
+		printf("<<<<< FENCE >>>>>\n");
+	}
+
+	virtual void get_element_ptr() {
+		printf("<<<<< GET_ELEMENT_PTR >>>>>\n");
+	}
+
+	virtual void insert_element() {
+		printf("<<<<< INSERT_ELEMENT >>>>>\n");
+	}
+
+	virtual void insert_value() {
+		printf("<<<<< INSERT_VALUE >>>>>\n");
+	}
+
+	virtual void landing_pad() {
+		printf("<<<<< LANDING_PAD >>>>>\n");
+	}
+
+	virtual void phinode() {
+		printf("<<<<< PHINODE >>>>>\n");
+	}
+
+	virtual void select() {
+		printf("<<<<< SELECT >>>>>\n");
+	}
+
+	virtual void shuffle_vector() {
+		printf("<<<<< SHUFFLE_VECTOR >>>>>\n");
+	}
+
+
 	// ***** TerminatorInst ***** //
 
 	virtual void branch() {
@@ -109,15 +157,6 @@ public:
 		printf("<<<<< UNREACHABLE >>>>>\n");
 	}
 
-	// ***** CmpInst ***** //
-
-	virtual void fcmp() {
-		printf("<<<<< FCMP >>>>>\n");
-	}
-	
-	virtual void icmp() {
-		printf("<<<<< ICMP >>>>>\n");
-	}
 };
 
 

@@ -30,6 +30,20 @@ public:
 
 	virtual void load() {};
 
+	// ***** CmpInst ***** //
+	virtual void fcmp() {};
+	virtual void icmp() {};
+
+	virtual void extract_element() {};
+	virtual void fence() {};
+	virtual void get_element_ptr() {};
+	virtual void insert_element() {};
+	virtual void insert_value() {};
+	virtual void landing_pad() {};
+	virtual void phinode() {};
+	virtual void select() {};
+	virtual void shuffle_vector() {};
+
 	// ***** TerminatorInst *****/
 	virtual void branch() {};
 	virtual void indirectbr() {};
@@ -39,9 +53,6 @@ public:
 	virtual void switch_() {};
 	virtual void unreachable() {};
 
-	// ***** CmpInst ***** //
-	virtual void fcmp() {};
-	virtual void icmp() {};
 
 private:
 	std::string name_;

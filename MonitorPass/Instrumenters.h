@@ -317,6 +317,229 @@ public:
 };
 
 
+// ***** CmpInst ***** //
+
+// Callback: void fcmp()
+class FCmpInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FCmpInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fcmp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void icmp()
+class ICmpInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ICmpInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void extract_element()
+class ExtractElementInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ExtractElementInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ExtractElementInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extract_element"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fence()
+class FenceInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(FenceInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FenceInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void get_element_ptr()
+class GetElementPtrInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(GetElementPtrInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_get_element_ptr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void insert_element()
+class InsertElementInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(InsertElementInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(InsertElementInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insert_element"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void insert_value()
+class InsertValueInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(InsertValueInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_value_element"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void landing_pad()
+class LandingPadInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(LandingPadInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(LandingPadInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_landing_pad"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void phinode()
+class PHINodeInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(PHINodeInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(PHINode, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_phinode"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void select()
+class SelectInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(SelectInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(SelectInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_select"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void shuffle_vector()
+class ShuffleVectorInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ShuffleVectorInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ShuffleVectorInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shuffle_vector"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+
 // ***** TerminatorInst ***** //
 
 // Callback: void branch()
@@ -459,46 +682,6 @@ public:
 };
 
 
-// ***** CmpInst ***** //
-
-// Callback: void fcmp()
-class FCmpInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FCmpInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fcmp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void icmp()
-class ICmpInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ICmpInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
 
 
 

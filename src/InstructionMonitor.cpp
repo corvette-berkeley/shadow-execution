@@ -59,6 +59,57 @@ void llvm_load() {
 	DISPATCH_TO_OBSERVERS(load)
 }
 
+// ***** CmpInst ***** //
+
+void llvm_fcmp() {
+	DISPATCH_TO_OBSERVERS(fcmp)
+}
+
+void llvm_icmp() {
+	DISPATCH_TO_OBSERVERS(icmp)
+}
+
+
+void llvm_extract_element() {
+	DISPATCH_TO_OBSERVERS(extract_element)
+}
+
+void llvm_fence() {
+	DISPATCH_TO_OBSERVERS(fence)
+}
+
+void llvm_get_element_ptr() {
+	DISPATCH_TO_OBSERVERS(get_element_ptr)
+}
+
+void llvm_insert_element() {
+	DISPATCH_TO_OBSERVERS(insert_element)
+}
+
+void llvm_insert_value() {
+	DISPATCH_TO_OBSERVERS(insert_value)
+}
+
+void llvm_landing_pad() {
+	DISPATCH_TO_OBSERVERS(landing_pad)
+}
+
+void llvm_phinode() {
+	DISPATCH_TO_OBSERVERS(phinode)
+}
+
+void llvm_select() {
+	DISPATCH_TO_OBSERVERS(select)
+}
+
+void llvm_shuffle_vector() {
+	DISPATCH_TO_OBSERVERS(shuffle_vector)
+}
+
+
+
+
+
 // **** TerminatorInst ***** //
 
 void llvm_branch() {
@@ -89,15 +140,6 @@ void llvm_unreachable() {
 	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
-// ***** CmpInst ***** //
-
-void llvm_fcmp() {
-	DISPATCH_TO_OBSERVERS(fcmp)
-}
-
-void llvm_icmp() {
-	DISPATCH_TO_OBSERVERS(icmp)
-}
 
 
 

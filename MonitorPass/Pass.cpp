@@ -81,6 +81,20 @@ REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 
+// **** CmpInst **** //
+REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+
+REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extract_element")
+REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
+REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "get_element_ptr")
+REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insert_element")
+REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insert_value")
+REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landing_pad")
+REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
+REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
+REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shuffle_vector")
+
 // ***** TerminatorInst ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
 REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
@@ -97,9 +111,8 @@ REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
 REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
 REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
 
-// **** CmpInst **** //
-REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
-REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+
+
 
 /*******************************************************************************************/
 
