@@ -48,6 +48,14 @@ public:
 	}
 
 
+	virtual void call() {
+		printf("<<<<< CALL >>>>>\n");
+	}
+
+	virtual void fpext() {
+		printf("<<<<< FPEXT >>>>>\n");
+	}
+
 };
 
 

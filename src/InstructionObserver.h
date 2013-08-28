@@ -19,6 +19,8 @@ public:
 	virtual void sub(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
 
 	virtual void alloca() {};
+	virtual void call() {};
+	virtual void fpext() {};
 
 private:
 	std::string name_;

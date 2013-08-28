@@ -173,5 +173,47 @@ public:
 	}
 };
 
+
+// Callback: void call()
+class CallInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(CallInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(CallInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_call"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fpext()
+class FPExtInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPExtInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fpext"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+
 #endif // INSTRUMENTERS_H_
 

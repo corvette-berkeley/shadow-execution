@@ -28,6 +28,14 @@ void llvm_alloca() {
 	DISPATCH_TO_OBSERVERS(alloca)
 }
 
+void llvm_call() {
+	DISPATCH_TO_OBSERVERS(call)
+}
+
+void llvm_fpext() {
+	DISPATCH_TO_OBSERVERS(fpext)
+}
+
 
 /*******************************************************************************************/
 
