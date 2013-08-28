@@ -80,9 +80,17 @@ REGISTER_INSTRUMENTER(AddInstrumenter, "add")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
-REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
 
-// CastInst
+// ***** TerminatorInst ***** //
+REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
+REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
+REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
+REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
+REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
+REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
+REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
+
+// ***** CastInst ***** //
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
 REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")

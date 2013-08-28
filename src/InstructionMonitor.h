@@ -26,7 +26,15 @@ extern "C" {
   void llvm_fptrunc();
 
   void llvm_load();
+
+  // ***** TerminatorCast ***** //
+  void llvm_branch();
+  void llvm_indirectbr();
+  void llvm_invoke();
+  void llvm_resume();
   void llvm_return_();
+  void llvm_switch_();
+  void llvm_unreachable();
 }
 
 /*******************************************************************************************/

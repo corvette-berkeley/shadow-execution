@@ -317,6 +317,88 @@ public:
 };
 
 
+// ***** TerminatorInst ***** //
+
+// Callback: void branch()
+class BranchInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(BranchInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(BranchInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_branch"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void indirectbr()
+class IndirectBrInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(IndirectBrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(IndirectBrInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_indirectbr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void invoke()
+class InvokeInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(InvokeInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(InvokeInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_invoke"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void resume()
+class ResumeInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ResumeInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ResumeInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_resume"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
 // Callback: void return()
 class ReturnInstrumenter : public Instrumenter {
 public:
@@ -337,7 +419,44 @@ public:
 };
 
 
+// Callback: void switch_()
+class SwitchInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(SwitchInstrumenter);
 
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(SwitchInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_switch_"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void unreachable()
+class UnreachableInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(UnreachableInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(UnreachableInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_unreachable"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
 
 
 #endif // INSTRUMENTERS_H_

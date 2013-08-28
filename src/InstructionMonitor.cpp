@@ -59,8 +59,34 @@ void llvm_load() {
 	DISPATCH_TO_OBSERVERS(load)
 }
 
+// **** TerminatorInst ***** //
+
+void llvm_branch() {
+	DISPATCH_TO_OBSERVERS(branch)
+}
+
+void llvm_indirectbr() {
+	DISPATCH_TO_OBSERVERS(indirectbr)
+}
+
+void llvm_invoke() {
+	DISPATCH_TO_OBSERVERS(invoke)
+}
+
+void llvm_resume() {
+	DISPATCH_TO_OBSERVERS(resume)
+}
+
 void llvm_return_() {
 	DISPATCH_TO_OBSERVERS(return_)
+}
+
+void llvm_switch_() {
+	DISPATCH_TO_OBSERVERS(switch_)
+}
+
+void llvm_unreachable() {
+	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
 

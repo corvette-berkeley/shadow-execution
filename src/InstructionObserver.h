@@ -29,7 +29,15 @@ public:
 	virtual void fptrunc() {};
 
 	virtual void load() {};
+
+	// ***** TerminatorInst *****/
+	virtual void branch() {};
+	virtual void indirectbr() {};
+	virtual void invoke() {};
+	virtual void resume() {};
 	virtual void return_() {};
+	virtual void switch_() {};
+	virtual void unreachable() {};
 
 private:
 	std::string name_;

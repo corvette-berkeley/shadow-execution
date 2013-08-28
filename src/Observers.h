@@ -79,10 +79,35 @@ public:
 		printf("<<<<< LOAD >>>>>\n");
 	}
 
+	// ***** TerminatorInst ***** //
+
+	virtual void branch() {
+		printf("<<<<< BRANCH >>>>>\n");
+	}
+
+	virtual void indirectbr() {
+		printf("<<<<< INDIRECTBR >>>>>\n");
+	}
+
+	virtual void invoke() {
+		printf("<<<<< INVOKE >>>>>\n");
+	}
+
+	virtual void resume() {
+		printf("<<<<< RESUME >>>>>\n");
+	}
+
 	virtual void return_() {
 		printf("<<<<< RETURN >>>>>\n");
 	}
 
+	virtual void switch_() {
+		printf("<<<<< SWITCH >>>>>\n");
+	}
+
+	virtual void unreachable() {
+		printf("<<<<< UNREACHABLE >>>>>\n");
+	}
 
 };
 
