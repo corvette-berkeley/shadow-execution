@@ -97,6 +97,10 @@ REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
 REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
 REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
 
+// **** CmpInst **** //
+REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+
 /*******************************************************************************************/
 
 char MonitorPass::ID = 0;

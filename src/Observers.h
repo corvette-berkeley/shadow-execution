@@ -109,6 +109,15 @@ public:
 		printf("<<<<< UNREACHABLE >>>>>\n");
 	}
 
+	// ***** CmpInst ***** //
+
+	virtual void fcmp() {
+		printf("<<<<< FCMP >>>>>\n");
+	}
+	
+	virtual void icmp() {
+		printf("<<<<< ICMP >>>>>\n");
+	}
 };
 
 

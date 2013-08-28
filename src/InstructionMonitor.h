@@ -35,6 +35,10 @@ extern "C" {
   void llvm_return_();
   void llvm_switch_();
   void llvm_unreachable();
+
+  // ***** CmpInst ***** //
+  void llvm_fcmp();
+  void llvm_icmp();
 }
 
 /*******************************************************************************************/

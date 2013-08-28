@@ -89,6 +89,17 @@ void llvm_unreachable() {
 	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
+// ***** CmpInst ***** //
+
+void llvm_fcmp() {
+	DISPATCH_TO_OBSERVERS(fcmp)
+}
+
+void llvm_icmp() {
+	DISPATCH_TO_OBSERVERS(icmp)
+}
+
+
 
 
 /*******************************************************************************************/

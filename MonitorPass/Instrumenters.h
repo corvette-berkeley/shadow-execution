@@ -459,5 +459,48 @@ public:
 };
 
 
+// ***** CmpInst ***** //
+
+// Callback: void fcmp()
+class FCmpInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FCmpInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fcmp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void icmp()
+class ICmpInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ICmpInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+
 #endif // INSTRUMENTERS_H_
 

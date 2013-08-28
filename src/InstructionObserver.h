@@ -39,6 +39,10 @@ public:
 	virtual void switch_() {};
 	virtual void unreachable() {};
 
+	// ***** CmpInst ***** //
+	virtual void fcmp() {};
+	virtual void icmp() {};
+
 private:
 	std::string name_;
 };
