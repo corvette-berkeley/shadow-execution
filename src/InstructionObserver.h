@@ -20,8 +20,16 @@ public:
 
 	virtual void alloca() {};
 	virtual void call() {};
+
+	// ***** CastInst ***** //
+	virtual void bitcast() {};
 	virtual void fpext() {};
+	virtual void fptosi() {};
+	virtual void fptoui() {};
+	virtual void fptrunc() {};
+
 	virtual void load() {};
+	virtual void return_() {};
 
 private:
 	std::string name_;

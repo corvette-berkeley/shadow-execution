@@ -52,12 +52,35 @@ public:
 		printf("<<<<< CALL >>>>>\n");
 	}
 
+	// ****** CastInst ****** //
+
+	virtual void bitcast() {
+		printf("<<<<< BITCAST >>>>>\n");
+	}
+
 	virtual void fpext() {
 		printf("<<<<< FPEXT >>>>>\n");
 	}
 
+	virtual void fptosi() {
+		printf("<<<<< FPTOSI >>>>>\n");
+	}
+
+	virtual void fptoui() {
+		printf("<<<<< FPTOUI >>>>>\n");
+	}
+
+	virtual void fptrunc() {
+		printf("<<<<< FPTRUNC >>>>>\n");
+	}
+
+
 	virtual void load() {
 		printf("<<<<< LOAD >>>>>\n");
+	}
+
+	virtual void return_() {
+		printf("<<<<< RETURN >>>>>\n");
 	}
 
 

@@ -32,13 +32,37 @@ void llvm_call() {
 	DISPATCH_TO_OBSERVERS(call)
 }
 
+// ***** CastInst ***** //
+
+void llvm_bitcast() {
+	DISPATCH_TO_OBSERVERS(bitcast)
+}
+
 void llvm_fpext() {
 	DISPATCH_TO_OBSERVERS(fpext)
 }
 
+void llvm_fptosi() {
+	DISPATCH_TO_OBSERVERS(fptosi)
+}
+
+void llvm_fptoui() {
+	DISPATCH_TO_OBSERVERS(fptoui)
+}
+
+void llvm_fptrunc() {
+	DISPATCH_TO_OBSERVERS(fptrunc)
+}
+
+
 void llvm_load() {
 	DISPATCH_TO_OBSERVERS(load)
 }
+
+void llvm_return_() {
+	DISPATCH_TO_OBSERVERS(return_)
+}
+
 
 
 /*******************************************************************************************/

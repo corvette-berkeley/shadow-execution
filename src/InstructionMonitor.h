@@ -10,15 +10,23 @@
 
 extern "C" {
   //void llvm_load(IID iid, PTR addr, KVALUE* value);
-	void llvm_store(IID iid, PTR addr, KVALUE* value);
+  void llvm_store(IID iid, PTR addr, KVALUE* value);
 
-	void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-	void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 
-	void llvm_alloca();
-	void llvm_call();
-	void llvm_fpext();
-	void llvm_load();
+  void llvm_alloca();
+  void llvm_call();
+
+  // ***** CastInst ***** //
+  void llvm_bitcast();
+  void llvm_fpext();
+  void llvm_fptosi();
+  void llvm_fptoui();
+  void llvm_fptrunc();
+
+  void llvm_load();
+  void llvm_return_();
 }
 
 /*******************************************************************************************/

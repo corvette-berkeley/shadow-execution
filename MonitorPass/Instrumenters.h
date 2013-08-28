@@ -194,6 +194,28 @@ public:
 };
 
 
+// ************* CastInst **************** //
+
+// Callback: void bitcast()
+class BitCastInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(BitCastInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
 // Callback: void fpext()
 class FPExtInstrumenter : public Instrumenter {
 public:
@@ -214,6 +236,67 @@ public:
 };
 
 
+// Callback: void fptosi()
+class FPToSIInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPToSIInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptosi"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fptoui()
+class FPToUIInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPToUIInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptoui"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fptoui()
+class FPTruncInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPTruncInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptrunc"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+
 // Callback: void load()
 class LoadInstrumenter : public Instrumenter {
 public:
@@ -232,6 +315,27 @@ public:
 		return true;
 	}
 };
+
+
+// Callback: void return()
+class ReturnInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ReturnInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ReturnInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_return_"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
 
 
 

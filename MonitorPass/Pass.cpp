@@ -80,7 +80,14 @@ REGISTER_INSTRUMENTER(AddInstrumenter, "add")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
+REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
+
+// CastInst
+REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
+REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
+REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
+REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
 
 /*******************************************************************************************/
 
