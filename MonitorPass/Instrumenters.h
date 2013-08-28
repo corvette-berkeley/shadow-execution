@@ -47,7 +47,7 @@ public:
 };
 
 /*******************************************************************************************/
-
+/*
 // Callback: void load(IID iid, PTR addr, KVALUE value)
 class LoadInstrumenter : public Instrumenter {
 public:
@@ -79,7 +79,7 @@ public:
 		return true;
 	}
 };
-
+*/
 /*******************************************************************************************/
 
 // Callback: void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
@@ -212,6 +212,27 @@ public:
 		return true;
 	}
 };
+
+
+// Callback: void load()
+class LoadInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(LoadInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(LoadInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
 
 
 

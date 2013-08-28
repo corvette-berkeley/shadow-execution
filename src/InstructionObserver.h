@@ -12,7 +12,7 @@ public:
 	InstructionObserver(std::string name) : name_(name) {}
 	virtual ~InstructionObserver() {}
 
-	virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
+	//virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void store(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 
 	virtual void add(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
@@ -21,6 +21,7 @@ public:
 	virtual void alloca() {};
 	virtual void call() {};
 	virtual void fpext() {};
+	virtual void load() {};
 
 private:
 	std::string name_;

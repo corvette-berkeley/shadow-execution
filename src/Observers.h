@@ -14,13 +14,13 @@
 class PrintObserver : public InstructionObserver {
 public:
 	DEFAULT_CONSTRUCTOR(PrintObserver);
-
+	/*
 	void load(IID iid, PTR addr, KVALUE* kv) {
 		printf("<<<<< LOAD >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
 												PTR_ToString(addr).c_str(),
 												KVALUE_ToString(*kv).c_str());
 	}
-
+	*/
 	void store(IID iid, PTR addr, KVALUE* kv) {
 		printf("<<<<< STORE >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
 												 PTR_ToString(addr).c_str(),
@@ -55,6 +55,11 @@ public:
 	virtual void fpext() {
 		printf("<<<<< FPEXT >>>>>\n");
 	}
+
+	virtual void load() {
+		printf("<<<<< LOAD >>>>>\n");
+	}
+
 
 };
 

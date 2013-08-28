@@ -9,7 +9,7 @@
 /*******************************************************************************************/
 
 extern "C" {
-	void llvm_load(IID iid, PTR addr, KVALUE* value);
+  //void llvm_load(IID iid, PTR addr, KVALUE* value);
 	void llvm_store(IID iid, PTR addr, KVALUE* value);
 
 	void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
@@ -18,6 +18,7 @@ extern "C" {
 	void llvm_alloca();
 	void llvm_call();
 	void llvm_fpext();
+	void llvm_load();
 }
 
 /*******************************************************************************************/

@@ -7,11 +7,11 @@
 		(*itr)->func(__VA_ARGS__); \
 	}
 /*******************************************************************************************/
-
+/*
 void llvm_load(IID iid, PTR addr, KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(load, iid, addr, value);
 }
-
+*/
 void llvm_store(IID iid, PTR addr, KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(store, iid, addr, value);
 }
@@ -34,6 +34,10 @@ void llvm_call() {
 
 void llvm_fpext() {
 	DISPATCH_TO_OBSERVERS(fpext)
+}
+
+void llvm_load() {
+	DISPATCH_TO_OBSERVERS(load)
 }
 
 
