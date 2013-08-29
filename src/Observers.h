@@ -21,11 +21,6 @@ public:
 												KVALUE_ToString(*kv).c_str());
 	}
 	*/
-	void store(IID iid, PTR addr, KVALUE* kv) {
-		printf("<<<<< STORE >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-												 PTR_ToString(addr).c_str(),
-												 KVALUE_ToString(*kv).c_str());
-	}
 
 
 	// ***** Binary Operations ***** //
@@ -115,10 +110,6 @@ public:
 
 
 
-	virtual void alloca() {
-		printf("<<<<< ALLOCA >>>>>\n");
-	}
-
 
 	virtual void call() {
 		printf("<<<<< CALL >>>>>\n");
@@ -146,10 +137,6 @@ public:
 		printf("<<<<< FPTRUNC >>>>>\n");
 	}
 
-
-	virtual void load() {
-		printf("<<<<< LOAD >>>>>\n");
-	}
 
 	// ***** CmpInst ***** //
 
@@ -187,13 +174,38 @@ public:
 	}
 
 
+	// ***** Memory Access and Addressing Operations ***** //
+
+	virtual void alloca() {
+		printf("<<<<< ALLOCA >>>>>\n");
+	}
+
+	virtual void load() {
+		printf("<<<<< LOAD >>>>>\n");
+	}
+
+	void store(IID iid, PTR addr, KVALUE* kv) {
+		printf("<<<<< STORE >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+												 PTR_ToString(addr).c_str(),
+												 KVALUE_ToString(*kv).c_str());
+	}
+
 	virtual void fence() {
 		printf("<<<<< FENCE >>>>>\n");
 	}
 
-	virtual void get_element_ptr() {
-		printf("<<<<< GET_ELEMENT_PTR >>>>>\n");
+	virtual void cmpxchg() {
+		printf("<<<<< CMPXCHG >>>>>\n");
 	}
+
+	virtual void atomicrmw() {
+		printf("<<<<< ATOMICRMW >>>>>\n");
+	}
+
+	virtual void getelementptr() {
+		printf("<<<<< GETELEMENTPTR >>>>>\n");
+	}
+
 
 	virtual void landing_pad() {
 		printf("<<<<< LANDING_PAD >>>>>\n");

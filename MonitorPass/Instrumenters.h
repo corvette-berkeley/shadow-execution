@@ -14,37 +14,6 @@
 /*******************************************************************************************/
 
 
-// Callback: void store(IID iid, PTR addr, KVALUE value)
-class StoreInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(StoreInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(StoreInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		parent_->AS_ = SI->getPointerAddressSpace();
-
-		InstrPtrVector Instrs;
-		Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
-		if(kvalue == NULL) return false;
-
-		Constant* C_iid = IID_CONSTANT(SI);
-		Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
-		Instrs.push_back(I_cast_ptr);
-
-		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, kvalue);
-		Instrs.push_back(call);
-
-		// instrument
-		InsertAllBefore(Instrs, I);
-
-		return true;
-	}
-};
 
 /*******************************************************************************************/
 /*
@@ -477,25 +446,6 @@ public:
 
 /*******************************************************************************************/
 
-// Callback: void alloca()
-class AllocaInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(AllocaInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
 
 // Callback: void call()
 class CallInstrumenter : public Instrumenter {
@@ -619,27 +569,6 @@ public:
 };
 
 
-
-// Callback: void load()
-class LoadInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(LoadInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(LoadInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
 // ***** CmpInst ***** //
 
 // Callback: void fcmp()
@@ -701,45 +630,6 @@ public:
 	}
 };
 
-
-// Callback: void fence()
-class FenceInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(FenceInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FenceInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void get_element_ptr()
-class GetElementPtrInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(GetElementPtrInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_get_element_ptr"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
 
 
 // Callback: void insertelement()
@@ -882,6 +772,160 @@ public:
 	}
 };
 
+
+// ***** Memory Access and Addressing Operations ***** //
+
+// Callback: void alloca()
+class AllocaInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(AllocaInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void load()
+class LoadInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(LoadInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(LoadInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void store(IID iid, PTR addr, KVALUE value)
+class StoreInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(StoreInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(StoreInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		parent_->AS_ = SI->getPointerAddressSpace();
+
+		InstrPtrVector Instrs;
+		Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
+		if(kvalue == NULL) return false;
+
+		Constant* C_iid = IID_CONSTANT(SI);
+		Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
+		Instrs.push_back(I_cast_ptr);
+
+		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, kvalue);
+		Instrs.push_back(call);
+
+		// instrument
+		InsertAllBefore(Instrs, I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fence()
+class FenceInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(FenceInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FenceInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void cmpxchg()
+class AtomicCmpXchgInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(AtomicCmpXchgInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(AtomicCmpXchgInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_cmpxchg"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void atomicrmw()
+class AtomicRMWInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(AtomicRMWInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(AtomicRMWInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_atomicrmw"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void getelementptr()
+class GetElementPtrInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(GetElementPtrInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_getelementptr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
 
 
 // ***** TerminatorInst ***** //

@@ -7,15 +7,6 @@
 		(*itr)->func(__VA_ARGS__); \
 	}
 /*******************************************************************************************/
-/*
-void llvm_load(IID iid, PTR addr, KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(load, iid, addr, value);
-}
-*/
-void llvm_store(IID iid, PTR addr, KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(store, iid, addr, value);
-}
-
 
 // ***** Binary Operations ***** //
 void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -94,12 +85,6 @@ void llvm_xor_() {
 
 
 
-
-
-void llvm_alloca() {
-	DISPATCH_TO_OBSERVERS(alloca)
-}
-
 void llvm_call() {
 	DISPATCH_TO_OBSERVERS(call)
 }
@@ -126,10 +111,6 @@ void llvm_fptrunc() {
 	DISPATCH_TO_OBSERVERS(fptrunc)
 }
 
-
-void llvm_load() {
-	DISPATCH_TO_OBSERVERS(load)
-}
 
 // ***** CmpInst ***** //
 
@@ -166,13 +147,42 @@ void llvm_insertvalue() {
 }
 
 
+// ***** Memory Access and Addressing Operations ***** //
+
+void llvm_alloca() {
+	DISPATCH_TO_OBSERVERS(alloca)
+}
+
+void llvm_load() {
+	DISPATCH_TO_OBSERVERS(load)
+}
+
+/*
+void llvm_load(IID iid, PTR addr, KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(load, iid, addr, value);
+}
+*/
+
+void llvm_store(IID iid, PTR addr, KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(store, iid, addr, value);
+}
+
 void llvm_fence() {
 	DISPATCH_TO_OBSERVERS(fence)
 }
 
-void llvm_get_element_ptr() {
-	DISPATCH_TO_OBSERVERS(get_element_ptr)
+void llvm_cmpxchg() {
+	DISPATCH_TO_OBSERVERS(cmpxchg)
 }
+
+void llvm_atomicrmw() {
+	DISPATCH_TO_OBSERVERS(atomicrmw)
+}
+
+void llvm_getelementptr() {
+	DISPATCH_TO_OBSERVERS(getelementptr)
+}
+
 
 void llvm_landing_pad() {
 	DISPATCH_TO_OBSERVERS(landing_pad)

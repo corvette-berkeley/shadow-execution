@@ -9,8 +9,6 @@
 /*******************************************************************************************/
 
 extern "C" {
-  //void llvm_load(IID iid, PTR addr, KVALUE* value);
-  void llvm_store(IID iid, PTR addr, KVALUE* value);
 
   // ***** Binary Operations ***** //
   void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
@@ -34,7 +32,7 @@ extern "C" {
   void llvm_or_();
   void llvm_xor_();
 
-  void llvm_alloca();
+
   void llvm_call();
 
   // ***** CastInst ***** //
@@ -43,8 +41,6 @@ extern "C" {
   void llvm_fptosi();
   void llvm_fptoui();
   void llvm_fptrunc();
-
-  void llvm_load();
 
   // ***** CmpInst ***** //
   void llvm_fcmp();
@@ -59,12 +55,20 @@ extern "C" {
   void llvm_extractvalue();
   void llvm_insertvalue();
 
+  // ***** Memory Access and Addressing Operations ***** //
+  void llvm_alloca();
+  void llvm_load();
+  //void llvm_load(IID iid, PTR addr, KVALUE* value);
+  void llvm_store(IID iid, PTR addr, KVALUE* value);
   void llvm_fence();
-  void llvm_get_element_ptr();
+  void llvm_cmpxchg();
+  void llvm_atomicrmw();
+  void llvm_getelementptr();
+
+
   void llvm_landing_pad();
   void llvm_phinode();
   void llvm_select();
-
 
   // ***** TerminatorCast ***** //
   void llvm_branch();

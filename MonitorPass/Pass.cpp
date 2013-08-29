@@ -97,9 +97,7 @@ REGISTER_INSTRUMENTER(AndInstrumenter, "and_")
 REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
-REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
-REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
+
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 
 // **** CmpInst **** //
@@ -107,8 +105,6 @@ REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
 
 
-REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
-REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "get_element_ptr")
 REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landing_pad")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
@@ -121,6 +117,15 @@ REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
 // ***** Aggregate Operations ***** //
 REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
+
+// ***** Memory Access and Addressing Operations ***** //
+REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
+REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
+REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
+REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
+REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
+REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
+REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** TerminatorInst ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
