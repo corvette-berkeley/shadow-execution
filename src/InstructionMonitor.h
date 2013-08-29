@@ -51,7 +51,6 @@ extern "C" {
   void llvm_atomicrmw();
   void llvm_getelementptr();
 
-
   // ***** Conversion Operations ***** //
   void llvm_trunc();
   void llvm_zext();
@@ -66,7 +65,7 @@ extern "C" {
   void llvm_inttoptr();
   void llvm_bitcast();
 
-  // ***** TerminatorCast ***** //
+  // ***** Terminator Instructions ***** //
   void llvm_branch();
   void llvm_indirectbr();
   void llvm_invoke();

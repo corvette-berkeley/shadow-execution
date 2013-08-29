@@ -73,7 +73,7 @@ public:
 
 /*******************************************************************************************/
 
-// active instrumenters
+// active instrumenters (see http://llvm.org/docs/LangRef.html)
 
 // ***** Binary Operations ****** //
 REGISTER_INSTRUMENTER(AddInstrumenter, "add")

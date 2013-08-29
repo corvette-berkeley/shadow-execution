@@ -58,7 +58,6 @@ void llvm_frem() {
 }
 
 // ***** Bitwise Binary Operations ***** //
-
 void llvm_shl() {
 	DISPATCH_TO_OBSERVERS(shl)
 }
@@ -84,7 +83,6 @@ void llvm_xor_() {
 }
 
 // ****** Vector Operations ****** //
-
 void llvm_extractelement() {
 	DISPATCH_TO_OBSERVERS(extractelement)
 }
@@ -98,7 +96,6 @@ void llvm_shufflevector() {
 }
 
 // ***** Aggregate Operations ***** //
-
 void llvm_extractvalue() {
 	DISPATCH_TO_OBSERVERS(extractvalue)
 }
@@ -109,7 +106,6 @@ void llvm_insertvalue() {
 
 
 // ***** Memory Access and Addressing Operations ***** //
-
 void llvm_alloca() {
 	DISPATCH_TO_OBSERVERS(alloca)
 }
@@ -146,7 +142,6 @@ void llvm_getelementptr() {
 
 
 // ***** Conversion Operations ***** //
-
 void llvm_trunc() {
 	DISPATCH_TO_OBSERVERS(trunc)
 }
@@ -195,8 +190,8 @@ void llvm_bitcast() {
 	DISPATCH_TO_OBSERVERS(bitcast)
 }
 
-// **** TerminatorInst ***** //
 
+// **** Terminator Instructions ***** //
 void llvm_branch() {
 	DISPATCH_TO_OBSERVERS(branch)
 }
@@ -225,9 +220,8 @@ void llvm_unreachable() {
 	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
+
 // ***** Other Operations ***** //
-
-
 void llvm_icmp() {
 	DISPATCH_TO_OBSERVERS(icmp)
 }

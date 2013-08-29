@@ -67,7 +67,7 @@ public:
 	virtual void inttoptr() {};
 	virtual void bitcast() {};
 
-	// ***** TerminatorInst *****/
+	// ***** Terminator Instructions *****/
 	virtual void branch() {};
 	virtual void indirectbr() {};
 	virtual void invoke() {};
