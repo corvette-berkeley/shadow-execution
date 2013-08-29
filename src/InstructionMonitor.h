@@ -55,9 +55,12 @@ extern "C" {
   void llvm_insertelement();
   void llvm_shufflevector();
 
+  // ***** Aggregate Operations ***** //
+  void llvm_extractvalue();
+  void llvm_insertvalue();
+
   void llvm_fence();
   void llvm_get_element_ptr();
-  void llvm_insert_value();
   void llvm_landing_pad();
   void llvm_phinode();
   void llvm_select();

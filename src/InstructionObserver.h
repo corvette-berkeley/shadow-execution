@@ -58,9 +58,12 @@ public:
 	virtual void insertelement() {};
 	virtual void shufflevector() {};
 
+	// ***** Aggregate Operations ***** //
+	virtual void extractvalue() {};
+	virtual void insertvalue() {};
+
 	virtual void fence() {};
 	virtual void get_element_ptr() {};
-	virtual void insert_value() {};
 	virtual void landing_pad() {};
 	virtual void phinode() {};
 	virtual void select() {};

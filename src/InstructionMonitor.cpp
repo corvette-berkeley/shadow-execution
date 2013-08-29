@@ -155,6 +155,16 @@ void llvm_shufflevector() {
 	DISPATCH_TO_OBSERVERS(shufflevector)
 }
 
+// ***** Aggregate Operations ***** //
+
+void llvm_extractvalue() {
+	DISPATCH_TO_OBSERVERS(extractvalue)
+}
+
+void llvm_insertvalue() {
+	DISPATCH_TO_OBSERVERS(insertvalue)
+}
+
 
 void llvm_fence() {
 	DISPATCH_TO_OBSERVERS(fence)
@@ -162,10 +172,6 @@ void llvm_fence() {
 
 void llvm_get_element_ptr() {
 	DISPATCH_TO_OBSERVERS(get_element_ptr)
-}
-
-void llvm_insert_value() {
-	DISPATCH_TO_OBSERVERS(insert_value)
 }
 
 void llvm_landing_pad() {

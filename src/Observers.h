@@ -176,16 +176,23 @@ public:
 	}
 
 
+	// ***** AGGREGATE OPERATIONS ***** //
+
+	virtual void extractvalue() {
+		printf("<<<<< EXTRACTVALUE >>>>>\n");
+	}
+
+	virtual void insertvalue() {
+		printf("<<<<< INSERTVALUE >>>>>\n");
+	}
+
+
 	virtual void fence() {
 		printf("<<<<< FENCE >>>>>\n");
 	}
 
 	virtual void get_element_ptr() {
 		printf("<<<<< GET_ELEMENT_PTR >>>>>\n");
-	}
-
-	virtual void insert_value() {
-		printf("<<<<< INSERT_VALUE >>>>>\n");
 	}
 
 	virtual void landing_pad() {

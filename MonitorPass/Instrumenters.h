@@ -762,26 +762,6 @@ public:
 };
 
 
-// Callback: void insert_value()
-class InsertValueInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(InsertValueInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_value_element"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
 // Callback: void landing_pad()
 class LandingPadInstrumenter : public Instrumenter {
 public:
@@ -855,6 +835,47 @@ public:
 		count_++;
 
 		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shufflevector"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// ***** AGGREGATE OPERATIONS ***** //
+
+// Callback: void extractvalue()
+class ExtractValueInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(ExtractValueInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(InsertValueInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractvalue"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// Callback: void insertvalue()
+class InsertValueInstrumenter : public Instrumenter {
+public:
+  DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(InsertValueInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertvalue"), FunctionType::get(VOID_TYPE(), false)));
 		call->insertBefore(I);
 
 		return true;
