@@ -89,6 +89,13 @@ REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
 REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
 REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
 
+// ***** Bitwise Binary Operations ***** //
+REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")
+REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")
+REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")
+REGISTER_INSTRUMENTER(AndInstrumenter, "and_")
+REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
+REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
 REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")

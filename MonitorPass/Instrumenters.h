@@ -353,6 +353,128 @@ public:
 };
 
 
+// ***** Bitwise Binary Operations ***** //
+
+// Callback: void shl()
+class ShlInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(ShlInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Shl);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shl"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void lshr()
+class LShrInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(LShrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, LShr);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_lshr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void ashr()
+class AShrInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(AShrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, AShr);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_ashr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void and()
+class AndInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(AndInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, And);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_and_"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// Callback: void or()
+class OrInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(OrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Or);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_or_"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void xor()
+class XorInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(XorInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Xor);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_xor_"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+
 /*******************************************************************************************/
 
 // Callback: void alloca()

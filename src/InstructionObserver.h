@@ -29,6 +29,14 @@ public:
 	virtual void srem() {};
 	virtual void frem() {};
 
+	// ***** Bitwise Binary Operators ***** //
+	virtual void shl() {};
+	virtual void lshr() {};
+	virtual void ashr() {};
+	virtual void and_() {};
+	virtual void or_() {};
+	virtual void xor_() {};
+
 	virtual void alloca() {};
 	virtual void call() {};
 

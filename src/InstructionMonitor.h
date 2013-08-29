@@ -26,6 +26,14 @@ extern "C" {
   void llvm_srem();
   void llvm_frem();
 
+  // ***** Bitwise Binary Operations ***** //
+  void llvm_shl();
+  void llvm_lshr();
+  void llvm_ashr();
+  void llvm_and_();
+  void llvm_or_();
+  void llvm_xor_();
+
   void llvm_alloca();
   void llvm_call();
 

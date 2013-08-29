@@ -87,6 +87,33 @@ public:
 	}
 
 
+	// ***** Bitwise Binary Operations ***** //
+
+	virtual void shl() {
+	  printf("<<<<< SHL >>>>>\n");
+	}
+
+	virtual void lshr() {
+	  printf("<<<<< LSHR >>>>>\n");
+	}
+
+	virtual void ashr() {
+	  printf("<<<<< ASHR >>>>>\n");
+	}
+
+	virtual void and_() {
+	  printf("<<<<< AND >>>>>\n");
+	}
+
+	virtual void or_() {
+	  printf("<<<<< OR >>>>>\n");
+	}
+
+	virtual void xor_() {
+	  printf("<<<<< XOR >>>>>\n");
+	}
+
+
 
 	virtual void alloca() {
 		printf("<<<<< ALLOCA >>>>>\n");

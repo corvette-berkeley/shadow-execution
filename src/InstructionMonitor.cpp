@@ -66,6 +66,34 @@ void llvm_frem() {
 	DISPATCH_TO_OBSERVERS(frem)
 }
 
+// ***** Bitwise Binary Operations ***** //
+
+void llvm_shl() {
+	DISPATCH_TO_OBSERVERS(shl)
+}
+
+void llvm_lshr() {
+	DISPATCH_TO_OBSERVERS(lshr)
+}
+
+void llvm_ashr() {
+	DISPATCH_TO_OBSERVERS(ashr)
+}
+
+void llvm_and_() {
+	DISPATCH_TO_OBSERVERS(and_)
+}
+
+void llvm_or_() {
+	DISPATCH_TO_OBSERVERS(or_)
+}
+
+void llvm_xor_() {
+	DISPATCH_TO_OBSERVERS(xor_)
+}
+
+
+
 
 
 void llvm_alloca() {
