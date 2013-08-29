@@ -682,7 +682,7 @@ public:
 };
 
 
-// Callback: void extract_element()
+// Callback: void extractelement()
 class ExtractElementInstrumenter : public Instrumenter {
 public:
   DEFAULT_CONSTRUCTOR(ExtractElementInstrumenter);
@@ -694,7 +694,7 @@ public:
 
 		count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extract_element"), FunctionType::get(VOID_TYPE(), false)));
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractelement"), FunctionType::get(VOID_TYPE(), false)));
 		call->insertBefore(I);
 
 		return true;
@@ -742,7 +742,7 @@ public:
 };
 
 
-// Callback: void insert_element()
+// Callback: void insertelement()
 class InsertElementInstrumenter : public Instrumenter {
 public:
   DEFAULT_CONSTRUCTOR(InsertElementInstrumenter);
@@ -754,7 +754,7 @@ public:
 
 		count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insert_element"), FunctionType::get(VOID_TYPE(), false)));
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertelement"), FunctionType::get(VOID_TYPE(), false)));
 		call->insertBefore(I);
 
 		return true;
@@ -842,7 +842,7 @@ public:
 };
 
 
-// Callback: void shuffle_vector()
+// Callback: void shufflevector()
 class ShuffleVectorInstrumenter : public Instrumenter {
 public:
   DEFAULT_CONSTRUCTOR(ShuffleVectorInstrumenter);
@@ -854,7 +854,7 @@ public:
 
 		count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shuffle_vector"), FunctionType::get(VOID_TYPE(), false)));
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shufflevector"), FunctionType::get(VOID_TYPE(), false)));
 		call->insertBefore(I);
 
 		return true;

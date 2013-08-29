@@ -141,10 +141,20 @@ void llvm_icmp() {
 	DISPATCH_TO_OBSERVERS(icmp)
 }
 
+// ****** Vector Operations ****** //
 
-void llvm_extract_element() {
-	DISPATCH_TO_OBSERVERS(extract_element)
+void llvm_extractelement() {
+	DISPATCH_TO_OBSERVERS(extractelement)
 }
+
+void llvm_insertelement() {
+	DISPATCH_TO_OBSERVERS(insertelement)
+}
+
+void llvm_shufflevector() {
+	DISPATCH_TO_OBSERVERS(shufflevector)
+}
+
 
 void llvm_fence() {
 	DISPATCH_TO_OBSERVERS(fence)
@@ -152,10 +162,6 @@ void llvm_fence() {
 
 void llvm_get_element_ptr() {
 	DISPATCH_TO_OBSERVERS(get_element_ptr)
-}
-
-void llvm_insert_element() {
-	DISPATCH_TO_OBSERVERS(insert_element)
 }
 
 void llvm_insert_value() {
@@ -174,9 +180,6 @@ void llvm_select() {
 	DISPATCH_TO_OBSERVERS(select)
 }
 
-void llvm_shuffle_vector() {
-	DISPATCH_TO_OBSERVERS(shuffle_vector)
-}
 
 
 

@@ -106,15 +106,18 @@ REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
 
-REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extract_element")
+
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "get_element_ptr")
-REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insert_element")
 REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insert_value")
 REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landing_pad")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shuffle_vector")
+
+// ***** Vector Operations ***** //
+REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
+REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
+REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
 
 // ***** TerminatorInst ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")

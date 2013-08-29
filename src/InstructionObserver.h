@@ -53,15 +53,18 @@ public:
 	virtual void fcmp() {};
 	virtual void icmp() {};
 
-	virtual void extract_element() {};
+	// ***** Vector Operations ***** //
+	virtual void extractelement() {};
+	virtual void insertelement() {};
+	virtual void shufflevector() {};
+
 	virtual void fence() {};
 	virtual void get_element_ptr() {};
-	virtual void insert_element() {};
 	virtual void insert_value() {};
 	virtual void landing_pad() {};
 	virtual void phinode() {};
 	virtual void select() {};
-	virtual void shuffle_vector() {};
+
 
 	// ***** TerminatorInst *****/
 	virtual void branch() {};

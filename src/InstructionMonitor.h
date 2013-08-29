@@ -50,15 +50,18 @@ extern "C" {
   void llvm_fcmp();
   void llvm_icmp();
 
-  void llvm_extract_element();
+  // ***** Vector Operations ***** //
+  void llvm_extractelement();
+  void llvm_insertelement();
+  void llvm_shufflevector();
+
   void llvm_fence();
   void llvm_get_element_ptr();
-  void llvm_insert_element();
   void llvm_insert_value();
   void llvm_landing_pad();
   void llvm_phinode();
   void llvm_select();
-  void llvm_shuffle_vector();
+
 
   // ***** TerminatorCast ***** //
   void llvm_branch();

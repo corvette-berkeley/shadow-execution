@@ -161,10 +161,20 @@ public:
 		printf("<<<<< ICMP >>>>>\n");
 	}
 
+	// ***** Vector Operations ***** //
 
-	virtual void extract_element() {
-		printf("<<<<< EXTRACT_ELEMENT >>>>>\n");
+	virtual void extractelement() {
+		printf("<<<<< EXTRACTELEMENT >>>>>\n");
 	}
+
+	virtual void insertelement() {
+		printf("<<<<< INSERTELEMENT >>>>>\n");
+	}
+
+	virtual void shufflevector() {
+		printf("<<<<< SHUFFLEVECTOR >>>>>\n");
+	}
+
 
 	virtual void fence() {
 		printf("<<<<< FENCE >>>>>\n");
@@ -172,10 +182,6 @@ public:
 
 	virtual void get_element_ptr() {
 		printf("<<<<< GET_ELEMENT_PTR >>>>>\n");
-	}
-
-	virtual void insert_element() {
-		printf("<<<<< INSERT_ELEMENT >>>>>\n");
 	}
 
 	virtual void insert_value() {
@@ -194,9 +200,6 @@ public:
 		printf("<<<<< SELECT >>>>>\n");
 	}
 
-	virtual void shuffle_vector() {
-		printf("<<<<< SHUFFLE_VECTOR >>>>>\n");
-	}
 
 
 	// ***** TerminatorInst ***** //
