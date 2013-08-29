@@ -34,13 +34,6 @@ public:
 	virtual void or_() {};
 	virtual void xor_() {};
 
-
-	virtual void call() {};
-
-	// ***** CmpInst ***** //
-	virtual void fcmp() {};
-	virtual void icmp() {};
-
 	// ***** Vector Operations ***** //
 	virtual void extractelement() {};
 	virtual void insertelement() {};
@@ -74,10 +67,6 @@ public:
 	virtual void inttoptr() {};
 	virtual void bitcast() {};
 
-	virtual void landing_pad() {};
-	virtual void phinode() {};
-	virtual void select() {};
-
 	// ***** TerminatorInst *****/
 	virtual void branch() {};
 	virtual void indirectbr() {};
@@ -87,6 +76,14 @@ public:
 	virtual void switch_() {};
 	virtual void unreachable() {};
 
+	// ***** Other Operations ***** //
+	virtual void icmp() {};
+	virtual void fcmp() {};
+	virtual void phinode() {};
+	virtual void select() {};
+	virtual void call() {};
+	virtual void vaarg() {};
+	virtual void landingpad() {};
 
 private:
 	std::string name_;

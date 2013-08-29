@@ -32,13 +32,6 @@ extern "C" {
   void llvm_or_();
   void llvm_xor_();
 
-
-  void llvm_call();
-
-  // ***** CmpInst ***** //
-  void llvm_fcmp();
-  void llvm_icmp();
-
   // ***** Vector Operations ***** //
   void llvm_extractelement();
   void llvm_insertelement();
@@ -73,10 +66,6 @@ extern "C" {
   void llvm_inttoptr();
   void llvm_bitcast();
 
-  void llvm_landing_pad();
-  void llvm_phinode();
-  void llvm_select();
-
   // ***** TerminatorCast ***** //
   void llvm_branch();
   void llvm_indirectbr();
@@ -85,6 +74,15 @@ extern "C" {
   void llvm_return_();
   void llvm_switch_();
   void llvm_unreachable();
+
+  // ***** Other Operations ***** //
+  void llvm_icmp();
+  void llvm_fcmp();
+  void llvm_phinode();
+  void llvm_select();
+  void llvm_call();
+  void llvm_vaarg();
+  void llvm_landingpad();
 
 }
 

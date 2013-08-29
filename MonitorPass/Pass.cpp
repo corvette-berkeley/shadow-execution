@@ -97,17 +97,6 @@ REGISTER_INSTRUMENTER(AndInstrumenter, "and_")
 REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
-REGISTER_INSTRUMENTER(CallInstrumenter, "call")
-
-// **** CmpInst **** //
-REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
-REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
-
-
-REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landing_pad")
-//REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
-REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-
 // ***** Vector Operations ***** //
 REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
 REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
@@ -126,7 +115,7 @@ REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
-// ***** TerminatorInst ***** //
+// ***** Terminator Instructions ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
 REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
 REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
@@ -148,6 +137,15 @@ REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")
 REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
 REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
+
+// ***** Other Operations ***** //
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+//REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
+REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
+REGISTER_INSTRUMENTER(CallInstrumenter, "call")
+REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
+REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 
 
 

@@ -109,20 +109,6 @@ public:
 	}
 
 
-	virtual void call() {
-		printf("<<<<< CALL >>>>>\n");
-	}
-
-	// ***** CmpInst ***** //
-
-	virtual void fcmp() {
-		printf("<<<<< FCMP >>>>>\n");
-	}
-	
-	virtual void icmp() {
-		printf("<<<<< ICMP >>>>>\n");
-	}
-
 	// ***** Vector Operations ***** //
 
 	virtual void extractelement() {
@@ -180,20 +166,6 @@ public:
 	virtual void getelementptr() {
 		printf("<<<<< GETELEMENTPTR >>>>>\n");
 	}
-
-
-	virtual void landing_pad() {
-		printf("<<<<< LANDING_PAD >>>>>\n");
-	}
-
-	virtual void phinode() {
-		printf("<<<<< PHINODE >>>>>\n");
-	}
-
-	virtual void select() {
-		printf("<<<<< SELECT >>>>>\n");
-	}
-
 
 	// ***** Conversion Operations ***** //
 
@@ -274,6 +246,36 @@ public:
 
 	virtual void unreachable() {
 		printf("<<<<< UNREACHABLE >>>>>\n");
+	}
+
+	// ***** Other Operations ***** //
+
+	virtual void icmp() {
+		printf("<<<<< ICMP >>>>>\n");
+	}
+
+	virtual void fcmp() {
+		printf("<<<<< FCMP >>>>>\n");
+	}
+	
+	virtual void phinode() {
+		printf("<<<<< PHINODE >>>>>\n");
+	}
+
+	virtual void select() {
+		printf("<<<<< SELECT >>>>>\n");
+	}
+
+	virtual void call() {
+		printf("<<<<< CALL >>>>>\n");
+	}
+
+	virtual void vaarg() {
+		printf("<<<<< VAARG >>>>>\n");
+	}
+
+	virtual void landingpad() {
+		printf("<<<<< LANDINGPAD >>>>>\n");
 	}
 
 };

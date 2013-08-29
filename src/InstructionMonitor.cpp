@@ -83,22 +83,6 @@ void llvm_xor_() {
 	DISPATCH_TO_OBSERVERS(xor_)
 }
 
-
-
-void llvm_call() {
-	DISPATCH_TO_OBSERVERS(call)
-}
-
-// ***** CmpInst ***** //
-
-void llvm_fcmp() {
-	DISPATCH_TO_OBSERVERS(fcmp)
-}
-
-void llvm_icmp() {
-	DISPATCH_TO_OBSERVERS(icmp)
-}
-
 // ****** Vector Operations ****** //
 
 void llvm_extractelement() {
@@ -211,26 +195,6 @@ void llvm_bitcast() {
 	DISPATCH_TO_OBSERVERS(bitcast)
 }
 
-
-
-
-void llvm_landing_pad() {
-	DISPATCH_TO_OBSERVERS(landing_pad)
-}
-
-void llvm_phinode() {
-	DISPATCH_TO_OBSERVERS(phinode)
-}
-
-void llvm_select() {
-	DISPATCH_TO_OBSERVERS(select)
-}
-
-
-
-
-
-
 // **** TerminatorInst ***** //
 
 void llvm_branch() {
@@ -261,8 +225,36 @@ void llvm_unreachable() {
 	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
+// ***** Other Operations ***** //
 
 
+void llvm_icmp() {
+	DISPATCH_TO_OBSERVERS(icmp)
+}
+
+void llvm_fcmp() {
+	DISPATCH_TO_OBSERVERS(fcmp)
+}
+
+void llvm_phinode() {
+	DISPATCH_TO_OBSERVERS(phinode)
+}
+
+void llvm_select() {
+	DISPATCH_TO_OBSERVERS(select)
+}
+
+void llvm_call() {
+	DISPATCH_TO_OBSERVERS(call)
+}
+
+void llvm_vaarg() {
+	DISPATCH_TO_OBSERVERS(vaarg)
+}
+
+void llvm_landingpad() {
+	DISPATCH_TO_OBSERVERS(landingpad)
+}
 
 
 /*******************************************************************************************/
