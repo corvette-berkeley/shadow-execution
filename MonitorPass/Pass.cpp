@@ -74,10 +74,24 @@ public:
 /*******************************************************************************************/
 
 // active instrumenters
+
+// ***** Binary Operations ****** //
+REGISTER_INSTRUMENTER(AddInstrumenter, "add")
+REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")
+REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
+REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")
+REGISTER_INSTRUMENTER(MulInstrumenter, "mul")
+REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")
+REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")
+REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")
+REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")
+REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
+REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
+REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
+
+
 REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
-REGISTER_INSTRUMENTER(AddInstrumenter, "add")
-REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 
@@ -91,7 +105,7 @@ REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "get_element_ptr")
 REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insert_element")
 REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insert_value")
 REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landing_pad")
-REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
+//REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
 REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shuffle_vector")
 

@@ -15,8 +15,19 @@ public:
 	//virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void store(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 
+	// ***** Binary Operators **** //
 	virtual void add(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
+	virtual void fadd() {};
 	virtual void sub(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
+	virtual void fsub() {};
+	virtual void mul() {};
+	virtual void fmul() {};
+	virtual void udiv() {};
+	virtual void sdiv() {};
+	virtual void fdiv() {};
+	virtual void urem() {};
+	virtual void srem() {};
+	virtual void frem() {};
 
 	virtual void alloca() {};
 	virtual void call() {};

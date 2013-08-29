@@ -12,8 +12,19 @@ extern "C" {
   //void llvm_load(IID iid, PTR addr, KVALUE* value);
   void llvm_store(IID iid, PTR addr, KVALUE* value);
 
+  // ***** Binary Operations ***** //
   void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_fadd();
   void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_fsub();
+  void llvm_mul();
+  void llvm_fmul();
+  void llvm_udiv();
+  void llvm_sdiv();
+  void llvm_fdiv();
+  void llvm_urem();
+  void llvm_srem();
+  void llvm_frem();
 
   void llvm_alloca();
   void llvm_call();

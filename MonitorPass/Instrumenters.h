@@ -116,6 +116,27 @@ public:
 	}
 };
 
+
+// Callback: void fadd()
+class FAddInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FAddInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FAdd);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fadd"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
 /*******************************************************************************************/
 
 // Callback: void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
@@ -151,6 +172,186 @@ public:
 		return true;
 	}
 };
+
+
+// Callback: void fsub()
+class FSubInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FSubInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FSub);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fsub"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void mul()
+class MulInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(MulInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Mul);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_mul"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fmul()
+class FMulInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FMulInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FMul);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fmul"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void udiv()
+class UDivInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(UDivInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, UDiv);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_udiv"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void sdiv()
+class SDivInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(SDivInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SDiv);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sdiv"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fdiv()
+class FDivInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FDivInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FDiv);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fdiv"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// Callback: void urem()
+class URemInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(URemInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, URem);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_urem"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void srem()
+class SRemInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(SRemInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SRem);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_srem"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void urem()
+class FRemInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FRemInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FRem);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_frem"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
 
 /*******************************************************************************************/
 

@@ -27,12 +27,19 @@ public:
 												 KVALUE_ToString(*kv).c_str());
 	}
 
+
+	// ***** Binary Operations ***** //
+
 	virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 		printf("<<<<< ADD >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
 															   (nuw ? "1" : "0"),
 															   (nsw ? "1" : "0"),
 															   KVALUE_ToString(*op1).c_str(),
 															   KVALUE_ToString(*op2).c_str());
+	}
+
+	virtual void fadd() {
+		printf("<<<<< FADD >>>>>\n");
 	}
 
 	virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -42,6 +49,44 @@ public:
 															   KVALUE_ToString(*op1).c_str(),
 															   KVALUE_ToString(*op2).c_str());
 	}
+
+	virtual void fsub() {
+	  printf("<<<<< FSUB >>>>>\n");
+	}
+
+	virtual void mul() {
+	  printf("<<<<< MUL >>>>>\n");
+	}
+
+	virtual void fmul() {
+	  printf("<<<<< FMUL >>>>>\n");
+	}
+
+	virtual void udiv() {
+	  printf("<<<<< UDIV >>>>>\n");
+	}
+
+	virtual void sdiv() {
+	  printf("<<<<< SDIV >>>>>\n");
+	}
+
+	virtual void fdiv() {
+	  printf("<<<<< FDIV >>>>>\n");
+	}
+
+	virtual void urem() {
+	  printf("<<<<< UREM >>>>>\n");
+	}
+
+	virtual void srem() {
+	  printf("<<<<< SREM >>>>>\n");
+	}
+
+	virtual void frem() {
+	  printf("<<<<< FREM >>>>>\n");
+	}
+
+
 
 	virtual void alloca() {
 		printf("<<<<< ALLOCA >>>>>\n");

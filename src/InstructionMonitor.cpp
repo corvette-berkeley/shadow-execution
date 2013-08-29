@@ -16,13 +16,57 @@ void llvm_store(IID iid, PTR addr, KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(store, iid, addr, value);
 }
 
+
+// ***** Binary Operations ***** //
 void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(add, iid, nuw, nsw, op1, op2)
+}
+
+void llvm_fadd() {
+	DISPATCH_TO_OBSERVERS(fadd)
 }
 
 void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2)
 }
+
+void llvm_fsub() {
+	DISPATCH_TO_OBSERVERS(fsub)
+}
+
+void llvm_mul() {
+	DISPATCH_TO_OBSERVERS(mul)
+}
+
+void llvm_fmul() {
+	DISPATCH_TO_OBSERVERS(fmul)
+}
+
+void llvm_udiv() {
+	DISPATCH_TO_OBSERVERS(udiv)
+}
+
+void llvm_sdiv() {
+	DISPATCH_TO_OBSERVERS(sdiv)
+}
+
+void llvm_fdiv() {
+	DISPATCH_TO_OBSERVERS(fdiv)
+}
+
+void llvm_urem() {
+	DISPATCH_TO_OBSERVERS(urem)
+}
+
+void llvm_srem() {
+	DISPATCH_TO_OBSERVERS(srem)
+}
+
+void llvm_frem() {
+	DISPATCH_TO_OBSERVERS(frem)
+}
+
+
 
 void llvm_alloca() {
 	DISPATCH_TO_OBSERVERS(alloca)
