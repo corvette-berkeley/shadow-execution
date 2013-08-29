@@ -97,7 +97,6 @@ REGISTER_INSTRUMENTER(AndInstrumenter, "and_")
 REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
-
 REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 
 // **** CmpInst **** //
@@ -136,12 +135,19 @@ REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
 REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
 REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
-// ***** CastInst ***** //
-REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
-REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
-REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
-REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
+// ***** Conversion Operations ***** //
+REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
+REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
+REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
 REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
+REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
+REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
+REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
+REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")
+REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")
+REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
+REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
+REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 
 

@@ -37,13 +37,6 @@ public:
 
 	virtual void call() {};
 
-	// ***** CastInst ***** //
-	virtual void bitcast() {};
-	virtual void fpext() {};
-	virtual void fptosi() {};
-	virtual void fptoui() {};
-	virtual void fptrunc() {};
-
 	// ***** CmpInst ***** //
 	virtual void fcmp() {};
 	virtual void icmp() {};
@@ -67,6 +60,19 @@ public:
 	virtual void atomicrmw() {};
 	virtual void getelementptr() {};
 
+	// ***** Conversion Operations ***** //
+	virtual void trunc() {};
+	virtual void zext() {};
+	virtual void sext() {};
+	virtual void fptrunc() {};
+	virtual void fpext() {};
+	virtual void fptoui() {};
+	virtual void fptosi() {};
+	virtual void uitofp() {};
+	virtual void sitofp() {};
+	virtual void ptrtoint() {};
+	virtual void inttoptr() {};
+	virtual void bitcast() {};
 
 	virtual void landing_pad() {};
 	virtual void phinode() {};

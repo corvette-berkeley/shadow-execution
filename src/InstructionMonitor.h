@@ -35,13 +35,6 @@ extern "C" {
 
   void llvm_call();
 
-  // ***** CastInst ***** //
-  void llvm_bitcast();
-  void llvm_fpext();
-  void llvm_fptosi();
-  void llvm_fptoui();
-  void llvm_fptrunc();
-
   // ***** CmpInst ***** //
   void llvm_fcmp();
   void llvm_icmp();
@@ -65,6 +58,20 @@ extern "C" {
   void llvm_atomicrmw();
   void llvm_getelementptr();
 
+
+  // ***** Conversion Operations ***** //
+  void llvm_trunc();
+  void llvm_zext();
+  void llvm_sext();
+  void llvm_fptrunc();
+  void llvm_fpext();
+  void llvm_fptoui();
+  void llvm_fptosi();
+  void llvm_uitofp();
+  void llvm_sitofp();
+  void llvm_ptrtoint();
+  void llvm_inttoptr();
+  void llvm_bitcast();
 
   void llvm_landing_pad();
   void llvm_phinode();

@@ -109,34 +109,9 @@ public:
 	}
 
 
-
-
 	virtual void call() {
 		printf("<<<<< CALL >>>>>\n");
 	}
-
-	// ****** CastInst ****** //
-
-	virtual void bitcast() {
-		printf("<<<<< BITCAST >>>>>\n");
-	}
-
-	virtual void fpext() {
-		printf("<<<<< FPEXT >>>>>\n");
-	}
-
-	virtual void fptosi() {
-		printf("<<<<< FPTOSI >>>>>\n");
-	}
-
-	virtual void fptoui() {
-		printf("<<<<< FPTOUI >>>>>\n");
-	}
-
-	virtual void fptrunc() {
-		printf("<<<<< FPTRUNC >>>>>\n");
-	}
-
 
 	// ***** CmpInst ***** //
 
@@ -219,6 +194,56 @@ public:
 		printf("<<<<< SELECT >>>>>\n");
 	}
 
+
+	// ***** Conversion Operations ***** //
+
+	virtual void trunc() {
+		printf("<<<<< TRUNC >>>>>\n");
+	}
+
+	virtual void zext() {
+		printf("<<<<< ZEXT >>>>>\n");
+	}
+
+	virtual void sext() {
+		printf("<<<<< SEXT >>>>>\n");
+	}
+
+	virtual void fptrunc() {
+		printf("<<<<< FPTRUNC >>>>>\n");
+	}
+
+	virtual void fpext() {
+		printf("<<<<< FPEXT >>>>>\n");
+	}
+
+	virtual void fptoui() {
+		printf("<<<<< FPTOUI >>>>>\n");
+	}
+
+	virtual void fptosi() {
+		printf("<<<<< FPTOSI >>>>>\n");
+	}
+
+	virtual void uitofp() {
+		printf("<<<<< UITOFP >>>>>\n");
+	}
+
+	virtual void sitofp() {
+		printf("<<<<< SITOFP >>>>>\n");
+	}
+
+	virtual void ptrtoint() {
+		printf("<<<<< PTRTOINT >>>>>\n");
+	}
+
+	virtual void inttoptr() {
+		printf("<<<<< INTTOPTR >>>>>\n");
+	}
+
+	virtual void bitcast() {
+		printf("<<<<< BITCAST >>>>>\n");
+	}
 
 
 	// ***** TerminatorInst ***** //

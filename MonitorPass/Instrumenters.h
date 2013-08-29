@@ -467,108 +467,6 @@ public:
 };
 
 
-// ************* CastInst **************** //
-
-// Callback: void bitcast()
-class BitCastInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(BitCastInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void fpext()
-class FPExtInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPExtInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fpext"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void fptosi()
-class FPToSIInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPToSIInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptosi"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void fptoui()
-class FPToUIInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPToUIInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptoui"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
-// Callback: void fptoui()
-class FPTruncInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
-
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPTruncInst, SI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptrunc"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
-
-		return true;
-	}
-};
-
-
 // ***** CmpInst ***** //
 
 // Callback: void fcmp()
@@ -921,6 +819,245 @@ public:
 		count_++;
 
 		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_getelementptr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// ***** Conversion Operations ***** //
+
+// Callback: void trunc()
+class TruncInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(TruncInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(TruncInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_trunc"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// Callback: void zext()
+class ZExtInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(ZExtInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(ZExtInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_zext"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void sext()
+class SExtInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(SExtInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(SExtInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sext"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fptrunc()
+class FPTruncInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPTruncInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptrunc"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fpext()
+class FPExtInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPExtInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fpext"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fptoui()
+class FPToUIInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPToUIInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptoui"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void fptosi()
+class FPToSIInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(FPToSIInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptosi"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+// Callback: void uitofp()
+class UIToFPInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(UIToFPInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(UIToFPInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_uitofp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void sitofp()
+class SIToFPInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(SIToFPInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(SIToFPInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sitofp"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void ptrtoint()
+class PtrToIntInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(PtrToIntInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(PtrToIntInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_ptrtoint"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void inttoptr()
+class IntToPtrInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(IntToPtrInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(IntToPtrInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_inttoptr"), FunctionType::get(VOID_TYPE(), false)));
+		call->insertBefore(I);
+
+		return true;
+	}
+};
+
+
+// Callback: void bitcast()
+class BitCastInstrumenter : public Instrumenter {
+public:
+	DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
+
+	bool CheckAndInstrument(Instruction* I) {
+		CAST_OR_RETURN(BitCastInst, SI, I);
+
+		safe_assert(parent_ != NULL);
+
+		count_++;
+
+		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
 		call->insertBefore(I);
 
 		return true;

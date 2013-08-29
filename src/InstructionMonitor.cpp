@@ -89,29 +89,6 @@ void llvm_call() {
 	DISPATCH_TO_OBSERVERS(call)
 }
 
-// ***** CastInst ***** //
-
-void llvm_bitcast() {
-	DISPATCH_TO_OBSERVERS(bitcast)
-}
-
-void llvm_fpext() {
-	DISPATCH_TO_OBSERVERS(fpext)
-}
-
-void llvm_fptosi() {
-	DISPATCH_TO_OBSERVERS(fptosi)
-}
-
-void llvm_fptoui() {
-	DISPATCH_TO_OBSERVERS(fptoui)
-}
-
-void llvm_fptrunc() {
-	DISPATCH_TO_OBSERVERS(fptrunc)
-}
-
-
 // ***** CmpInst ***** //
 
 void llvm_fcmp() {
@@ -182,6 +159,59 @@ void llvm_atomicrmw() {
 void llvm_getelementptr() {
 	DISPATCH_TO_OBSERVERS(getelementptr)
 }
+
+
+// ***** Conversion Operations ***** //
+
+void llvm_trunc() {
+	DISPATCH_TO_OBSERVERS(trunc)
+}
+
+void llvm_zext() {
+	DISPATCH_TO_OBSERVERS(zext)
+}
+
+void llvm_sext() {
+	DISPATCH_TO_OBSERVERS(sext)
+}
+
+void llvm_fptrunc() {
+	DISPATCH_TO_OBSERVERS(fptrunc)
+}
+
+void llvm_fpext() {
+	DISPATCH_TO_OBSERVERS(fpext)
+}
+
+void llvm_fptoui() {
+	DISPATCH_TO_OBSERVERS(fptoui)
+}
+
+void llvm_fptosi() {
+	DISPATCH_TO_OBSERVERS(fptosi)
+}
+
+void llvm_uitofp() {
+	DISPATCH_TO_OBSERVERS(uitofp)
+}
+
+void llvm_sitofp() {
+	DISPATCH_TO_OBSERVERS(sitofp)
+}
+
+void llvm_inttoptr() {
+	DISPATCH_TO_OBSERVERS(inttoptr)
+}
+
+void llvm_ptrtoint() {
+	DISPATCH_TO_OBSERVERS(ptrtoint)
+}
+
+void llvm_bitcast() {
+	DISPATCH_TO_OBSERVERS(bitcast)
+}
+
+
 
 
 void llvm_landing_pad() {
