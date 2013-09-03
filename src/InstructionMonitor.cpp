@@ -13,8 +13,8 @@ void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(add, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_fadd() {
-	DISPATCH_TO_OBSERVERS(fadd)
+void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(fadd, iid, nuw, nsw, op1, op2)
 }
 
 void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {

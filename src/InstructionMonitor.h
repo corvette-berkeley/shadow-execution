@@ -12,7 +12,7 @@ extern "C" {
 
   // ***** Binary Operations ***** //
   void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-  void llvm_fadd();
+  void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_fsub();
   void llvm_mul();

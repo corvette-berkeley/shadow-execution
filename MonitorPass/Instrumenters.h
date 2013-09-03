@@ -98,8 +98,26 @@ public:
 
 		count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fadd"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+		InstrPtrVector Instrs;
+		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+		if(op1 == NULL) return false;
+
+		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+		if(op2 == NULL) return false;
+
+		Constant* C_iid = IID_CONSTANT(BI);
+
+		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+
+		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fadd"), C_iid, nuw, nsw, op1, op2);
+		Instrs.push_back(call);
+
+		// instrument
+		InsertAllBefore(Instrs, BI);
+
+//		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fadd"), FunctionType::get(VOID_TYPE(), false)));
+//		call->insertBefore(I);
 
 		return true;
 	}
