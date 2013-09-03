@@ -58,8 +58,8 @@ void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl() {
-	DISPATCH_TO_OBSERVERS(shl)
+void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(shl, iid, nuw, nsw, op1, op2)
 }
 
 void llvm_lshr() {

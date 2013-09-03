@@ -6,6 +6,8 @@ int main() {
   int y = 3;
   y = y * 2;
   y = y % 3;
+  y = 4 << y;
+  y = y << 4;
   float x = 4.0;
   x = x + 6.0;
   x = x - 3.0;

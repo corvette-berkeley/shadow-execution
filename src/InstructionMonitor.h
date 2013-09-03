@@ -25,7 +25,7 @@ extern "C" {
   void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 
   // ***** Bitwise Binary Operations ***** //
-  void llvm_shl();
+  void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_lshr();
   void llvm_ashr();
   void llvm_and_();

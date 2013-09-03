@@ -123,9 +123,12 @@ public:
 
 
 	// ***** Bitwise Binary Operations ***** //
-
-	virtual void shl() {
-	  printf("<<<<< SHL >>>>>\n");
+	virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
 	virtual void lshr() {
