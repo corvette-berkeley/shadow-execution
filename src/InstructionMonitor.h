@@ -66,7 +66,7 @@ extern "C" {
   void llvm_bitcast();
 
   // ***** Terminator Instructions ***** //
-  void llvm_branch();
+  void llvm_branch(IID iid, KVALUE* op1);
   void llvm_indirectbr();
   void llvm_invoke();
   void llvm_resume();

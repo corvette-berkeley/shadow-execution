@@ -281,9 +281,9 @@ public:
 
 
 	// ***** TerminatorInst ***** //
-
-	virtual void branch() {
-		printf("<<<<< BRANCH >>>>>\n");
+	virtual void branch(IID iid, KVALUE* op1) {
+		printf("<<<<< BRANCH >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op1).c_str());
 	}
 
 	virtual void indirectbr() {

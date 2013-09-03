@@ -14,6 +14,7 @@ int main() {
   x = x * 2.0;
   x = x / 1.2;
   float result = logf(x);
-  printf("Result %f\n", result);
+  if (x < 3.0)
+    printf("Result %f\n", result);
   return 0;
 }

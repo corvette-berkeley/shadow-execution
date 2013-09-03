@@ -1198,8 +1198,17 @@ public:
 
 		count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_branch"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+		InstrPtrVector Instrs;
+		Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
+		if(op1 == NULL) return false;
+
+		Constant* C_iid = IID_CONSTANT(SI);
+
+		Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, op1);
+		Instrs.push_back(call);
+
+		// instrument
+		InsertAllBefore(Instrs, SI);
 
 		return true;
 	}

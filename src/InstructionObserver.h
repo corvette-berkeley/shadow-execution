@@ -68,7 +68,7 @@ public:
 	virtual void bitcast() {};
 
 	// ***** Terminator Instructions *****/
-	virtual void branch() {};
+	virtual void branch(IID iid UNUSED,  KVALUE* op1 UNUSED) {};
 	virtual void indirectbr() {};
 	virtual void invoke() {};
 	virtual void resume() {};
