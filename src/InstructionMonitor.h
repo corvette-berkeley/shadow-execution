@@ -20,9 +20,9 @@ extern "C" {
   void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-  void llvm_urem();
-  void llvm_srem();
-  void llvm_frem();
+  void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 
   // ***** Bitwise Binary Operations ***** //
   void llvm_shl();

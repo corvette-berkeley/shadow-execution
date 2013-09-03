@@ -45,16 +45,16 @@ void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(fdiv, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_urem() {
-	DISPATCH_TO_OBSERVERS(urem)
+void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(urem, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_srem() {
-	DISPATCH_TO_OBSERVERS(srem)
+void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(srem, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_frem() {
-	DISPATCH_TO_OBSERVERS(frem)
+void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(frem, iid, nuw, nsw, op1, op2)
 }
 
 // ***** Bitwise Binary Operations ***** //

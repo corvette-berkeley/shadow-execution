@@ -97,16 +97,28 @@ public:
 															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void urem() {
-	  printf("<<<<< UREM >>>>>\n");
+	virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< UREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void srem() {
-	  printf("<<<<< SREM >>>>>\n");
+	virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< SREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void frem() {
-	  printf("<<<<< FREM >>>>>\n");
+	virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
 
