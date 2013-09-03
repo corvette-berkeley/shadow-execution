@@ -26,11 +26,11 @@ extern "C" {
 
   // ***** Bitwise Binary Operations ***** //
   void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-  void llvm_lshr();
-  void llvm_ashr();
-  void llvm_and_();
-  void llvm_or_();
-  void llvm_xor_();
+  void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 
   // ***** Vector Operations ***** //
   void llvm_extractelement();

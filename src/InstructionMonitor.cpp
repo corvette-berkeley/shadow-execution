@@ -62,24 +62,24 @@ void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(shl, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_lshr() {
-	DISPATCH_TO_OBSERVERS(lshr)
+void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(lshr, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_ashr() {
-	DISPATCH_TO_OBSERVERS(ashr)
+void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(ashr, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_and_() {
-	DISPATCH_TO_OBSERVERS(and_)
+void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(and_, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_or_() {
-	DISPATCH_TO_OBSERVERS(or_)
+void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(or_, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_xor_() {
-	DISPATCH_TO_OBSERVERS(xor_)
+void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(xor_, iid, nuw, nsw, op1, op2)
 }
 
 // ****** Vector Operations ****** //

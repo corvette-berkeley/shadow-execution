@@ -131,26 +131,45 @@ public:
 															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void lshr() {
-	  printf("<<<<< LSHR >>>>>\n");
+	virtual void lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void ashr() {
-	  printf("<<<<< ASHR >>>>>\n");
+	virtual void ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void and_() {
-	  printf("<<<<< AND >>>>>\n");
+	virtual void and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void or_() {
-	  printf("<<<<< OR >>>>>\n");
+	virtual void or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void xor_() {
-	  printf("<<<<< XOR >>>>>\n");
+	virtual void xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
-
 
 	// ***** Vector Operations ***** //
 
