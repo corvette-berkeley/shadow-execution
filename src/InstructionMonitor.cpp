@@ -25,24 +25,24 @@ void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(fsub, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_mul() {
-	DISPATCH_TO_OBSERVERS(mul)
+void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(mul, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_fmul() {
-	DISPATCH_TO_OBSERVERS(fmul)
+void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(fmul, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_udiv() {
-	DISPATCH_TO_OBSERVERS(udiv)
+void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(udiv, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_sdiv() {
-	DISPATCH_TO_OBSERVERS(sdiv)
+void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(sdiv, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_fdiv() {
-	DISPATCH_TO_OBSERVERS(fdiv)
+void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(fdiv, iid, nuw, nsw, op1, op2)
 }
 
 void llvm_urem() {

@@ -56,24 +56,45 @@ public:
 															   KVALUE_ToString(*op1).c_str(),
 															   KVALUE_ToString(*op2).c_str());
 	}
-	virtual void mul() {
-	  printf("<<<<< MUL >>>>>\n");
+
+	virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< MUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void fmul() {
-	  printf("<<<<< FMUL >>>>>\n");
+	virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< FMUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void udiv() {
-	  printf("<<<<< UDIV >>>>>\n");
+	virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< UDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void sdiv() {
-	  printf("<<<<< SDIV >>>>>\n");
+	virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< SDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
-	virtual void fdiv() {
-	  printf("<<<<< FDIV >>>>>\n");
+	virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< FDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+															   (nuw ? "1" : "0"),
+															   (nsw ? "1" : "0"),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
 	virtual void urem() {

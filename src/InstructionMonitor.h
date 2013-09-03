@@ -15,11 +15,11 @@ extern "C" {
   void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-  void llvm_mul();
-  void llvm_fmul();
-  void llvm_udiv();
-  void llvm_sdiv();
-  void llvm_fdiv();
+  void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
+  void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_urem();
   void llvm_srem();
   void llvm_frem();
