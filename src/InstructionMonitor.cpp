@@ -21,8 +21,8 @@ void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2)
 }
 
-void llvm_fsub() {
-	DISPATCH_TO_OBSERVERS(fsub)
+void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(fsub, iid, nuw, nsw, op1, op2)
 }
 
 void llvm_mul() {

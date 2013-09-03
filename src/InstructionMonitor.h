@@ -14,7 +14,7 @@ extern "C" {
   void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
-  void llvm_fsub();
+  void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
   void llvm_mul();
   void llvm_fmul();
   void llvm_udiv();
