@@ -1199,13 +1199,21 @@ public:
 		count_++;
 
 		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
 
+		Constant* conditional = BOOL_CONSTANT(SI->isConditional());
 		Constant* C_iid = IID_CONSTANT(SI);
 
-		Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, op1);
-		Instrs.push_back(call);
+    if (SI->isConditional()) {
+      Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
+      Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1);
+      Instrs.push_back(call);
+    } else {
+      Instruction* call = CALL_IID_BOOL(INSTR_TO_CALLBACK("branch2"), C_iid, conditional);
+      Instrs.push_back(call);
+    }
+
+
 
 		// instrument
 		InsertAllBefore(Instrs, SI);

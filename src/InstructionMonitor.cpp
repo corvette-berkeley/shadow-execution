@@ -192,8 +192,12 @@ void llvm_bitcast() {
 
 
 // **** Terminator Instructions ***** //
-void llvm_branch(IID iid,  KVALUE* op1) {
-	DISPATCH_TO_OBSERVERS(branch, iid, op1)
+void llvm_branch(IID iid, bool conditional, KVALUE* op1) {
+	DISPATCH_TO_OBSERVERS(branch, iid, conditional, op1)
+}
+
+void llvm_branch2(IID iid, bool conditional) {
+	DISPATCH_TO_OBSERVERS(branch2, iid, conditional)
 }
 
 void llvm_indirectbr() {

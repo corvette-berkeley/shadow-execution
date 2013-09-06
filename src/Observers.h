@@ -281,11 +281,16 @@ public:
 
 
 	// ***** TerminatorInst ***** //
-	virtual void branch(IID iid, KVALUE* op1) {
-		printf("<<<<< BRANCH >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+	virtual void branch(IID iid, bool conditional, KVALUE* op1) {
+		printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s\n", IID_ToString(iid).c_str(),
+															   (conditional ? "1" : "0"),
 															   KVALUE_ToString(*op1).c_str());
 	}
 
+	virtual void branch2(IID iid, bool conditional) {
+		printf("<<<<< BRANCH >>>>> %s, cond: %s\n", IID_ToString(iid).c_str(),
+															   (conditional ? "1" : "0"));
+	}
 	virtual void indirectbr() {
 		printf("<<<<< INDIRECTBR >>>>>\n");
 	}
