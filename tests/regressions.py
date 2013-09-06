@@ -33,7 +33,6 @@ def main():
       ibitcode = open(ibitcodefile, 'w')
 
       command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', "-o", ibitcodefile]
-      #retval = call(command, stdin=None, stdout=ibitcode, stderr=None)
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
@@ -43,11 +42,10 @@ def main():
 
       ###########################################
       # instrumented executable file
-      iassemblyfile = executable + '.s' 
+      iassemblyfile = 'i_' + executable + '.s' 
       iassembly = open(iassemblyfile, 'w')
 
       command = [llvm + '/llc', ibitcodefile]
-      #retval = call(command, stdin=None, stdout=iassembly, stderr=None)
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
@@ -62,8 +60,8 @@ def main():
       iexecutable = open(iexecutablefile, 'w')
 
       command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-o', iexecutablefile]
-      #retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
-      retval = call(command, stdin=None, stdout=None, stderr=None)
+      print command
+      retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
