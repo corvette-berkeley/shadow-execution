@@ -217,12 +217,17 @@ public:
 
 		Constant* C_iid = IID_CONSTANT(BI);
 
+    C_iid->dump();
+
 		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+    nuw->dump();
 		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+    nsw->dump();
 
 		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2);
 		Instrs.push_back(call);
 
+ 
 		// instrument
 		InsertAllBefore(Instrs, BI);
 
@@ -1212,8 +1217,6 @@ public:
       Instruction* call = CALL_IID_BOOL(INSTR_TO_CALLBACK("branch2"), C_iid, conditional);
       Instrs.push_back(call);
     }
-
-
 
 		// instrument
 		InsertAllBefore(Instrs, SI);

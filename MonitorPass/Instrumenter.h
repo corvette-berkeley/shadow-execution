@@ -200,12 +200,15 @@ protected:
 		}
 
 		if(T->isIntegerTy()) {
+      printf("Type is Integer\n");
 			I_cast = INTMAX_CAST_INSTR(v, isSigned);
 		} else if(T->isFloatingPointTy()) {
+      printf("Type is Float\n");
 			I_cast = FLPMAX_CAST_INSTR(v);
 		} else if(T->isPointerTy()) {
+      printf("Type is Pointer\n");
 			I_cast = PTRTOINT_CAST_INSTR(v);
-		}
+		} 
 
 		safe_assert(I_cast != NULL);
 		Instrs.push_back(I_cast);
