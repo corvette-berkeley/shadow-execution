@@ -32,8 +32,9 @@ def main():
       ibitcodefile = 'i_' + executable + '.bc' 
       ibitcode = open(ibitcodefile, 'w')
 
-      command = [llvm + '/opt', '-load', monitorpass, '--instrument', '-f', executable + '.bc']
-      retval = call(command, stdin=None, stdout=ibitcode, stderr=None)
+      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', "-o", ibitcodefile]
+      #retval = call(command, stdin=None, stdout=ibitcode, stderr=None)
+      retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
@@ -46,7 +47,8 @@ def main():
       iassembly = open(iassemblyfile, 'w')
 
       command = [llvm + '/llc', ibitcodefile]
-      retval = call(command, stdin=None, stdout=iassembly, stderr=None)
+      #retval = call(command, stdin=None, stdout=iassembly, stderr=None)
+      retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
@@ -59,8 +61,9 @@ def main():
       iexecutablefile = executable + '.out' 
       iexecutable = open(iexecutablefile, 'w')
 
-      command = [llvm + '/clang', 'use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt']
-      retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
+      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-o', iexecutablefile]
+      #retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
+      retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
