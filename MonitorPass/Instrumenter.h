@@ -181,10 +181,6 @@ protected:
 			return NULL;
 		}
 
-    if (isa<PHINode>(v)) {
-      return NULL;
-    }
-
 		Type* T = v->getType();
 
 		KIND kind = TypeToKind(T);

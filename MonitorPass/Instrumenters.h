@@ -6,6 +6,7 @@
 
 #include "Common.h"
 #include "Instrumenter.h"
+#include <llvm/Analysis/Verifier.h>
 
 /*******************************************************************************************/
 
@@ -81,46 +82,46 @@ public:
 		// instrument
 		InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+    return true;
+  }
 };
 
 
 // Callback: void fadd()
 class FAddInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FAddInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FAddInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FAdd);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FAdd);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fadd"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fadd"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-//		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fadd"), FunctionType::get(VOID_TYPE(), false)));
-//		call->insertBefore(I);
+      //		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fadd"), FunctionType::get(VOID_TYPE(), false)));
+      //		call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -128,355 +129,355 @@ public:
 
 // Callback: void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 class SubInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(SubInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SubInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Sub);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Sub);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sub"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sub"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fsub()
 class FSubInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FSubInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FSubInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FSub);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FSub);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fsub"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fsub"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void mul()
 class MulInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(MulInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(MulInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Mul);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Mul);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-    C_iid->dump();
+      C_iid->dump();
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-    nuw->dump();
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
-    nsw->dump();
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      nuw->dump();
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      nsw->dump();
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
- 
-		// instrument
-		InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      // instrument
+      InsertAllBefore(Instrs, BI);
+
+      return true;
+    }
 };
 
 
 // Callback: void fmul()
 class FMulInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FMulInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FMulInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FMul);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FMul);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fmul"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fmul"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void udiv()
 class UDivInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(UDivInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(UDivInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, UDiv);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, UDiv);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("udiv"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("udiv"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void sdiv()
 class SDivInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(SDivInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SDivInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SDiv);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SDiv);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sdiv"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sdiv"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fdiv()
 class FDivInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FDivInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FDivInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FDiv);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FDiv);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fdiv"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fdiv"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void urem()
 class URemInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(URemInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(URemInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, URem);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, URem);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("urem"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("urem"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void srem()
 class SRemInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(SRemInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SRemInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SRem);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SRem);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("srem"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("srem"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void frem()
 class FRemInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FRemInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FRemInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FRem);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FRem);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("frem"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("frem"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -484,210 +485,210 @@ public:
 
 // Callback: void shl()
 class ShlInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(ShlInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ShlInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Shl);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Shl);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("shl"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("shl"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void lshr()
 class LShrInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(LShrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(LShrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, LShr);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, LShr);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("lshr"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("lshr"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void ashr()
 class AShrInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(AShrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(AShrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, AShr);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, AShr);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("ashr"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("ashr"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void and()
 class AndInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(AndInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(AndInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, And);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, And);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("and_"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("and_"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void or()
 class OrInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(OrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(OrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Or);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Or);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("or_"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("or_"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void xor()
 class XorInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(XorInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(XorInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Xor);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Xor);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
-		Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
-		if(op1 == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* op1 = KVALUE_VALUE(BI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
 
-		Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
-		if(op2 == NULL) return false;
+      Value* op2 = KVALUE_VALUE(BI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(BI);
+      Constant* C_iid = IID_CONSTANT(BI);
 
-		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
+      Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
+      Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("xor_"), C_iid, nuw, nsw, op1, op2);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("xor_"), C_iid, nuw, nsw, op1, op2);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, BI);
+      // instrument
+      InsertAllBefore(Instrs, BI);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -696,61 +697,61 @@ public:
 
 // Callback: void extractelement()
 class ExtractElementInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ExtractElementInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ExtractElementInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ExtractElementInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ExtractElementInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractelement"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractelement"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 
 // Callback: void insertelement()
 class InsertElementInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(InsertElementInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(InsertElementInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(InsertElementInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(InsertElementInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertelement"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertelement"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void shufflevector()
 class ShuffleVectorInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ShuffleVectorInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ShuffleVectorInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ShuffleVectorInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ShuffleVectorInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shufflevector"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_shufflevector"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -758,40 +759,40 @@ public:
 
 // Callback: void extractvalue()
 class ExtractValueInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ExtractValueInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ExtractValueInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(InsertValueInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(InsertValueInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractvalue"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_extractvalue"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void insertvalue()
 class InsertValueInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(InsertValueInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(InsertValueInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertvalue"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertvalue"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -799,393 +800,393 @@ public:
 
 // Callback: void alloca()
 class AllocaInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(AllocaInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(AllocaInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void load()
 class LoadInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(LoadInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(LoadInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(LoadInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(LoadInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void store(IID iid, PTR addr, KVALUE value)
 class StoreInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(StoreInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(StoreInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(StoreInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(StoreInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		parent_->AS_ = SI->getPointerAddressSpace();
+      parent_->AS_ = SI->getPointerAddressSpace();
 
-		InstrPtrVector Instrs;
-		Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
-		if(kvalue == NULL) return false;
+      InstrPtrVector Instrs;
+      Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
+      if(kvalue == NULL) return false;
 
-		Constant* C_iid = IID_CONSTANT(SI);
-		Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
-		Instrs.push_back(I_cast_ptr);
+      Constant* C_iid = IID_CONSTANT(SI);
+      Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
+      Instrs.push_back(I_cast_ptr);
 
-		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, kvalue);
-		Instrs.push_back(call);
+      Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, kvalue);
+      Instrs.push_back(call);
 
-		// instrument
-		InsertAllBefore(Instrs, I);
+      // instrument
+      InsertAllBefore(Instrs, I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fence()
 class FenceInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(FenceInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FenceInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FenceInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FenceInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void cmpxchg()
 class AtomicCmpXchgInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(AtomicCmpXchgInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(AtomicCmpXchgInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(AtomicCmpXchgInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(AtomicCmpXchgInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_cmpxchg"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_cmpxchg"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void atomicrmw()
 class AtomicRMWInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(AtomicRMWInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(AtomicRMWInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(AtomicRMWInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(AtomicRMWInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_atomicrmw"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_atomicrmw"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void getelementptr()
 class GetElementPtrInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(GetElementPtrInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(GetElementPtrInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_getelementptr"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_getelementptr"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // ***** Conversion Operations ***** //
 
 // Callback: void trunc()
 class TruncInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(TruncInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(TruncInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(TruncInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(TruncInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_trunc"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_trunc"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void zext()
 class ZExtInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(ZExtInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ZExtInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ZExtInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ZExtInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_zext"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_zext"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void sext()
 class SExtInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(SExtInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SExtInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(SExtInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(SExtInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sext"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sext"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fptrunc()
 class FPTruncInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPTruncInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FPTruncInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptrunc"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptrunc"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fpext()
 class FPExtInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPExtInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FPExtInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fpext"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fpext"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fptoui()
 class FPToUIInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPToUIInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FPToUIInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptoui"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptoui"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fptosi()
 class FPToSIInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FPToSIInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FPToSIInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptosi"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fptosi"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void uitofp()
 class UIToFPInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(UIToFPInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(UIToFPInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(UIToFPInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(UIToFPInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_uitofp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_uitofp"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void sitofp()
 class SIToFPInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(SIToFPInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SIToFPInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(SIToFPInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(SIToFPInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sitofp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sitofp"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void ptrtoint()
 class PtrToIntInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(PtrToIntInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(PtrToIntInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(PtrToIntInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(PtrToIntInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_ptrtoint"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_ptrtoint"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void inttoptr()
 class IntToPtrInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(IntToPtrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(IntToPtrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(IntToPtrInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(IntToPtrInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_inttoptr"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_inttoptr"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void bitcast()
 class BitCastInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(BitCastInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(BitCastInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -1193,156 +1194,156 @@ public:
 
 // Callback: void branch()
 class BranchInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(BranchInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(BranchInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(BranchInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(BranchInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		InstrPtrVector Instrs;
+      InstrPtrVector Instrs;
 
-		Constant* conditional = BOOL_CONSTANT(SI->isConditional());
-		Constant* C_iid = IID_CONSTANT(SI);
+      Constant* conditional = BOOL_CONSTANT(SI->isConditional());
+      Constant* C_iid = IID_CONSTANT(SI);
 
-    if (SI->isConditional()) {
-      Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
-      if(op1 == NULL) return false;
-      Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1);
-      Instrs.push_back(call);
-    } else {
-      Instruction* call = CALL_IID_BOOL(INSTR_TO_CALLBACK("branch2"), C_iid, conditional);
-      Instrs.push_back(call);
+      if (SI->isConditional()) {
+        Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
+        if(op1 == NULL) return false;
+        Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1);
+        Instrs.push_back(call);
+      } else {
+        Instruction* call = CALL_IID_BOOL(INSTR_TO_CALLBACK("branch2"), C_iid, conditional);
+        Instrs.push_back(call);
+      }
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
+
+      return true;
     }
-
-		// instrument
-		InsertAllBefore(Instrs, SI);
-
-		return true;
-	}
 };
 
 
 // Callback: void indirectbr()
 class IndirectBrInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(IndirectBrInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(IndirectBrInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(IndirectBrInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(IndirectBrInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_indirectbr"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_indirectbr"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void invoke()
 class InvokeInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(InvokeInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(InvokeInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(InvokeInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(InvokeInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_invoke"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_invoke"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void resume()
 class ResumeInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ResumeInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ResumeInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ResumeInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ResumeInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_resume"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_resume"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void return()
 class ReturnInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ReturnInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ReturnInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ReturnInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ReturnInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_return_"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_return_"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void switch_()
 class SwitchInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(SwitchInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SwitchInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(SwitchInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(SwitchInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_switch_"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_switch_"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void unreachable()
 class UnreachableInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(UnreachableInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(UnreachableInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(UnreachableInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(UnreachableInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_unreachable"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_unreachable"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
@@ -1350,137 +1351,137 @@ public:
 
 // Callback: void icmp()
 class ICmpInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(ICmpInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(ICmpInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void fcmp()
 class FCmpInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(FCmpInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(FCmpInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fcmp"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fcmp"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void phinode()
 class PHINodeInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(PHINodeInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(PHINodeInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(PHINode, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(PHINode, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_phinode"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_phinode"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void select()
 class SelectInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(SelectInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(SelectInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(SelectInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(SelectInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_select"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_select"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void call()
 class CallInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(CallInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(CallInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(CallInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(CallInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_call"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_call"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 
 // Callback: void vaarg()
 class VAArgInstrumenter : public Instrumenter {
-public:
-	DEFAULT_CONSTRUCTOR(VAArgInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(VAArgInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(VAArgInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(VAArgInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_vaarg"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_vaarg"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 // Callback: void landingpad()
 class LandingPadInstrumenter : public Instrumenter {
-public:
-  DEFAULT_CONSTRUCTOR(LandingPadInstrumenter);
+  public:
+    DEFAULT_CONSTRUCTOR(LandingPadInstrumenter);
 
-	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(LandingPadInst, SI, I);
+    bool CheckAndInstrument(Instruction* I) {
+      CAST_OR_RETURN(LandingPadInst, SI, I);
 
-		safe_assert(parent_ != NULL);
+      safe_assert(parent_ != NULL);
 
-		count_++;
+      count_++;
 
-		Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_landingpad"), FunctionType::get(VOID_TYPE(), false)));
-		call->insertBefore(I);
+      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_landingpad"), FunctionType::get(VOID_TYPE(), false)));
+      call->insertBefore(I);
 
-		return true;
-	}
+      return true;
+    }
 };
 
 #endif // INSTRUMENTERS_H_
