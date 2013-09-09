@@ -76,18 +76,17 @@ public:
 // active instrumenters (see http://llvm.org/docs/LangRef.html)
 
 // ***** Binary Operations ****** //
+
 REGISTER_INSTRUMENTER(AddInstrumenter, "add")
 REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")
-
-REGISTER_INSTRUMENTER(MulInstrumenter, "mul")
+//REGISTER_INSTRUMENTER(MulInstrumenter, "mul"
 REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")
-
 REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")
 REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")
 REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")
-// REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
+//REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
 REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
 REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
 
@@ -100,54 +99,54 @@ REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
 // ***** Vector Operations ***** //
-REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
-REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
-REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
+//REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
+//REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
+//REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
 
 // ***** Aggregate Operations ***** //
-REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
-REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
+//REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
+//REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
-REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
+//REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
+//REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
-REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
-REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
-REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
-REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
+//REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
+//REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
+//REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
+//REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
-REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
-REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
-REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
-REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
-REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
-REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
-REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
+//REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
+//REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
+//REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
+//REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
+//REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
+//REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
+//REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
 // ***** Conversion Operations ***** //
-REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
-REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
-REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
-REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
-REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
-REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
-REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
-REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")
-REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")
-REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
-REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
-REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
+//REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
+//REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
+//REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
+//REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
+//REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
+//REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
+//REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
+//REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")
+//REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")
+//REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
+//REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
+//REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
-REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
-REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+//REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+//REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
-REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-REGISTER_INSTRUMENTER(CallInstrumenter, "call")
-REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
-REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
+//REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
+//REGISTER_INSTRUMENTER(CallInstrumenter, "call")
+//REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
+//REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 
 
 
