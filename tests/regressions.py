@@ -26,7 +26,8 @@ def main():
 
   for executable in executables:
       executable = executable.strip()
-
+      print executable
+      
       ##########################################
       # instrumented bitcode file
       ibitcodefile = 'i_' + executable + '.bc' 
@@ -59,8 +60,8 @@ def main():
       iexecutablefile = executable + '.out' 
       iexecutable = open(iexecutablefile, 'w')
 
-      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-o', iexecutablefile]
-      print command
+      # added -lgmp for expr and other core utility
+      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-o', iexecutablefile]
       retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
 
       # return -1 if running LLVM passes fails
