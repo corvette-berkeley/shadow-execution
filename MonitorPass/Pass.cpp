@@ -81,16 +81,15 @@ REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")
 
-/*
 REGISTER_INSTRUMENTER(MulInstrumenter, "mul")
 REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")
+
 REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")
 REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")
 REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")
-REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
+// REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
 REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
 REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
-*/
 
 // ***** Bitwise Binary Operations ***** //
 REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")
