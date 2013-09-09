@@ -34,7 +34,6 @@ install
 join
 kill
 link
-list.txt
 ln
 logname
 ls
