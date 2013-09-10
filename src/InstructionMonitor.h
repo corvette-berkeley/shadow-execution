@@ -54,8 +54,8 @@ extern "C" {
   // ***** Conversion Operations ***** //
   void llvm_trunc(IID iid, KVALUE* op);
   void llvm_zext(IID iid, KVALUE* op);
-  void llvm_sext();
-  void llvm_fptrunc();
+  void llvm_sext(IID iid, KVALUE* op);
+  void llvm_fptrunc(IID iid, KVALUE* op);
   void llvm_fpext();
   void llvm_fptoui();
   void llvm_fptosi();

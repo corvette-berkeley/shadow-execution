@@ -241,12 +241,14 @@ public:
                        KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void sext() {
-		printf("<<<<< SEXT >>>>>\n");
+	virtual void sext(IID iid, KVALUE* op) {
+                printf("<<<<< SEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void fptrunc() {
-		printf("<<<<< FPTRUNC >>>>>\n");
+	virtual void fptrunc(IID iid, KVALUE* op) {
+                printf("<<<<< FPTRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
 	virtual void fpext() {

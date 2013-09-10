@@ -56,8 +56,8 @@ public:
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void zext(IID iid UNUSED, KVALUE* op UNUSED) {};
-	virtual void sext() {};
-	virtual void fptrunc() {};
+	virtual void sext(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void fptrunc(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void fpext() {};
 	virtual void fptoui() {};
 	virtual void fptosi() {};

@@ -150,12 +150,12 @@ void llvm_zext(IID iid, KVALUE* op) {
   DISPATCH_TO_OBSERVERS(zext, iid, op);
 }
 
-void llvm_sext() {
-	DISPATCH_TO_OBSERVERS(sext)
+void llvm_sext(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(sext, iid, op);
 }
 
-void llvm_fptrunc() {
-	DISPATCH_TO_OBSERVERS(fptrunc)
+void llvm_fptrunc(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(fptrunc, iid, op);
 }
 
 void llvm_fpext() {
