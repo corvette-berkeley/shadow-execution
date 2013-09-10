@@ -2,7 +2,6 @@ base64
 basename
 cat
 chcon
-chgrp
 chmod
 chown
 chroot
@@ -30,7 +29,6 @@ groups
 head
 hostid
 id
-install
 join
 kill
 link
