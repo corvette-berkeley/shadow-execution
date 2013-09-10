@@ -110,9 +110,9 @@ REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
 //REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
-//REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
+REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now, unused?
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
-//REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
+REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") // printout for now, unused?
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
