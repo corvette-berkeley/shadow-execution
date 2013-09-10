@@ -98,7 +98,7 @@ REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
 // ***** Vector Operations ***** //
-//REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
+REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
 //REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
 //REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
 
