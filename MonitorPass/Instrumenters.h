@@ -1198,8 +1198,18 @@ class SIToFPInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_sitofp"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("sitofp"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
@@ -1218,8 +1228,18 @@ class PtrToIntInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_ptrtoint"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("ptrtoint"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
@@ -1238,8 +1258,18 @@ class IntToPtrInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_inttoptr"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("inttoptr"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
@@ -1258,8 +1288,18 @@ class BitCastInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_bitcast"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("bitcast"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

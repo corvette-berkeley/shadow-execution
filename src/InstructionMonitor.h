@@ -60,10 +60,10 @@ extern "C" {
   void llvm_fptoui(IID iid, KVALUE* op);
   void llvm_fptosi(IID iid, KVALUE* op);
   void llvm_uitofp(IID iid, KVALUE* op);
-  void llvm_sitofp();
-  void llvm_ptrtoint();
-  void llvm_inttoptr();
-  void llvm_bitcast();
+  void llvm_sitofp(IID iid, KVALUE* op);
+  void llvm_ptrtoint(IID iid, KVALUE* op);
+  void llvm_inttoptr(IID iid, KVALUE* op);
+  void llvm_bitcast(IID iid, KVALUE* op);
 
   // ***** Terminator Instructions ***** //
   void llvm_branch(IID iid, bool conditional, KVALUE* op1);

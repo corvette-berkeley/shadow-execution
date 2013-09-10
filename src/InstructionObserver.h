@@ -62,10 +62,10 @@ public:
 	virtual void fptoui(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void fptosi(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void uitofp(IID iid UNUSED, KVALUE* op UNUSED) {};
-	virtual void sitofp() {};
-	virtual void ptrtoint() {};
-	virtual void inttoptr() {};
-	virtual void bitcast() {};
+	virtual void sitofp(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void ptrtoint(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void inttoptr(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void bitcast(IID iid UNUSED, KVALUE* op UNUSED) {};
 
 	// ***** Terminator Instructions *****/
 	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED) {};

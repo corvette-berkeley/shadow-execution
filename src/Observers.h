@@ -271,20 +271,24 @@ public:
                        KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void sitofp() {
-		printf("<<<<< SITOFP >>>>>\n");
+	virtual void sitofp(IID iid, KVALUE* op) {
+                printf("<<<<< SITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void ptrtoint() {
-		printf("<<<<< PTRTOINT >>>>>\n");
+	virtual void ptrtoint(IID iid, KVALUE* op) {
+                printf("<<<<< PTRTOINT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void inttoptr() {
-		printf("<<<<< INTTOPTR >>>>>\n");
+	virtual void inttoptr(IID iid, KVALUE* op) {
+                printf("<<<<< INTTOPTR >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void bitcast() {
-		printf("<<<<< BITCAST >>>>>\n");
+	virtual void bitcast(IID iid, KVALUE* op) {
+                printf("<<<<< BITCAST >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
 

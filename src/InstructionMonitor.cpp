@@ -174,20 +174,20 @@ void llvm_uitofp(IID iid, KVALUE* op) {
   DISPATCH_TO_OBSERVERS(uitofp, iid, op);
 }
 
-void llvm_sitofp() {
-	DISPATCH_TO_OBSERVERS(sitofp)
+void llvm_sitofp(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(sitofp, iid, op);
 }
 
-void llvm_inttoptr() {
-	DISPATCH_TO_OBSERVERS(inttoptr)
+void llvm_ptrtoint(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(ptrtoint, iid, op);
 }
 
-void llvm_ptrtoint() {
-	DISPATCH_TO_OBSERVERS(ptrtoint)
+void llvm_inttoptr(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(inttoptr, iid, op);
 }
 
-void llvm_bitcast() {
-	DISPATCH_TO_OBSERVERS(bitcast)
+void llvm_bitcast(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(bitcast, iid, op);
 }
 
 
