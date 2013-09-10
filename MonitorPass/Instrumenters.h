@@ -952,8 +952,20 @@ class GetElementPtrInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_getelementptr"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Constant* inbound = BOOL_CONSTANT(SI->isInBounds());
+
+      Value* op1 = KVALUE_VALUE(SI->getPointerOperand(), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
+
+      Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

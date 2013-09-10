@@ -35,7 +35,7 @@ public:
 	virtual void xor_(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
 
 	// ***** Vector Operations ***** //
-	virtual void extractelement() {};
+	virtual void extractelement(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
 	virtual void insertelement() {};
 	virtual void shufflevector() {};
 
@@ -51,7 +51,7 @@ public:
 	virtual void fence() {};
 	virtual void cmpxchg() {};
 	virtual void atomicrmw() {};
-	virtual void getelementptr() {};
+	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid UNUSED, KVALUE* op UNUSED) {};

@@ -173,8 +173,10 @@ public:
 
 	// ***** Vector Operations ***** //
 
-	virtual void extractelement() {
-		printf("<<<<< EXTRACTELEMENT >>>>>\n");
+	virtual void extractelement(IID iid, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
 	virtual void insertelement() {
@@ -225,8 +227,10 @@ public:
 		printf("<<<<< ATOMICRMW >>>>>\n");
 	}
 
-	virtual void getelementptr() {
-		printf("<<<<< GETELEMENTPTR >>>>>\n");
+	virtual void getelementptr(IID iid, bool inbound, KVALUE* op) {
+    printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s\n", IID_ToString(iid).c_str(),
+        (inbound ? "1" : "0"),
+        KVALUE_ToString(*op).c_str());
 	}
 
 	// ***** Conversion Operations ***** //

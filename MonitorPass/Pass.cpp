@@ -113,7 +113,7 @@ REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 //REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
 //REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 //REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
-//REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
+REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")

@@ -83,8 +83,8 @@ void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
 }
 
 // ****** Vector Operations ****** //
-void llvm_extractelement() {
-	DISPATCH_TO_OBSERVERS(extractelement)
+void llvm_extractelement(IID iid, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(extractelement, iid, op1, op2)
 }
 
 void llvm_insertelement() {
@@ -136,8 +136,8 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr() {
-	DISPATCH_TO_OBSERVERS(getelementptr)
+void llvm_getelementptr(IID iid, bool isbound, KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value)
 }
 
 

@@ -14,7 +14,8 @@ int* test(int z) {
 int main() {
   int x = 5;
   int y = 4;
-  y = x + 3;
+  int vector[3] = {3, 56, 2};
+  y = x + vector[2];
   y = y/2;
   x = y % 10;
   double z = 1.0;

@@ -33,7 +33,7 @@ extern "C" {
   void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 
   // ***** Vector Operations ***** //
-  void llvm_extractelement();
+  void llvm_extractelement(IID iid, KVALUE* op1, KVALUE* op2);
   void llvm_insertelement();
   void llvm_shufflevector();
 
@@ -49,7 +49,7 @@ extern "C" {
   void llvm_fence();
   void llvm_cmpxchg();
   void llvm_atomicrmw();
-  void llvm_getelementptr();
+  void llvm_getelementptr(IID iid, bool inbound, KVALUE* value);
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(IID iid, KVALUE* op);
