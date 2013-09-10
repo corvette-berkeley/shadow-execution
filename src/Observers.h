@@ -190,8 +190,10 @@ public:
 
 	// ***** AGGREGATE OPERATIONS ***** //
 
-	virtual void extractvalue() {
-		printf("<<<<< EXTRACTVALUE >>>>>\n");
+	virtual void extractvalue(IID iid, KVALUE* op) {
+
+		printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op).c_str());
 	}
 
 	virtual void insertvalue() {

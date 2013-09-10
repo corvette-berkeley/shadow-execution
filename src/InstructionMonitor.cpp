@@ -96,8 +96,8 @@ void llvm_shufflevector() {
 }
 
 // ***** Aggregate Operations ***** //
-void llvm_extractvalue() {
-	DISPATCH_TO_OBSERVERS(extractvalue)
+void llvm_extractvalue(IID iid, KVALUE* op) {
+	DISPATCH_TO_OBSERVERS(extractvalue, iid, op)
 }
 
 void llvm_insertvalue() {

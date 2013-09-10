@@ -38,7 +38,7 @@ extern "C" {
   void llvm_shufflevector();
 
   // ***** Aggregate Operations ***** //
-  void llvm_extractvalue();
+  void llvm_extractvalue(IID iid, KVALUE* op);
   void llvm_insertvalue();
 
   // ***** Memory Access and Addressing Operations ***** //

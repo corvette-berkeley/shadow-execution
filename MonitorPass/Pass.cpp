@@ -103,7 +103,7 @@ REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
 //REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
 
 // ***** Aggregate Operations ***** //
-//REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
+REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 //REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //

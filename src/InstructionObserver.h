@@ -40,7 +40,7 @@ public:
 	virtual void shufflevector() {};
 
 	// ***** Aggregate Operations ***** //
-	virtual void extractvalue() {};
+	virtual void extractvalue(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void insertvalue() {};
 
 	// ***** Memory Access and Addressing Operations ***** //
