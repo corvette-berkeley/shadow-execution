@@ -146,8 +146,8 @@ void llvm_trunc(IID iid, KVALUE* op) {
   DISPATCH_TO_OBSERVERS(trunc, iid, op);
 }
 
-void llvm_zext() {
-	DISPATCH_TO_OBSERVERS(zext)
+void llvm_zext(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(zext, iid, op);
 }
 
 void llvm_sext() {

@@ -989,8 +989,18 @@ class ZExtInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_zext"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* op = KVALUE_VALUE(SI->getOperand(1U), Instrs, NOSIGN);
+      if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("zext"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

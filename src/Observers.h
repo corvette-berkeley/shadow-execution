@@ -236,8 +236,9 @@ public:
                        KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void zext() {
-		printf("<<<<< ZEXT >>>>>\n");
+	virtual void zext(IID iid, KVALUE* op) {
+                printf("<<<<< ZEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
 	virtual void sext() {

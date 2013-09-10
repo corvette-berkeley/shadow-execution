@@ -126,7 +126,7 @@ REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
 // ***** Conversion Operations ***** //
 REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
-//REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
+REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
 //REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
 //REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
 //REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")

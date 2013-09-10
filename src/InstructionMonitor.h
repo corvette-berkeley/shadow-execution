@@ -53,7 +53,7 @@ extern "C" {
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(IID iid, KVALUE* op);
-  void llvm_zext();
+  void llvm_zext(IID iid, KVALUE* op);
   void llvm_sext();
   void llvm_fptrunc();
   void llvm_fpext();
