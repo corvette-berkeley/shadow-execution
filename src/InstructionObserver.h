@@ -58,10 +58,10 @@ public:
 	virtual void zext(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void sext(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void fptrunc(IID iid UNUSED, KVALUE* op UNUSED) {};
-	virtual void fpext() {};
-	virtual void fptoui() {};
-	virtual void fptosi() {};
-	virtual void uitofp() {};
+	virtual void fpext(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void fptoui(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void fptosi(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void uitofp(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void sitofp() {};
 	virtual void ptrtoint() {};
 	virtual void inttoptr() {};

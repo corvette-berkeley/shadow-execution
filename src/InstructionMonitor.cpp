@@ -158,20 +158,20 @@ void llvm_fptrunc(IID iid, KVALUE* op) {
   DISPATCH_TO_OBSERVERS(fptrunc, iid, op);
 }
 
-void llvm_fpext() {
-	DISPATCH_TO_OBSERVERS(fpext)
+void llvm_fpext(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(fpext, iid, op);
 }
 
-void llvm_fptoui() {
-	DISPATCH_TO_OBSERVERS(fptoui)
+void llvm_fptoui(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(fptoui, iid, op);
 }
 
-void llvm_fptosi() {
-	DISPATCH_TO_OBSERVERS(fptosi)
+void llvm_fptosi(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(fptosi, iid, op);
 }
 
-void llvm_uitofp() {
-	DISPATCH_TO_OBSERVERS(uitofp)
+void llvm_uitofp(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(uitofp, iid, op);
 }
 
 void llvm_sitofp() {

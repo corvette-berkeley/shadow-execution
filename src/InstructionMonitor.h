@@ -56,10 +56,10 @@ extern "C" {
   void llvm_zext(IID iid, KVALUE* op);
   void llvm_sext(IID iid, KVALUE* op);
   void llvm_fptrunc(IID iid, KVALUE* op);
-  void llvm_fpext();
-  void llvm_fptoui();
-  void llvm_fptosi();
-  void llvm_uitofp();
+  void llvm_fpext(IID iid, KVALUE* op);
+  void llvm_fptoui(IID iid, KVALUE* op);
+  void llvm_fptosi(IID iid, KVALUE* op);
+  void llvm_uitofp(IID iid, KVALUE* op);
   void llvm_sitofp();
   void llvm_ptrtoint();
   void llvm_inttoptr();

@@ -251,20 +251,24 @@ public:
                        KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void fpext() {
-		printf("<<<<< FPEXT >>>>>\n");
+	virtual void fpext(IID iid, KVALUE* op) {
+                printf("<<<<< FPEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void fptoui() {
-		printf("<<<<< FPTOUI >>>>>\n");
+	virtual void fptoui(IID iid, KVALUE* op) {
+                printf("<<<<< FPTOUII >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void fptosi() {
-		printf("<<<<< FPTOSI >>>>>\n");
+	virtual void fptosi(IID iid, KVALUE* op) {
+                printf("<<<<< FPTOSI >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void uitofp() {
-		printf("<<<<< UITOFP >>>>>\n");
+	virtual void uitofp(IID iid, KVALUE* op) {
+                printf("<<<<< UITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
 	virtual void sitofp() {
