@@ -139,7 +139,7 @@ REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
-//REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
 //REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 //REGISTER_INSTRUMENTER(SelectInstrumenter, "select")

@@ -1588,9 +1588,25 @@ class ICmpInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_icmp"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
 
+      Value* op1 = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
+
+      Value* op2 = KVALUE_VALUE(SI->getOperand(1U), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      PRED pred = SI->getUnsignedPredicate();
+      Constant* C_pred = PRED_CONSTANT(pred);
+
+      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
+      
       return true;
     }
 };

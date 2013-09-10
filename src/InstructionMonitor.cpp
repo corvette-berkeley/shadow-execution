@@ -231,8 +231,8 @@ void llvm_unreachable() {
 
 
 // ***** Other Operations ***** //
-void llvm_icmp() {
-	DISPATCH_TO_OBSERVERS(icmp)
+void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
+  DISPATCH_TO_OBSERVERS(icmp, iid, op1, op2, pred)
 }
 
 void llvm_fcmp() {

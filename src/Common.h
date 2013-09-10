@@ -60,6 +60,9 @@ union value_t {
 };
 #define VALUE value_t
 
+typedef uint32_t pred_t;
+#define PRED pred_t
+
 typedef uint32_t kind_t;
 #define KIND kind_t
 

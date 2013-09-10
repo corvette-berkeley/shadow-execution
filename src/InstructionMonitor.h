@@ -77,7 +77,7 @@ extern "C" {
   void llvm_unreachable();
 
   // ***** Other Operations ***** //
-  void llvm_icmp();
+  void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred);
   void llvm_fcmp();
   void llvm_phinode();
   void llvm_select();

@@ -65,6 +65,7 @@ protected:
 	inline Type* FLPMAX_TYPE()	{ return FLP64_TYPE(); }
 
 	inline Type* KIND_TYPE()	{ return INT32_TYPE(); }
+	inline Type* PRED_TYPE()	{ return INT32_TYPE(); }
 	inline Type* VALUE_TYPE()	{ return INTMAX_TYPE(); }
 
 	inline StructType* KVALUE_TYPE()	{
@@ -83,6 +84,7 @@ protected:
 	inline Constant* INT64_CONSTANT(int64_t c, bool sign)	{ return ConstantInt::get(INT64_TYPE(), c, sign); }
 
 	inline Constant* KIND_CONSTANT(KIND c)					{ return ConstantInt::get(KIND_TYPE(), c, UNSIGNED); }
+	inline Constant* PRED_CONSTANT(PRED c)					{ return ConstantInt::get(PRED_TYPE(), c, UNSIGNED); }
 	inline Constant* INTMAX_CONSTANT(INT c, bool sign)		{ return ConstantInt::get(INTMAX_TYPE(), c, sign); }
 
 	inline Constant* TRUE_CONSTANT()				{ return ConstantInt::getTrue(parent_->M_->getContext()); }
@@ -364,6 +366,24 @@ protected:
 		Args.push_back(kvalue2);
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+/*******************************************************************************************/
+	// cindy
+	Instruction* CALL_IID_KVALUE_KVALUE_PRED(const char* func, Value* iid, Value* k1, Value* k2, Value* p) {
+	  TypePtrVector ArgTypes;
+	  ArgTypes.push_back(IID_TYPE());
+	  ArgTypes.push_back(KVALUEPTR_TYPE());
+	  ArgTypes.push_back(KVALUEPTR_TYPE());
+	  ArgTypes.push_back(PRED_TYPE());
+	  
+	  ValuePtrVector Args;
+	  Args.push_back(iid);
+	  Args.push_back(k1);
+	  Args.push_back(k2);
+	  Args.push_back(p);
+	  
+	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
 /*******************************************************************************************/

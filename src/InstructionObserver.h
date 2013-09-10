@@ -79,7 +79,7 @@ public:
 	virtual void unreachable() {};
 
 	// ***** Other Operations ***** //
-	virtual void icmp() {};
+	virtual void icmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
 	virtual void fcmp() {};
 	virtual void phinode() {};
 	virtual void select() {};
