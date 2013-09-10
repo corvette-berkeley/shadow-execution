@@ -123,7 +123,7 @@ REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
 //REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
 //REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
 //REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
-//REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
+REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
 // ***** Conversion Operations ***** //
 //REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
