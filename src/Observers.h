@@ -353,17 +353,12 @@ public:
 
 	// ***** Other Operations ***** //
 
-	virtual void icmp() {
-		printf("<<<<< ICMP >>>>>\n");
-	}
-
 	virtual void icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
 	  printf("<<<<< ICMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
 	}
 
-
-	virtual void fcmp() {
-		printf("<<<<< FCMP >>>>>\n");
+	virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
+	  printf("<<<<< FCMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
 	}
 	
 	virtual void phinode() {

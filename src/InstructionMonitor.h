@@ -78,7 +78,7 @@ extern "C" {
 
   // ***** Other Operations ***** //
   void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred);
-  void llvm_fcmp();
+  void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred);
   void llvm_phinode();
   void llvm_select();
   void llvm_call();

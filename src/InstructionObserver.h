@@ -80,7 +80,7 @@ public:
 
 	// ***** Other Operations ***** //
 	virtual void icmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
-	virtual void fcmp() {};
+	virtual void fcmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
 	virtual void phinode() {};
 	virtual void select() {};
 	virtual void call() {};

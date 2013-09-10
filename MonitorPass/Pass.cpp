@@ -110,9 +110,9 @@ REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
 REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
-REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now, unused?
+REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
-REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") // printout for now, unused?
+REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") // printout for now
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
@@ -140,7 +140,7 @@ REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
-//REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 //REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
 //REGISTER_INSTRUMENTER(CallInstrumenter, "call")
