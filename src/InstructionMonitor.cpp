@@ -129,8 +129,8 @@ void llvm_fence() {
 	DISPATCH_TO_OBSERVERS(fence)
 }
 
-void llvm_cmpxchg() {
-	DISPATCH_TO_OBSERVERS(cmpxchg)
+void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2) {
+  DISPATCH_TO_OBSERVERS(cmpxchg, iid, addr, value1, value2)
 }
 
 void llvm_atomicrmw() {

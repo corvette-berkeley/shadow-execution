@@ -111,7 +111,7 @@ REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
 //REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 //REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
-//REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
+REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 //REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 

@@ -49,7 +49,7 @@ public:
 	//virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void store(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void fence() {};
-	virtual void cmpxchg() {};
+	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED) {};
 	virtual void atomicrmw() {};
 	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED) {};
 

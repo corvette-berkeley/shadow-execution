@@ -47,7 +47,7 @@ extern "C" {
   //void llvm_load(IID iid, PTR addr, KVALUE* value);
   void llvm_store(IID iid, PTR addr, KVALUE* value);
   void llvm_fence();
-  void llvm_cmpxchg();
+  void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2);
   void llvm_atomicrmw();
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value);
 

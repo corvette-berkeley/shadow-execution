@@ -225,6 +225,14 @@ public:
 		printf("<<<<< CMPXCHG >>>>>\n");
 	}
 
+	void cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
+	  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(),
+		 PTR_ToString(addr).c_str(),
+		 KVALUE_ToString(*kv1).c_str(),
+		 KVALUE_ToString(*kv2).c_str());
+	}
+
+
 	virtual void atomicrmw() {
 		printf("<<<<< ATOMICRMW >>>>>\n");
 	}
