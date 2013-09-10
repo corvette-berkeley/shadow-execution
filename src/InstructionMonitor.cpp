@@ -100,8 +100,8 @@ void llvm_extractvalue(IID iid, KVALUE* op) {
 	DISPATCH_TO_OBSERVERS(extractvalue, iid, op)
 }
 
-void llvm_insertvalue() {
-	DISPATCH_TO_OBSERVERS(insertvalue)
+void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
+	DISPATCH_TO_OBSERVERS(insertvalue, iid, op1, op2)
 }
 
 

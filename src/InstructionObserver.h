@@ -41,7 +41,7 @@ public:
 
 	// ***** Aggregate Operations ***** //
 	virtual void extractvalue(IID iid UNUSED, KVALUE* op UNUSED) {};
-	virtual void insertvalue() {};
+	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid UNUSED, int kind UNUSED) {};

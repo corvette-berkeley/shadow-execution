@@ -196,8 +196,10 @@ public:
 															   KVALUE_ToString(*op).c_str());
 	}
 
-	virtual void insertvalue() {
-		printf("<<<<< INSERTVALUE >>>>>\n");
+	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
+		printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op1).c_str(),
+															   KVALUE_ToString(*op2).c_str());
 	}
 
 

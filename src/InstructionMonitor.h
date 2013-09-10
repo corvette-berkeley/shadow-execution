@@ -39,7 +39,7 @@ extern "C" {
 
   // ***** Aggregate Operations ***** //
   void llvm_extractvalue(IID iid, KVALUE* op);
-  void llvm_insertvalue();
+  void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2);
 
   // ***** Memory Access and Addressing Operations ***** //
   void llvm_allocax(IID iid, int kind);

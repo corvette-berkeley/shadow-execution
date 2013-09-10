@@ -807,8 +807,21 @@ class InsertValueInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_insertvalue"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+     InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Value* op1 = KVALUE_VALUE(SI->getAggregateOperand(), Instrs, NOSIGN);
+      if(op1 == NULL) return false;
+
+      Value* op2 = KVALUE_VALUE(SI->getInsertedValueOperand(), Instrs, NOSIGN);
+      if(op2 == NULL) return false;
+
+      Instruction* call = CALL_IID_KVALUE_KVALUE(INSTR_TO_CALLBACK("insertvalue"), C_iid, op1, op2);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
