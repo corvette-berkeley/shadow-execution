@@ -304,6 +304,17 @@ protected:
 	}
 
 	/*******************************************************************************************/
+	Instruction* CALL_IID(const char* func, Value* iid) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
 	Instruction* CALL_IID_BOOL_BOOL_KVALUE_KVALUE(const char* func, Value* iid, Value* b1, Value* b2, Value* kvalue1, Value* kvalue2) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());

@@ -120,7 +120,7 @@ REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
 REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
 //REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 //REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
-//REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
+REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
 //REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
 REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 

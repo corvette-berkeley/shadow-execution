@@ -3,6 +3,14 @@
 #include <math.h>
 #include <setjmp.h>
 
+int* test(int z) {
+  int x[2];
+  x[0] = z+2;
+  x[1] = z+3;
+
+  return x;
+}
+
 int main() {
   int x = 5;
   int y = 4;
@@ -13,6 +21,9 @@ int main() {
   jmp_buf env;
   int val;
   val = setjmp(env);
+
+  int* p = test(z); 
+  x = p[0];
 
   if (x*x-y*y < 2)
   {
@@ -32,3 +43,4 @@ out:
 
   return y;
 }
+

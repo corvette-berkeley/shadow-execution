@@ -1283,6 +1283,9 @@ class IndirectBrInstrumenter : public Instrumenter {
       Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("indirectbr"), C_iid, op1);
       Instrs.push_back(call);
 
+      // instrument
+      InsertAllBefore(Instrs, SI);
+
       return true;
     }
 };
@@ -1340,8 +1343,23 @@ class ReturnInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_return_"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+      Value* retVal = SI->getReturnValue();
+
+      if (retVal == NULL) {
+        Instruction* call = CALL_IID(INSTR_TO_CALLBACK("return2_"), C_iid);
+        Instrs.push_back(call);
+      } else {
+        Value* op1 = KVALUE_VALUE(retVal, Instrs, NOSIGN);
+        if (op1 == NULL) return false;
+        Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("return_"), C_iid, op1);
+        Instrs.push_back(call);
+      }
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
