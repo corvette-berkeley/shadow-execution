@@ -76,7 +76,6 @@ public:
 // active instrumenters (see http://llvm.org/docs/LangRef.html)
 
 // ***** Binary Operations ****** //
-
 REGISTER_INSTRUMENTER(AddInstrumenter, "add")
 REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
@@ -126,7 +125,7 @@ REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
 REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
 // ***** Conversion Operations ***** //
-//REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
+REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
 //REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
 //REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
 //REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")

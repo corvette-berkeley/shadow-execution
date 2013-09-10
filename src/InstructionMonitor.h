@@ -52,7 +52,7 @@ extern "C" {
   void llvm_getelementptr();
 
   // ***** Conversion Operations ***** //
-  void llvm_trunc();
+  void llvm_trunc(IID iid, KVALUE* op);
   void llvm_zext();
   void llvm_sext();
   void llvm_fptrunc();

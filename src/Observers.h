@@ -231,8 +231,9 @@ public:
 
 	// ***** Conversion Operations ***** //
 
-	virtual void trunc() {
-		printf("<<<<< TRUNC >>>>>\n");
+	virtual void trunc(IID iid, KVALUE* op) {
+                printf("<<<<< TRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
+                       KVALUE_ToString(*op).c_str());
 	}
 
 	virtual void zext() {

@@ -142,8 +142,8 @@ void llvm_getelementptr() {
 
 
 // ***** Conversion Operations ***** //
-void llvm_trunc() {
-	DISPATCH_TO_OBSERVERS(trunc)
+void llvm_trunc(IID iid, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(trunc, iid, op);
 }
 
 void llvm_zext() {

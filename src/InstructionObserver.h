@@ -54,7 +54,7 @@ public:
 	virtual void getelementptr() {};
 
 	// ***** Conversion Operations ***** //
-	virtual void trunc() {};
+	virtual void trunc(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void zext() {};
 	virtual void sext() {};
 	virtual void fptrunc() {};
