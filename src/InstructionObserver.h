@@ -45,8 +45,8 @@ public:
 
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid UNUSED, int kind UNUSED) {};
-	virtual void load() {};
-	//virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
+	//virtual void load() {};
+	virtual void load(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void store(IID iid UNUSED, PTR addr UNUSED, KVALUE* value UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED) {};

@@ -110,16 +110,16 @@ void llvm_insertvalue() {
 void llvm_allocax(IID iid, int kind) {
   DISPATCH_TO_OBSERVERS(allocax, iid, kind)
 }
-
+/*
 void llvm_load() {
 	DISPATCH_TO_OBSERVERS(load)
 }
+*/
 
-/*
 void llvm_load(IID iid, PTR addr, KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(load, iid, addr, value);
 }
-*/
+
 
 void llvm_store(IID iid, PTR addr, KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(store, iid, addr, value)

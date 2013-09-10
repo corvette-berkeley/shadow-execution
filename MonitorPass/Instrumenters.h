@@ -17,7 +17,6 @@
 
 
 /*******************************************************************************************/
-/*
 // Callback: void load(IID iid, PTR addr, KVALUE value)
 class LoadInstrumenter : public Instrumenter {
 public:
@@ -42,6 +41,7 @@ public:
 
 		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, kvalue);
 		Instrs.push_back(call);
+		//errs() << "===Number of instructions to add: " << Instrs.size() << "\n";
 
 		// instrument
 		InsertAllAfter(Instrs, LI);
@@ -49,7 +49,7 @@ public:
 		return true;
 	}
 };
-*/
+
 /*******************************************************************************************/
 
 // Callback: void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
@@ -853,7 +853,7 @@ class AllocaInstrumenter : public Instrumenter {
     }
 };
 
-
+/*
 // Callback: void load()
 class LoadInstrumenter : public Instrumenter {
   public:
@@ -872,7 +872,7 @@ class LoadInstrumenter : public Instrumenter {
       return true;
     }
 };
-
+*/
 
 // Callback: void store(IID iid, PTR addr, KVALUE value)
 class StoreInstrumenter : public Instrumenter {

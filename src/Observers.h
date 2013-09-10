@@ -14,13 +14,13 @@
 class PrintObserver : public InstructionObserver {
 public:
 	DEFAULT_CONSTRUCTOR(PrintObserver);
-	/*
+	
 	void load(IID iid, PTR addr, KVALUE* kv) {
 		printf("<<<<< LOAD >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
 												PTR_ToString(addr).c_str(),
 												KVALUE_ToString(*kv).c_str());
 	}
-	*/
+	
 
 
 	// ***** Binary Operations ***** //
@@ -206,11 +206,11 @@ public:
 	virtual void allocax(IID iid, int kind) {
 	  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
 	}
-
+	/*
 	virtual void load() {
 		printf("<<<<< LOAD >>>>>\n");
 	}
-
+	*/
 	void store(IID iid, PTR addr, KVALUE* kv) {
 		printf("<<<<< STORE >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
 												 PTR_ToString(addr).c_str(),
