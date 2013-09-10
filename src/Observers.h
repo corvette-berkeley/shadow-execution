@@ -307,8 +307,13 @@ public:
 		printf("<<<<< RESUME >>>>>\n");
 	}
 
-	virtual void return_() {
-		printf("<<<<< RETURN >>>>>\n");
+	virtual void return_(IID iid, KVALUE* op1) {
+		printf("<<<<< RETURN >>>>> %s, ret_value: %s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op1).c_str());
+	}
+
+	virtual void return2_(IID iid) {
+		printf("<<<<< RETURN >>>>> %s\n", IID_ToString(iid).c_str());
 	}
 
 	virtual void switch_() {

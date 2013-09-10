@@ -212,8 +212,12 @@ void llvm_resume() {
 	DISPATCH_TO_OBSERVERS(resume)
 }
 
-void llvm_return_() {
-	DISPATCH_TO_OBSERVERS(return_)
+void llvm_return_(IID iid, KVALUE* op1) {
+	DISPATCH_TO_OBSERVERS(return_, iid, op1)
+}
+
+void llvm_return2_(IID iid) {
+	DISPATCH_TO_OBSERVERS(return2_, iid)
 }
 
 void llvm_switch_() {

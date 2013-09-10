@@ -73,7 +73,8 @@ public:
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void invoke() {};
 	virtual void resume() {};
-	virtual void return_() {};
+	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED) {};
+	virtual void return2_(IID iid UNUSED) {};
 	virtual void switch_() {};
 	virtual void unreachable() {};
 

@@ -71,7 +71,8 @@ extern "C" {
   void llvm_indirectbr(IID iid, KVALUE* op1);
   void llvm_invoke();
   void llvm_resume();
-  void llvm_return_();
+  void llvm_return_(IID iid, KVALUE* op1);
+  void llvm_return2_(IID iid);
   void llvm_switch_();
   void llvm_unreachable();
 
