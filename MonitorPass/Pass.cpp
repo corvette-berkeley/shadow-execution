@@ -99,12 +99,12 @@ REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
 
 // ***** Vector Operations ***** //
 REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
-//REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement")
-//REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector")
+REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") // printout for now
+REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") // printout for now
 
 // ***** Aggregate Operations ***** //
 REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
-//REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
+REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
