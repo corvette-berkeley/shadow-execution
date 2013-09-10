@@ -313,8 +313,9 @@ public:
 		printf("<<<<< INVOKE >>>>>\n");
 	}
 
-	virtual void resume() {
-		printf("<<<<< RESUME >>>>>\n");
+	virtual void resume(IID iid, KVALUE* op1) {
+		printf("<<<<< RESUME >>>>> %s, acc_value: %s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op1).c_str());
 	}
 
 	virtual void return_(IID iid, KVALUE* op1) {

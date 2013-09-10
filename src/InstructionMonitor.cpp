@@ -208,8 +208,8 @@ void llvm_invoke() {
 	DISPATCH_TO_OBSERVERS(invoke)
 }
 
-void llvm_resume() {
-	DISPATCH_TO_OBSERVERS(resume)
+void llvm_resume(IID iid, KVALUE* op1) {
+	DISPATCH_TO_OBSERVERS(resume, iid, op1)
 }
 
 void llvm_return_(IID iid, KVALUE* op1) {

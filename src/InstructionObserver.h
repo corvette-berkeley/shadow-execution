@@ -72,7 +72,7 @@ public:
 	virtual void branch2(IID iid UNUSED, bool conditional UNUSED) {};
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void invoke() {};
-	virtual void resume() {};
+	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return2_(IID iid UNUSED) {};
 	virtual void switch_() {};

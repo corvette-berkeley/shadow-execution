@@ -1403,8 +1403,17 @@ class ResumeInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_resume"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+      Value* op1 = KVALUE_VALUE(SI->getValue(), Instrs, NOSIGN);
+      if (op1 == NULL) return false;
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("resume"), C_iid, op1);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
+
 
       return true;
     }

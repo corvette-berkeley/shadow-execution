@@ -70,7 +70,7 @@ extern "C" {
   void llvm_branch2(IID iid, bool conditional);
   void llvm_indirectbr(IID iid, KVALUE* op1);
   void llvm_invoke();
-  void llvm_resume();
+  void llvm_resume(IID iid, KVALUE* op1);
   void llvm_return_(IID iid, KVALUE* op1);
   void llvm_return2_(IID iid);
   void llvm_switch_();
