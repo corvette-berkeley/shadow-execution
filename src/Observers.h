@@ -291,8 +291,10 @@ public:
 		printf("<<<<< BRANCH >>>>> %s, cond: %s\n", IID_ToString(iid).c_str(),
 															   (conditional ? "1" : "0"));
 	}
-	virtual void indirectbr() {
-		printf("<<<<< INDIRECTBR >>>>>\n");
+
+	virtual void indirectbr(IID iid, KVALUE* op1) {
+		printf("<<<<< INDIRECTBR >>>>> %s, address: %s\n", IID_ToString(iid).c_str(),
+        KVALUE_ToString(*op1).c_str());
 	}
 
 	virtual void invoke() {

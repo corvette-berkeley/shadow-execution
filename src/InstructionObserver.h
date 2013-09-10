@@ -70,7 +70,7 @@ public:
 	// ***** Terminator Instructions *****/
 	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED) {};
 	virtual void branch2(IID iid UNUSED, bool conditional UNUSED) {};
-	virtual void indirectbr() {};
+	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void invoke() {};
 	virtual void resume() {};
 	virtual void return_() {};

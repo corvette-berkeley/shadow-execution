@@ -68,7 +68,7 @@ extern "C" {
   // ***** Terminator Instructions ***** //
   void llvm_branch(IID iid, bool conditional, KVALUE* op1);
   void llvm_branch2(IID iid, bool conditional);
-  void llvm_indirectbr();
+  void llvm_indirectbr(IID iid, KVALUE* op1);
   void llvm_invoke();
   void llvm_resume();
   void llvm_return_();

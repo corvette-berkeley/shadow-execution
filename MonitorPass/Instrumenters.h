@@ -218,12 +218,8 @@ class MulInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(BI);
 
-      C_iid->dump();
-
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
-      nuw->dump();
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
-      nsw->dump();
 
       Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2);
       Instrs.push_back(call);
@@ -1239,8 +1235,13 @@ class IndirectBrInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_indirectbr"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+      Value* op1 = KVALUE_VALUE(SI->getAddress(), Instrs, NOSIGN);
+      if (op1 == NULL) return false;
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("indirectbr"), C_iid, op1);
+      Instrs.push_back(call);
 
       return true;
     }

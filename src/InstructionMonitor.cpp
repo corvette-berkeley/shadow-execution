@@ -200,8 +200,8 @@ void llvm_branch2(IID iid, bool conditional) {
 	DISPATCH_TO_OBSERVERS(branch2, iid, conditional)
 }
 
-void llvm_indirectbr() {
-	DISPATCH_TO_OBSERVERS(indirectbr)
+void llvm_indirectbr(IID iid, KVALUE* op1) {
+	DISPATCH_TO_OBSERVERS(indirectbr, iid, op1)
 }
 
 void llvm_invoke() {
