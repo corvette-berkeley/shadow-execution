@@ -1678,8 +1678,24 @@ class SelectInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_select"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Value* cond = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
+      if(cond == NULL) return false;
+
+      Value* tvalue = KVALUE_VALUE(SI->getTrueValue(), Instrs, NOSIGN);
+      if(tvalue == NULL) return false;
+
+      Value* fvalue = KVALUE_VALUE(SI->getFalseValue(), Instrs, NOSIGN);
+      if(fvalue == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Instruction* call = CALL_IID_KVALUE_KVALUE_KVALUE(INSTR_TO_CALLBACK("select"), C_iid, cond, tvalue, fvalue);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

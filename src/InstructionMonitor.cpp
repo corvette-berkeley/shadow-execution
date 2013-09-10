@@ -243,8 +243,8 @@ void llvm_phinode() {
 	DISPATCH_TO_OBSERVERS(phinode)
 }
 
-void llvm_select() {
-	DISPATCH_TO_OBSERVERS(select)
+void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
+  DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue)
 }
 
 void llvm_call() {

@@ -82,7 +82,7 @@ public:
 	virtual void icmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
 	virtual void fcmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
 	virtual void phinode() {};
-	virtual void select() {};
+	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED) {};
 	virtual void call() {};
 	virtual void vaarg() {};
 	virtual void landingpad() {};

@@ -365,6 +365,12 @@ public:
 		printf("<<<<< PHINODE >>>>>\n");
 	}
 
+	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
+	  printf("<<<<< SELECT >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
+		 KVALUE_ToString(*fvalue).c_str());
+	}
+
+
 	virtual void select() {
 		printf("<<<<< SELECT >>>>>\n");
 	}

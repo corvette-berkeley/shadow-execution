@@ -80,7 +80,7 @@ extern "C" {
   void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred);
   void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred);
   void llvm_phinode();
-  void llvm_select();
+  void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue);
   void llvm_call();
   void llvm_vaarg();
   void llvm_landingpad();
