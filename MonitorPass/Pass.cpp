@@ -107,7 +107,7 @@ REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 //REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
-//REGISTER_INSTRUMENTER(AllocaInstrumenter, "alloca")
+REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
 //REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 //REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")

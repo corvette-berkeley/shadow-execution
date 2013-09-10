@@ -203,8 +203,8 @@ public:
 
 	// ***** Memory Access and Addressing Operations ***** //
 
-	virtual void alloca() {
-		printf("<<<<< ALLOCA >>>>>\n");
+	virtual void allocax(IID iid, int kind) {
+	  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
 	}
 
 	virtual void load() {

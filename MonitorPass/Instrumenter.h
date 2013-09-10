@@ -348,6 +348,20 @@ protected:
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
+/*******************************************************************************************/
+	// cindy
+	Instruction* CALL_IID_KIND(const char* func, Value* iid, Value* k1) {
+	  TypePtrVector ArgTypes;
+	  ArgTypes.push_back(IID_TYPE());
+	  ArgTypes.push_back(KIND_TYPE());
+	  
+	  ValuePtrVector Args;
+	  Args.push_back(iid);
+	  Args.push_back(k1);
+	  
+	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
 }; // end Instrumenter
 
 /*******************************************************************************************/

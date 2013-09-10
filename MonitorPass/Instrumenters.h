@@ -829,8 +829,25 @@ class AllocaInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_alloca"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      //Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
+      //if(op == NULL) return false;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Type *T = SI->getAllocatedType();
+      if (!T) return false;
+      KIND kind = TypeToKind(T);
+      // if unsupported kind, return false
+      if(kind == INV_KIND) return false;
+      Constant* C_kind = KIND_CONSTANT(kind);
+
+      Instruction* call = CALL_IID_KIND(INSTR_TO_CALLBACK("allocax"), C_iid, C_kind);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

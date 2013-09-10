@@ -106,8 +106,9 @@ void llvm_insertvalue() {
 
 
 // ***** Memory Access and Addressing Operations ***** //
-void llvm_alloca() {
-	DISPATCH_TO_OBSERVERS(alloca)
+
+void llvm_allocax(IID iid, int kind) {
+  DISPATCH_TO_OBSERVERS(allocax, iid, kind)
 }
 
 void llvm_load() {
@@ -121,7 +122,7 @@ void llvm_load(IID iid, PTR addr, KVALUE* value) {
 */
 
 void llvm_store(IID iid, PTR addr, KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(store, iid, addr, value);
+	DISPATCH_TO_OBSERVERS(store, iid, addr, value)
 }
 
 void llvm_fence() {

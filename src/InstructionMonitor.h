@@ -42,7 +42,7 @@ extern "C" {
   void llvm_insertvalue();
 
   // ***** Memory Access and Addressing Operations ***** //
-  void llvm_alloca();
+  void llvm_allocax(IID iid, int kind);
   void llvm_load();
   //void llvm_load(IID iid, PTR addr, KVALUE* value);
   void llvm_store(IID iid, PTR addr, KVALUE* value);
