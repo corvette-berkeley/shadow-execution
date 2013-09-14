@@ -1546,8 +1546,17 @@ class SwitchInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_switch_"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      Value* op = SI->getCondition();
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("switch_"), C_iid, op);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }
@@ -1713,8 +1722,31 @@ class CallInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_call"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      if (dyn_cast<IntrinsicInst>(SI) != NULL)
+      {
+        return false;
+      }
+
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      // get call arguments
+      unsigned numArgs = SI->getNumArgOperands();
+      unsigned i;
+
+      for (i = 0; i < numArgs; i++)
+      {
+        Value* arg = KVALUE_VALUE(SI->getArgOperand(i), Instrs, NOSIGN);
+        Instruction* call = CALL_KVALUE(INSTR_TO_CALLBACK("push_stack"), arg);
+        Instrs.push_back(call);
+      }
+
+      Instruction* call = CALL_IID(INSTR_TO_CALLBACK("call"), C_iid);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
     }

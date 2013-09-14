@@ -2,6 +2,9 @@
 #define OBSERVERS_H_
 
 #include "InstructionObserver.h"
+#include <stack>
+
+using namespace std;
 
 /*******************************************************************************************/
 // helpful macros for defining instrumenters
@@ -13,6 +16,7 @@
 
 class PrintObserver : public InstructionObserver {
 public:
+  stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
 	void load(IID iid, PTR addr, KVALUE* kv) {
@@ -20,8 +24,6 @@ public:
 												PTR_ToString(addr).c_str(),
 												KVALUE_ToString(*kv).c_str());
 	}
-	
-
 
 	// ***** Binary Operations ***** //
 
@@ -343,9 +345,10 @@ public:
 		printf("<<<<< RETURN >>>>> %s\n", IID_ToString(iid).c_str());
 	}
 
-	virtual void switch_() {
-		printf("<<<<< SWITCH >>>>>\n");
-	}
+	virtual void switch_(IID iid, KVALUE* op) {
+		printf("<<<<< SWITCH >>>>> %s, condition: %s\n", IID_ToString(iid).c_str(),
+															   KVALUE_ToString(*op).c_str());
+  }
 
 	virtual void unreachable() {
 		printf("<<<<< UNREACHABLE >>>>>\n");
@@ -375,8 +378,19 @@ public:
 		printf("<<<<< SELECT >>>>>\n");
 	}
 
-	virtual void call() {
-		printf("<<<<< CALL >>>>>\n");
+	virtual void push_stack(KVALUE* value) {
+    myStack.push(value);
+	}
+
+	virtual void call(IID iid) {
+		printf("<<<<< CALL >>>>> %s", IID_ToString(iid).c_str());
+    while (!myStack.empty())
+    {
+      KVALUE* value = myStack.top();
+      myStack.pop();
+      printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
+    }
+    printf("\n");
 	}
 
 	virtual void vaarg() {

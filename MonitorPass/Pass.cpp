@@ -108,7 +108,7 @@ REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
+// REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
@@ -143,7 +143,7 @@ REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-//REGISTER_INSTRUMENTER(CallInstrumenter, "call")
+REGISTER_INSTRUMENTER(CallInstrumenter, "call")
 //REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
 //REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 

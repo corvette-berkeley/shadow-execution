@@ -221,8 +221,8 @@ void llvm_return2_(IID iid) {
 	DISPATCH_TO_OBSERVERS(return2_, iid)
 }
 
-void llvm_switch_() {
-	DISPATCH_TO_OBSERVERS(switch_)
+void llvm_switch_(IID iid, KVALUE* op) {
+	DISPATCH_TO_OBSERVERS(switch_, iid, op)
 }
 
 void llvm_unreachable() {
@@ -247,8 +247,12 @@ void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
   DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue)
 }
 
-void llvm_call() {
-	DISPATCH_TO_OBSERVERS(call)
+void llvm_push_stack(KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(push_stack, value)
+}
+
+void llvm_call(IID iid) {
+	DISPATCH_TO_OBSERVERS(call, iid)
 }
 
 void llvm_vaarg() {

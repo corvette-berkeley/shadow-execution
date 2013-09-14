@@ -75,7 +75,7 @@ public:
 	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return2_(IID iid UNUSED) {};
-	virtual void switch_() {};
+	virtual void switch_(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void unreachable() {};
 
 	// ***** Other Operations ***** //
@@ -83,7 +83,8 @@ public:
 	virtual void fcmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED) {};
 	virtual void phinode() {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED) {};
-	virtual void call() {};
+	virtual void push_stack(KVALUE* value UNUSED) {};
+	virtual void call(IID iid UNUSED) {};
 	virtual void vaarg() {};
 	virtual void landingpad() {};
 
