@@ -71,7 +71,7 @@ public:
 	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED) {};
 	virtual void branch2(IID iid UNUSED, bool conditional UNUSED) {};
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED) {};
-	virtual void invoke() {};
+	virtual void invoke(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED) {};
 	virtual void return2_(IID iid UNUSED) {};
@@ -84,7 +84,7 @@ public:
 	virtual void phinode() {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
-	virtual void call(IID iid UNUSED) {};
+	virtual void call(IID iid UNUSED, KVALUE* value UNUSED) {};
 	virtual void vaarg() {};
 	virtual void landingpad() {};
 

@@ -118,7 +118,7 @@ REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 // ***** Terminator Instructions ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
 REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
-//REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
+REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
 REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
 //REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
@@ -143,7 +143,7 @@ REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-REGISTER_INSTRUMENTER(CallInstrumenter, "call")
+REGISTER_INSTRUMENTER(CallInstrumenter, "call") // nacuong: not for intrinsic yet
 //REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
 //REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 

@@ -327,8 +327,16 @@ public:
         KVALUE_ToString(*op1).c_str());
 	}
 
-	virtual void invoke() {
-		printf("<<<<< INVOKE >>>>>\n");
+	virtual void invoke(IID iid, KVALUE* call_value) {
+		printf("<<<<< INVOKE >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
+    while (!myStack.empty())
+    {
+      KVALUE* value = myStack.top();
+      myStack.pop();
+      printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
+    }
+    printf("\n");
+
 	}
 
 	virtual void resume(IID iid, KVALUE* op1) {
@@ -382,8 +390,8 @@ public:
     myStack.push(value);
 	}
 
-	virtual void call(IID iid) {
-		printf("<<<<< CALL >>>>> %s", IID_ToString(iid).c_str());
+	virtual void call(IID iid, KVALUE* call_value) {
+		printf("<<<<< CALL >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
     while (!myStack.empty())
     {
       KVALUE* value = myStack.top();

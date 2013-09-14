@@ -1462,10 +1462,31 @@ class InvokeInstrumenter : public Instrumenter {
 
       count_++;
 
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_invoke"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
+      InstrPtrVector Instrs;
+
+      Constant* C_iid = IID_CONSTANT(SI);
+
+      // get call arguments
+      unsigned numArgs = SI->getNumArgOperands();
+      unsigned i;
+
+      for (i = 0; i < numArgs; i++)
+      {
+        Value* arg = KVALUE_VALUE(SI->getArgOperand(i), Instrs, NOSIGN);
+        Instruction* call = CALL_KVALUE(INSTR_TO_CALLBACK("push_stack"), arg);
+        Instrs.push_back(call);
+      }
+
+      Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("invoke"), C_iid, call_value);
+      Instrs.push_back(call);
+
+      // instrument
+      InsertAllBefore(Instrs, SI);
 
       return true;
+
     }
 };
 
@@ -1615,7 +1636,7 @@ class ICmpInstrumenter : public Instrumenter {
 
       // instrument
       InsertAllBefore(Instrs, SI);
-      
+
       return true;
     }
 };
@@ -1742,7 +1763,9 @@ class CallInstrumenter : public Instrumenter {
         Instrs.push_back(call);
       }
 
-      Instruction* call = CALL_IID(INSTR_TO_CALLBACK("call"), C_iid);
+      Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
+
+      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("call"), C_iid, call_value);
       Instrs.push_back(call);
 
       // instrument

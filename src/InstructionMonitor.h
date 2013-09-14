@@ -69,7 +69,7 @@ extern "C" {
   void llvm_branch(IID iid, bool conditional, KVALUE* op1);
   void llvm_branch2(IID iid, bool conditional);
   void llvm_indirectbr(IID iid, KVALUE* op1);
-  void llvm_invoke();
+  void llvm_invoke(IID iid, KVALUE op);
   void llvm_resume(IID iid, KVALUE* op1);
   void llvm_return_(IID iid, KVALUE* op1);
   void llvm_return2_(IID iid);
@@ -82,7 +82,7 @@ extern "C" {
   void llvm_phinode();
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue);
   void llvm_push_stack(KVALUE* value);
-  void llvm_call(IID iid);
+  void llvm_call(IID iid, KVALUE* value);
   void llvm_vaarg();
   void llvm_landingpad();
 

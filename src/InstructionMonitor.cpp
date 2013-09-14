@@ -205,8 +205,8 @@ void llvm_indirectbr(IID iid, KVALUE* op1) {
 	DISPATCH_TO_OBSERVERS(indirectbr, iid, op1)
 }
 
-void llvm_invoke() {
-	DISPATCH_TO_OBSERVERS(invoke)
+void llvm_invoke(IID iid, KVALUE* op) {
+	DISPATCH_TO_OBSERVERS(invoke, iid, op)
 }
 
 void llvm_resume(IID iid, KVALUE* op1) {
@@ -251,8 +251,8 @@ void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
 }
 
-void llvm_call(IID iid) {
-	DISPATCH_TO_OBSERVERS(call, iid)
+void llvm_call(IID iid, KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(call, iid, value)
 }
 
 void llvm_vaarg() {
