@@ -1,5 +1,6 @@
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
+#include "InterpreterObserver.h"
 
 /*******************************************************************************************/
 #define DISPATCH_TO_OBSERVERS(func, ...) \
@@ -278,6 +279,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
+//REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 
 /*******************************************************************************************/
 
