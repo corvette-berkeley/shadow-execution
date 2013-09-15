@@ -60,6 +60,7 @@ env.MergeFlags('!llvm-config --cxxflags --ldflags')
 plugin = env.SharedLibrary(
     'libmonitor',
     [
+    'PrintObserver.cpp',
     'InstructionMonitor.cpp',
     'Common.cpp'
         ],

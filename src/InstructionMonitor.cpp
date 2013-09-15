@@ -270,7 +270,7 @@ ObserverPtrList observers_;
 
 /*******************************************************************************************/
 
-#include "Observers.h"
+#include "PrintObserver.h"
 
 // macro for adding observers
 #define REGISTER_OBSERVER(T, N) \
