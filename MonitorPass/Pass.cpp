@@ -6,41 +6,53 @@
 namespace {
 
 struct MonitorPass : public FunctionPass {
-	static char ID;
+  static char ID;
 
-	MonitorPass() : FunctionPass(ID) {}
-	~MonitorPass() {}
+  MonitorPass() : FunctionPass(ID) {}
+  ~MonitorPass() {}
 
-	virtual bool runOnFunction(Function &F) {
-		Module* M = F.getParent();
+  virtual bool runOnFunction(Function &F) {
+    Module* M = F.getParent();
 
-		Instrumentation* instrumentation = Instrumentation::GetInstance();
-		safe_assert(instrumentation != NULL);
-		for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
-			// set up pointers to BB, F, and M
-			instrumentation->BeginBasicBlock(BB, &F, M);
-			for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
-			  //try {
-					instrumentation->CheckAndInstrument(itr);
-					//	} catch(...) {
-					//return false; // exception!
-					//}
-			}
-		}
-		return true;
+    Instrumentation* instrumentation = Instrumentation::GetInstance();
+    safe_assert(instrumentation != NULL);
+    unsigned int skip = 0;
+    for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
+      // set up pointers to BB, F, and M
+      instrumentation->BeginBasicBlock(BB, &F, M);
+      for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+	//try {
+
+	if (skip == 0) {
+	  if (instrumentation->CheckAndInstrument(itr)) {
+	    if (dyn_cast<LoadInst>(itr)) {
+	      // skip instrumentation of the next 11 instructions in case of a LoadInstr
+	      skip = 11;
+	    }
+	  }
 	}
-
-	bool doInitialization(Module &M) {
-		return Instrumentation::GetInstance()->Initialize(M);
+	else {
+	  skip--;
 	}
+	//	} catch(...) {
+	//return false; // exception!
+	//}
+      }
+    }
+    return true;
+  }
 
-	bool doFinalization(Module &M) {
-		return Instrumentation::GetInstance()->Finalize(M);
-	}
-
-	void getAnalysisUsage(AnalysisUsage &AU) const {
-		AU.setPreservesAll();
-	};
+  bool doInitialization(Module &M) {
+    return Instrumentation::GetInstance()->Initialize(M);
+  }
+  
+  bool doFinalization(Module &M) {
+    return Instrumentation::GetInstance()->Finalize(M);
+  }
+  
+  void getAnalysisUsage(AnalysisUsage &AU) const {
+    AU.setPreservesAll();
+  };
 };
 
 /*******************************************************************************************/
@@ -108,7 +120,7 @@ REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
-// REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
+REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")

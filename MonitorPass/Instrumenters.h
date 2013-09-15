@@ -41,7 +41,6 @@ public:
 
 		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, kvalue);
 		Instrs.push_back(call);
-		//errs() << "===Number of instructions to add: " << Instrs.size() << "\n";
 
 		// instrument
 		InsertAllAfter(Instrs, LI);
