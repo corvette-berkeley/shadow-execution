@@ -206,9 +206,11 @@ void PrintObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
 }
 
+/*
 void PrintObserver::cmpxchg() {
   printf("<<<<< CMPXCHG >>>>>\n");
 }
+*/
 
 void PrintObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
   printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(),
@@ -360,9 +362,11 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 	 KVALUE_ToString(*fvalue).c_str());
 }
 
+/*
 void PrintObserver::select() {
   printf("<<<<< SELECT >>>>>\n");
 }
+*/
 
 void PrintObserver::push_stack(KVALUE* value) {
   myStack.push(value);

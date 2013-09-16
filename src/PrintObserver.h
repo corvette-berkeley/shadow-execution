@@ -80,8 +80,6 @@ public:
 
 	virtual void fence();
 
-	virtual void cmpxchg();
-
 	virtual void cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2);
 
 	virtual void atomicrmw();
@@ -141,8 +139,6 @@ public:
 	virtual void phinode();
 
 	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue);
-
-	virtual void select();
 
 	virtual void call(IID iid, KVALUE* call_value);
 

@@ -339,12 +339,14 @@ void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
   abort();
 }
 
+/*
 void InterpreterObserver::cmpxchg() {
   printf("<<<<< CMPXCHG >>>>>\n");
 
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
   abort();
 }
+*/
 
 
 void InterpreterObserver::atomicrmw() {
@@ -577,12 +579,14 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   abort();
 }
 
+/*
 void InterpreterObserver::select() {
   printf("<<<<< SELECT >>>>>\n");
   
   cerr << "[InterpreterObserver::select] => Unimplemented\n";
   abort();
 }
+*/
 
 
 void InterpreterObserver::push_stack(KVALUE* value) {
