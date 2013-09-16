@@ -11,6 +11,14 @@ void InterpreterObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
+
+  Location *loc = (*currentFrame)[addr_iid];
+  Location *nloc = new Location(loc->getType(), loc->getValue(), false);
+
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
+  
+  return;
 }
 
 // ***** Binary Operations ***** //
@@ -21,6 +29,21 @@ void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int + loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
+
+  return;
 }
 
 void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
