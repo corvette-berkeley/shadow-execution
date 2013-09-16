@@ -1,11 +1,11 @@
 #include "Location.h"
 
 
-void Location::setType(int t) {
+void Location::setType(KIND t) {
   type = t;
 }
 
-void Location::setValue(long double v) {
+void Location::setValue(VALUE v) {
   value = v;
 }
 
@@ -13,11 +13,11 @@ void Location::setLocal(bool l) {
   local = l;
 }
 
-int Location::getType() {
+KIND Location::getType() {
   return type;
 }
 
-long double Location::getValue() {
+VALUE Location::getValue() {
   return value;
 }
 

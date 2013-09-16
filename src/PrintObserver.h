@@ -74,7 +74,7 @@ public:
 	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2);
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid, int kind);
+	virtual void allocax(IID iid, KIND kind);
 
 	virtual void store(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
 

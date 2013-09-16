@@ -191,7 +191,7 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, int kind) {
+void PrintObserver::allocax(IID iid, KIND kind) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
 }
 

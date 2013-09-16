@@ -1,31 +1,35 @@
 #ifndef LOCATION_H_
 #define LOCATION_H_
 
+#include "Common.h"
+
 using namespace std;
 
 class Location {
 
  private:
-  int type;
-  long double value;
+  KIND type; // see Common.h for definitions
+  VALUE value; // union type (use extension later on)
   bool local;
 
  public:
- Location(int t, long double v, bool l): type(t), value(v), local(l) {}
+ Location(KIND t, VALUE v, bool l): type(t), value(v), local(l) {}
 
- Location(int t, bool l): type(t), value(0), local(l) {}
+ Location(KIND t, bool l): type(t), local(l) {}
   
-  void setType(int t);
+  void setType(KIND t);
 
-  void setValue(long double v);
+  void setValue(VALUE v);
 
   void setLocal(bool l);
 
-  int getType();
+  KIND getType();
 
-  long double getValue();
+  VALUE getValue();
 
   bool getLocal();
+
+  void print();
 
 };
 

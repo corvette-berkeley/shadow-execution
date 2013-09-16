@@ -44,8 +44,7 @@ public:
 	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid UNUSED, int kind UNUSED) {};
-	//virtual void load() {};
+	virtual void allocax(IID iid UNUSED, KIND kind UNUSED) {};
 	virtual void load(IID iid UNUSED, PTR addr UNUSED, IID addr_iid UNUSED, KVALUE* value UNUSED) {};
 	virtual void store(IID iid UNUSED, PTR addr UNUSED, IID addr_iid UNUSED, KVALUE* value UNUSED) {};
 	virtual void fence() {};

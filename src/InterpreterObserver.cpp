@@ -191,17 +191,14 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, int kind) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
+void InterpreterObserver::allocax(IID iid, KIND type) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str());
 
-  // create location
-  Location *location = new Location(kind, true);
-
-  // putting location in currentFrame
+  Location *location = new Location(type, true);
   (*currentFrame)[iid] = location;
+  printCurrentFrame();
 
-  // printing current frame
-  //printCurrentFrame();
+  return;
 }
 
 void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
@@ -209,6 +206,8 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
+
+  return;
 }
 
 void InterpreterObserver::fence() {
