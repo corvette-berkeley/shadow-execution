@@ -2,6 +2,7 @@
 #define INTERPRETER_OBSERVER_H_
 
 #include "InstructionObserver.h"
+#include "Location.h"
 #include <stack>
 
 using namespace std;
@@ -15,12 +16,6 @@ using namespace std;
 /*******************************************************************************************/
 
 class InterpreterObserver : public InstructionObserver {
-
-  struct Location {
-    int type;
-    long double value;
-    bool local;
-  };
 
   typedef uint64_t IID;
   typedef map<IID, Location*> Frame;

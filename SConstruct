@@ -85,7 +85,7 @@ SConscript(
     dirs=[
         # our stuff
 	'MonitorPass',
-  'src',
+	'src',
         ],
     exports='env',
     )
