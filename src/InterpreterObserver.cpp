@@ -52,6 +52,9 @@ void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::fadd] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -60,6 +63,9 @@ void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::sub] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -68,6 +74,9 @@ void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::fsub] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -76,6 +85,9 @@ void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::mul] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -84,6 +96,9 @@ void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::fmul] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -92,6 +107,9 @@ void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::udiv] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -100,6 +118,9 @@ void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::sdiv] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -108,6 +129,9 @@ void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::fdiv] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -116,6 +140,9 @@ void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::urem] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -124,6 +151,9 @@ void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::srem] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -132,6 +162,9 @@ void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::frem] => Unimplemented\n";
+  abort();
 }
 
 
@@ -142,6 +175,9 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::shl] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -150,6 +186,9 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::lshr] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -158,6 +197,9 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::ashr] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -166,6 +208,9 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::and_] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -174,6 +219,9 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::or_] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -182,6 +230,9 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::xor_] => Unimplemented\n";
+  abort();
 }
 
 // ***** Vector Operations ***** //
@@ -190,14 +241,23 @@ void InterpreterObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2) {
   printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::extractelement] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::insertelement() {
   printf("<<<<< INSERTELEMENT >>>>>\n");
+
+  cerr << "[InterpreterObserver::insertelement] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::shufflevector() {
   printf("<<<<< SHUFFLEVECTOR >>>>>\n");
+
+  cerr << "[InterpreterObserver::shufflevector] => Unimplemented\n";
+  abort();
 }
 
 
@@ -206,12 +266,18 @@ void InterpreterObserver::shufflevector() {
 void InterpreterObserver::extractvalue(IID iid, KVALUE* op) {
   printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::extractvalue] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
   printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
+
+  cerr << "[InterpreterObserver::insertvalue] => Unimplemented\n";
+  abort();
 }
 
 // ***** Memory Access and Addressing Operations ***** //
@@ -253,16 +319,14 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
   }
   cout << "Updated Dest: " << dest->toString() << "\n";
   
-
   return;
 }
 
 void InterpreterObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
-}
 
-void InterpreterObserver::cmpxchg() {
-  printf("<<<<< CMPXCHG >>>>>\n");
+  cerr << "[InterpreterObserver::fence] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
@@ -270,16 +334,33 @@ void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
 	 PTR_ToString(addr).c_str(),
 	 KVALUE_ToString(*kv1).c_str(),
 	 KVALUE_ToString(*kv2).c_str());
+
+  cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
+  abort();
 }
+
+void InterpreterObserver::cmpxchg() {
+  printf("<<<<< CMPXCHG >>>>>\n");
+
+  cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
+  abort();
+}
+
 
 void InterpreterObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
+
+  cerr << "[InterpreterObserver::atomicrmw] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
   printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s\n", IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
+  abort();
 }
 
 // ***** Conversion Operations ***** //
@@ -287,61 +368,97 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
 void InterpreterObserver::trunc(IID iid, KVALUE* op) {
   printf("<<<<< TRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::zext(IID iid, KVALUE* op) {
   printf("<<<<< ZEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::zext] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::sext(IID iid, KVALUE* op) {
   printf("<<<<< SEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::sext] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fptrunc(IID iid, KVALUE* op) {
   printf("<<<<< FPTRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::sptrunc] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fpext(IID iid, KVALUE* op) {
   printf("<<<<< FPEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::fpext] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fptoui(IID iid, KVALUE* op) {
   printf("<<<<< FPTOUII >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::fptoui] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fptosi(IID iid, KVALUE* op) {
   printf("<<<<< FPTOSI >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::fptosi] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::uitofp(IID iid, KVALUE* op) {
   printf("<<<<< UITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::uitofp] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::sitofp(IID iid, KVALUE* op) {
   printf("<<<<< SITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::sitofp] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::ptrtoint(IID iid, KVALUE* op) {
   printf("<<<<< PTRTOINT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::inttoptr(IID iid, KVALUE* op) {
   printf("<<<<< INTTOPTR >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::bitcast(IID iid, KVALUE* op) {
   printf("<<<<< BITCAST >>>>> %s, %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::bitcast] => Unimplemented\n";
+  abort();
 }
 
 
@@ -350,16 +467,25 @@ void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1) {
   printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s\n", IID_ToString(iid).c_str(),
 	 (conditional ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str());
+
+  cerr << "[InterpreterObserver::branch] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::branch2(IID iid, bool conditional) {
   printf("<<<<< BRANCH >>>>> %s, cond: %s\n", IID_ToString(iid).c_str(),
 	 (conditional ? "1" : "0"));
+
+  cerr << "[InterpreterObserver::branch2] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::indirectbr(IID iid, KVALUE* op1) {
   printf("<<<<< INDIRECTBR >>>>> %s, address: %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str());
+
+  cerr << "[InterpreterObserver::indirectbr] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::invoke(IID iid, KVALUE* call_value) {
@@ -370,12 +496,17 @@ void InterpreterObserver::invoke(IID iid, KVALUE* call_value) {
     printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
   }
   printf("\n");
-  
+
+  cerr << "[InterpreterObserver::invoke] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::resume(IID iid, KVALUE* op1) {
   printf("<<<<< RESUME >>>>> %s, acc_value: %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str());
+
+  cerr << "[InterpreterObserver::resume] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::return_(IID iid, KVALUE* op1) {
@@ -398,25 +529,40 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1) {
 
 void InterpreterObserver::return2_(IID iid) {
   printf("<<<<< RETURN >>>>> %s\n", IID_ToString(iid).c_str());
+
+  cerr << "[InterpreterObserver::return2] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::switch_(IID iid, KVALUE* op) {
   printf("<<<<< SWITCH >>>>> %s, condition: %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str());
+
+  cerr << "[InterpreterObserver::switch] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::unreachable() {
   printf("<<<<< UNREACHABLE >>>>>\n");
+
+  cerr << "[InterpreterObserver::unreachable] => Unimplemented\n";
+  abort();
 }
 
 // ***** Other Operations ***** //
 
 void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
   printf("<<<<< ICMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+
+  cerr << "[InterpreterObserver::icmp] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
   printf("<<<<< FCMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+
+  cerr << "[InterpreterObserver::fcmp] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::phinode() {
@@ -426,11 +572,18 @@ void InterpreterObserver::phinode() {
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
   printf("<<<<< SELECT >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
 	 KVALUE_ToString(*fvalue).c_str());
+
+  cerr << "[InterpreterObserver::select] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::select() {
   printf("<<<<< SELECT >>>>>\n");
+  
+  cerr << "[InterpreterObserver::select] => Unimplemented\n";
+  abort();
 }
+
 
 void InterpreterObserver::push_stack(KVALUE* value) {
   myStack.push(value);
@@ -444,14 +597,23 @@ void InterpreterObserver::call(IID iid, KVALUE* call_value) {
     printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
   }
   printf("\n");
+
+  cerr << "[InterpreterObserver::call] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::vaarg() {
   printf("<<<<< VAARG >>>>>\n");
+
+  cerr << "[InterpreterObserver::vaarg] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::landingpad() {
   printf("<<<<< LANDINGPAD >>>>>\n");
+
+  cerr << "[InterpreterObserver::landingpad] => Unimplemented\n";
+  abort();
 }
 
 void InterpreterObserver::printCurrentFrame() {
