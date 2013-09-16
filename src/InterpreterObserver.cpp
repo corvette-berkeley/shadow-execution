@@ -196,7 +196,7 @@ void InterpreterObserver::allocax(IID iid, KIND type) {
 
   Location *location = new Location(type, true);
   (*currentFrame)[iid] = location;
-  printCurrentFrame();
+  cout << location->toString() << "\n";
 
   return;
 }
@@ -206,6 +206,13 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
+
+
+  // retrieve Location to store in
+  Location *location = (*currentFrame)[addr_iid];
+  cout << location->toString() << "\n";
+
+  // incomplete
 
   return;
 }

@@ -29,7 +29,7 @@ class Location {
 
   bool getLocal();
 
-  void print();
+  string toString();
 
 };
 
