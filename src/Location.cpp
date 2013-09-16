@@ -55,10 +55,10 @@ string Location::toString() {
     s << "[INT64: " << value.as_int << "]";
     break;
   case FLP32_KIND:
-    s << "[FLP32: " << value.as_flp << "]";
+    s << "[FLP32: " << value.as_flp32 << "]";
     break;
   case FLP64_KIND:
-    s << "[FLP64: " << value.as_flp << "]";
+    s << "[FLP64: " << value.as_flp64 << "]";
     break;
   default: //safe_assert(false);
     break;

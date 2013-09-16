@@ -37,10 +37,13 @@ std::string KVALUE_ToString(KVALUE& kv) {
 			s << "INT64: " << kv.value.as_int << "]";
 			break;
 		case FLP32_KIND:
-			s << "FLP32: " << kv.value.as_flp << "]";
+			s << "FLP32: " << kv.value.as_flp32 << "]";
 			break;
 		case FLP64_KIND:
-			s << "FLP64: " << kv.value.as_flp << "]";
+			s << "FLP64: " << kv.value.as_flp64 << "]";
+			break;
+    case FLP80X86_KIND:
+			s << "FLP80X86: " << kv.value.as_flp80x86 << "]";
 			break;
 		default: //safe_assert(false);
 			break;

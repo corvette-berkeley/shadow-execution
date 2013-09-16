@@ -56,30 +56,25 @@ void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   Location *loc1 = (*currentFrame)[op1->iid];
   Location *loc2 = (*currentFrame)[op2->iid];
 
-  double result;
+  VALUE vresult;
 
   if (loc1->getType() == FLP32_KIND)
   {
-    result = (float)loc1->getValue().as_flp + (float)loc2->getValue().as_flp;
+    vresult.as_flp32 = loc1->getValue().as_flp32 + loc2->getValue().as_flp32;
   }
   else if (loc1->getType() == FLP64_KIND)
   {
-    result = loc1->getValue().as_flp + loc2->getValue().as_flp;
+    vresult.as_flp64 = loc1->getValue().as_flp64 + loc2->getValue().as_flp64;
   }
   else if (loc1->getType() == FLP80X86_KIND)
   {
-    result = (long double)loc1->getValue().as_flp + (long double)loc2->getValue().as_flp;
+    vresult.as_flp80x86 = loc1->getValue().as_flp80x86 + loc2->getValue().as_flp80x86;
   }
   else 
   {
     cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << loc1->getType() << "\n";
     abort();
   }
-
-  // put result back to VALUE
-  // TODO: incomplete?!
-  VALUE vresult;
-  vresult.as_flp = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
   (*currentFrame)[iid] = nloc;

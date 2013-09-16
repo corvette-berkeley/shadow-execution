@@ -50,12 +50,16 @@
 typedef uintptr_t	ADDRINT;
 typedef uint64_t 	IID;
 typedef int64_t	 	INT;
-typedef double	 	FLP;
+typedef float FLP32;
+typedef double	 	FLP64;
+typedef long double FLP80x86;
 typedef void*	 	PTR;
 
 union value_t {
 	INT as_int;
-	FLP as_flp;
+  FLP32 as_flp32;
+  FLP64 as_flp64;
+  FLP80x86 as_flp80x86;
 	PTR as_ptr;
 };
 #define VALUE value_t
