@@ -1,5 +1,7 @@
 
 #include "InterpreterObserver.h"
+
+#include <assert.h>
 #include <stack>
 
 using namespace std;
@@ -207,12 +209,27 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
 
-
   // retrieve Location to store in
-  Location *location = (*currentFrame)[addr_iid];
-  cout << location->toString() << "\n";
+  Location *dest = (*currentFrame)[addr_iid];
+  cout << "Dest: " << dest->toString() << "\n";
 
-  // incomplete
+  // the value to store is a constant
+  if (kv->iid == 0) {
+    dest->setValue(kv->value);
+  }
+  else {
+
+    if (currentFrame->find(kv->iid) != currentFrame->end()) {
+      Location *src = (*currentFrame)[kv->iid];
+      dest->setValue(src->getValue());
+    }
+    else {
+      cerr << "[InterpreterObserver::store] => Could not find map location\n";
+      abort();
+    }
+  }
+  cout << "Updated Dest: " << dest->toString() << "\n";
+  
 
   return;
 }
