@@ -16,13 +16,27 @@ using namespace std;
 
 class InterpreterObserver : public InstructionObserver {
 
+  struct Location {
+    int type;
+    long double value;
+    bool local;
+  };
+
+  typedef uint64_t IID;
+  typedef map<IID, Location*> Frame;
+
+ private:
+  stack<KVALUE*> myStack;
+  stack<Frame*> executionStack;
+
  public:
   
-  stack<KVALUE*> myStack;
+  //DEFAULT_CONSTRUCTOR(InterpreterObserver);
+ InterpreterObserver(std::string name) : InstructionObserver(name) {
+    executionStack.push(new Frame());
+  }
   
-  DEFAULT_CONSTRUCTOR(InterpreterObserver);
-  
-  void load(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
+  virtual void load(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
   
   // ***** Binary Operations ***** //
   

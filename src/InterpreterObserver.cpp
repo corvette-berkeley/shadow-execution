@@ -9,7 +9,6 @@ void InterpreterObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
-
 }
 
 // ***** Binary Operations ***** //
@@ -194,6 +193,10 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
 
 void InterpreterObserver::allocax(IID iid, int kind) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
+  printf("Size of execution stack: %lu\n", executionStack.size());
+
+  // create location
+  // add it to current frame (top of the stack)
 }
 
 void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
