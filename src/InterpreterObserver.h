@@ -22,13 +22,15 @@ class InterpreterObserver : public InstructionObserver {
 
  private:
   stack<KVALUE*> myStack;
+  Frame* currentFrame;
   stack<Frame*> executionStack;
 
  public:
   
   //DEFAULT_CONSTRUCTOR(InterpreterObserver);
  InterpreterObserver(std::string name) : InstructionObserver(name) {
-    executionStack.push(new Frame());
+    currentFrame = new Frame();
+    executionStack.push(currentFrame);
   }
   
   virtual void load(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
@@ -161,6 +163,9 @@ class InterpreterObserver : public InstructionObserver {
   virtual void landingpad();
   
   void push_stack(KVALUE* value);
+
+  void printCurrentFrame();
+
 };
 
 

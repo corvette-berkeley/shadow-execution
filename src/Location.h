@@ -12,6 +12,8 @@ class Location {
 
  public:
  Location(int t, long double v, bool l): type(t), value(v), local(l) {}
+
+ Location(int t, bool l): type(t), value(0), local(l) {}
   
   void setType(int t);
 

@@ -193,10 +193,15 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
 
 void InterpreterObserver::allocax(IID iid, int kind) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
-  printf("Size of execution stack: %lu\n", executionStack.size());
 
   // create location
-  // add it to current frame (top of the stack)
+  Location *location = new Location(kind, true);
+
+  // putting location in currentFrame
+  (*currentFrame)[iid] = location;
+
+  // printing current frame
+  //printCurrentFrame();
 }
 
 void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
@@ -390,3 +395,9 @@ void InterpreterObserver::landingpad() {
   printf("<<<<< LANDINGPAD >>>>>\n");
 }
 
+void InterpreterObserver::printCurrentFrame() {
+  printf("Print current frame\n");
+  for(Frame::iterator it = currentFrame->begin(); it != currentFrame->end(); it++) {
+    printf("%ld \n", it->first);
+  }
+}
