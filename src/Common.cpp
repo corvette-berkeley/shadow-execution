@@ -42,7 +42,7 @@ std::string KVALUE_ToString(KVALUE& kv) {
 		case FLP64_KIND:
 			s << "FLP64: " << kv.value.as_flp64 << "]";
 			break;
-    case FLP80X86_KIND:
+                case FLP80X86_KIND:
 			s << "FLP80X86: " << kv.value.as_flp80x86 << "]";
 			break;
 		default: //safe_assert(false);
@@ -79,6 +79,9 @@ std::string KIND_ToString(int kind) {
 		case FLP64_KIND:
 			s << "FLP64]";
 			break;
+	        case FLP80X86_KIND:
+	                s << "FLP80X86]";
+
 		default: //safe_assert(false);
 			break;
 	}
