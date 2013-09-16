@@ -381,6 +381,19 @@ void InterpreterObserver::resume(IID iid, KVALUE* op1) {
 void InterpreterObserver::return_(IID iid, KVALUE* op1) {
   printf("<<<<< RETURN >>>>> %s, ret_value: %s\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str());
+
+  executionStack.pop();
+
+  if (!executionStack.empty()) {
+    currentFrame = executionStack.top();
+    cout << "New stack size: " << executionStack.size() << "\n";
+  }
+  else {
+    currentFrame = NULL;
+    cout << "The execution stack is empty.\n";
+  }
+  
+  return;
 }
 
 void InterpreterObserver::return2_(IID iid) {
