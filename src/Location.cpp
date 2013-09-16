@@ -60,6 +60,8 @@ string Location::toString() {
   case FLP64_KIND:
     s << "[FLP64: " << value.as_flp64 << "]";
     break;
+  case FLP80X86_KIND:
+    s << "[FLP80X86: " << value.as_flp80x86 << "]";
   default: //safe_assert(false);
     break;
   }
