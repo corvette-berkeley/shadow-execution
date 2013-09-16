@@ -4,9 +4,10 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, PTR addr, KVALUE* kv) {
-  printf("<<<<< LOAD >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
+  printf("<<<<< LOAD >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
+	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
 }
 
@@ -194,9 +195,10 @@ void PrintObserver::allocax(IID iid, int kind) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
 }
 
-void PrintObserver::store(IID iid, PTR addr, KVALUE* kv) {
-  printf("<<<<< STORE >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
+  printf("<<<<< STORE >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
+	 IID_ToString(addr_iid).c_str(),
 	 KVALUE_ToString(*kv).c_str());
 }
 

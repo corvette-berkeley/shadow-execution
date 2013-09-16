@@ -39,7 +39,11 @@ public:
 		Instruction* I_cast_ptr = PTR_CAST_INSTR(LI->getPointerOperand());
 		Instrs.push_back(I_cast_ptr);
 
-		Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, kvalue);
+		// new: iid for pointer
+		Instruction *ptr_iid = (Instruction*)(LI->getPointerOperand());
+		Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
+
+		Instruction* call = CALL_IID_PTR_IID_KVALUE(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, C_ptr_iid, kvalue);
 		Instrs.push_back(call);
 
 		// instrument
@@ -865,26 +869,6 @@ class AllocaInstrumenter : public Instrumenter {
     }
 };
 
-/*
-// Callback: void load()
-class LoadInstrumenter : public Instrumenter {
-  public:
-    DEFAULT_CONSTRUCTOR(LoadInstrumenter);
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(LoadInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_load"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
-
-      return true;
-    }
-};
-*/
 
 // Callback: void store(IID iid, PTR addr, KVALUE value)
 class StoreInstrumenter : public Instrumenter {
@@ -908,7 +892,11 @@ class StoreInstrumenter : public Instrumenter {
       Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
       Instrs.push_back(I_cast_ptr);
 
-      Instruction* call = CALL_IID_PTR_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, kvalue);
+      // new: iid for ptr
+      Instruction *ptr_iid = (Instruction*)(SI->getPointerOperand());
+      Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
+
+      Instruction* call = CALL_IID_PTR_IID_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, C_ptr_iid, kvalue);
       Instrs.push_back(call);
 
       // instrument

@@ -266,6 +266,26 @@ protected:
 
 	/*******************************************************************************************/
 	// cindy
+	Instruction* CALL_IID_PTR_IID_KVALUE(const char* func, Value* iid, Value* ptr, Value* dest_iid, Value* kvalue) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(PTR_TYPE());
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(ptr);
+		Args.push_back(dest_iid);
+		Args.push_back(kvalue);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+
+
+	/*******************************************************************************************/
+	// cindy
 	Instruction* CALL_IID_PTR_KVALUE_KVALUE(const char* func, Value* iid, Value* ptr, Value* kvalue1, Value* kvalue2) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());

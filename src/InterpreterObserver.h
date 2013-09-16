@@ -19,7 +19,7 @@ public:
   stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(InterpreterObserver);
 	
-	void load(IID iid, PTR addr, KVALUE* kv);
+	void load(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
 
 	// ***** Binary Operations ***** //
 
@@ -76,7 +76,7 @@ public:
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid, int kind);
 
-	void store(IID iid, PTR addr, KVALUE* kv);
+	void store(IID iid, PTR addr, IID addr_iid, KVALUE* kv);
 
 	virtual void fence();
 
