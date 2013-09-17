@@ -449,6 +449,23 @@ protected:
 	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
+/*******************************************************************************************/
+	// cindy
+	Instruction* CALL_IID_KIND_KVALUE(const char* func, Value* iid, Value* kind, Value* k) {
+	  TypePtrVector ArgTypes;
+	  ArgTypes.push_back(IID_TYPE());
+	  ArgTypes.push_back(KIND_TYPE());
+	  ArgTypes.push_back(KVALUEPTR_TYPE());
+
+	  ValuePtrVector Args;
+	  Args.push_back(iid);
+	  Args.push_back(kind);
+	  Args.push_back(k);
+	  
+	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+
 }; // end Instrumenter
 
 /*******************************************************************************************/

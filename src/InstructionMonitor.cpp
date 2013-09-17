@@ -151,8 +151,8 @@ void llvm_sext(IID iid, KVALUE* op) {
   DISPATCH_TO_OBSERVERS(sext, iid, op);
 }
 
-void llvm_fptrunc(IID iid, KVALUE* op) {
-  DISPATCH_TO_OBSERVERS(fptrunc, iid, op);
+void llvm_fptrunc(IID iid, KIND type, KVALUE* op) {
+  DISPATCH_TO_OBSERVERS(fptrunc, iid, type, op);
 }
 
 void llvm_fpext(IID iid, KVALUE* op) {

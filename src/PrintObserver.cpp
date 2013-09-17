@@ -206,12 +206,6 @@ void PrintObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
 }
 
-/*
-void PrintObserver::cmpxchg() {
-  printf("<<<<< CMPXCHG >>>>>\n");
-}
-*/
-
 void PrintObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
   printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
@@ -246,9 +240,9 @@ void PrintObserver::sext(IID iid, KVALUE* op) {
 	 KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::fptrunc(IID iid, KVALUE* op) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
 void PrintObserver::fpext(IID iid, KVALUE* op) {
@@ -361,12 +355,6 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
   printf("<<<<< SELECT >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
 	 KVALUE_ToString(*fvalue).c_str());
 }
-
-/*
-void PrintObserver::select() {
-  printf("<<<<< SELECT >>>>>\n");
-}
-*/
 
 void PrintObserver::push_stack(KVALUE* value) {
   myStack.push(value);

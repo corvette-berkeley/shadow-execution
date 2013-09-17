@@ -54,7 +54,7 @@ extern "C" {
   void llvm_trunc(IID iid, KVALUE* op);
   void llvm_zext(IID iid, KVALUE* op);
   void llvm_sext(IID iid, KVALUE* op);
-  void llvm_fptrunc(IID iid, KVALUE* op);
+  void llvm_fptrunc(IID iid, KIND type, KVALUE* op);
   void llvm_fpext(IID iid, KVALUE* op);
   void llvm_fptoui(IID iid, KVALUE* op);
   void llvm_fptosi(IID iid, KVALUE* op);

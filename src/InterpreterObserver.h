@@ -106,7 +106,7 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void sext(IID iid, KVALUE* op);
   
-  virtual void fptrunc(IID iid, KVALUE* op);
+  virtual void fptrunc(IID iid, KIND type, KVALUE* op);
   
   virtual void fpext(IID iid, KVALUE* op);
   

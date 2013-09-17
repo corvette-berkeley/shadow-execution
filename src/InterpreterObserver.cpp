@@ -345,6 +345,15 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
   }
   cout << "Updated Dest: " << dest->toString() << "\n";
   
+
+  // sanity check
+  /*
+  if (dest->getValue().as_int != kv->value.as_int) {
+    cerr << "Mismatched values found in Store\n";
+    abort();
+  }
+  */
+
   return;
 }
 
@@ -364,16 +373,6 @@ void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
   abort();
 }
-
-/*
-void InterpreterObserver::cmpxchg() {
-  printf("<<<<< CMPXCHG >>>>>\n");
-
-  cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
-  abort();
-}
-*/
-
 
 void InterpreterObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
@@ -417,11 +416,11 @@ void InterpreterObserver::sext(IID iid, KVALUE* op) {
   abort();
 }
 
-void InterpreterObserver::fptrunc(IID iid, KVALUE* op) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
-  cerr << "[InterpreterObserver::sptrunc] => Unimplemented\n";
+  cerr << "[InterpreterObserver::fptrunc] => Unimplemented\n";
   abort();
 }
 
@@ -604,16 +603,6 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   cerr << "[InterpreterObserver::select] => Unimplemented\n";
   abort();
 }
-
-/*
-void InterpreterObserver::select() {
-  printf("<<<<< SELECT >>>>>\n");
-  
-  cerr << "[InterpreterObserver::select] => Unimplemented\n";
-  abort();
-}
-*/
-
 
 void InterpreterObserver::push_stack(KVALUE* value) {
   myStack.push(value);

@@ -1120,9 +1120,17 @@ class FPTruncInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("fptrunc"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptrunc"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument

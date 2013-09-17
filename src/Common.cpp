@@ -59,31 +59,31 @@ std::string KIND_ToString(int kind) {
 	std::stringstream s;
 	switch(kind) {
 		case PTR_KIND:
-			s << "PTR]";
+			s << "[PTR]";
 			break;
 		case INT1_KIND:
-			s << "INT1]";
+			s << "[INT1]";
 			break;
 		case INT8_KIND:
-			s << "INT8]";
+			s << "[INT8]";
 			break;
 		case INT16_KIND:
-			s << "INT16]";
+			s << "[INT16]";
 			break;
 		case INT32_KIND:
-			s << "INT32]";
+			s << "[INT32]";
 			break;
 		case INT64_KIND:
-			s << "INT64]";
+			s << "[INT64]";
 			break;
 		case FLP32_KIND:
-			s << "FLP32]";
+			s << "[FLP32]";
 			break;
 		case FLP64_KIND:
-			s << "FLP64]";
+			s << "[FLP64]";
 			break;
 	        case FLP80X86_KIND:
-	                s << "FLP80X86]";
+	                s << "[FLP80X86]";
 
 		default: //safe_assert(false);
 			break;

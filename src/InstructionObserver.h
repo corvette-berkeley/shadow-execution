@@ -56,7 +56,7 @@ public:
 	virtual void trunc(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void zext(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void sext(IID iid UNUSED, KVALUE* op UNUSED) {};
-	virtual void fptrunc(IID iid UNUSED, KVALUE* op UNUSED) {};
+	virtual void fptrunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED) {};
 	virtual void fpext(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void fptoui(IID iid UNUSED, KVALUE* op UNUSED) {};
 	virtual void fptosi(IID iid UNUSED, KVALUE* op UNUSED) {};
