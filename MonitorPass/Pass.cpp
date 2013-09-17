@@ -111,8 +111,8 @@ REGISTER_INSTRUMENTER(XorInstrumenter, "xor_") //done
 
 // ***** Vector Operations ***** //
 REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
-REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") // printout for now
-REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") // printout for now
+REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") 
+REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") 
 
 // ***** Aggregate Operations ***** //
 REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
@@ -122,9 +122,9 @@ REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax") //done
 REGISTER_INSTRUMENTER(LoadInstrumenter, "load") //done
 REGISTER_INSTRUMENTER(StoreInstrumenter, "store") //done
-REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now
+REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") 
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
-REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") // printout for now
+REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") 
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
@@ -151,7 +151,7 @@ REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
-REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")

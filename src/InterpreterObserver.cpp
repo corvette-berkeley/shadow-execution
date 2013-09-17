@@ -3,8 +3,7 @@
 
 #include <assert.h>
 #include <stack>
-
-using namespace std;
+#include <llvm/InstrTypes.h>
 	
 void InterpreterObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
   printf("<<<<< LOAD >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
@@ -643,8 +642,55 @@ void InterpreterObserver::unreachable() {
 void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
   printf("<<<<< ICMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
 
-  cerr << "[InterpreterObserver::icmp] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+
+  int result = 0;
+  switch(pred) {
+  case CmpInst::ICMP_EQ:
+    result = loc1->getValue().as_int == loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_NE:
+    result = loc1->getValue().as_int != loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_UGT:
+    result = loc1->getValue().as_int > loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_UGE:
+    result = loc1->getValue().as_int >= loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_ULT:
+    result = loc1->getValue().as_int < loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_ULE:
+    result = loc1->getValue().as_int <= loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_SGT:
+    result = loc1->getValue().as_int > loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_SGE:
+    result = loc1->getValue().as_int >= loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_SLT:
+    result = loc1->getValue().as_int < loc2->getValue().as_int;
+    break;
+  case CmpInst::ICMP_SLE:
+    result = loc1->getValue().as_int <= loc2->getValue().as_int;
+    break;
+  default:
+    break;
+  }
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
+
+  return;
 }
 
 void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {

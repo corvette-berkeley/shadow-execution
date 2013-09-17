@@ -5,7 +5,12 @@
 #include "Location.h"
 #include <stack>
 
+namespace llvm {
+  class CmpInst;
+}
+
 using namespace std;
+using namespace llvm;
 
 /*******************************************************************************************/
 // helpful macros for defining instrumenters
