@@ -1031,9 +1031,17 @@ class TruncInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("trunc"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("trunc"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1060,9 +1068,17 @@ class ZExtInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(1U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("zext"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("zext"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1092,7 +1108,15 @@ class SExtInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("sext"), C_iid, op);
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("sext"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1158,9 +1182,17 @@ class FPExtInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("fpext"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fpext"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1188,9 +1220,17 @@ class FPToUIInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("fptoui"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptoui"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1218,9 +1258,17 @@ class FPToSIInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("fptosi"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptosi"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1247,9 +1295,17 @@ class UIToFPInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("uitofp"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("uitofp"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1277,9 +1333,17 @@ class SIToFPInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("sitofp"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("sitofp"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1307,9 +1371,17 @@ class PtrToIntInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("ptrtoint"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("ptrtoint"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1337,9 +1409,17 @@ class IntToPtrInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("inttoptr"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("inttoptr"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument
@@ -1367,9 +1447,17 @@ class BitCastInstrumenter : public Instrumenter {
       Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
       if(op == NULL) return false;
 
+      Type *T = SI->getType();
+      if (!T) return false;
+
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("bitcast"), C_iid, op);
+      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("bitcast"), C_iid, C_kind, op);
       Instrs.push_back(call);
 
       // instrument

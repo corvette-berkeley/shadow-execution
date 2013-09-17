@@ -225,19 +225,19 @@ void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
 
 // ***** Conversion Operations ***** //
 
-void PrintObserver::trunc(IID iid, KVALUE* op) {
-  printf("<<<<< TRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::trunc(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::zext(IID iid, KVALUE* op) {
-  printf("<<<<< ZEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::zext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::sext(IID iid, KVALUE* op) {
-  printf("<<<<< SEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::sext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
 void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
@@ -245,44 +245,44 @@ void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::fpext(IID iid, KVALUE* op) {
-  printf("<<<<< FPEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::fpext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::fptoui(IID iid, KVALUE* op) {
-  printf("<<<<< FPTOUII >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::fptosi(IID iid, KVALUE* op) {
-  printf("<<<<< FPTOSI >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::uitofp(IID iid, KVALUE* op) {
-  printf("<<<<< UITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::sitofp(IID iid, KVALUE* op) {
-  printf("<<<<< SITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::ptrtoint(IID iid, KVALUE* op) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::inttoptr(IID iid, KVALUE* op) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
-void PrintObserver::bitcast(IID iid, KVALUE* op) {
-  printf("<<<<< BITCAST >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 }
 
 

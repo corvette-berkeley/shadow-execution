@@ -392,25 +392,25 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
 
 // ***** Conversion Operations ***** //
 
-void InterpreterObserver::trunc(IID iid, KVALUE* op) {
-  printf("<<<<< TRUNC >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::zext(IID iid, KVALUE* op) {
-  printf("<<<<< ZEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::zext] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::sext(IID iid, KVALUE* op) {
-  printf("<<<<< SEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::sext] => Unimplemented\n";
   abort();
@@ -424,65 +424,65 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
   abort();
 }
 
-void InterpreterObserver::fpext(IID iid, KVALUE* op) {
-  printf("<<<<< FPEXT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::fpext] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::fptoui(IID iid, KVALUE* op) {
-  printf("<<<<< FPTOUII >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::fptoui] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::fptosi(IID iid, KVALUE* op) {
-  printf("<<<<< FPTOSI >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::fptosi] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::uitofp(IID iid, KVALUE* op) {
-  printf("<<<<< UITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::uitofp] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::sitofp(IID iid, KVALUE* op) {
-  printf("<<<<< SITOFP >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::sitofp] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::ptrtoint(IID iid, KVALUE* op) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::inttoptr(IID iid, KVALUE* op) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::bitcast(IID iid, KVALUE* op) {
-  printf("<<<<< BITCAST >>>>> %s, %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
 
   cerr << "[InterpreterObserver::bitcast] => Unimplemented\n";
   abort();

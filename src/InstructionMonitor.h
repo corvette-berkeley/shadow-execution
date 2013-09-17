@@ -51,18 +51,18 @@ extern "C" {
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value);
 
   // ***** Conversion Operations ***** //
-  void llvm_trunc(IID iid, KVALUE* op);
-  void llvm_zext(IID iid, KVALUE* op);
-  void llvm_sext(IID iid, KVALUE* op);
+  void llvm_trunc(IID iid, KIND type, KVALUE* op);
+  void llvm_zext(IID iid, KIND type, KVALUE* op);
+  void llvm_sext(IID iid, KIND type, KVALUE* op);
   void llvm_fptrunc(IID iid, KIND type, KVALUE* op);
-  void llvm_fpext(IID iid, KVALUE* op);
-  void llvm_fptoui(IID iid, KVALUE* op);
-  void llvm_fptosi(IID iid, KVALUE* op);
-  void llvm_uitofp(IID iid, KVALUE* op);
-  void llvm_sitofp(IID iid, KVALUE* op);
-  void llvm_ptrtoint(IID iid, KVALUE* op);
-  void llvm_inttoptr(IID iid, KVALUE* op);
-  void llvm_bitcast(IID iid, KVALUE* op);
+  void llvm_fpext(IID iid, KIND type, KVALUE* op);
+  void llvm_fptoui(IID iid, KIND type, KVALUE* op);
+  void llvm_fptosi(IID iid, KIND type, KVALUE* op);
+  void llvm_uitofp(IID iid, KIND type, KVALUE* op);
+  void llvm_sitofp(IID iid, KIND type, KVALUE* op);
+  void llvm_ptrtoint(IID iid, KIND type, KVALUE* op);
+  void llvm_inttoptr(IID iid, KIND type, KVALUE* op);
+  void llvm_bitcast(IID iid, KIND type, KVALUE* op);
 
   // ***** Terminator Instructions ***** //
   void llvm_branch(IID iid, bool conditional, KVALUE* op1);

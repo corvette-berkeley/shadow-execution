@@ -87,29 +87,29 @@ public:
 	virtual void getelementptr(IID iid, bool inbound, KVALUE* op);
 
 	// ***** Conversion Operations ***** //
-	virtual void trunc(IID iid, KVALUE* op);
+	virtual void trunc(IID iid, KIND type, KVALUE* op);
 
-	virtual void zext(IID iid, KVALUE* op);
+	virtual void zext(IID iid, KIND type, KVALUE* op);
 
-	virtual void sext(IID iid, KVALUE* op);
+	virtual void sext(IID iid, KIND type, KVALUE* op);
 
 	virtual void fptrunc(IID iid, KIND type, KVALUE* op);
 
-	virtual void fpext(IID iid, KVALUE* op);
+	virtual void fpext(IID iid, KIND type, KVALUE* op);
 
-	virtual void fptoui(IID iid, KVALUE* op);
+	virtual void fptoui(IID iid, KIND type, KVALUE* op);
 
-	virtual void fptosi(IID iid, KVALUE* op);
+	virtual void fptosi(IID iid, KIND type, KVALUE* op);
 
-	virtual void uitofp(IID iid, KVALUE* op);
+	virtual void uitofp(IID iid, KIND type, KVALUE* op);
 
-	virtual void sitofp(IID iid, KVALUE* op);
+	virtual void sitofp(IID iid, KIND type, KVALUE* op);
 
-	virtual void ptrtoint(IID iid, KVALUE* op);
+	virtual void ptrtoint(IID iid, KIND type, KVALUE* op);
 
-	virtual void inttoptr(IID iid, KVALUE* op);
+	virtual void inttoptr(IID iid, KIND type, KVALUE* op);
 
-	virtual void bitcast(IID iid, KVALUE* op);
+	virtual void bitcast(IID iid, KIND type, KVALUE* op);
 
 
 	// ***** TerminatorInst ***** //
