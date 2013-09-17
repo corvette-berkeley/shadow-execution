@@ -661,11 +661,11 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv) {
   }
   else if (type == FLP64_KIND)
   {
-    trunc_value.as_flp = (float) value.as_flp;
+    trunc_value.as_flp = (double) value.as_flp;
   }
   else if (type == FLP80X86_KIND)
   {
-    trunc_value.as_flp = (float) value.as_flp;
+    trunc_value.as_flp = (long double) value.as_flp;
   }
   else 
   {
@@ -678,44 +678,131 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< FPEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::fpext] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+
+  if (type == FLP32_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_flp;
+  }
+  else if (type == FLP64_KIND)
+  {
+    trunc_value.as_flp = (double) value.as_flp;
+  }
+  else if (type == FLP80X86_KIND)
+  {
+    trunc_value.as_flp = (long double) value.as_flp;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fpext] => Unsupport floating point type " << type << "\n";
+    abort();
+  }
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< FPTOUII >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::fptoui] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+  trunc_value.as_int = (int) value.as_flp;
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< FPTOSI >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::fptosi] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+  trunc_value.as_int = (int) value.as_flp;
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< UITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::uitofp] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+
+  if (type == FLP32_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_int;
+  }
+  else if (type == FLP64_KIND)
+  {
+    trunc_value.as_flp = (double) value.as_int;
+  }
+  else if (type == FLP80X86_KIND)
+  {
+    trunc_value.as_flp = (long double) value.as_int;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
+    abort();
+  }
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< SITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::sitofp] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+
+  if (type == FLP32_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_int;
+  }
+  else if (type == FLP64_KIND)
+  {
+    trunc_value.as_flp = (double) value.as_int;
+  }
+  else if (type == FLP80X86_KIND)
+  {
+    trunc_value.as_flp = (long double) value.as_int;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
+    abort();
+  }
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
+
 }
 
 void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op) {
