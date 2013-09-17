@@ -60,15 +60,15 @@ void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
   if (loc1->getType() == FLP32_KIND)
   {
-    vresult.as_flp32 = loc1->getValue().as_flp32 + loc2->getValue().as_flp32;
+    vresult.as_flp = (float) loc1->getValue().as_flp + (float) loc2->getValue().as_flp;
   }
   else if (loc1->getType() == FLP64_KIND)
   {
-    vresult.as_flp64 = loc1->getValue().as_flp64 + loc2->getValue().as_flp64;
+    vresult.as_flp = (double) loc1->getValue().as_flp + (double) loc2->getValue().as_flp;
   }
   else if (loc1->getType() == FLP80X86_KIND)
   {
-    vresult.as_flp80x86 = loc1->getValue().as_flp80x86 + loc2->getValue().as_flp80x86;
+    vresult.as_flp = loc1->getValue().as_flp + loc2->getValue().as_flp;
   }
   else 
   {

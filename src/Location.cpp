@@ -55,13 +55,16 @@ string Location::toString() {
     s << "[INT64: " << value.as_int << "]";
     break;
   case FLP32_KIND:
-    s << "[FLP32: " << value.as_flp32 << "]";
+    // TODO: this assumes value.as_flp returns a long double value
+    s << "[FLP32: " << (float)value.as_flp << "]";
     break;
   case FLP64_KIND:
-    s << "[FLP64: " << value.as_flp64 << "]";
+    // TODO: this assumes value.as_flp returns a long double value
+    s << "[FLP64: " << (double) value.as_flp << "]";
     break;
   case FLP80X86_KIND:
-    s << "[FLP80X86: " << value.as_flp80x86 << "]";
+    // TODO: this is incorrect because value.as_flp returns a double
+    s << "[FLP80X86: " << (long double) value.as_flp << "]";
   default: //safe_assert(false);
     break;
   }
