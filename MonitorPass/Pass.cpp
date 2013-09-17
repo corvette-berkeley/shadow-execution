@@ -102,7 +102,7 @@ REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
 REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
 
 // ***** Bitwise Binary Operations ***** //
-REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")
+REGISTER_INSTRUMENTER(ShlInstrumenter, "shl") //done
 REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")
 REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")
 REGISTER_INSTRUMENTER(AndInstrumenter, "and_") //done
@@ -132,7 +132,7 @@ REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
 REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
 REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
-REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")
+REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_") //done
 //REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
 REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 
