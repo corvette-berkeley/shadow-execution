@@ -103,8 +103,8 @@ REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
 
 // ***** Bitwise Binary Operations ***** //
 REGISTER_INSTRUMENTER(ShlInstrumenter, "shl") //done
-REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")
-REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")
+REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr") //done
+REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr") //done
 REGISTER_INSTRUMENTER(AndInstrumenter, "and_") //done
 REGISTER_INSTRUMENTER(OrInstrumenter, "or_") //done
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_") //done
