@@ -89,8 +89,18 @@ void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::sub] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int - loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -100,8 +110,32 @@ void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::fsub] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+
+  VALUE vresult;
+
+  if (loc1->getType() == FLP32_KIND)
+  {
+    vresult.as_flp = (float) loc1->getValue().as_flp - (float) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP64_KIND)
+  {
+    vresult.as_flp = (double) loc1->getValue().as_flp - (double) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP80X86_KIND)
+  {
+    vresult.as_flp = loc1->getValue().as_flp - loc2->getValue().as_flp;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << loc1->getType() << "\n";
+    abort();
+  }
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -111,8 +145,18 @@ void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::mul] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int * loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -122,8 +166,32 @@ void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::fmul] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+
+  VALUE vresult;
+
+  if (loc1->getType() == FLP32_KIND)
+  {
+    vresult.as_flp = (float) loc1->getValue().as_flp * (float) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP64_KIND)
+  {
+    vresult.as_flp = (double) loc1->getValue().as_flp * (double) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP80X86_KIND)
+  {
+    vresult.as_flp = loc1->getValue().as_flp * loc2->getValue().as_flp;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << loc1->getType() << "\n";
+    abort();
+  }
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -133,8 +201,18 @@ void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::udiv] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int / loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -144,8 +222,18 @@ void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::sdiv] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int / loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -155,8 +243,32 @@ void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::fdiv] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+
+  VALUE vresult;
+
+  if (loc1->getType() == FLP32_KIND)
+  {
+    vresult.as_flp = (float) loc1->getValue().as_flp / (float) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP64_KIND)
+  {
+    vresult.as_flp = (double) loc1->getValue().as_flp / (double) loc2->getValue().as_flp;
+  }
+  else if (loc1->getType() == FLP80X86_KIND)
+  {
+    vresult.as_flp = loc1->getValue().as_flp / loc2->getValue().as_flp;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << loc1->getType() << "\n";
+    abort();
+  }
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -166,8 +278,19 @@ void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::urem] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int % loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
+
 }
 
 void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -177,8 +300,18 @@ void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::srem] => Unimplemented\n";
-  abort();
+  Location *loc1 = (*currentFrame)[op1->iid];
+  Location *loc2 = (*currentFrame)[op2->iid];
+  int result = loc1->getValue().as_int % loc2->getValue().as_int;
+
+  // put result back to VALUE
+  // TODO: incomplete?!
+  VALUE vresult;
+  vresult.as_int = result;
+
+  Location *nloc = new Location(loc1->getType(), vresult, false);
+  (*currentFrame)[iid] = nloc;
+  cout << nloc->toString() << "\n";
 }
 
 void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
@@ -188,7 +321,7 @@ void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str());
 
-  cerr << "[InterpreterObserver::frem] => Unimplemented\n";
+  cerr << "[InterpreterObserver::extractvalue] => Unsupported in C???\n";
   abort();
 }
 

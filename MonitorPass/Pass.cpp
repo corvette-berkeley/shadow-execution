@@ -90,16 +90,16 @@ public:
 // ***** Binary Operations ****** //
 REGISTER_INSTRUMENTER(AddInstrumenter, "add") //done
 REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd") //done
-REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
-REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")
-REGISTER_INSTRUMENTER(MulInstrumenter, "mul")
-REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")
-REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")
-REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")
-REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")
-REGISTER_INSTRUMENTER(URemInstrumenter, "urem")
-REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")
-REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
+REGISTER_INSTRUMENTER(SubInstrumenter, "sub") // done
+REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub") // done 
+REGISTER_INSTRUMENTER(MulInstrumenter, "mul") // done
+REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul") // done
+REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv") // done
+REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv") // done
+REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv") // done
+REGISTER_INSTRUMENTER(URemInstrumenter, "urem") // done
+REGISTER_INSTRUMENTER(SRemInstrumenter, "srem") // done
+REGISTER_INSTRUMENTER(FRemInstrumenter, "frem") // done
 
 // ***** Bitwise Binary Operations ***** //
 REGISTER_INSTRUMENTER(ShlInstrumenter, "shl") //done
@@ -140,7 +140,7 @@ REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
 REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
 REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
 REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
-REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")
+REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc") // done
 REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
 REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
 REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
