@@ -88,8 +88,8 @@ public:
 // active instrumenters (see http://llvm.org/docs/LangRef.html)
 
 // ***** Binary Operations ****** //
-REGISTER_INSTRUMENTER(AddInstrumenter, "add")
-REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")
+REGISTER_INSTRUMENTER(AddInstrumenter, "add") //done
+REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd") //done
 REGISTER_INSTRUMENTER(SubInstrumenter, "sub")
 REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")
 REGISTER_INSTRUMENTER(MulInstrumenter, "mul")
@@ -105,9 +105,9 @@ REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")
 REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")
 REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")
 REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")
-REGISTER_INSTRUMENTER(AndInstrumenter, "and_")
-REGISTER_INSTRUMENTER(OrInstrumenter, "or_")
-REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")
+REGISTER_INSTRUMENTER(AndInstrumenter, "and_") //done
+REGISTER_INSTRUMENTER(OrInstrumenter, "or_") //done
+REGISTER_INSTRUMENTER(XorInstrumenter, "xor_") //done
 
 // ***** Vector Operations ***** //
 REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
@@ -119,9 +119,9 @@ REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
-REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")
-REGISTER_INSTRUMENTER(StoreInstrumenter, "store")
+REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax") //done
+REGISTER_INSTRUMENTER(LoadInstrumenter, "load") //done
+REGISTER_INSTRUMENTER(StoreInstrumenter, "store") //done
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") // printout for now
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") // printout for now
