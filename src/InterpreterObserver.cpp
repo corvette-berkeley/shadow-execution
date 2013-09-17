@@ -318,6 +318,36 @@ void InterpreterObserver::allocax(IID iid, KIND type) {
   return;
 }
 
+bool checkStore(Location *dest, KVALUE *kv) {
+  bool result = false;
+
+  switch(kv->kind) {
+  case PTR_KIND:
+    result = (dest->getValue().as_ptr == kv->value.as_ptr);
+    break;
+  case INT1_KIND: 
+  case INT8_KIND: 
+  case INT16_KIND: 
+  case INT32_KIND: 
+  case INT64_KIND:
+    result = (dest->getValue().as_int == kv->value.as_int);
+    break;
+  case FLP32_KIND:
+    result = ((float)dest->getValue().as_flp) == ((float)kv->value.as_flp);
+    break;
+  case FLP64_KIND:
+    result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
+    break;
+  case FLP80X86_KIND:
+    result = dest->getValue().as_flp == kv->value.as_flp;
+    break;
+  default: //safe_assert(false);
+    break;
+  }
+
+  return result;
+}
+
 void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
   printf("<<<<< STORE >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
@@ -333,7 +363,6 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
     dest->setValue(kv->value);
   }
   else {
-
     if (currentFrame->find(kv->iid) != currentFrame->end()) {
       Location *src = (*currentFrame)[kv->iid];
       dest->setValue(src->getValue());
@@ -346,13 +375,10 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
   cout << "Updated Dest: " << dest->toString() << "\n";
   
 
-  // sanity check
-  /*
-  if (dest->getValue().as_int != kv->value.as_int) {
+  if (!checkStore(dest, kv)) {
     cerr << "Mismatched values found in Store\n";
     abort();
   }
-  */
 
   return;
 }
