@@ -513,12 +513,36 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op) {
   abort();
 }
 
-void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
+void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv) {
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
 
-  cerr << "[InterpreterObserver::fptrunc] => Unimplemented\n";
-  abort();
+  Location *src = (*currentFrame)[kv->iid];
+  VALUE value = src->getValue();
+
+  VALUE trunc_value;
+
+  if (type == FLP32_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_flp;
+  }
+  else if (type == FLP64_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_flp;
+  }
+  else if (type == FLP80X86_KIND)
+  {
+    trunc_value.as_flp = (float) value.as_flp;
+  }
+  else 
+  {
+    cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
+    abort();
+  }
+
+  Location *trunc_loc = new Location(type, trunc_value, false);
+  (*currentFrame)[iid] = trunc_loc;
+  cout << trunc_loc->toString() << "\n";
 }
 
 void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* op) {
