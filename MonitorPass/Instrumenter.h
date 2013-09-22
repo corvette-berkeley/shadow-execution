@@ -71,6 +71,7 @@ protected:
 	inline StructType* KVALUE_TYPE()	{
 		TypePtrVector typeList;
 		typeList.push_back(IID_TYPE());
+    typeList.push_back(INT32_TYPE()); // index type
 		typeList.push_back(KIND_TYPE());
 		typeList.push_back(VALUE_TYPE());
 
@@ -175,6 +176,17 @@ protected:
 
 	/*******************************************************************************************/
 
+  int computeIndex(Value* value) {
+    if (isa<Constant>(value)) {
+      return -1;
+    } else { // not constant, but an instruction
+      Instruction* inst = (Instruction*) value;
+      return parent_->getIndex(inst);
+    }
+  }
+
+	/*******************************************************************************************/
+
 	Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
 		safe_assert(v != NULL);
 
@@ -192,6 +204,7 @@ protected:
 		}
 
 		Constant* C_iid = NULL;
+    Constant* C_inx = NULL;
 		Instruction* I_cast = NULL;
 
 		if(isa<Constant>(v)) {
@@ -200,6 +213,8 @@ protected:
 			safe_assert(isa<Instruction>(v));
 			C_iid = IID_CONSTANT(cast<Instruction>(v));
 		}
+
+    C_inx = INT32_CONSTANT(computeIndex(v), SIGNED);
 
 		if(T->isIntegerTy()) {
 			I_cast = INTMAX_CAST_INSTR(v, isSigned);
@@ -218,6 +233,7 @@ protected:
 
 		ValuePtrVector fields;
 		fields.push_back(C_iid);
+    fields.push_back(C_inx);
 		fields.push_back(KIND_CONSTANT(kind));
 		fields.push_back(I_cast);
 

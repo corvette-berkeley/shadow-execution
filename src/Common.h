@@ -50,6 +50,7 @@
 typedef uintptr_t	ADDRINT;
 typedef uint64_t 	IID;
 typedef int64_t	 	INT;
+typedef int32_t INT32;
 typedef double	 	FLP;
 typedef void*	 	PTR;
 
@@ -86,6 +87,7 @@ const IID INV_IID = 0U;
 
 struct kvalue_t {
 	IID		iid;
+  INT32 inx;
 	KIND	kind;
 	VALUE	value;
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));

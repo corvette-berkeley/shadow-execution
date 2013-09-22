@@ -3,6 +3,7 @@
 #define INSTRUMENTATION_H_
 
 #include "Common.h"
+#include <map>
 
 /*******************************************************************************************/
 
@@ -44,8 +45,16 @@ public:
 
 	void BeginBasicBlock(BasicBlock* BB, Function* F, Module* M);
 
+  void BeginFunction(); 
+
 	// returns true iff any instrumentation was done
 	bool CheckAndInstrument(Instruction* I);
+
+  // map an instruction's IID to an index for fast access 
+  // increase the number of variables
+  void createIndex(uint64_t iid); 
+
+  int getIndex(Instruction* inst);
 
 	inline static Instrumentation* GetInstance() {
 		if(instance_ == NULL) {
@@ -61,6 +70,8 @@ public:
 	Function* F_;
 	Module* M_;
 	unsigned AS_;
+  int varCount;
+  std::map<uint64_t, int> indices;
 
 private:
 	InstrumenterPtrList instrumenters_;

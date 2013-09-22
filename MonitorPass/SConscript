@@ -61,7 +61,8 @@ plugin = env.SharedLibrary(
     'MonitorPass',
     [
     'Instrumentation.cpp',
-    'Pass.cpp'
+    'Pass.cpp',
+    'Utilities.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,

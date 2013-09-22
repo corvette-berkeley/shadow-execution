@@ -57,6 +57,29 @@ void Instrumentation::BeginBasicBlock(BasicBlock* BB, Function* F, Module* M) {
 
 /*******************************************************************************************/
 
+void Instrumentation::BeginFunction() {
+  varCount = 0;
+  indices.clear();
+}
+
+/*******************************************************************************************/
+
+void Instrumentation::createIndex(uint64_t iid)
+{
+  indices[iid] = varCount;
+  varCount++;
+}
+
+/*******************************************************************************************/
+
+int Instrumentation::getIndex(Instruction* inst)
+{
+  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
+  return indices[iid];
+}
+
+/*******************************************************************************************/
+
 // returns true iff any instrumentation was done
 bool Instrumentation::CheckAndInstrument(Instruction* I) {
 	// find an instrumenter to handle the given instruction

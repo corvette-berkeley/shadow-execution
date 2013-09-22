@@ -17,6 +17,7 @@ std::string PTR_ToString(PTR& ptr) {
 std::string KVALUE_ToString(KVALUE& kv) {
 	std::stringstream s;
 	s << "[IID: " << kv.iid << " ";
+	s << "[INX: " << kv.inx << " ";
 	switch(kv.kind) {
 		case PTR_KIND:
 			s << "PTR: " << kv.value.as_ptr << "]";

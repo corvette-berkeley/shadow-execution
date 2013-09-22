@@ -23,7 +23,7 @@ public:
 	DEFAULT_CONSTRUCTOR(LoadInstrumenter);
 
 	bool CheckAndInstrument(Instruction* I) {
-		CAST_OR_RETURN(LoadInst, LI, I);
+    CAST_OR_RETURN(LoadInst, LI, I);
 
 		safe_assert(parent_ != NULL);
 
@@ -126,7 +126,6 @@ class FAddInstrumenter : public Instrumenter {
       return true;
     }
 };
-
 
 /*******************************************************************************************/
 
@@ -886,7 +885,11 @@ class StoreInstrumenter : public Instrumenter {
 
       InstrPtrVector Instrs;
       Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
-      if(kvalue == NULL) return false;
+      if(kvalue == NULL) {
+        I->dump();
+        SI->getValueOperand()->dump();
+        return false; 
+      }
 
       Constant* C_iid = IID_CONSTANT(SI);
       Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());

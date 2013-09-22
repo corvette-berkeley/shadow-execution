@@ -16,27 +16,51 @@ struct MonitorPass : public FunctionPass {
 
     Instrumentation* instrumentation = Instrumentation::GetInstance();
     safe_assert(instrumentation != NULL);
+
+    /********************************************************************************/
+    /** cuong:                                                                   ****/
+    /** First past through the function body to compute varCount and indices     ****/
+    /** i) varCount: the number of local variables and registers                 ****/ 
+    /** ii) indices: a mapping from each local variable and register to an index ****/
+    /********************************************************************************/
+
+    // set up varCount and indices map
+    instrumentation->BeginFunction();
+
+    // create index for all instructions
+    for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
+      for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+        Instruction* inst = (Instruction*) itr;
+        IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
+        instrumentation->createIndex(iid);
+      }
+    }
+
+    /********************************************************************************/
+
     unsigned int skip = 0;
+
     for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
       // set up pointers to BB, F, and M
       instrumentation->BeginBasicBlock(BB, &F, M);
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
-	//try {
 
-	if (skip == 0) {
-	  if (instrumentation->CheckAndInstrument(itr)) {
-	    if (dyn_cast<LoadInst>(itr)) {
-	      // skip instrumentation of the next 11 instructions in case of a LoadInstr
-	      skip = 11;
-	    }
-	  }
-	}
-	else {
-	  skip--;
-	}
-	//	} catch(...) {
-	//return false; // exception!
-	//}
+        //try {
+
+        if (skip == 0) {
+          if (instrumentation->CheckAndInstrument(itr)) {
+            if (dyn_cast<LoadInst>(itr)) {
+              // skip instrumentation of the next 11 instructions in case of a LoadInstr
+              skip = 11;
+            }
+          }
+        }
+        else {
+          skip--;
+        }
+        //	} catch(...) {
+        //return false; // exception!
+        //}
       }
     }
     return true;
@@ -45,11 +69,11 @@ struct MonitorPass : public FunctionPass {
   bool doInitialization(Module &M) {
     return Instrumentation::GetInstance()->Initialize(M);
   }
-  
+
   bool doFinalization(Module &M) {
     return Instrumentation::GetInstance()->Finalize(M);
   }
-  
+
   void getAnalysisUsage(AnalysisUsage &AU) const {
     AU.setPreservesAll();
   };
@@ -67,21 +91,21 @@ struct MonitorPass : public FunctionPass {
 
 template<class T>
 class RegisterInstrumenter {
-public:
-	RegisterInstrumenter(std::string name) {
-		fprintf(stderr, ">>> Registering instrumenter for instruction: %s\n", name.c_str());
+  public:
+    RegisterInstrumenter(std::string name) {
+      fprintf(stderr, ">>> Registering instrumenter for instruction: %s\n", name.c_str());
 
-		Instrumentation* I = Instrumentation::GetInstance();
-		safe_assert(I != NULL);
-		I->RegisterInstrumenter(new T(name, I));
-	}
+      Instrumentation* I = Instrumentation::GetInstance();
+      safe_assert(I != NULL);
+      I->RegisterInstrumenter(new T(name, I));
+    }
 };
 
 /*******************************************************************************************/
 
 // macro for adding instrumenters
 #define REGISTER_INSTRUMENTER(T, N) \
-		static RegisterInstrumenter<T> T##_INSTANCE(N);
+  static RegisterInstrumenter<T> T##_INSTANCE(N);
 
 /*******************************************************************************************/
 
@@ -141,11 +165,11 @@ REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
 REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
 REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
 REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc") // done
-REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")
-REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")
-REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")
-REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")
-REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")
+REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext") // done 
+REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui") // done
+REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi") // done
+REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp") // done
+REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp") // done
 REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
 REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
