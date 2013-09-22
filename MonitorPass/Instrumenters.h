@@ -43,7 +43,7 @@ public:
 		Instruction *ptr_iid = (Instruction*)(LI->getPointerOperand());
 		Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
 
-		Instruction* call = CALL_IID_PTR_IID_KVALUE(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, C_ptr_iid, kvalue);
+		Instruction* call = CALL_IID_PTR_IID_KVALUE_INT(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, C_ptr_iid, kvalue, computeIndex(LI));
 		Instrs.push_back(call);
 
 		// instrument
@@ -79,7 +79,7 @@ public:
 		Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
 		Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("add"), C_iid, nuw, nsw, op1, op2);
+		Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("add"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
 		Instrs.push_back(call);
 
 		// instrument
@@ -114,7 +114,7 @@ class FAddInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fadd"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("fadd"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -153,7 +153,7 @@ class SubInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sub"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("sub"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -188,7 +188,7 @@ class FSubInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fsub"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("fsub"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -223,7 +223,7 @@ class MulInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("mul"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
 
@@ -259,7 +259,7 @@ class FMulInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fmul"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("fmul"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -294,7 +294,7 @@ class UDivInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("udiv"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("udiv"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -329,7 +329,7 @@ class SDivInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("sdiv"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("sdiv"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -364,7 +364,7 @@ class FDivInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("fdiv"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("fdiv"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -398,7 +398,7 @@ class URemInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("urem"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("urem"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -433,7 +433,7 @@ class SRemInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("srem"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("srem"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -468,7 +468,7 @@ class FRemInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("frem"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("frem"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -505,7 +505,7 @@ class ShlInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("shl"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("shl"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -540,7 +540,7 @@ class LShrInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("lshr"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("lshr"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -575,7 +575,7 @@ class AShrInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("ashr"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("ashr"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -610,7 +610,7 @@ class AndInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("and_"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("and_"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -644,7 +644,7 @@ class OrInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("or_"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("or_"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -679,7 +679,7 @@ class XorInstrumenter : public Instrumenter {
       Constant* nuw = BOOL_CONSTANT(BI->hasNoUnsignedWrap());
       Constant* nsw = BOOL_CONSTANT(BI->hasNoSignedWrap());
 
-      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE(INSTR_TO_CALLBACK("xor_"), C_iid, nuw, nsw, op1, op2);
+      Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("xor_"), C_iid, nuw, nsw, op1, op2, computeIndex(BI));
       Instrs.push_back(call);
 
       // instrument
@@ -715,7 +715,7 @@ class ExtractElementInstrumenter : public Instrumenter {
       Value* op2 = KVALUE_VALUE(SI->getIndexOperand(), Instrs, NOSIGN);
       if(op2 == NULL) return false;
 
-      Instruction* call = CALL_IID_KVALUE_KVALUE(INSTR_TO_CALLBACK("extractelement"), C_iid, op1, op2);
+      Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("extractelement"), C_iid, op1, op2, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -787,7 +787,7 @@ class ExtractValueInstrumenter : public Instrumenter {
       Value* op1 = KVALUE_VALUE(SI->getAggregateOperand(), Instrs, NOSIGN);
       if(op1 == NULL) return false;
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("extractvalue"), C_iid, op1);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("extractvalue"), C_iid, op1, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -819,7 +819,7 @@ class InsertValueInstrumenter : public Instrumenter {
       Value* op2 = KVALUE_VALUE(SI->getInsertedValueOperand(), Instrs, NOSIGN);
       if(op2 == NULL) return false;
 
-      Instruction* call = CALL_IID_KVALUE_KVALUE(INSTR_TO_CALLBACK("insertvalue"), C_iid, op1, op2);
+      Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("insertvalue"), C_iid, op1, op2, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -858,7 +858,7 @@ class AllocaInstrumenter : public Instrumenter {
       if(kind == INV_KIND) return false;
       Constant* C_kind = KIND_CONSTANT(kind);
 
-      Instruction* call = CALL_IID_KIND(INSTR_TO_CALLBACK("allocax"), C_iid, C_kind);
+      Instruction* call = CALL_IID_KIND_INT(INSTR_TO_CALLBACK("allocax"), C_iid, C_kind, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -886,8 +886,6 @@ class StoreInstrumenter : public Instrumenter {
       InstrPtrVector Instrs;
       Value* kvalue = KVALUE_VALUE(SI->getValueOperand(), Instrs, NOSIGN);
       if(kvalue == NULL) {
-        I->dump();
-        SI->getValueOperand()->dump();
         return false; 
       }
 
@@ -899,7 +897,7 @@ class StoreInstrumenter : public Instrumenter {
       Instruction *ptr_iid = (Instruction*)(SI->getPointerOperand());
       Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
 
-      Instruction* call = CALL_IID_PTR_IID_KVALUE(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, C_ptr_iid, kvalue);
+      Instruction* call = CALL_IID_PTR_IID_KVALUE_INT(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, C_ptr_iid, kvalue, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -908,7 +906,6 @@ class StoreInstrumenter : public Instrumenter {
       return true;
     }
 };
-
 
 // Callback: void fence()
 class FenceInstrumenter : public Instrumenter {
@@ -953,7 +950,7 @@ class AtomicCmpXchgInstrumenter : public Instrumenter {
       Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
       Instrs.push_back(I_cast_ptr);
 
-      Instruction* call = CALL_IID_PTR_KVALUE_KVALUE(INSTR_TO_CALLBACK("cmpxchg"), C_iid, I_cast_ptr, kvalue1, kvalue2);
+      Instruction* call = CALL_IID_PTR_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("cmpxchg"), C_iid, I_cast_ptr, kvalue1, kvalue2, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1005,7 +1002,7 @@ class GetElementPtrInstrumenter : public Instrumenter {
       Value* op1 = KVALUE_VALUE(SI->getPointerOperand(), Instrs, NOSIGN);
       if(op1 == NULL) return false;
 
-      Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1);
+      Instruction* call = CALL_IID_BOOL_KVALUE_INT(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1044,7 +1041,7 @@ class TruncInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("trunc"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("trunc"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1081,7 +1078,7 @@ class ZExtInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("zext"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("zext"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1119,7 +1116,7 @@ class SExtInstrumenter : public Instrumenter {
 
       Constant* C_kind = KIND_CONSTANT(kind);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("sext"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("sext"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1157,7 +1154,7 @@ class FPTruncInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptrunc"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("fptrunc"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1195,7 +1192,7 @@ class FPExtInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fpext"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("fpext"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1233,7 +1230,7 @@ class FPToUIInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptoui"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("fptoui"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1271,7 +1268,7 @@ class FPToSIInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("fptosi"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("fptosi"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1308,7 +1305,7 @@ class UIToFPInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("uitofp"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("uitofp"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1346,7 +1343,7 @@ class SIToFPInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("sitofp"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("sitofp"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1384,7 +1381,7 @@ class PtrToIntInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("ptrtoint"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("ptrtoint"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1422,7 +1419,7 @@ class IntToPtrInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("inttoptr"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("inttoptr"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1460,7 +1457,7 @@ class BitCastInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KIND_KVALUE(INSTR_TO_CALLBACK("bitcast"), C_iid, C_kind, op);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("bitcast"), C_iid, C_kind, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1493,10 +1490,10 @@ class BranchInstrumenter : public Instrumenter {
       if (SI->isConditional()) {
         Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
         if(op1 == NULL) return false;
-        Instruction* call = CALL_IID_BOOL_KVALUE(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1);
+        Instruction* call = CALL_IID_BOOL_KVALUE_INT(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1, computeIndex(SI));
         Instrs.push_back(call);
       } else {
-        Instruction* call = CALL_IID_BOOL(INSTR_TO_CALLBACK("branch2"), C_iid, conditional);
+        Instruction* call = CALL_IID_BOOL_INT(INSTR_TO_CALLBACK("branch2"), C_iid, conditional, computeIndex(SI));
         Instrs.push_back(call);
       }
 
@@ -1525,7 +1522,7 @@ class IndirectBrInstrumenter : public Instrumenter {
       Constant* C_iid = IID_CONSTANT(SI);
       Value* op1 = KVALUE_VALUE(SI->getAddress(), Instrs, NOSIGN);
       if (op1 == NULL) return false;
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("indirectbr"), C_iid, op1);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("indirectbr"), C_iid, op1, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1565,7 +1562,7 @@ class InvokeInstrumenter : public Instrumenter {
 
       Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("invoke"), C_iid, call_value);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("invoke"), C_iid, call_value, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1594,7 +1591,7 @@ class ResumeInstrumenter : public Instrumenter {
       Constant* C_iid = IID_CONSTANT(SI);
       Value* op1 = KVALUE_VALUE(SI->getValue(), Instrs, NOSIGN);
       if (op1 == NULL) return false;
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("resume"), C_iid, op1);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("resume"), C_iid, op1, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1624,12 +1621,12 @@ class ReturnInstrumenter : public Instrumenter {
       Value* retVal = SI->getReturnValue();
 
       if (retVal == NULL) {
-        Instruction* call = CALL_IID(INSTR_TO_CALLBACK("return2_"), C_iid);
+        Instruction* call = CALL_IID_INT(INSTR_TO_CALLBACK("return2_"), C_iid, computeIndex(SI));
         Instrs.push_back(call);
       } else {
         Value* op1 = KVALUE_VALUE(retVal, Instrs, NOSIGN);
         if (op1 == NULL) return false;
-        Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("return_"), C_iid, op1);
+        Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("return_"), C_iid, op1, computeIndex(SI));
         Instrs.push_back(call);
       }
 
@@ -1659,7 +1656,7 @@ class SwitchInstrumenter : public Instrumenter {
 
       Value* op = SI->getCondition();
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("switch_"), C_iid, op);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("switch_"), C_iid, op, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1717,7 +1714,7 @@ class ICmpInstrumenter : public Instrumenter {
       PRED pred = SI->getUnsignedPredicate();
       Constant* C_pred = PRED_CONSTANT(pred);
 
-      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred);
+      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED_INT(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1753,7 +1750,7 @@ class FCmpInstrumenter : public Instrumenter {
       PRED pred = SI->getPredicate();
       Constant* C_pred = PRED_CONSTANT(pred);
 
-      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred);
+      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED_INT(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1807,7 +1804,7 @@ class SelectInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
-      Instruction* call = CALL_IID_KVALUE_KVALUE_KVALUE(INSTR_TO_CALLBACK("select"), C_iid, cond, tvalue, fvalue);
+      Instruction* call = CALL_IID_KVALUE_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("select"), C_iid, cond, tvalue, fvalue, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1851,7 +1848,7 @@ class CallInstrumenter : public Instrumenter {
 
       Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
 
-      Instruction* call = CALL_IID_KVALUE(INSTR_TO_CALLBACK("call"), C_iid, call_value);
+      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("call"), C_iid, call_value, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument

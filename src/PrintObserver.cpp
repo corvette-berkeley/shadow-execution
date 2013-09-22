@@ -4,167 +4,169 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
-  printf("<<<<< LOAD >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx) {
+  printf("<<<<< LOAD >>>>> %s, %s %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
-	 KVALUE_ToString(*kv).c_str());
+	 KVALUE_ToString(*kv).c_str(),
+   inx);
 }
 
 // ***** Binary Operations ***** //
 
-void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< ADD >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< ADD >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), 
+   inx);
 }
 
-void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FADD >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FADD >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SUB >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SUB >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FSUB >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FSUB >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< MUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< MUL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FMUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FMUL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< UDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< UDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< UREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< UREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
 
 // ***** Bitwise Binary Operations ***** //
-void PrintObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
-void PrintObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
 // ***** Vector Operations ***** //
 
-void PrintObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s\n", IID_ToString(iid).c_str(),
+void PrintObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
 void PrintObserver::insertelement() {
@@ -178,159 +180,159 @@ void PrintObserver::shufflevector() {
 
 // ***** AGGREGATE OPERATIONS ***** //
 
-void PrintObserver::extractvalue(IID iid, KVALUE* op) {
-  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::extractvalue(IID iid, KVALUE* op, int inx) {
+  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s\n", IID_ToString(iid).c_str(),
+void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 }
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str());
+void PrintObserver::allocax(IID iid, KIND kind, int inx) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), inx);
 }
 
-void PrintObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
-  printf("<<<<< STORE >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx) {
+  printf("<<<<< STORE >>>>> %s, %s %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
 	 IID_ToString(addr_iid).c_str(),
-	 KVALUE_ToString(*kv).c_str());
+	 KVALUE_ToString(*kv).c_str(), inx);
 }
 
 void PrintObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
 }
 
-void PrintObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
-  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx) {
+  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
 	 KVALUE_ToString(*kv1).c_str(),
-	 KVALUE_ToString(*kv2).c_str());
+	 KVALUE_ToString(*kv2).c_str(), inx);
 }
 
 void PrintObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s\n", IID_ToString(iid).c_str(),
+void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
-	 KVALUE_ToString(*op).c_str());
+	 KVALUE_ToString(*op).c_str(), inx);
 }
 
 // ***** Conversion Operations ***** //
 
-void PrintObserver::trunc(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< TRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::zext(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< ZEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::sext(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< SEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::fpext(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< FPEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::fpext(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< FPTOUII >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< FPTOSI >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< UITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< SITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< BITCAST >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
 
 // ***** TerminatorInst ***** //
-void PrintObserver::branch(IID iid, bool conditional, KVALUE* op1) {
-  printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s\n", IID_ToString(iid).c_str(),
+void PrintObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {
+  printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (conditional ? "1" : "0"),
-	 KVALUE_ToString(*op1).c_str());
+	 KVALUE_ToString(*op1).c_str(), inx);
 }
 
-void PrintObserver::branch2(IID iid, bool conditional) {
-  printf("<<<<< BRANCH >>>>> %s, cond: %s\n", IID_ToString(iid).c_str(),
-	 (conditional ? "1" : "0"));
+void PrintObserver::branch2(IID iid, bool conditional, int inx) {
+  printf("<<<<< BRANCH >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 (conditional ? "1" : "0"), inx);
 }
 
-void PrintObserver::indirectbr(IID iid, KVALUE* op1) {
-  printf("<<<<< INDIRECTBR >>>>> %s, address: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void PrintObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< INDIRECTBR >>>>> %s, address: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 }
 
-void PrintObserver::invoke(IID iid, KVALUE* call_value) {
+void PrintObserver::invoke(IID iid, KVALUE* call_value, int inx) {
   printf("<<<<< INVOKE >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
     printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
   }
-  printf("\n");
+  printf("[INX: %d]\n", inx);
   
 }
 
-void PrintObserver::resume(IID iid, KVALUE* op1) {
-  printf("<<<<< RESUME >>>>> %s, acc_value: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void PrintObserver::resume(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< RESUME >>>>> %s, acc_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 }
 
-void PrintObserver::return_(IID iid, KVALUE* op1) {
-  printf("<<<<< RETURN >>>>> %s, ret_value: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void PrintObserver::return_(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< RETURN >>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 }
 
-void PrintObserver::return2_(IID iid) {
-  printf("<<<<< RETURN >>>>> %s\n", IID_ToString(iid).c_str());
+void PrintObserver::return2_(IID iid, int inx) {
+  printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 }
 
-void PrintObserver::switch_(IID iid, KVALUE* op) {
-  printf("<<<<< SWITCH >>>>> %s, condition: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void PrintObserver::switch_(IID iid, KVALUE* op, int inx) {
+  printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(), inx);
 }
 
 void PrintObserver::unreachable() {
@@ -339,35 +341,35 @@ void PrintObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void PrintObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
-  printf("<<<<< ICMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+void PrintObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
+  printf("<<<<< ICMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred, inx);
 }
 
-void PrintObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
-  printf("<<<<< FCMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+void PrintObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
+  printf("<<<<< FCMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred, inx);
 }
 
 void PrintObserver::phinode() {
   printf("<<<<< PHINODE >>>>>\n");
 }
 
-void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
-  printf("<<<<< SELECT >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
-	 KVALUE_ToString(*fvalue).c_str());
+void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
+  printf("<<<<< SELECT >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
+	 KVALUE_ToString(*fvalue).c_str(), inx);
 }
 
 void PrintObserver::push_stack(KVALUE* value) {
   myStack.push(value);
 }
 
-void PrintObserver::call(IID iid, KVALUE* call_value) {
+void PrintObserver::call(IID iid, KVALUE* call_value, int inx) {
   printf("<<<<< CALL >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
     printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
   }
-  printf("\n");
+  printf("[INX: %d]\n", inx);
 }
 
 void PrintObserver::vaarg() {
