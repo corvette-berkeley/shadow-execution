@@ -36,14 +36,18 @@ public:
 		if(kvalue == NULL) return false;
 
 		Constant* C_iid = IID_CONSTANT(LI);
+
 		Instruction* I_cast_ptr = PTR_CAST_INSTR(LI->getPointerOperand());
 		Instrs.push_back(I_cast_ptr);
 
+    // cuong: pass a KVALUE instead of pointer constant
+    Value* op = KVALUE_VALUE(LI->getPointerOperand(), Instrs, NOSIGN);
+    if (op == NULL) return false;
 		// new: iid for pointer
-		Instruction *ptr_iid = (Instruction*)(LI->getPointerOperand());
-		Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
+		// Instruction *ptr_iid = (Instruction*)(LI->getPointerOperand());
+		// Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
 
-		Instruction* call = CALL_IID_PTR_IID_KVALUE_INT(INSTR_TO_CALLBACK("load"), C_iid, I_cast_ptr, C_ptr_iid, kvalue, computeIndex(LI));
+		Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("load"), C_iid, op, kvalue, computeIndex(LI));
 		Instrs.push_back(call);
 
 		// instrument
@@ -893,11 +897,14 @@ class StoreInstrumenter : public Instrumenter {
       Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
       Instrs.push_back(I_cast_ptr);
 
+      // cuong: pass a kvalue instead of pointer value
+      Value* op = KVALUE_VALUE(SI->getPointerOperand(), Instrs, NOSIGN);
+      
       // new: iid for ptr
-      Instruction *ptr_iid = (Instruction*)(SI->getPointerOperand());
-      Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
+      // Instruction *ptr_iid = (Instruction*)(SI->getPointerOperand());
+      // Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
 
-      Instruction* call = CALL_IID_PTR_IID_KVALUE_INT(INSTR_TO_CALLBACK("store"), C_iid, I_cast_ptr, C_ptr_iid, kvalue, computeIndex(SI));
+      Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("store"), C_iid, op, kvalue, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument

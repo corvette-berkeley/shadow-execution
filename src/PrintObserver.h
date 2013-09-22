@@ -19,7 +19,7 @@ public:
   stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
-	virtual void load(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx);
+	virtual void load(IID iid, KVALUE* op, KVALUE* kv, int inx);
 
 	// ***** Binary Operations ***** //
 
@@ -76,7 +76,7 @@ public:
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid, KIND kind, int inx);
 
-	virtual void store(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx);
+	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
 
 	virtual void fence();
 
@@ -147,6 +147,8 @@ public:
 	virtual void landingpad();
 
 	void push_stack(KVALUE* value);
+
+  void create_stack_frame(int size);
 };
 
 

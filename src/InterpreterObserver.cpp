@@ -5,16 +5,16 @@
 #include <stack>
 #include <llvm/InstrTypes.h>
 	
-void InterpreterObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
-  printf("<<<<< LOAD >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
-	 PTR_ToString(addr).c_str(),
-	 IID_ToString(addr_iid).c_str(),
-	 KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
+  printf("<<<<< LOAD >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(),
+	 KVALUE_ToString(*kv).c_str(),
+   inx);
 
-  Location *loc = (*currentFrame)[addr_iid];
+  Location *loc = currentFrame[op->inx];
   Location *nloc = new Location(loc->getType(), loc->getValue(), false);
 
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
   
   return;
@@ -22,15 +22,16 @@ void InterpreterObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
 
 // ***** Binary Operations ***** //
 
-void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< ADD >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< ADD >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(),
+   inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int + loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -39,21 +40,21 @@ void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FADD >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FADD >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
 
   VALUE vresult;
 
@@ -76,21 +77,21 @@ void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SUB >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SUB >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int - loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -99,19 +100,19 @@ void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FSUB >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FSUB >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
 
   VALUE vresult;
 
@@ -134,19 +135,19 @@ void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< MUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< MUL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int * loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -155,19 +156,19 @@ void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FMUL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FMUL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
 
   VALUE vresult;
 
@@ -190,19 +191,19 @@ void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< UDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< UDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int / loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -211,19 +212,19 @@ void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int / loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -232,19 +233,19 @@ void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FDIV >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
 
   VALUE vresult;
 
@@ -267,19 +268,19 @@ void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< UREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< UREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int % loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -288,20 +289,20 @@ void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
 }
 
-void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int % loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -310,16 +311,16 @@ void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 }
 
-void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
   cerr << "[InterpreterObserver::extractvalue] => Unsupported in C???\n";
   abort();
@@ -327,15 +328,15 @@ void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
 
 // ***** Bitwise Binary Operations ***** //
-void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int << loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -344,21 +345,21 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int; // same as arith?
 
   // put result back to VALUE
@@ -367,21 +368,21 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -390,21 +391,21 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int & loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -413,21 +414,21 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int | loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -436,21 +437,21 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (nuw ? "1" : "0"),
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int ^ loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -459,7 +460,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -467,10 +468,10 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
 // ***** Vector Operations ***** //
 
-void InterpreterObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
   cerr << "[InterpreterObserver::extractelement] => Unimplemented\n";
   abort();
@@ -493,18 +494,19 @@ void InterpreterObserver::shufflevector() {
 
 // ***** AGGREGATE OPERATIONS ***** //
 
-void InterpreterObserver::extractvalue(IID iid, KVALUE* op) {
-  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::extractvalue(IID iid, KVALUE* op, int inx) {
+  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(), 
+   inx);
 
   cerr << "[InterpreterObserver::extractvalue] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
-  printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
+  printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op1).c_str(),
-	 KVALUE_ToString(*op2).c_str());
+	 KVALUE_ToString(*op2).c_str(), inx);
 
   cerr << "[InterpreterObserver::insertvalue] => Unimplemented\n";
   abort();
@@ -512,11 +514,11 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, KIND type) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str());
+void InterpreterObserver::allocax(IID iid, KIND type, int inx) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
 
   Location *location = new Location(type, true);
-  (*currentFrame)[iid] = location;
+  currentFrame[inx] = location;
   cout << location->toString() << "\n";
 
   return;
@@ -552,14 +554,13 @@ bool checkStore(Location *dest, KVALUE *kv) {
   return result;
 }
 
-void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
-  printf("<<<<< STORE >>>>> %s, %s %s, %s\n", IID_ToString(iid).c_str(),
-	 PTR_ToString(addr).c_str(),
-	 IID_ToString(addr_iid).c_str(),
-	 KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
+  printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(),
+	 KVALUE_ToString(*kv).c_str(), inx);
 
   // retrieve Location to store in
-  Location *dest = (*currentFrame)[addr_iid];
+  Location *dest = currentFrame[op->inx];
   cout << "Dest: " << dest->toString() << "\n";
 
   // the value to store is a constant
@@ -567,14 +568,8 @@ void InterpreterObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv) {
     dest->setValue(kv->value);
   }
   else {
-    if (currentFrame->find(kv->iid) != currentFrame->end()) {
-      Location *src = (*currentFrame)[kv->iid];
-      dest->setValue(src->getValue());
-    }
-    else {
-      cerr << "[InterpreterObserver::store] => Could not find map location\n";
-      abort();
-    }
+    Location *src = currentFrame[kv->inx];
+    dest->setValue(src->getValue());
   }
   cout << "Updated Dest: " << dest->toString() << "\n";
   
@@ -594,11 +589,12 @@ void InterpreterObserver::fence() {
   abort();
 }
 
-void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2) {
-  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx) {
+  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 PTR_ToString(addr).c_str(),
 	 KVALUE_ToString(*kv1).c_str(),
-	 KVALUE_ToString(*kv2).c_str());
+	 KVALUE_ToString(*kv2).c_str(), 
+   inx);
 
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
   abort();
@@ -611,10 +607,11 @@ void InterpreterObserver::atomicrmw() {
   abort();
 }
 
-void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
-	 KVALUE_ToString(*op).c_str());
+	 KVALUE_ToString(*op).c_str(), 
+   inx);
 
   cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
   abort();
@@ -622,35 +619,35 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op) {
 
 // ***** Conversion Operations ***** //
 
-void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< TRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< ZEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::zext] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< SEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::sext] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -674,15 +671,15 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv) {
   }
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< FPEXT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -706,45 +703,45 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv) {
   }
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< FPTOUII >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< FPTOSI >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< UITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -768,15 +765,15 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv) {
   }
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv) {
-  printf("<<<<< SITOFP >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str());
+void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = (*currentFrame)[kv->iid];
+  Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -800,30 +797,30 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv) {
   }
 
   Location *trunc_loc = new Location(type, trunc_value, false);
-  (*currentFrame)[iid] = trunc_loc;
+  currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 
 }
 
-void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op) {
-  printf("<<<<< BITCAST >>>>> %s, %s, %s\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str());
+void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::bitcast] => Unimplemented\n";
   abort();
@@ -831,33 +828,33 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op) {
 
 
 // ***** TerminatorInst ***** //
-void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1) {
-  printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {
+  printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 (conditional ? "1" : "0"),
-	 KVALUE_ToString(*op1).c_str());
+	 KVALUE_ToString(*op1).c_str(), inx);
 
   cerr << "[InterpreterObserver::branch] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::branch2(IID iid, bool conditional) {
-  printf("<<<<< BRANCH >>>>> %s, cond: %s\n", IID_ToString(iid).c_str(),
-	 (conditional ? "1" : "0"));
+void InterpreterObserver::branch2(IID iid, bool conditional, int inx) {
+  printf("<<<<< BRANCH >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 (conditional ? "1" : "0"), inx);
 
   cerr << "[InterpreterObserver::branch2] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::indirectbr(IID iid, KVALUE* op1) {
-  printf("<<<<< INDIRECTBR >>>>> %s, address: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void InterpreterObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< INDIRECTBR >>>>> %s, address: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 
   cerr << "[InterpreterObserver::indirectbr] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::invoke(IID iid, KVALUE* call_value) {
-  printf("<<<<< INVOKE >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
+void InterpreterObserver::invoke(IID iid, KVALUE* call_value, int inx) {
+  printf("<<<<< INVOKE >>>>> %s, call_value: %s, [INX: %d]", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), inx);
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
@@ -869,17 +866,17 @@ void InterpreterObserver::invoke(IID iid, KVALUE* call_value) {
   abort();
 }
 
-void InterpreterObserver::resume(IID iid, KVALUE* op1) {
-  printf("<<<<< RESUME >>>>> %s, acc_value: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void InterpreterObserver::resume(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< RESUME >>>>> %s, acc_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 
   cerr << "[InterpreterObserver::resume] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::return_(IID iid, KVALUE* op1) {
-  printf("<<<<< RETURN >>>>> %s, ret_value: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str());
+void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
+  printf("<<<<< RETURN >>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op1).c_str(), inx);
 
   executionStack.pop();
 
@@ -895,16 +892,16 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1) {
   return;
 }
 
-void InterpreterObserver::return2_(IID iid) {
-  printf("<<<<< RETURN >>>>> %s\n", IID_ToString(iid).c_str());
+void InterpreterObserver::return2_(IID iid, int inx) {
+  printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 
   cerr << "[InterpreterObserver::return2] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::switch_(IID iid, KVALUE* op) {
-  printf("<<<<< SWITCH >>>>> %s, condition: %s\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str());
+void InterpreterObserver::switch_(IID iid, KVALUE* op, int inx) {
+  printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::switch] => Unimplemented\n";
   abort();
@@ -919,11 +916,11 @@ void InterpreterObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
-  printf("<<<<< ICMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
+  printf("<<<<< ICMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred, inx);
 
-  Location *loc1 = (*currentFrame)[op1->iid];
-  Location *loc2 = (*currentFrame)[op2->iid];
+  Location *loc1 = currentFrame[op1->inx];
+  Location *loc2 = currentFrame[op2->inx];
 
   int result = 0;
   switch(pred) {
@@ -967,14 +964,14 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
   vresult.as_int = result;
 
   Location *nloc = new Location(loc1->getType(), vresult, false);
-  (*currentFrame)[iid] = nloc;
+  currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
 }
 
-void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred) {
-  printf("<<<<< FCMP >>>>> %s, %s, %s, %d\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred);
+void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
+  printf("<<<<< FCMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred, inx);
 
   cerr << "[InterpreterObserver::fcmp] => Unimplemented\n";
   abort();
@@ -984,9 +981,9 @@ void InterpreterObserver::phinode() {
   printf("<<<<< PHINODE >>>>>\n");
 }
 
-void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue) {
-  printf("<<<<< SELECT >>>>> %s, %s, %s, %s\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
-	 KVALUE_ToString(*fvalue).c_str());
+void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
+  printf("<<<<< SELECT >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
+	 KVALUE_ToString(*fvalue).c_str(), inx);
 
   cerr << "[InterpreterObserver::select] => Unimplemented\n";
   abort();
@@ -996,8 +993,13 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   myStack.push(value);
 }
 
-void InterpreterObserver::call(IID iid, KVALUE* call_value) {
-  printf("<<<<< CALL >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
+void InterpreterObserver::create_stack_frame(int size) {
+  currentFrame = (Location**) malloc(sizeof(Location*)*size);
+  executionStack.push(currentFrame);
+}
+
+void InterpreterObserver::call(IID iid, KVALUE* call_value, int inx) {
+  printf("<<<<< CALL >>>>> %s, call_value: %s, [INX: %d]", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), inx);
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
@@ -1025,7 +1027,4 @@ void InterpreterObserver::landingpad() {
 
 void InterpreterObserver::printCurrentFrame() {
   printf("Print current frame\n");
-  for(Frame::iterator it = currentFrame->begin(); it != currentFrame->end(); it++) {
-    printf("%ld \n", it->first);
-  }
 }

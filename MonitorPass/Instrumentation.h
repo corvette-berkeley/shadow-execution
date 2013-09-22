@@ -56,6 +56,8 @@ public:
 
   int getIndex(Instruction* inst);
 
+  int getFrameSize();
+
 	inline static Instrumentation* GetInstance() {
 		if(instance_ == NULL) {
 			instance_ = new Instrumentation();

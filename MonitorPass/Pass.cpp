@@ -1,6 +1,7 @@
 #define DEBUG_TYPE "hello"
 
 #include "Instrumentation.h"
+#include "Instrumenter.h"
 #include "MonitorPass.h"
 
 namespace {
@@ -19,7 +20,7 @@ struct MonitorPass : public FunctionPass {
 
     /********************************************************************************/
     /** cuong:                                                                   ****/
-    /** First past through the function body to compute varCount and indices     ****/
+    /** First pass through the function body to compute varCount and indices     ****/
     /** i) varCount: the number of local variables and registers                 ****/ 
     /** ii) indices: a mapping from each local variable and register to an index ****/
     /********************************************************************************/
@@ -37,13 +38,36 @@ struct MonitorPass : public FunctionPass {
     }
 
     /********************************************************************************/
+    /** cuong:                                                                   ****/
+    /** Second pass through the function body for instrumentation                ****/
+    /** i) insert call to llvm_create_stack_frame at the beginning of each       ****/ 
+    /**    function                                                              ****/ 
+    /** ii) instrument each instruction using instrumentation->CheckAndInstrument ***/
+    /********************************************************************************/
 
     unsigned int skip = 0;
+    bool isFirstInstruction = true; 
 
     for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
       // set up pointers to BB, F, and M
       instrumentation->BeginBasicBlock(BB, &F, M);
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+
+        // insert a call to create stack frame
+        if (isFirstInstruction)
+        {
+          Constant* frameSize = ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()), instrumentation->getFrameSize(), SIGNED);
+          TypePtrVector argTypes;
+          argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
+
+          ValuePtrVector args;
+          args.push_back(frameSize);
+
+          FunctionType* funType = FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()), ArrayRef<Type*>(argTypes), false);
+          Instruction* call = CallInst::Create(instrumentation->M_->getOrInsertFunction(StringRef("llvm_create_stack_frame"), funType), ArrayRef<Value*>(args)); 
+          call->insertBefore(itr);
+          isFirstInstruction = false;
+        } 
 
         //try {
 
@@ -51,7 +75,7 @@ struct MonitorPass : public FunctionPass {
           if (instrumentation->CheckAndInstrument(itr)) {
             if (dyn_cast<LoadInst>(itr)) {
               // skip instrumentation of the next 11 instructions in case of a LoadInstr
-              skip = 11;
+              skip = 24;
             }
           }
         }

@@ -80,6 +80,12 @@ int Instrumentation::getIndex(Instruction* inst)
 
 /*******************************************************************************************/
 
+int Instrumentation::getFrameSize()
+{
+  return varCount;
+}
+/*******************************************************************************************/
+
 // returns true iff any instrumentation was done
 bool Instrumentation::CheckAndInstrument(Instruction* I) {
 	// find an instrumenter to handle the given instruction

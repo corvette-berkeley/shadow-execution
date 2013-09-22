@@ -43,8 +43,8 @@ extern "C" {
 
   // ***** Memory Access and Addressing Operations ***** //
   void llvm_allocax(IID iid, KIND kind, int x);
-  void llvm_load(IID iid, PTR addr, IID addr_iid, KVALUE* value, int x);
-  void llvm_store(IID iid, PTR addr, IID addr_iid, KVALUE* value, int x);
+  void llvm_load(IID iid, KVALUE* op, KVALUE* value, int x);
+  void llvm_store(IID iid, KVALUE* op, KVALUE* value, int x);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
@@ -81,6 +81,7 @@ extern "C" {
   void llvm_phinode();
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
+  void llvm_create_stack_frame(int size);
   void llvm_call(IID iid, KVALUE* value, int x);
   void llvm_vaarg();
   void llvm_landingpad();

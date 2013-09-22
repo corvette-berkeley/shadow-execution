@@ -62,7 +62,7 @@ plugin = env.SharedLibrary(
     [
     'Common.cpp',
     'InstructionMonitor.cpp',
-#    'InterpreterObserver.cpp',
+    'InterpreterObserver.cpp',
     'Location.cpp',
     'PrintObserver.cpp',
         ],

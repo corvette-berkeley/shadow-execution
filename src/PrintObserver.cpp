@@ -4,10 +4,9 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx) {
-  printf("<<<<< LOAD >>>>> %s, %s %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 PTR_ToString(addr).c_str(),
-	 IID_ToString(addr_iid).c_str(),
+void PrintObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
+  printf("<<<<< LOAD >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(),
 	 KVALUE_ToString(*kv).c_str(),
    inx);
 }
@@ -197,10 +196,9 @@ void PrintObserver::allocax(IID iid, KIND kind, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), inx);
 }
 
-void PrintObserver::store(IID iid, PTR addr, IID addr_iid, KVALUE* kv, int inx) {
-  printf("<<<<< STORE >>>>> %s, %s %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 PTR_ToString(addr).c_str(),
-	 IID_ToString(addr_iid).c_str(),
+void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
+  printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KVALUE_ToString(*op).c_str(),
 	 KVALUE_ToString(*kv).c_str(), inx);
 }
 
@@ -360,6 +358,10 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 
 void PrintObserver::push_stack(KVALUE* value) {
   myStack.push(value);
+}
+
+void PrintObserver::create_stack_frame(int size) {
+  printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
 
 void PrintObserver::call(IID iid, KVALUE* call_value, int inx) {

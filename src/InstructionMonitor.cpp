@@ -1,6 +1,6 @@
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
-// #include "InterpreterObserver.h"
+#include "InterpreterObserver.h"
 
 /*******************************************************************************************/
 #define DISPATCH_TO_OBSERVERS(func, ...) \
@@ -112,13 +112,13 @@ void llvm_allocax(IID iid, KIND kind, int inx) {
   DISPATCH_TO_OBSERVERS(allocax, iid, kind, inx)
 }
 
-void llvm_load(IID iid, PTR addr, IID ptr_iid, KVALUE* value, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, addr, ptr_iid, value, inx);
+void llvm_load(IID iid, KVALUE* op, KVALUE* value, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, op, value, inx);
 }
 
 
-void llvm_store(IID iid, PTR addr, IID ptr_iid, KVALUE* value, int inx) {
-  DISPATCH_TO_OBSERVERS(store, iid, addr, ptr_iid, value, inx)
+void llvm_store(IID iid, KVALUE* op, KVALUE* value, int inx) {
+  DISPATCH_TO_OBSERVERS(store, iid, op, value, inx)
 }
 
 void llvm_fence() {
@@ -247,6 +247,10 @@ void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
 }
 
+void llvm_create_stack_frame(int size) {
+	DISPATCH_TO_OBSERVERS(create_stack_frame, size)
+}
+
 void llvm_call(IID iid, KVALUE* value, int inx) {
 	DISPATCH_TO_OBSERVERS(call, iid, value, inx)
 }
@@ -273,8 +277,8 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-REGISTER_OBSERVER(PrintObserver, "print")
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(PrintObserver, "print")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 
 /*******************************************************************************************/
 
