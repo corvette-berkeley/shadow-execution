@@ -517,8 +517,16 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
 
-  Location *location = new Location(type, true);
-  currentFrame[inx] = location;
+  Location* location;
+  if (callArgs.empty()) {
+    location = new Location(type, true);
+    currentFrame[inx] = location;
+  } else {
+    location = callArgs.top();
+    currentFrame[inx] = location;
+    callArgs.pop();
+  }
+
   cout << location->toString() << "\n";
 
   return;
@@ -571,8 +579,9 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
     Location *src = currentFrame[kv->inx];
     dest->setValue(src->getValue());
   }
+
   cout << "Updated Dest: " << dest->toString() << "\n";
-  
+
 
   if (!checkStore(dest, kv)) {
     cerr << "Mismatched values found in Store\n";
@@ -591,10 +600,10 @@ void InterpreterObserver::fence() {
 
 void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx) {
   printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 PTR_ToString(addr).c_str(),
-	 KVALUE_ToString(*kv1).c_str(),
-	 KVALUE_ToString(*kv2).c_str(), 
-   inx);
+      PTR_ToString(addr).c_str(),
+      KVALUE_ToString(*kv1).c_str(),
+      KVALUE_ToString(*kv2).c_str(), 
+      inx);
 
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
   abort();
@@ -609,9 +618,9 @@ void InterpreterObserver::atomicrmw() {
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int inx) {
   printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 (inbound ? "1" : "0"),
-	 KVALUE_ToString(*op).c_str(), 
-   inx);
+      (inbound ? "1" : "0"),
+      KVALUE_ToString(*op).c_str(), 
+      inx);
 
   cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
   abort();
@@ -621,7 +630,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int i
 
 void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< TRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
   abort();
@@ -629,7 +638,7 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
 
 void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< ZEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::zext] => Unimplemented\n";
   abort();
@@ -637,7 +646,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
 
 void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::sext] => Unimplemented\n";
   abort();
@@ -645,7 +654,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -677,7 +686,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -709,7 +718,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -724,7 +733,7 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -739,7 +748,7 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -771,7 +780,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
   Location *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
@@ -804,7 +813,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
 
 void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< PTRTOINT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
   abort();
@@ -812,7 +821,7 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
 
 void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< INTTOPTR >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
   abort();
@@ -820,7 +829,7 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
 
 void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::bitcast] => Unimplemented\n";
   abort();
@@ -830,27 +839,18 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
 // ***** TerminatorInst ***** //
 void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {
   printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 (conditional ? "1" : "0"),
-	 KVALUE_ToString(*op1).c_str(), inx);
-
-  cerr << "[InterpreterObserver::branch] => Unimplemented\n";
-  abort();
+      (conditional ? "1" : "0"),
+      KVALUE_ToString(*op1).c_str(), inx);
 }
 
 void InterpreterObserver::branch2(IID iid, bool conditional, int inx) {
   printf("<<<<< BRANCH >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 (conditional ? "1" : "0"), inx);
-
-  cerr << "[InterpreterObserver::branch2] => Unimplemented\n";
-  abort();
+      (conditional ? "1" : "0"), inx);
 }
 
 void InterpreterObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
   printf("<<<<< INDIRECTBR >>>>> %s, address: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str(), inx);
-
-  cerr << "[InterpreterObserver::indirectbr] => Unimplemented\n";
-  abort();
+      KVALUE_ToString(*op1).c_str(), inx);
 }
 
 void InterpreterObserver::invoke(IID iid, KVALUE* call_value, int inx) {
@@ -868,7 +868,7 @@ void InterpreterObserver::invoke(IID iid, KVALUE* call_value, int inx) {
 
 void InterpreterObserver::resume(IID iid, KVALUE* op1, int inx) {
   printf("<<<<< RESUME >>>>> %s, acc_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str(), inx);
+      KVALUE_ToString(*op1).c_str(), inx);
 
   cerr << "[InterpreterObserver::resume] => Unimplemented\n";
   abort();
@@ -876,32 +876,48 @@ void InterpreterObserver::resume(IID iid, KVALUE* op1, int inx) {
 
 void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
   printf("<<<<< RETURN >>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op1).c_str(), inx);
+      KVALUE_ToString(*op1).c_str(), inx);
 
   executionStack.pop();
 
   if (!executionStack.empty()) {
     currentFrame = executionStack.top();
     cout << "New stack size: " << executionStack.size() << "\n";
-  }
-  else {
+    if (callerVarIndex != -1) {
+      currentFrame[callerVarIndex]->setValue(op1->value); 
+      cout << currentFrame[callerVarIndex]->toString() << "\n";
+    }
+  } else {
     currentFrame = NULL;
     cout << "The execution stack is empty.\n";
   }
-  
+
+  callerVarIndex = -1;
+
   return;
 }
 
 void InterpreterObserver::return2_(IID iid, int inx) {
   printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 
-  cerr << "[InterpreterObserver::return2] => Unimplemented\n";
-  abort();
+  executionStack.pop();
+
+  if (!executionStack.empty()) {
+    currentFrame = executionStack.top();
+    cout << "New stack size: " << executionStack.size() << "\n";
+  } else {
+    currentFrame = NULL;
+    cout << "The execution stack is empty.\n";
+  }
+
+  callerVarIndex = -1;
+
+  return;
 }
 
 void InterpreterObserver::switch_(IID iid, KVALUE* op, int inx) {
   printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str(), inx);
+      KVALUE_ToString(*op).c_str(), inx);
 
   cerr << "[InterpreterObserver::switch] => Unimplemented\n";
   abort();
@@ -924,38 +940,38 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
   int result = 0;
   switch(pred) {
-  case CmpInst::ICMP_EQ:
-    result = loc1->getValue().as_int == loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_NE:
-    result = loc1->getValue().as_int != loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_UGT:
-    result = loc1->getValue().as_int > loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_UGE:
-    result = loc1->getValue().as_int >= loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_ULT:
-    result = loc1->getValue().as_int < loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_ULE:
-    result = loc1->getValue().as_int <= loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_SGT:
-    result = loc1->getValue().as_int > loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_SGE:
-    result = loc1->getValue().as_int >= loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_SLT:
-    result = loc1->getValue().as_int < loc2->getValue().as_int;
-    break;
-  case CmpInst::ICMP_SLE:
-    result = loc1->getValue().as_int <= loc2->getValue().as_int;
-    break;
-  default:
-    break;
+    case CmpInst::ICMP_EQ:
+      result = loc1->getValue().as_int == loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_NE:
+      result = loc1->getValue().as_int != loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_UGT:
+      result = loc1->getValue().as_int > loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_UGE:
+      result = loc1->getValue().as_int >= loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_ULT:
+      result = loc1->getValue().as_int < loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_ULE:
+      result = loc1->getValue().as_int <= loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_SGT:
+      result = loc1->getValue().as_int > loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_SGE:
+      result = loc1->getValue().as_int >= loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_SLT:
+      result = loc1->getValue().as_int < loc2->getValue().as_int;
+      break;
+    case CmpInst::ICMP_SLE:
+      result = loc1->getValue().as_int <= loc2->getValue().as_int;
+      break;
+    default:
+      break;
   }
 
   // put result back to VALUE
@@ -983,7 +999,7 @@ void InterpreterObserver::phinode() {
 
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
   printf("<<<<< SELECT >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*cond).c_str(), KVALUE_ToString(*tvalue).c_str(), 
-	 KVALUE_ToString(*fvalue).c_str(), inx);
+      KVALUE_ToString(*fvalue).c_str(), inx);
 
   cerr << "[InterpreterObserver::select] => Unimplemented\n";
   abort();
@@ -998,17 +1014,27 @@ void InterpreterObserver::create_stack_frame(int size) {
   executionStack.push(currentFrame);
 }
 
-void InterpreterObserver::call(IID iid, KVALUE* call_value, int inx) {
-  printf("<<<<< CALL >>>>> %s, call_value: %s, [INX: %d]", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), inx);
+void InterpreterObserver::call(IID iid, KIND type, KVALUE* call_value, int inx) {
+  // debugging
+  printf("<<<<< CALL >>>>> %s, call_value: %s, return type: %s, [INX: %d]", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), KIND_ToString(type).c_str(), inx);
+
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
+
+    // debugging
     printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
+
+    Location* arg = currentFrame[value->inx];
+    Location* argCopy= new Location(arg->getType(), arg->getValue(), true);
+    callArgs.push(argCopy);
   }
+  // debugging
   printf("\n");
 
-  cerr << "[InterpreterObserver::call] => Unimplemented\n";
-  abort();
+  callerVarIndex = inx;
+  currentFrame[inx] = new Location(type, false);
+  cout << currentFrame[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::vaarg() {

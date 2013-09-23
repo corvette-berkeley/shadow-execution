@@ -176,8 +176,8 @@ REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
-REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")
-REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")
+REGISTER_INSTRUMENTER(BranchInstrumenter, "branch") // done
+REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr") // done
 REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
 REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_") //done

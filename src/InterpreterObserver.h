@@ -28,11 +28,20 @@ class InterpreterObserver : public InstructionObserver {
   stack<KVALUE*> myStack;
   Location** currentFrame;
   stack<Location**> executionStack;
+  // index of callee in caller; 
+  // to be assigned when call returns
+  int callerVarIndex; 
+  // copy value from callers to callee arguments
+  stack<Location*> callArgs;
+  // number of store to arguments to be skipped
+  int callArgStore;
 
  public:
   
   //DEFAULT_CONSTRUCTOR(InterpreterObserver);
   InterpreterObserver(std::string name) : InstructionObserver(name) {
+    callerVarIndex = -1; // uninitialized
+    callArgStore = 0;
   }
   
   virtual void load(IID iid, KVALUE* op, KVALUE* kv, int inx);
@@ -154,7 +163,7 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
   
-  virtual void call(IID iid, KVALUE* call_value, int inx);
+  virtual void call(IID iid, KIND type, KVALUE* call_value, int inx);
   
   virtual void vaarg();
   

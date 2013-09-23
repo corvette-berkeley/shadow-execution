@@ -364,8 +364,8 @@ void PrintObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
 
-void PrintObserver::call(IID iid, KVALUE* call_value, int inx) {
-  printf("<<<<< CALL >>>>> %s, call_value: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str());
+void PrintObserver::call(IID iid, KIND type, KVALUE* call_value, int inx) {
+  printf("<<<<< CALL >>>>> %s, call_value: %s, return type: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), KIND_ToString(type).c_str());
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();

@@ -251,8 +251,8 @@ void llvm_create_stack_frame(int size) {
 	DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
-void llvm_call(IID iid, KVALUE* value, int inx) {
-	DISPATCH_TO_OBSERVERS(call, iid, value, inx)
+void llvm_call(IID iid, KIND type, KVALUE* value, int inx) {
+	DISPATCH_TO_OBSERVERS(call, iid, type, value, inx)
 }
 
 void llvm_vaarg() {

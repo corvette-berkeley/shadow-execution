@@ -82,7 +82,7 @@ extern "C" {
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
   void llvm_create_stack_frame(int size);
-  void llvm_call(IID iid, KVALUE* value, int x);
+  void llvm_call(IID iid, KIND type, KVALUE* value, int x);
   void llvm_vaarg();
   void llvm_landingpad();
 

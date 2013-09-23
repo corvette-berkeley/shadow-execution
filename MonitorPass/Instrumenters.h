@@ -1853,9 +1853,17 @@ class CallInstrumenter : public Instrumenter {
         Instrs.push_back(call);
       }
 
+      // get call instruction
       Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
 
-      Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("call"), C_iid, call_value, computeIndex(SI));
+      // get call return type
+      Type* T = SI->getType();
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
+      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("call"), C_iid, C_kind, call_value, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
