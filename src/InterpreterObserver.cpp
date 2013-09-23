@@ -543,7 +543,8 @@ bool checkStore(Location *dest, KVALUE *kv) {
 
   switch(kv->kind) {
   case PTR_KIND:
-    result = (dest->getValue().as_ptr == kv->value.as_ptr);
+    result = true; // don't compare pointer
+    // result = (dest->getValue().as_ptr == kv->value.as_ptr);
     break;
   case INT1_KIND: 
   case INT8_KIND: 
@@ -583,7 +584,7 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
   }
   else {
     Location* src = currentFrame[kv->inx];
-    if (src->getType() == PTR_KIND) {
+    if (dest->getType() == PTR_KIND) {
       void* srcAdr = src;
       VALUE destVal = dest->getValue();
       destVal.as_ptr = srcAdr;
