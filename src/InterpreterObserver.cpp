@@ -11,8 +11,14 @@ void InterpreterObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
 	 KVALUE_ToString(*kv).c_str(),
    inx);
 
+  Location *nloc;
+
   Location *loc = currentFrame[op->inx];
-  Location *nloc = new Location(loc->getType(), loc->getValue(), false);
+  if (loc->getType() == PTR_KIND) {
+    nloc = static_cast<Location*>(loc->getValue().as_ptr);
+  } else {
+    nloc = new Location(loc->getType(), loc->getValue(), false);
+  }
 
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
@@ -576,14 +582,22 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
     dest->setValue(kv->value);
   }
   else {
-    Location *src = currentFrame[kv->inx];
-    dest->setValue(src->getValue());
+    Location* src = currentFrame[kv->inx];
+    if (src->getType() == PTR_KIND) {
+      void* srcAdr = src;
+      VALUE destVal = dest->getValue();
+      destVal.as_ptr = srcAdr;
+      dest->setValue(destVal);
+    } else {
+      dest->setValue(src->getValue());
+    }
   }
 
   cout << "Updated Dest: " << dest->toString() << "\n";
 
 
   if (!checkStore(dest, kv)) {
+    cerr << "KVALUE: " << KVALUE_ToString(*kv) << "\n";
     cerr << "Mismatched values found in Store\n";
     abort();
   }
