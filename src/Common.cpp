@@ -62,6 +62,9 @@ std::string KIND_ToString(int kind) {
 		case PTR_KIND:
 			s << "[PTR]";
 			break;
+    case ARRAY_KIND:
+      s << "[ARRAY]";
+      break;
 		case INT1_KIND:
 			s << "[INT1]";
 			break;
@@ -83,8 +86,8 @@ std::string KIND_ToString(int kind) {
 		case FLP64_KIND:
 			s << "[FLP64]";
 			break;
-	        case FLP80X86_KIND:
-	                s << "[FLP80X86]";
+    case FLP80X86_KIND:
+      s << "[FLP80X86]";
 
 		default: //safe_assert(false);
 			break;

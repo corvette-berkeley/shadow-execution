@@ -76,6 +76,10 @@ struct MonitorPass : public FunctionPass {
             if (dyn_cast<LoadInst>(itr)) {
               // skip instrumentation of the next 11 instructions in case of a LoadInstr
               skip = 24;
+            } else if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
+              if (callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind)) {
+                skip = 12;
+              }
             }
           }
         }
@@ -158,13 +162,13 @@ REGISTER_INSTRUMENTER(OrInstrumenter, "or_") //done
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_") //done
 
 // ***** Vector Operations ***** //
-REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
-REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") 
-REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") 
+REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement") // not in C
+REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") // not in C
+REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") // not in C
 
 // ***** Aggregate Operations ***** //
-REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
-REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
+REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue") // not in C
+REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue") // not in C
 
 // ***** Memory Access and Addressing Operations ***** //
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax") //done
@@ -181,8 +185,8 @@ REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr") // done
 REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
 REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_") //done
-//REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_")
-REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")
+// REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_") // done
+REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable") // done
 
 // ***** Conversion Operations ***** //
 REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
@@ -194,16 +198,16 @@ REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui") // done
 REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi") // done
 REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp") // done
 REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp") // done
-REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
-REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
-REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
+//REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
+//REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
+//REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
-REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+//REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 //REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
-REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-REGISTER_INSTRUMENTER(CallInstrumenter, "call") // nacuong: not for intrinsic yet
+//REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
+REGISTER_INSTRUMENTER(CallInstrumenter, "call") // nacuong: done, not for intrinsic yet
 //REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
 //REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 

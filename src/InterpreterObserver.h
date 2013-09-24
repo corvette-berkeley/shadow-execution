@@ -20,6 +20,9 @@ using namespace llvm;
 
 /*******************************************************************************************/
 
+
+/*******************************************************************************************/
+
 class InterpreterObserver : public InstructionObserver {
 
   typedef uint64_t IID;
@@ -30,18 +33,22 @@ class InterpreterObserver : public InstructionObserver {
   stack<Location**> executionStack;
   // index of callee in caller; 
   // to be assigned when call returns
-  int callerVarIndex; 
+  stack<int> callerVarIndex; 
   // copy value from callers to callee arguments
   stack<Location*> callArgs;
-  // number of store to arguments to be skipped
-  int callArgStore;
+
+  long double getValueFromConstant(KVALUE* op); 
+
+  long double getValueFromLocation(Location* loc); 
+
+  std::string BINOP_ToString(int binop); 
+  
+  void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);
 
  public:
   
   //DEFAULT_CONSTRUCTOR(InterpreterObserver);
   InterpreterObserver(std::string name) : InstructionObserver(name) {
-    callerVarIndex = -1; // uninitialized
-    callArgStore = 0;
   }
   
   virtual void load(IID iid, KVALUE* op, KVALUE* kv, int inx);
@@ -163,13 +170,15 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
   
-  virtual void call(IID iid, KIND type, KVALUE* call_value, int inx);
+  virtual void call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx);
   
   virtual void vaarg();
   
   virtual void landingpad();
   
   void push_stack(KVALUE* value);
+
+  void call_nounwind(KVALUE* value);
 
   void create_stack_frame(int size);
 

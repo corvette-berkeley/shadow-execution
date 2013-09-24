@@ -43,9 +43,6 @@ public:
     // cuong: pass a KVALUE instead of pointer constant
     Value* op = KVALUE_VALUE(LI->getPointerOperand(), Instrs, NOSIGN);
     if (op == NULL) return false;
-		// new: iid for pointer
-		// Instruction *ptr_iid = (Instruction*)(LI->getPointerOperand());
-		// Constant* C_ptr_iid = IID_CONSTANT(ptr_iid);
 
 		Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("load"), C_iid, op, kvalue, computeIndex(LI));
 		Instrs.push_back(call);
@@ -850,14 +847,12 @@ class AllocaInstrumenter : public Instrumenter {
 
       InstrPtrVector Instrs;
 
-      //Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
-      //if(op == NULL) return false;
-
       Constant* C_iid = IID_CONSTANT(SI);
 
       Type *T = SI->getAllocatedType();
       if (!T) return false;
       KIND kind = TypeToKind(T);
+
       // if unsupported kind, return false
       if(kind == INV_KIND) return false;
       Constant* C_kind = KIND_CONSTANT(kind);
@@ -1842,6 +1837,22 @@ class CallInstrumenter : public Instrumenter {
 
       Constant* C_iid = IID_CONSTANT(SI);
 
+      // whether this call unwinds stack
+      bool noUnwind = false;
+      if (SI->getAttributes().hasAttrSomewhere(Attribute::NoUnwind)) {
+        noUnwind = true;
+      }
+      Constant* C_nounwind = BOOL_CONSTANT(noUnwind);
+
+      // get call instruction
+      Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
+
+      // get call return type
+      Type* T = SI->getType();
+      KIND kind = TypeToKind(T);
+      if(kind == INV_KIND) return false;
+      Constant* C_kind = KIND_CONSTANT(kind);
+
       // get call arguments
       unsigned numArgs = SI->getNumArgOperands();
       unsigned i;
@@ -1853,21 +1864,20 @@ class CallInstrumenter : public Instrumenter {
         Instrs.push_back(call);
       }
 
-      // get call instruction
-      Value* call_value = KVALUE_VALUE(SI->getCalledValue(), Instrs, NOSIGN);
-
-      // get call return type
-      Type* T = SI->getType();
-      KIND kind = TypeToKind(T);
-      if(kind == INV_KIND) return false;
-
-      Constant* C_kind = KIND_CONSTANT(kind);
-
-      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("call"), C_iid, C_kind, call_value, computeIndex(SI));
+      Instruction* call = CALL_IID_BOOL_KIND_KVALUE_INT(INSTR_TO_CALLBACK("call"), C_iid, C_nounwind, C_kind, call_value, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
       InsertAllBefore(Instrs, SI);
+
+      InstrPtrVector InstrsAfter;
+      if (noUnwind) {
+        Value* callReturnValue = KVALUE_VALUE(SI, InstrsAfter, NOSIGN); 
+        Instruction* call = CALL_KVALUE(INSTR_TO_CALLBACK("call_nounwind"), callReturnValue);
+        InstrsAfter.push_back(call);
+
+        InsertAllAfter(InstrsAfter, SI);
+      }
 
       return true;
     }

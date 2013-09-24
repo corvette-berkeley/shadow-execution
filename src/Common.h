@@ -78,18 +78,33 @@ const KIND	INV_KIND	= 0U,
 			FLP64_KIND	= 8U,
 			FLP128_KIND	= 9U,
 			FLP80X86_KIND  = 10U,
-			FLP128PPC_KIND = 11U;
+			FLP128PPC_KIND = 11U,
+      ARRAY_KIND = 12U;
 
+typedef uint32_t binop_t;
+#define BINOP binop_t
+const BINOP ADD_OP = 0U,
+      FADD_OP = 1U,
+      SUB_OP = 2U,
+      FSUB_OP = 3U,
+      MUL_OP = 4U,
+      FMUL_OP = 5U,
+      UDIV_OP = 6U,
+      SDIV_OP = 7U,
+      FDIV_OP = 8U,
+      UREM_OP = 9U,
+      SREM_OP = 10U,
+      FREM_OP = 11U;
 
 const IID INV_IID = 0U;
 
 #define KVALUE_ALIGNMENT	4
 
 struct kvalue_t {
-	IID		iid;
+  IID		iid;
   INT32 inx;
-	KIND	kind;
-	VALUE	value;
+  KIND	kind;
+  VALUE	value;
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
 #define KVALUE kvalue_t
 
@@ -102,9 +117,9 @@ std::string KIND_ToString(int kind);
 
 template<typename T>
 std::string Generic_ToString(T x) {
-	std::stringstream s;
-	s << x;
-	return s.str();
+  std::stringstream s;
+  s << x;
+  return s.str();
 }
 
 /********************************************************************************/

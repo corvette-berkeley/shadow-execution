@@ -357,15 +357,27 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 }
 
 void PrintObserver::push_stack(KVALUE* value) {
-  myStack.push(value);
+  printf("<<<<< PUSH VALUE >>>>>");
+  printf("<<<<< PUSH VALUE >>>>> kvalue: %s", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::call_nounwind(KVALUE* value) {
+  printf("<<<<< CALL NOUNWIND >>>>>");
+  printf("<<<<< CALL NOUNWIND >>>>> kvalue: %s", KVALUE_ToString(*value).c_str()); 
 }
 
 void PrintObserver::create_stack_frame(int size) {
+  printf("<<<<< CREATE STACK >>>>>");
   printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
 
-void PrintObserver::call(IID iid, KIND type, KVALUE* call_value, int inx) {
-  printf("<<<<< CALL >>>>> %s, call_value: %s, return type: %s", IID_ToString(iid).c_str(), KVALUE_ToString(*call_value).c_str(), KIND_ToString(type).c_str());
+void PrintObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
+  printf("<<<<< CALL >>>>> %s, call_value: %s, nounwind: %d, return type: %s", 
+      IID_ToString(iid).c_str(), 
+      KVALUE_ToString(*call_value).c_str(), 
+      (nounwind ? 1 : 0),
+      KIND_ToString(type).c_str()
+      );
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();

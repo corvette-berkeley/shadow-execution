@@ -140,13 +140,15 @@ public:
 
 	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
 
-	virtual void call(IID iid, KIND type, KVALUE* call_value, int inx);
+	virtual void call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx);
 
 	virtual void vaarg();
 
 	virtual void landingpad();
 
 	void push_stack(KVALUE* value);
+
+  void call_nounwind(KVALUE* value);
 
   void create_stack_frame(int size);
 };

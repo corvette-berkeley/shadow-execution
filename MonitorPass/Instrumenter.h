@@ -169,7 +169,9 @@ protected:
 			}
 		} else if(T->isPointerTy()) {
 			return PTR_KIND;
-		}
+		} else if (T->isArrayTy()) {
+      return ARRAY_KIND;
+    }
 
 		return INV_KIND;
 	}
@@ -371,6 +373,19 @@ protected:
 	}
 
 	/*******************************************************************************************/
+	Instruction* CALL_KVALUE_INT(const char* func, Value* kvalue, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(kvalue);
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
 	Instruction* CALL_IID_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* kvalue1, Value* kvalue2, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -510,7 +525,24 @@ protected:
 	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
+/*******************************************************************************************/
+	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT(const char* func, Value* iid, Value* nounwind, Value* kind, Value* k, Value* inx) {
+	  TypePtrVector ArgTypes;
+	  ArgTypes.push_back(IID_TYPE());
+	  ArgTypes.push_back(BOOL_TYPE());
+	  ArgTypes.push_back(KIND_TYPE());
+	  ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
 
+	  ValuePtrVector Args;
+	  Args.push_back(iid);
+    Args.push_back(nounwind);
+	  Args.push_back(kind);
+	  Args.push_back(k);
+		Args.push_back(inx);
+	  
+	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
 }; // end Instrumenter
 
 /*******************************************************************************************/

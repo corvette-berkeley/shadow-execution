@@ -2,6 +2,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#include "llvm/Attributes.h"
 #include "llvm/LLVMContext.h"
 #include "llvm/Pass.h"
 #include "llvm/Function.h"

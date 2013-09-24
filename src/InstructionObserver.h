@@ -83,8 +83,9 @@ public:
 	virtual void phinode() {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
+  virtual void call_nounwind(KVALUE* value UNUSED) {};
   virtual void create_stack_frame(int size UNUSED) {};
-	virtual void call(IID iid UNUSED, KIND type UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
+	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
 	virtual void vaarg() {};
 	virtual void landingpad() {};
 

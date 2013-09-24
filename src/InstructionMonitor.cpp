@@ -247,12 +247,16 @@ void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
 }
 
+void llvm_call_nounwind(KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(call_nounwind, value)
+}
+
 void llvm_create_stack_frame(int size) {
 	DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
-void llvm_call(IID iid, KIND type, KVALUE* value, int inx) {
-	DISPATCH_TO_OBSERVERS(call, iid, type, value, inx)
+void llvm_call(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
+	DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, value, inx)
 }
 
 void llvm_vaarg() {
