@@ -1083,7 +1083,15 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
       printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
 
       Location* arg = currentFrame[value->inx];
-      Location* argCopy= new Location(arg->getType(), arg->getValue(), true);
+      Location* argCopy;
+      if (value->kind == PTR_KIND) {
+        VALUE argValue;
+        void* argAddr = arg;
+        argValue.as_ptr = argAddr;
+        argCopy = new Location(PTR_KIND, argValue, true);
+      } else {
+        argCopy= new Location(arg->getType(), arg->getValue(), true);
+      }
       callArgs.push(argCopy);
     }
   }
