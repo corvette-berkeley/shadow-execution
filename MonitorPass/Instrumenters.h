@@ -854,10 +854,19 @@ class AllocaInstrumenter : public Instrumenter {
       KIND kind = TypeToKind(T);
 
       // if unsupported kind, return false
-      if(kind == INV_KIND) return false;
+      if (kind == INV_KIND) return false;
+
+      Constant* size;
+      if (T->isArrayTy()) {
+        ArrayType* aType = (ArrayType*) T;
+        size = INT64_CONSTANT(aType->getNumElements(), UNSIGNED);
+      } else {
+        size = INT64_CONSTANT(0, UNSIGNED);
+      }
+
       Constant* C_kind = KIND_CONSTANT(kind);
 
-      Instruction* call = CALL_IID_KIND_INT(INSTR_TO_CALLBACK("allocax"), C_iid, C_kind, computeIndex(SI));
+      Instruction* call = CALL_IID_KIND_INT64_INT(INSTR_TO_CALLBACK("allocax"), C_iid, C_kind, size, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
@@ -1004,7 +1013,22 @@ class GetElementPtrInstrumenter : public Instrumenter {
       Value* op1 = KVALUE_VALUE(SI->getPointerOperand(), Instrs, NOSIGN);
       if(op1 == NULL) return false;
 
-      Instruction* call = CALL_IID_BOOL_KVALUE_INT(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1, computeIndex(SI));
+      PointerType* T = (PointerType*) SI->getPointerOperandType();
+      ArrayType* aT = (ArrayType*) T->getElementType();
+      Type* elemT = aT->getElementType();
+      KIND kind = TypeToKind(elemT);
+
+      Constant* C_kind = KIND_CONSTANT(kind);
+
+      Constant* size;
+      if (elemT->isArrayTy()) {
+        ArrayType* aType = (ArrayType*) T;
+        size = INT64_CONSTANT(aType->getNumElements(), UNSIGNED);
+      } else {
+        size = INT64_CONSTANT(0, UNSIGNED);
+      }
+
+      Instruction* call = CALL_IID_BOOL_KVALUE_KIND_INT64_INT(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1, C_kind, size, computeIndex(SI));
       Instrs.push_back(call);
 
       // instrument
