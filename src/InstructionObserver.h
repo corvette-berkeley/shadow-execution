@@ -44,13 +44,13 @@ public:
 	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, int inx UNUSED) {};
+	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 	virtual void load(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
 	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};
-	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
+	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
@@ -83,6 +83,7 @@ public:
 	virtual void phinode() {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
+  virtual void construct_array_type(uint64_t i UNUSED) {};
   virtual void call_nounwind(KVALUE* value UNUSED) {};
   virtual void create_stack_frame(int size UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};

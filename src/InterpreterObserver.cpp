@@ -462,13 +462,22 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, KIND type, int inx) {
+void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
 
   Location* location;
   if (callArgs.empty()) {
-    location = new Location(type, true);
-    currentFrame[inx] = location;
+    if (type == ARRAY_KIND) {
+      Location** locArr = (Location**) malloc(size*sizeof(Location*));
+      void* locArrAdr = (void*) locArr;
+      VALUE locArrVal;
+      locArrVal.as_ptr = locArrAdr;
+      location = new Location(ARRAY_KIND, locArrVal, true);
+      currentFrame[inx] = location;
+    } else {
+      location = new Location(type, true);
+      currentFrame[inx] = location;
+    }
   } else {
     safe_assert(!callArgs.empty());
     location = callArgs.top();
@@ -574,10 +583,13 @@ void InterpreterObserver::atomicrmw() {
   abort();
 }
 
-void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size: %ld, [INX: %d]\n", 
+      IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
       KVALUE_ToString(*op).c_str(), 
+      KIND_ToString(kind).c_str(),
+      size,
       inx);
 
   cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
@@ -606,8 +618,35 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
-  cerr << "[InterpreterObserver::sext] => Unimplemented\n";
-  abort();
+  Location *src = currentFrame[op->inx];
+  VALUE value = src->getValue();
+
+  VALUE ext_value;
+
+  switch (type) {
+    case INT1_KIND:
+      ext_value.as_int = (char) value.as_int;
+      break;
+    case INT8_KIND:
+      ext_value.as_int = (int8_t) value.as_int;
+      break;
+    case INT16_KIND:
+      ext_value.as_int = (int16_t) value.as_int;
+      break;
+    case INT32_KIND: 
+      ext_value.as_int = (int32_t) value.as_int;
+      break;
+    case INT64_KIND:
+      ext_value.as_int = (int64_t) value.as_int;
+      break;
+    default:
+    cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
+    abort();
+  }
+
+  Location *ext_loc = new Location(type, ext_value, false);
+  currentFrame[inx] = ext_loc;
+  cout << ext_loc->toString() << "\n";
 }
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
@@ -1044,6 +1083,11 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   myStack.push(value);
 }
 
+void InterpreterObserver::construct_array_type(uint64_t i) {
+  printf("<<<<< CONSTRUCT ARRAY TYPE >>>>>: %ld\n", i);
+  arrayType.push(i);
+}
+
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
@@ -1052,7 +1096,7 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   callerVarIndex.pop();
 }
 
-void InterpreterObserver::create_stack_frame(int size) {
+void InterpreterObserver::nreate_stack_frame(int size) {
   printf("<<<<< CREATE STACK FRAME >>>>>\n");
   currentFrame = (Location**) malloc(sizeof(Location*)*size);
   executionStack.push(currentFrame);

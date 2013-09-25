@@ -108,8 +108,8 @@ void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void llvm_allocax(IID iid, KIND kind, int inx) {
-  DISPATCH_TO_OBSERVERS(allocax, iid, kind, inx)
+void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx)
 }
 
 void llvm_load(IID iid, KVALUE* op, KVALUE* value, int inx) {
@@ -133,8 +133,8 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, int inx) {
-	DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, inx)
+void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KIND kind, uint64_t size, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, kind, size, inx)
 }
 
 
@@ -245,6 +245,10 @@ void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx)
 
 void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
+}
+
+void llvm_construct_array_type(uint64_t i) {
+  DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
 void llvm_call_nounwind(KVALUE* value) {

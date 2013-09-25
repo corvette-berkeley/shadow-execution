@@ -192,8 +192,8 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, int inx) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), inx);
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
 }
 
 void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
@@ -217,10 +217,14 @@ void PrintObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size %ld, [INX: %d]\n", 
+      IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
-	 KVALUE_ToString(*op).c_str(), inx);
+	 KVALUE_ToString(*op).c_str(), 
+   KIND_ToString(kind).c_str(),
+   size,
+   inx);
 }
 
 // ***** Conversion Operations ***** //
@@ -357,8 +361,11 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 }
 
 void PrintObserver::push_stack(KVALUE* value) {
-  printf("<<<<< PUSH VALUE >>>>>");
   printf("<<<<< PUSH VALUE >>>>> kvalue: %s", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::construct_array_type(uint64_t i) {
+  printf("<<<<< CONSTRUCT ARRAY TYPE >>>>> size: %ld", i);
 }
 
 void PrintObserver::call_nounwind(KVALUE* value) {

@@ -39,6 +39,9 @@ string Location::toString() {
   case PTR_KIND:
     s << "[PTR: " << value.as_ptr << "]";
     break;
+  case ARRAY_KIND:
+    s << "[ARRAY: " << value.as_ptr << "]";
+    break;
   case INT1_KIND:
     s << "[INT1: " << value.as_int << "]";
     break;

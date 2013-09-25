@@ -74,7 +74,7 @@ public:
 	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid, KIND kind, int inx);
+	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx);
 
 	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
 
@@ -84,7 +84,7 @@ public:
 
 	virtual void atomicrmw();
 
-	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, int inx);
+	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx);
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);
@@ -147,6 +147,8 @@ public:
 	virtual void landingpad();
 
 	void push_stack(KVALUE* value);
+
+  void construct_array_type(uint64_t i);
 
   void call_nounwind(KVALUE* value);
 
