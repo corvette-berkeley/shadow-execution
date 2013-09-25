@@ -1,0 +1,21 @@
+date
+du
+env
+hostid
+id
+ls
+pwd
+sync
+uname
+users
+whoami
+touch test_file.txt
+cat test_file.txt
+rm -rf test_file-copy.txt 
+cp test_file.txt test_file-copy.txt
+rmdir -rf test_dir
+mkdir test_dir
+echo $PATH
+sort test_file.txt
+tail -1 test_file.txt
+
