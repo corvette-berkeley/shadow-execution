@@ -1096,7 +1096,7 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   callerVarIndex.pop();
 }
 
-void InterpreterObserver::nreate_stack_frame(int size) {
+void InterpreterObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK FRAME >>>>>\n");
   currentFrame = (Location**) malloc(sizeof(Location*)*size);
   executionStack.push(currentFrame);
