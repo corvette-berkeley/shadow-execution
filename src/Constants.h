@@ -1,0 +1,10 @@
+#ifndef CONSTANTS_DEFS_H_
+#define CONSTANTS_DEFS_H_
+
+typedef enum {
+  INVALID,
+  ADD, SUB, MUL, UDIV, SDIV, UREM, SREM,
+  FADD, FSUB, FMUL, FDIV, FREM
+} BINOP;
+
+#endif /* CONSTANTS_DEFS_H_ */

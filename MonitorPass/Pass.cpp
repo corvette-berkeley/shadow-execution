@@ -114,6 +114,18 @@ struct MonitorPass : public FunctionPass {
 /*******************************************************************************************/
 
 #include "Instrumenters.h"
+#include "AddInstrumenter.h"
+#include "SubInstrumenter.h"
+#include "MulInstrumenter.h"
+#include "UDivInstrumenter.h"
+#include "SDivInstrumenter.h"
+#include "URemInstrumenter.h"
+#include "SRemInstrumenter.h"
+#include "FAddInstrumenter.h"
+#include "FSubInstrumenter.h"
+#include "FMulInstrumenter.h"
+#include "FDivInstrumenter.h"
+#include "FRemInstrumenter.h"
 
 /*******************************************************************************************/
 

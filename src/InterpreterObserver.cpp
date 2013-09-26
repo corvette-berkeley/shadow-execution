@@ -31,40 +31,40 @@ void InterpreterObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
 std::string InterpreterObserver::BINOP_ToString(int binop) {
 	std::stringstream s;
 	switch(binop) {
-    case ADD_OP:
+    case ADD:
 			s << "ADD";
 			break;
-    case FADD_OP:
+    case FADD:
       s << "FADD";
       break;
-    case SUB_OP:
+    case SUB:
       s << "SUB";
       break;
-    case FSUB_OP:
+    case FSUB:
       s << "FSUB";
       break;
-    case MUL_OP:
+    case MUL:
       s << "MUL";
       break;
-    case FMUL_OP:
+    case FMUL:
       s << "FMUL";
       break;
-    case UDIV_OP:
+    case UDIV:
       s << "UDIV";
       break;
-    case SDIV_OP:
+    case SDIV:
       s << "SDIV";
       break;
-    case FDIV_OP:
+    case FDIV:
       s << "FDIV";
       break;
-    case UREM_OP:
+    case UREM:
       s << "UREM";
       break;
-    case SREM_OP:
+    case SREM:
       s << "SREM";
       break;
-    case FREM_OP:
+    case FREM:
       s << "FREM";
       break;
 		default: 
@@ -122,28 +122,28 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
 
   VALUE vresult;
   switch (op) {
-    case ADD_OP:
+    case ADD:
       vresult.as_int = (int) v1 + (int) v2;
       break;
-    case SUB_OP:
+    case SUB:
       vresult.as_int = (int) v1 - (int) v2;
       break;
-    case MUL_OP:
+    case MUL:
       vresult.as_int = (int) v1 * (int) v2;
       break;
-    case UDIV_OP:
+    case UDIV:
       vresult.as_int = (int) v1 / (int) v2;
       break;
-    case SDIV_OP:
+    case SDIV:
       vresult.as_int = (int) v1 / (int) v2;
       break;
-    case UREM_OP:
+    case UREM:
       vresult.as_int = (int) v1 % (int) v2;
       break;
-    case SREM_OP:
+    case SREM:
       vresult.as_int = (int) v1 % (int) v2;
       break;
-    case FADD_OP:
+    case FADD:
       switch(op1->kind) {
         case FLP32_KIND: 
           vresult.as_flp = (float) v1 + (float) v2;
@@ -159,7 +159,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
           abort();
       }
       break;
-    case FSUB_OP:
+    case FSUB:
       switch(op1->kind) {
         case FLP32_KIND: 
           vresult.as_flp = (float) v1 - (float) v2;
@@ -175,7 +175,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
           abort();
       }
       break;
-    case FMUL_OP:
+    case FMUL:
       switch(op1->kind) {
         case FLP32_KIND: 
           vresult.as_flp = (float) v1 * (float) v2;
@@ -191,7 +191,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
           abort();
       }
       break;
-    case FDIV_OP:
+    case FDIV:
       switch(op1->kind) {
         case FLP32_KIND: 
           vresult.as_flp = (float) v1 / (float) v2;
@@ -220,47 +220,47 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
 }
 
 void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, ADD_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, ADD);
 }
 
 void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FADD_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, FADD);
 }
 
 void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SUB_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, SUB);
 }
 
 void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FSUB_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, FSUB);
 }
 
 void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, MUL_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, MUL);
 }
 
 void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FMUL_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, FMUL);
 }
 
 void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, UDIV_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, UDIV);
 }
 
 void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SDIV_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, SDIV);
 }
 
 void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FDIV_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, FDIV);
 }
 
 void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, UREM_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, UREM);
 }
 
 void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SREM_OP);
+  binop(iid, nuw, nsw, op1, op2, inx, SREM);
 }
 
 void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {

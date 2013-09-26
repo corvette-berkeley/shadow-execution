@@ -29,6 +29,8 @@
 #include <map>
 #include <set>
 
+#include "Constants.h"
+
 /********************************************************************************/
 
 #define UNRECOVERABLE_ERROR 5
@@ -80,21 +82,6 @@ const KIND	INV_KIND	= 0U,
 			FLP80X86_KIND  = 10U,
 			FLP128PPC_KIND = 11U,
       ARRAY_KIND = 12U;
-
-typedef uint32_t binop_t;
-#define BINOP binop_t
-const BINOP ADD_OP = 0U,
-      FADD_OP = 1U,
-      SUB_OP = 2U,
-      FSUB_OP = 3U,
-      MUL_OP = 4U,
-      FMUL_OP = 5U,
-      UDIV_OP = 6U,
-      SDIV_OP = 7U,
-      FDIV_OP = 8U,
-      UREM_OP = 9U,
-      SREM_OP = 10U,
-      FREM_OP = 11U;
 
 const IID INV_IID = 0U;
 

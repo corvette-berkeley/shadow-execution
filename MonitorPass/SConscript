@@ -63,6 +63,7 @@ plugin = env.SharedLibrary(
     'Instrumentation.cpp',
     'InstrumenterBase.cpp',
     'Pass.cpp',
+    'BinaryOperatorInstrumenter.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
