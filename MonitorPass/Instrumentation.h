@@ -3,35 +3,10 @@
 #define INSTRUMENTATION_H_
 
 #include "Common.h"
+#include "InstrumenterBase.h"
 #include <map>
 
-/*******************************************************************************************/
-
-class Instrumentation; // see below
-
-class InstrumenterBase {
-public:
-	InstrumenterBase(std::string name, Instrumentation* instrumentation)
-	: name_(name), parent_(instrumentation), count_(0) {}
-	virtual ~InstrumenterBase() {}
-
-	// returns true iff any instrumentation was done
-	virtual bool CheckAndInstrument(Instruction* I) = 0;
-
-	virtual std::string ReportToString() {
-		std::stringstream s;
-		s << "Total " << name_ << " Instrumented: " << count_ << "\n";
-		return s.str();
-	}
-protected:
-	std::string name_;
-	Instrumentation* parent_;
-	long count_;
-
-	friend class Instrumentation;
-};
-
-/*******************************************************************************************/
+class InstrumenterBase;
 
 class Instrumentation {
 public:
@@ -82,7 +57,5 @@ private:
 	Instrumentation() : BB_(NULL), F_(NULL), M_(NULL), AS_(0U) {}
 	static Instrumentation* instance_;
 };
-
-/*******************************************************************************************/
 
 #endif /* INSTRUMENTATION_H_ */

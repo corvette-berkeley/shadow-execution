@@ -61,6 +61,7 @@ plugin = env.SharedLibrary(
     'MonitorPass',
     [
     'Instrumentation.cpp',
+    'InstrumenterBase.cpp',
     'Pass.cpp',
     'Utilities.cpp'
         ],
