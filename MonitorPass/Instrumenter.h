@@ -1,17 +1,17 @@
+/**
+ * @file Instrumenter.h
+ * @brief Instrumenter Declarations.
+ */
+
 #ifndef INSTRUMENTER_H_
 #define INSTRUMENTER_H_
 
 #include "Common.h"
 #include "Instrumentation.h"
 
-/*******************************************************************************************/
-
 typedef std::vector<Type*> 			TypePtrVector;
 typedef std::vector<Value*> 		ValuePtrVector;
 typedef std::vector<Instruction*>	InstrPtrVector;
-
-/*******************************************************************************************/
-// helpful macros for defining instrumenters
 
 #define CAST_OR_RETURN(T, II, I) \
 		T* II = dyn_cast<T>(I); \
@@ -29,13 +29,9 @@ typedef std::vector<Instruction*>	InstrPtrVector;
 		T(std::string name, Instrumentation* instrumentation) \
 		: Instrumenter(name, instrumentation) {}
 
-/*******************************************************************************************/
-
 const bool SIGNED 	= true;
 const bool UNSIGNED	= false;
 const bool NOSIGN	= false;
-
-/*******************************************************************************************/
 
 class Instrumenter : public InstrumenterBase {
 public:
@@ -44,8 +40,6 @@ public:
 	virtual ~Instrumenter() {}
 
 protected:
-
-	/*******************************************************************************************/
 
 	inline Type* VOID_TYPE()	{ return Type::getVoidTy(parent_->M_->getContext()); }
 	inline Type* INT1_TYPE() 	{ return Type::getInt1Ty(parent_->M_->getContext()); }
@@ -79,8 +73,6 @@ protected:
 	}
 	inline Type* KVALUEPTR_TYPE() 		{ return PointerType::get(KVALUE_TYPE(), parent_->AS_); }
 
-	/*******************************************************************************************/
-
 	inline Constant* INT32_CONSTANT(int32_t c, bool sign)	{ return ConstantInt::get(INT32_TYPE(), c, sign); }
 	inline Constant* INT64_CONSTANT(int64_t c, bool sign)	{ return ConstantInt::get(INT64_TYPE(), c, sign); }
 
@@ -99,16 +91,12 @@ protected:
 	inline Constant* IID_CONSTANT(Instruction* inst) { return ConstantInt::get(IID_TYPE(), static_cast<IID>(reinterpret_cast<ADDRINT>(inst)), UNSIGNED); }
 	inline Constant* INV_IID_CONSTANT()				 { return ConstantInt::get(IID_TYPE(), INV_IID); }
 
-	/*******************************************************************************************/
-
 	inline Instruction* IID_CAST_INSTR(Value* v)				{ return CastInst::CreateIntegerCast(v, IID_TYPE(), UNSIGNED); }
 	inline Instruction* PTR_CAST_INSTR(Value* v)				{ return CastInst::CreatePointerCast(v, PTR_TYPE()); }
 	inline Instruction* INTMAX_CAST_INSTR(Value* v, bool sign)	{ return CastInst::CreateIntegerCast(v, INTMAX_TYPE(), sign); }
 	inline Instruction* FLPMAX_CAST_INSTR(Value* v)				{ return CastInst::CreateFPCast(v, FLPMAX_TYPE()); }
 	inline Instruction* PTRTOINT_CAST_INSTR(Value* v)			{ return new PtrToIntInst(v, INTMAX_TYPE()); }
 	inline Instruction* VALUE_CAST_INSTR(Value* v)				{ return BITCAST_INSTR(v, VALUE_TYPE()); }
-
-	/*******************************************************************************************/
 
 	inline Instruction* BITCAST_INSTR(Value* v, Type* T) {
 		safe_assert(CastInst::castIsValid(Instruction::CastOps(Instruction::BitCast), v, T));
