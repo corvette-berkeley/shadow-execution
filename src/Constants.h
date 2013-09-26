@@ -4,7 +4,8 @@
 typedef enum {
   INVALID,
   ADD, SUB, MUL, UDIV, SDIV, UREM, SREM,
-  FADD, FSUB, FMUL, FDIV, FREM
+  FADD, FSUB, FMUL, FDIV, FREM,
+  SHL, LSHR, ASHR, AND, OR, XOR
 } BINOP;
 
 #endif /* CONSTANTS_DEFS_H_ */

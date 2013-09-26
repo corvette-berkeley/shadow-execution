@@ -126,6 +126,12 @@ struct MonitorPass : public FunctionPass {
 #include "FMulInstrumenter.h"
 #include "FDivInstrumenter.h"
 #include "FRemInstrumenter.h"
+#include "ShlInstrumenter.h"
+#include "LShrInstrumenter.h"
+#include "AShrInstrumenter.h"
+#include "AndInstrumenter.h"
+#include "OrInstrumenter.h"
+#include "XorInstrumenter.h"
 
 /*******************************************************************************************/
 
