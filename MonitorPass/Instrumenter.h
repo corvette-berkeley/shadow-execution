@@ -25,10 +25,6 @@ typedef std::vector<Instruction*>	InstrPtrVector;
 			return false; \
 		}
 
-#define DEFAULT_CONSTRUCTOR(T) \
-		T(std::string name, Instrumentation* instrumentation) \
-		: Instrumenter(name, instrumentation) {}
-
 const bool SIGNED 	= true;
 const bool UNSIGNED	= false;
 const bool NOSIGN	= false;

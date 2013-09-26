@@ -20,7 +20,8 @@
 // Callback: void load(IID iid, PTR addr, KVALUE value)
 class LoadInstrumenter : public Instrumenter {
 public:
-	DEFAULT_CONSTRUCTOR(LoadInstrumenter);
+  LoadInstrumenter(std::string name, Instrumentation* instrumentation) :
+    Instrumenter(name, instrumentation) {};
 
 	bool CheckAndInstrument(Instruction* I) {
     CAST_OR_RETURN(LoadInst, LI, I);
@@ -59,7 +60,8 @@ public:
 // Callback: void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 class AddInstrumenter : public Instrumenter {
 public:
-	DEFAULT_CONSTRUCTOR(AddInstrumenter);
+  AddInstrumenter(std::string name, Instrumentation* instrumentation) :
+    Instrumenter(name, instrumentation) {};
 
 	bool CheckAndInstrument(Instruction* I) {
 		CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Add);
@@ -94,7 +96,8 @@ public:
 // Callback: void fadd()
 class FAddInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FAddInstrumenter);
+    FAddInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FAdd);
@@ -133,7 +136,8 @@ class FAddInstrumenter : public Instrumenter {
 // Callback: void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2);
 class SubInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SubInstrumenter);
+    SubInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Sub);
@@ -168,7 +172,8 @@ class SubInstrumenter : public Instrumenter {
 // Callback: void fsub()
 class FSubInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FSubInstrumenter);
+    FSubInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FSub);
@@ -203,7 +208,8 @@ class FSubInstrumenter : public Instrumenter {
 // Callback: void mul()
 class MulInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(MulInstrumenter);
+    MulInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Mul);
@@ -239,7 +245,8 @@ class MulInstrumenter : public Instrumenter {
 // Callback: void fmul()
 class FMulInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FMulInstrumenter);
+    FMulInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FMul);
@@ -274,7 +281,8 @@ class FMulInstrumenter : public Instrumenter {
 // Callback: void udiv()
 class UDivInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(UDivInstrumenter);
+    UDivInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, UDiv);
@@ -309,7 +317,8 @@ class UDivInstrumenter : public Instrumenter {
 // Callback: void sdiv()
 class SDivInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SDivInstrumenter);
+    SDivInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SDiv);
@@ -344,7 +353,8 @@ class SDivInstrumenter : public Instrumenter {
 // Callback: void fdiv()
 class FDivInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FDivInstrumenter);
+    FDivInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FDiv);
@@ -378,7 +388,8 @@ class FDivInstrumenter : public Instrumenter {
 // Callback: void urem()
 class URemInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(URemInstrumenter);
+    URemInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, URem);
@@ -413,7 +424,8 @@ class URemInstrumenter : public Instrumenter {
 // Callback: void srem()
 class SRemInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SRemInstrumenter);
+    SRemInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, SRem);
@@ -448,7 +460,8 @@ class SRemInstrumenter : public Instrumenter {
 // Callback: void frem()
 class FRemInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FRemInstrumenter);
+    FRemInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, FRem);
@@ -485,7 +498,8 @@ class FRemInstrumenter : public Instrumenter {
 // Callback: void shl()
 class ShlInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ShlInstrumenter);
+    ShlInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Shl);
@@ -520,7 +534,8 @@ class ShlInstrumenter : public Instrumenter {
 // Callback: void lshr()
 class LShrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(LShrInstrumenter);
+    LShrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, LShr);
@@ -555,7 +570,8 @@ class LShrInstrumenter : public Instrumenter {
 // Callback: void ashr()
 class AShrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(AShrInstrumenter);
+    AShrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, AShr);
@@ -590,7 +606,8 @@ class AShrInstrumenter : public Instrumenter {
 // Callback: void and()
 class AndInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(AndInstrumenter);
+    AndInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, And);
@@ -624,7 +641,8 @@ class AndInstrumenter : public Instrumenter {
 // Callback: void or()
 class OrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(OrInstrumenter);
+    OrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Or);
@@ -659,7 +677,8 @@ class OrInstrumenter : public Instrumenter {
 // Callback: void xor()
 class XorInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(XorInstrumenter);
+    XorInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_BINARY_OR_RETURN(BinaryOperator, BI, I, Xor);
@@ -697,7 +716,8 @@ class XorInstrumenter : public Instrumenter {
 // Callback: void extractelement()
 class ExtractElementInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ExtractElementInstrumenter);
+    ExtractElementInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ExtractElementInst, SI, I);
@@ -731,7 +751,8 @@ class ExtractElementInstrumenter : public Instrumenter {
 // Callback: void insertelement()
 class InsertElementInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(InsertElementInstrumenter);
+    InsertElementInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(InsertElementInst, SI, I);
@@ -750,7 +771,8 @@ class InsertElementInstrumenter : public Instrumenter {
 // Callback: void shufflevector()
 class ShuffleVectorInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ShuffleVectorInstrumenter);
+    ShuffleVectorInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ShuffleVectorInst, SI, I);
@@ -772,7 +794,8 @@ class ShuffleVectorInstrumenter : public Instrumenter {
 // Callback: void extractvalue()
 class ExtractValueInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ExtractValueInstrumenter);
+    ExtractValueInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(InsertValueInst, SI, I);
@@ -801,7 +824,8 @@ class ExtractValueInstrumenter : public Instrumenter {
 // Callback: void insertvalue()
 class InsertValueInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(InsertValueInstrumenter);
+    InsertValueInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(InsertValueInst, SI, I);
@@ -836,7 +860,8 @@ class InsertValueInstrumenter : public Instrumenter {
 // Callback: void alloca()
 class AllocaInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(AllocaInstrumenter);
+    AllocaInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(AllocaInst, SI, I);
@@ -880,7 +905,8 @@ class AllocaInstrumenter : public Instrumenter {
 // Callback: void store(IID iid, PTR addr, KVALUE value)
 class StoreInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(StoreInstrumenter);
+    StoreInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(StoreInst, SI, I);
@@ -921,7 +947,8 @@ class StoreInstrumenter : public Instrumenter {
 // Callback: void fence()
 class FenceInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FenceInstrumenter);
+    FenceInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FenceInst, SI, I);
@@ -941,7 +968,8 @@ class FenceInstrumenter : public Instrumenter {
 // Callback: void cmpxchg()
 class AtomicCmpXchgInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(AtomicCmpXchgInstrumenter);
+    AtomicCmpXchgInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(AtomicCmpXchgInst, SI, I);
@@ -975,7 +1003,8 @@ class AtomicCmpXchgInstrumenter : public Instrumenter {
 // Callback: void atomicrmw()
 class AtomicRMWInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(AtomicRMWInstrumenter);
+    AtomicRMWInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(AtomicRMWInst, SI, I);
@@ -995,7 +1024,8 @@ class AtomicRMWInstrumenter : public Instrumenter {
 // Callback: void getelementptr()
 class GetElementPtrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(GetElementPtrInstrumenter);
+    GetElementPtrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(GetElementPtrInst, SI, I);
@@ -1043,7 +1073,8 @@ class GetElementPtrInstrumenter : public Instrumenter {
 // Callback: void trunc()
 class TruncInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(TruncInstrumenter);
+    TruncInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(TruncInst, SI, I);
@@ -1080,7 +1111,8 @@ class TruncInstrumenter : public Instrumenter {
 // Callback: void zext()
 class ZExtInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ZExtInstrumenter);
+    ZExtInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ZExtInst, SI, I);
@@ -1118,7 +1150,8 @@ class ZExtInstrumenter : public Instrumenter {
 // Callback: void sext()
 class SExtInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SExtInstrumenter);
+    SExtInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(SExtInst, SI, I);
@@ -1156,7 +1189,8 @@ class SExtInstrumenter : public Instrumenter {
 // Callback: void fptrunc()
 class FPTruncInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FPTruncInstrumenter);
+    FPTruncInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FPTruncInst, SI, I);
@@ -1194,7 +1228,8 @@ class FPTruncInstrumenter : public Instrumenter {
 // Callback: void fpext()
 class FPExtInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FPExtInstrumenter);
+    FPExtInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FPExtInst, SI, I);
@@ -1232,7 +1267,8 @@ class FPExtInstrumenter : public Instrumenter {
 // Callback: void fptoui()
 class FPToUIInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FPToUIInstrumenter);
+    FPToUIInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FPToUIInst, SI, I);
@@ -1270,7 +1306,8 @@ class FPToUIInstrumenter : public Instrumenter {
 // Callback: void fptosi()
 class FPToSIInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FPToSIInstrumenter);
+    FPToSIInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FPToSIInst, SI, I);
@@ -1307,7 +1344,8 @@ class FPToSIInstrumenter : public Instrumenter {
 // Callback: void uitofp()
 class UIToFPInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(UIToFPInstrumenter);
+    UIToFPInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(UIToFPInst, SI, I);
@@ -1345,7 +1383,8 @@ class UIToFPInstrumenter : public Instrumenter {
 // Callback: void sitofp()
 class SIToFPInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SIToFPInstrumenter);
+    SIToFPInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(SIToFPInst, SI, I);
@@ -1383,7 +1422,8 @@ class SIToFPInstrumenter : public Instrumenter {
 // Callback: void ptrtoint()
 class PtrToIntInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(PtrToIntInstrumenter);
+    PtrToIntInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(PtrToIntInst, SI, I);
@@ -1421,7 +1461,8 @@ class PtrToIntInstrumenter : public Instrumenter {
 // Callback: void inttoptr()
 class IntToPtrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(IntToPtrInstrumenter);
+    IntToPtrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(IntToPtrInst, SI, I);
@@ -1459,7 +1500,8 @@ class IntToPtrInstrumenter : public Instrumenter {
 // Callback: void bitcast()
 class BitCastInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(BitCastInstrumenter);
+    BitCastInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(BitCastInst, SI, I);
@@ -1499,7 +1541,8 @@ class BitCastInstrumenter : public Instrumenter {
 // Callback: void branch()
 class BranchInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(BranchInstrumenter);
+    BranchInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(BranchInst, SI, I);
@@ -1534,7 +1577,8 @@ class BranchInstrumenter : public Instrumenter {
 // Callback: void indirectbr()
 class IndirectBrInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(IndirectBrInstrumenter);
+    IndirectBrInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(IndirectBrInst, SI, I);
@@ -1562,7 +1606,8 @@ class IndirectBrInstrumenter : public Instrumenter {
 // Callback: void invoke()
 class InvokeInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(InvokeInstrumenter);
+    InvokeInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(InvokeInst, SI, I);
@@ -1603,7 +1648,8 @@ class InvokeInstrumenter : public Instrumenter {
 // Callback: void resume()
 class ResumeInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ResumeInstrumenter);
+    ResumeInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ResumeInst, SI, I);
@@ -1632,7 +1678,8 @@ class ResumeInstrumenter : public Instrumenter {
 // Callback: void return()
 class ReturnInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ReturnInstrumenter);
+    ReturnInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ReturnInst, SI, I);
@@ -1667,7 +1714,8 @@ class ReturnInstrumenter : public Instrumenter {
 // Callback: void switch_()
 class SwitchInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SwitchInstrumenter);
+    SwitchInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(SwitchInst, SI, I);
@@ -1696,7 +1744,8 @@ class SwitchInstrumenter : public Instrumenter {
 // Callback: void unreachable()
 class UnreachableInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(UnreachableInstrumenter);
+    UnreachableInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(UnreachableInst, SI, I);
@@ -1718,7 +1767,8 @@ class UnreachableInstrumenter : public Instrumenter {
 // Callback: void icmp()
 class ICmpInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(ICmpInstrumenter);
+    ICmpInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(ICmpInst, SI, I);
@@ -1754,7 +1804,8 @@ class ICmpInstrumenter : public Instrumenter {
 // Callback: void fcmp()
 class FCmpInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(FCmpInstrumenter);
+    FCmpInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(FCmpInst, SI, I);
@@ -1789,7 +1840,8 @@ class FCmpInstrumenter : public Instrumenter {
 // Callback: void phinode()
 class PHINodeInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(PHINodeInstrumenter);
+    PHINodeInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(PHINode, SI, I);
@@ -1808,7 +1860,8 @@ class PHINodeInstrumenter : public Instrumenter {
 // Callback: void select()
 class SelectInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(SelectInstrumenter);
+    SelectInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(SelectInst, SI, I);
@@ -1843,7 +1896,8 @@ class SelectInstrumenter : public Instrumenter {
 // Callback: void call()
 class CallInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(CallInstrumenter);
+    CallInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(CallInst, SI, I);
@@ -1911,7 +1965,8 @@ class CallInstrumenter : public Instrumenter {
 // Callback: void vaarg()
 class VAArgInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(VAArgInstrumenter);
+    VAArgInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(VAArgInst, SI, I);
@@ -1930,7 +1985,8 @@ class VAArgInstrumenter : public Instrumenter {
 // Callback: void landingpad()
 class LandingPadInstrumenter : public Instrumenter {
   public:
-    DEFAULT_CONSTRUCTOR(LandingPadInstrumenter);
+    LandingPadInstrumenter(std::string name, Instrumentation* instrumentation) :
+      Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* I) {
       CAST_OR_RETURN(LandingPadInst, SI, I);

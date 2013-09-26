@@ -63,7 +63,6 @@ plugin = env.SharedLibrary(
     'Instrumentation.cpp',
     'InstrumenterBase.cpp',
     'Pass.cpp',
-    'Utilities.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
