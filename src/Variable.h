@@ -1,21 +1,23 @@
-#ifndef LOCATION_H_
-#define LOCATION_H_
+#ifndef VARIABLE_H_
+#define VARIABLE_H_
 
 #include "Common.h"
 
 using namespace std;
 
-class Location {
+class Variable {
 
  private:
   KIND type; // see Common.h for definitions
   VALUE value; // union type (use extension later on)
   bool local;
+  MACHINEFLAG flag;
+  void* metadata;
 
  public:
- Location(KIND t, VALUE v, bool l): type(t), value(v), local(l) {}
+ Variable(KIND t, VALUE v, bool l): type(t), value(v), local(l) {}
 
- Location(KIND t, bool l): type(t), local(l) {}
+ Variable(KIND t, bool l): type(t), local(l) {}
   
   void setType(KIND t);
 

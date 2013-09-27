@@ -8,4 +8,8 @@ typedef enum {
   SHL, LSHR, ASHR, AND, OR, XOR
 } BINOP;
 
+typedef enum {
+  
+} MACHINEFLAG;
+
 #endif /* CONSTANTS_DEFS_H_ */

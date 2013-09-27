@@ -1,31 +1,31 @@
-#include "Location.h"
+#include "Variable.h"
 
 
-void Location::setType(KIND t) {
+void Variable::setType(KIND t) {
   type = t;
 }
 
-void Location::setValue(VALUE v) {
+void Variable::setValue(VALUE v) {
   value = v;
 }
 
-void Location::setLocal(bool l) {
+void Variable::setLocal(bool l) {
   local = l;
 }
 
-KIND Location::getType() {
+KIND Variable::getType() {
   return type;
 }
 
-VALUE Location::getValue() {
+VALUE Variable::getValue() {
   return value;
 }
 
-bool Location::getLocal() {
+bool Variable::getLocal() {
   return local;
 }
 
-string Location::toString() {
+string Variable::toString() {
   std::stringstream s;
 
   if (local) {

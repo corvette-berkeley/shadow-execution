@@ -63,7 +63,7 @@ plugin = env.SharedLibrary(
     'Common.cpp',
     'InstructionMonitor.cpp',
     'InterpreterObserver.cpp',
-    'Location.cpp',
+    'Variable.cpp',
     'PrintObserver.cpp',
         ],
     INCPREFIX='-isystem ',

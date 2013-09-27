@@ -11,13 +11,13 @@ void InterpreterObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
 	 KVALUE_ToString(*kv).c_str(),
    inx);
 
-  Location *nloc;
+  Variable *nloc;
 
-  Location *loc = currentFrame[op->inx];
+  Variable *loc = currentFrame[op->inx];
   if (loc->getType() == PTR_KIND) {
-    nloc = static_cast<Location*>(loc->getValue().as_ptr);
+    nloc = static_cast<Variable*>(loc->getValue().as_ptr);
   } else {
-    nloc = new Location(loc->getType(), loc->getValue(), false);
+    nloc = new Variable(loc->getType(), loc->getValue(), false);
   }
 
   currentFrame[inx] = nloc;
@@ -83,7 +83,7 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
     }
   }
 
-  long double InterpreterObserver::getValueFromLocation(Location* loc) {
+  long double InterpreterObserver::getValueFromVariable(Variable* loc) {
     KIND kind = loc->getType();
     if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
       return loc->getValue().as_int;
@@ -108,16 +108,16 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Location *loc1 = currentFrame[op1->inx];
-    v1 = getValueFromLocation(loc1);
+    Variable *loc1 = currentFrame[op1->inx];
+    v1 = getValueFromVariable(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Location *loc2 = currentFrame[op2->inx];
-    v2 = getValueFromLocation(loc2);
+    Variable *loc2 = currentFrame[op2->inx];
+    v2 = getValueFromVariable(loc2);
   }
 
   VALUE vresult;
@@ -212,7 +212,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
       abort();
   }
 
-  Location *nloc = new Location(op1->kind, vresult, false);
+  Variable *nloc = new Variable(op1->kind, vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -283,8 +283,8 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int << loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -292,7 +292,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -306,8 +306,8 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int; // same as arith?
 
   // put result back to VALUE
@@ -315,7 +315,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -329,8 +329,8 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -338,7 +338,7 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -352,8 +352,8 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int & loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -361,7 +361,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -375,8 +375,8 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int | loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -384,7 +384,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -398,8 +398,8 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Location *loc1 = currentFrame[op1->inx];
-  Location *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = currentFrame[op1->inx];
+  Variable *loc2 = currentFrame[op2->inx];
   int result = loc1->getValue().as_int ^ loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -407,7 +407,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(loc1->getType(), vresult, false);
+  Variable *nloc = new Variable(loc1->getType(), vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -465,17 +465,17 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
 
-  Location* location;
+  Variable* location;
   if (callArgs.empty()) {
     if (type == ARRAY_KIND) {
-      Location** locArr = (Location**) malloc(size*sizeof(Location*));
+      Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
       void* locArrAdr = (void*) locArr;
       VALUE locArrVal;
       locArrVal.as_ptr = locArrAdr;
-      location = new Location(ARRAY_KIND, locArrVal, true);
+      location = new Variable(ARRAY_KIND, locArrVal, true);
       currentFrame[inx] = location;
     } else {
-      location = new Location(type, true);
+      location = new Variable(type, true);
       currentFrame[inx] = location;
     }
   } else {
@@ -490,7 +490,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   return;
 }
 
-bool checkStore(Location *dest, KVALUE *kv) {
+bool checkStore(Variable *dest, KVALUE *kv) {
   bool result = false;
 
   switch(kv->kind) {
@@ -526,8 +526,8 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
       KVALUE_ToString(*op).c_str(),
       KVALUE_ToString(*kv).c_str(), inx);
 
-  // retrieve Location to store in
-  Location *dest = currentFrame[op->inx];
+  // retrieve Variable to store in
+  Variable *dest = currentFrame[op->inx];
   cout << "Dest: " << dest->toString() << "\n";
 
   // the value to store is a constant
@@ -535,7 +535,7 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
     dest->setValue(kv->value);
   }
   else {
-    Location* src = currentFrame[kv->inx];
+    Variable* src = currentFrame[kv->inx];
     if (dest->getType() == PTR_KIND) {
       void* srcAdr = src;
       VALUE destVal = dest->getValue();
@@ -618,7 +618,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
-  Location *src = currentFrame[op->inx];
+  Variable *src = currentFrame[op->inx];
   VALUE value = src->getValue();
 
   VALUE ext_value;
@@ -644,7 +644,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
     abort();
   }
 
-  Location *ext_loc = new Location(type, ext_value, false);
+  Variable *ext_loc = new Variable(type, ext_value, false);
   currentFrame[inx] = ext_loc;
   cout << ext_loc->toString() << "\n";
 }
@@ -653,7 +653,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -676,7 +676,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
     abort();
   }
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -685,7 +685,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -708,7 +708,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
     abort();
   }
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -717,13 +717,13 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -732,13 +732,13 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -747,7 +747,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -770,7 +770,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
     abort();
   }
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -779,7 +779,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Location *src = currentFrame[kv->inx];
+  Variable *src = currentFrame[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -802,7 +802,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
     abort();
   }
 
-  Location *trunc_loc = new Location(type, trunc_value, false);
+  Variable *trunc_loc = new Variable(type, trunc_value, false);
   currentFrame[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 
@@ -936,16 +936,16 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Location *loc1 = currentFrame[op1->inx];
-    v1 = getValueFromLocation(loc1);
+    Variable *loc1 = currentFrame[op1->inx];
+    v1 = getValueFromVariable(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Location *loc2 = currentFrame[op2->inx];
-    v2 = getValueFromLocation(loc2);
+    Variable *loc2 = currentFrame[op2->inx];
+    v2 = getValueFromVariable(loc2);
   }
 
   int result = 0;
@@ -989,7 +989,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(INT1_KIND, vresult, false);
+  Variable *nloc = new Variable(INT1_KIND, vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -1006,16 +1006,16 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Location *loc1 = currentFrame[op1->inx];
-    v1 = getValueFromLocation(loc1);
+    Variable *loc1 = currentFrame[op1->inx];
+    v1 = getValueFromVariable(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Location *loc2 = currentFrame[op2->inx];
-    v2 = getValueFromLocation(loc2);
+    Variable *loc2 = currentFrame[op2->inx];
+    v2 = getValueFromVariable(loc2);
   }
 
   int result = 0;
@@ -1059,7 +1059,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   VALUE vresult;
   vresult.as_int = result;
 
-  Location *nloc = new Location(INT1_KIND, vresult, false);
+  Variable *nloc = new Variable(INT1_KIND, vresult, false);
   currentFrame[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -1091,14 +1091,14 @@ void InterpreterObserver::construct_array_type(uint64_t i) {
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
-  Location* reg = currentFrame[callerVarIndex.top()];
+  Variable* reg = currentFrame[callerVarIndex.top()];
   reg->setValue(kvalue->value);
   callerVarIndex.pop();
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK FRAME >>>>>\n");
-  currentFrame = (Location**) malloc(sizeof(Location*)*size);
+  currentFrame = (Variable**) malloc(sizeof(Variable*)*size);
   executionStack.push(currentFrame);
 }
 
@@ -1126,15 +1126,15 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
       // debugging
       printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
 
-      Location* arg = currentFrame[value->inx];
-      Location* argCopy;
+      Variable* arg = currentFrame[value->inx];
+      Variable* argCopy;
       if (value->kind == PTR_KIND) {
         VALUE argValue;
         void* argAddr = arg;
         argValue.as_ptr = argAddr;
-        argCopy = new Location(PTR_KIND, argValue, true);
+        argCopy = new Variable(PTR_KIND, argValue, true);
       } else {
-        argCopy= new Location(arg->getType(), arg->getValue(), true);
+        argCopy= new Variable(arg->getType(), arg->getValue(), true);
       }
       callArgs.push(argCopy);
     }
@@ -1144,7 +1144,7 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
   printf("\n");
 
   callerVarIndex.push(inx);
-  currentFrame[inx] = new Location(type, false);
+  currentFrame[inx] = new Variable(type, false);
 
   cout << currentFrame[inx]->toString() << "\n";
 }

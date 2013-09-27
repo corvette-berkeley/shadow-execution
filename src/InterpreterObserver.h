@@ -2,7 +2,7 @@
 #define INTERPRETER_OBSERVER_H_
 
 #include "InstructionObserver.h"
-#include "Location.h"
+#include "Variable.h"
 #include <stack>
 
 namespace llvm {
@@ -30,17 +30,17 @@ class InterpreterObserver : public InstructionObserver {
  private:
   stack<KVALUE*> myStack;
   stack<uint64_t> arrayType;
-  Location** currentFrame;
-  stack<Location**> executionStack;
+  Variable** currentFrame;
+  stack<Variable**> executionStack;
   // index of callee in caller; 
   // to be assigned when call returns
   stack<int> callerVarIndex; 
   // copy value from callers to callee arguments
-  stack<Location*> callArgs;
+  stack<Variable*> callArgs;
 
   long double getValueFromConstant(KVALUE* op); 
 
-  long double getValueFromLocation(Location* loc); 
+  long double getValueFromVariable(Variable* loc); 
 
   std::string BINOP_ToString(int binop); 
   
