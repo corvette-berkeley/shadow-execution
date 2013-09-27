@@ -52,7 +52,7 @@ class InterpreterObserver : public InstructionObserver {
   InterpreterObserver(std::string name) : InstructionObserver(name) {
   }
   
-  virtual void load(IID iid, KVALUE* op, KVALUE* kv, int inx);
+  virtual void load(IID iid, KVALUE* op, int inx);
   
   // ***** Binary Operations ***** //
   

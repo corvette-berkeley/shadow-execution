@@ -75,7 +75,7 @@ struct MonitorPass : public FunctionPass {
           if (instrumentation->CheckAndInstrument(itr)) {
             if (dyn_cast<LoadInst>(itr)) {
               // skip instrumentation of the next 11 instructions in case of a LoadInstr
-              skip = 24;
+              // skip = 24;
             } else if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
               if (callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind)) {
                 skip = 12;
@@ -114,6 +114,7 @@ struct MonitorPass : public FunctionPass {
 /*******************************************************************************************/
 
 #include "Instrumenters.h"
+#include "LoadInstrumenter.h"
 #include "AddInstrumenter.h"
 #include "SubInstrumenter.h"
 #include "MulInstrumenter.h"

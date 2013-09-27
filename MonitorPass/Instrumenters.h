@@ -16,48 +16,6 @@
 /*******************************************************************************************/
 
 /*******************************************************************************************/
-// Callback: void load(IID iid, PTR addr, KVALUE value)
-class LoadInstrumenter : public Instrumenter {
-public:
-  LoadInstrumenter(std::string name, Instrumentation* instrumentation) :
-    Instrumenter(name, instrumentation) {};
-
-	bool CheckAndInstrument(Instruction* I) {
-    CAST_OR_RETURN(LoadInst, LI, I);
-
-		safe_assert(parent_ != NULL);
-
-		count_++;
-
-		parent_->AS_ = LI->getPointerAddressSpace();
-
-		InstrPtrVector Instrs;
-		Value* kvalue = KVALUE_VALUE(LI, Instrs, NOSIGN);
-		if(kvalue == NULL) return false;
-
-		Constant* C_iid = IID_CONSTANT(LI);
-
-		Instruction* I_cast_ptr = PTR_CAST_INSTR(LI->getPointerOperand());
-		Instrs.push_back(I_cast_ptr);
-
-    // cuong: pass a KVALUE instead of pointer constant
-    Value* op = KVALUE_VALUE(LI->getPointerOperand(), Instrs, NOSIGN);
-    if (op == NULL) return false;
-
-		Instruction* call = CALL_IID_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("load"), C_iid, op, kvalue, computeIndex(LI));
-		Instrs.push_back(call);
-
-		// instrument
-		InsertAllAfter(Instrs, LI);
-
-		return true;
-	}
-};
-
-/*******************************************************************************************/
-
-
-/*******************************************************************************************/
 
 // Callback: void extractelement()
 class ExtractElementInstrumenter : public Instrumenter {

@@ -112,8 +112,8 @@ void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx) {
   DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx)
 }
 
-void llvm_load(IID iid, KVALUE* op, KVALUE* value, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, op, value, inx);
+void llvm_load(IID iid, KVALUE* op, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, op, inx);
 }
 
 

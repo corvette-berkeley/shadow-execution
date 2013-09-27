@@ -4,10 +4,9 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KVALUE* op, KVALUE* kv, int inx) {
-  printf("<<<<< LOAD >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void PrintObserver::load(IID iid, KVALUE* op, int inx) {
+  printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str(),
-	 KVALUE_ToString(*kv).c_str(),
    inx);
 }
 
