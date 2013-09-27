@@ -18,12 +18,11 @@ struct MonitorPass : public FunctionPass {
     Instrumentation* instrumentation = Instrumentation::GetInstance();
     safe_assert(instrumentation != NULL);
 
-    /********************************************************************************/
-    /** cuong:                                                                   ****/
-    /** First pass through the function body to compute varCount and indices     ****/
-    /** i) varCount: the number of local variables and registers                 ****/ 
-    /** ii) indices: a mapping from each local variable and register to an index ****/
-    /********************************************************************************/
+    /* 
+     * First pass through the function body to compute varCount and indices     
+     * i) varCount: the number of local variables and registers                 
+     * ii) indices: a mapping from each local variable and register to an index 
+     */
 
     // set up varCount and indices map
     instrumentation->BeginFunction();
@@ -37,13 +36,12 @@ struct MonitorPass : public FunctionPass {
       }
     }
 
-    /********************************************************************************/
-    /** cuong:                                                                   ****/
-    /** Second pass through the function body for instrumentation                ****/
-    /** i) insert call to llvm_create_stack_frame at the beginning of each       ****/ 
-    /**    function                                                              ****/ 
-    /** ii) instrument each instruction using instrumentation->CheckAndInstrument ***/
-    /********************************************************************************/
+    /* 
+     * Second pass through the function body for instrumentation                
+     * i) insert call to llvm_create_stack_frame at the beginning of each       
+     *    function                                                              
+     * ii) instrument each instruction using instrumentation->CheckAndInstrument 
+     */
 
     unsigned int skip = 0;
     bool isFirstInstruction = true; 

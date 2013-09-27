@@ -347,8 +347,7 @@ class GetElementPtrInstrumenter : public Instrumenter {
       if(op1 == NULL) return false;
 
       PointerType* T = (PointerType*) SI->getPointerOperandType();
-      ArrayType* aT = (ArrayType*) T->getElementType();
-      Type* elemT = aT->getElementType();
+      Type* elemT = T->getElementType();
       KIND kind = TypeToKind(elemT);
 
       Constant* C_kind = KIND_CONSTANT(kind);
