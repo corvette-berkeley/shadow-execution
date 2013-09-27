@@ -131,6 +131,7 @@ struct MonitorPass : public FunctionPass {
 #include "AndInstrumenter.h"
 #include "OrInstrumenter.h"
 #include "XorInstrumenter.h"
+#include "CallInstrumenter.h"
 
 /*******************************************************************************************/
 
