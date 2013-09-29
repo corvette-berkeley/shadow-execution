@@ -323,53 +323,6 @@ class AtomicRMWInstrumenter : public Instrumenter {
     }
 };
 
-
-// Callback: void getelementptr()
-class GetElementPtrInstrumenter : public Instrumenter {
-  public:
-    GetElementPtrInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(GetElementPtrInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Constant* C_iid = IID_CONSTANT(SI);
-
-      Constant* inbound = BOOL_CONSTANT(SI->isInBounds());
-
-      Value* op1 = KVALUE_VALUE(SI->getPointerOperand(), Instrs, NOSIGN);
-      if(op1 == NULL) return false;
-
-      PointerType* T = (PointerType*) SI->getPointerOperandType();
-      Type* elemT = T->getElementType();
-      KIND kind = TypeToKind(elemT);
-
-      Constant* C_kind = KIND_CONSTANT(kind);
-
-      Constant* size;
-      if (elemT->isArrayTy()) {
-        ArrayType* aType = (ArrayType*) T;
-        size = INT64_CONSTANT(aType->getNumElements(), UNSIGNED);
-      } else {
-        size = INT64_CONSTANT(0, UNSIGNED);
-      }
-
-      Instruction* call = CALL_IID_BOOL_KVALUE_KIND_INT64_INT(INSTR_TO_CALLBACK("getelementptr"), C_iid, inbound, op1, C_kind, size, computeIndex(SI));
-      Instrs.push_back(call);
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      return true;
-    }
-};
-
 // ***** Conversion Operations ***** //
 
 // Callback: void trunc()
