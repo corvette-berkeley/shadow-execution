@@ -52,6 +52,7 @@ std::string KVALUE_ToString(KVALUE& kv) {
 		default: //safe_assert(false);
 			break;
 	}
+	s << "]";
 	return s.str();
 }
 
