@@ -1,8 +1,9 @@
 #ifndef HEAP_H_
 #define HEAP_H_
 
-#include <stdlib.h>
 #include <iostream>
+#include <stdlib.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -23,8 +24,8 @@ typedef union header Header;
 class Heap {
 
  private:
-  static Header base; /* empty list to get started */ 
-  static Header *freep; /* start of free list */
+  Header base; /* empty list to get started */ 
+  Header *freep; /* start of free list */
 
  public:
   Heap() {

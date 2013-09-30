@@ -72,14 +72,19 @@ void Heap::Free(void *ap) {
 
 
 Header* Heap::morecore(unsigned nu) {
-  char *cp, *sbrk(int); Header *up;
+  char *cp;
+  Header *up;
+
   if (nu < NALLOC) {
     nu = NALLOC;
   }
-  cp = sbrk(nu * sizeof(Header));
+
+  cp = (char*)sbrk(nu * sizeof(Header));
+
   if (cp == (char *) -1) { /* no space at all */
     return NULL;
   }
+
   up = (Header *) cp; 
   up->s.size = nu; 
   cout << "Here in morecore\n";
