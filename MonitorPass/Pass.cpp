@@ -219,7 +219,7 @@ REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp") // done
 REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp") // done
 //REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
 //REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
-//REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
+REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
