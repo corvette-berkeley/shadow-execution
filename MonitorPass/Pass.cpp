@@ -133,6 +133,7 @@ struct MonitorPass : public FunctionPass {
 #include "XorInstrumenter.h"
 #include "CallInstrumenter.h"
 #include "GetElementPtrInstrumenter.h"
+#include "BitCastInstrumenter.h"
 
 /*******************************************************************************************/
 

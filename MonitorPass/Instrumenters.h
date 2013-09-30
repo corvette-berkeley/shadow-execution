@@ -752,65 +752,6 @@ class IntToPtrInstrumenter : public Instrumenter {
 };
 
 
-// Callback: void bitcast()
-class BitCastInstrumenter : public Instrumenter {
-  public:
-    BitCastInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(BitCastInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Value* op = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
-      if(op == NULL) return false;
-
-      Type *T = SI->getType();
-      if (!T) return false;
-
-      KIND kind = TypeToKind(T);
-      if(kind == INV_KIND) return false;
-
-      Constant* C_kind = KIND_CONSTANT(kind);
-
-      Constant* C_iid = IID_CONSTANT(SI);
-
-      Instruction* call = CALL_IID_KIND_KVALUE_INT(INSTR_TO_CALLBACK("bitcast"), C_iid, C_kind, op, computeIndex(SI));
-
-      Instrs.push_back(call);
-
-      /////////
-      /*
-      printf("Printing new instructions to add\n");
-      for(unsigned int i = 0; i < Instrs.size(); i++) {
-	Instrs[i]->dump();
-      }
-
-      printf("About to add instrumentation for bitcast\n");
-      SI->dump();
-      parent_->BB_->dump();
-      */
-      /////////
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      ////////
-      /*
-      verifyModule(*parent_->M_, AbortProcessAction);
-      printf("Module verified after instrumenting bitcast\n");
-      */
-      ////////
-
-      return true;
-    }
-};
-
 
 // ***** TerminatorInst ***** //
 
