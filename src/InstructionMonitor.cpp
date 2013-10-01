@@ -263,6 +263,10 @@ void llvm_call(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
 	DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, value, inx)
 }
 
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
+	DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, inx)
+}
+
 void llvm_vaarg() {
 	DISPATCH_TO_OBSERVERS(vaarg)
 }
@@ -285,8 +289,8 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-REGISTER_OBSERVER(PrintObserver, "print")
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+//REGISTER_OBSERVER(PrintObserver, "print")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 
 /*******************************************************************************************/
 
