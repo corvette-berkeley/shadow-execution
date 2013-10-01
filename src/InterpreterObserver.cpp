@@ -1155,28 +1155,6 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 }
 
 
-////////
-/*
-      KVALUE* value = myStack.top();
-      myStack.pop();
-
-      // debugging
-      printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
-
-      Variable* arg = currentFrame[value->inx];
-      Variable* argCopy;
-      if (value->kind == PTR_KIND) {
-        VALUE argValue;
-        void* argAddr = arg;
-        argValue.as_ptr = argAddr;
-        argCopy = new Variable(PTR_KIND, argValue, true);
-      } else {
-        argCopy= new Variable(arg->getType(), arg->getValue(), true);
-      }
-*/
-////////
-
-
 void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
   // debugging
   printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, [INX: %d]", 
