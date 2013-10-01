@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stack>
 #include <llvm/InstrTypes.h>
+#include "Heap.h"
 	
 void InterpreterObserver::load(IID iid, KVALUE* op, int inx) {
   printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
@@ -1154,6 +1155,28 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 }
 
 
+////////
+/*
+      KVALUE* value = myStack.top();
+      myStack.pop();
+
+      // debugging
+      printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
+
+      Variable* arg = currentFrame[value->inx];
+      Variable* argCopy;
+      if (value->kind == PTR_KIND) {
+        VALUE argValue;
+        void* argAddr = arg;
+        argValue.as_ptr = argAddr;
+        argCopy = new Variable(PTR_KIND, argValue, true);
+      } else {
+        argCopy= new Variable(arg->getType(), arg->getValue(), true);
+      }
+*/
+////////
+
+
 void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
   // debugging
   printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, [INX: %d]", 
@@ -1163,20 +1186,21 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
       (nounwind ? 1 : 0),
       inx);
 
-  if (nounwind) {
-    while (!myStack.empty()) {
-      myStack.pop();
-    }
-    while (!callArgs.empty()) {
-      callArgs.pop();
-    }
-  } 
+  // retrieving number of bytes
+  KVALUE* argValue = myStack.top();
+  myStack.pop();
+  printf("\n==== arg: %s", KVALUE_ToString(*argValue).c_str()); 
+  assert(myStack.size() == 0);
 
-  // debugging
-  cout << "\n";
+  // allocating space
+  void *addr = myHeap->Alloca(argValue->value.as_int);
+
+  // creating return value
+  VALUE returnValue;
+  returnValue.as_ptr = addr;
 
   callerVarIndex.push(inx);
-  currentFrame[inx] = new Variable(type, false);
+  currentFrame[inx] = new Variable(type, returnValue, false);
 
   cout << currentFrame[inx]->toString() << "\n";
   return;
