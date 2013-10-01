@@ -152,7 +152,15 @@ protected:
 				return FLP128PPC_KIND;;
 			}
 		} else if(T->isPointerTy()) {
-			return PTR_KIND;
+		  /*
+		  if ((dyn_cast<PointerType>(T))->getElementType()->isIntegerTy()) {
+		    return INTPTR_KIND;
+		  }
+		  else {
+		    return PTR_KIND;
+		  }
+		  */
+		  return PTR_KIND;
 		} else if (T->isArrayTy()) {
       return ARRAY_KIND;
     }
@@ -331,12 +339,14 @@ protected:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KVALUE_KIND_INT64_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind, Value* size, Value* inx) {
+	Instruction* CALL_IID_BOOL_KVALUE_KIND_INT64_INT64_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind, Value* size, 
+							       Value* elemIndex, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
 		ArgTypes.push_back(KVALUEPTR_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
+		ArgTypes.push_back(INT64_TYPE());
 		ArgTypes.push_back(INT64_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
 
@@ -346,6 +356,7 @@ protected:
 		Args.push_back(kvalue);
 		Args.push_back(kind);
 		Args.push_back(size);
+		Args.push_back(elemIndex);
 		Args.push_back(inx);
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);

@@ -50,7 +50,8 @@ public:
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};
-	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, uint64_t size UNUSED, 
+				   uint64_t elemIndex UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};

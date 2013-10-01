@@ -22,6 +22,9 @@ std::string KVALUE_ToString(KVALUE& kv) {
 		case PTR_KIND:
 			s << "PTR: " << kv.value.as_ptr << "]";
 			break;
+		case INTPTR_KIND:
+		        s << "INTPTR: " <<  (int*)kv.value.as_ptr << " "<< kv.value.as_ptr << "]";
+			break;
 		case INT1_KIND:
 			s << "INT1: " << kv.value.as_int << "]";
 			break;

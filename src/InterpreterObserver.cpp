@@ -583,14 +583,18 @@ void InterpreterObserver::atomicrmw() {
   abort();
 }
 
-void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size: %ld, [INX: %d]\n", 
+void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, uint64_t elemIndex, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size: %ld, elemIndex: %ld, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
       KVALUE_ToString(*op).c_str(), 
       KIND_ToString(kind).c_str(),
       size,
+      elemIndex,
       inx);
+
+  //Variable *var = currentFrame[inx];
+  //cout << var->getValue().as_int << "\n";
 
   cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
   abort();
@@ -830,6 +834,10 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
 
   Variable *src = currentFrame[op->inx];
   VALUE value = src->getValue();
+
+  //////
+  cout << "------ " << type << "\n";
+  /////
 
   Variable *bitcast_loc = new Variable(type, value, false);
   currentFrame[inx] = bitcast_loc;

@@ -119,7 +119,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void atomicrmw();
 
-  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx);
+  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, uint64_t elemIndex, int inx);
 
   // ***** Conversion Operations ***** //
   virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);

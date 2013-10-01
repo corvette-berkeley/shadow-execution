@@ -70,18 +70,19 @@ typedef uint32_t kind_t;
 #define KIND kind_t
 
 const KIND	INV_KIND	= 0U,
-			PTR_KIND 	= 1U,
-			INT1_KIND 	= 2U,
-			INT8_KIND 	= 3U,
-			INT16_KIND 	= 4U,
-			INT32_KIND 	= 5U,
-			INT64_KIND 	= 6U,
-			FLP32_KIND	= 7U,
-			FLP64_KIND	= 8U,
-			FLP128_KIND	= 9U,
-			FLP80X86_KIND  = 10U,
-			FLP128PPC_KIND = 11U,
-      ARRAY_KIND = 12U;
+  PTR_KIND 	= 1U,
+  INT1_KIND 	= 2U,
+  INT8_KIND 	= 3U,
+  INT16_KIND 	= 4U,
+  INT32_KIND 	= 5U,
+  INT64_KIND 	= 6U,
+  FLP32_KIND	= 7U,
+  FLP64_KIND	= 8U,
+  FLP128_KIND	= 9U,
+  FLP80X86_KIND  = 10U,
+  FLP128PPC_KIND = 11U,
+  ARRAY_KIND = 12U,
+  INTPTR_KIND = 13U;
 
 const IID INV_IID = 0U;
 

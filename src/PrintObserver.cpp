@@ -216,13 +216,14 @@ void PrintObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size %ld, [INX: %d]\n", 
+void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, uint64_t elemIndex, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size %ld, elemIndex: %ld, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
 	 KVALUE_ToString(*op).c_str(), 
    KIND_ToString(kind).c_str(),
    size,
+   elemIndex,
    inx);
 }
 
