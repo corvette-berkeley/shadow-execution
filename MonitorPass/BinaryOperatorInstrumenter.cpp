@@ -8,7 +8,7 @@
 bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
   BinaryOperator* binInst = dyn_cast<BinaryOperator>(inst);
   BINOP binop = getBinOp(binInst);
-  if (binInst != NULL && getBinOp(binInst) != INVALID) {
+  if (binInst != NULL && getBinOp(binInst) != BINOP_INVALID) {
     safe_assert(parent_ != NULL);
 
     count_++;
@@ -140,9 +140,9 @@ BINOP BinaryOperatorInstrumenter::getBinOp(BinaryOperator* binInst) {
       case Instruction::BinaryOps(Instruction::Xor): 
         return XOR;
       default:
-        return INVALID;
+        return BINOP_INVALID;
     }
   } else {
-    return INVALID;
+    return BINOP_INVALID;
   }
 }

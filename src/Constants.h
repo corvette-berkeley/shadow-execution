@@ -2,14 +2,22 @@
 #define CONSTANTS_DEFS_H_
 
 typedef enum {
-  INVALID,
+  BINOP_INVALID,
   ADD, SUB, MUL, UDIV, SDIV, UREM, SREM,
   FADD, FSUB, FMUL, FDIV, FREM,
   SHL, LSHR, ASHR, AND, OR, XOR
 } BINOP;
 
 typedef enum {
-  
+  CASTOP_INVALID,
+  BITCAST, TRUNC, ZEXT,
+  FPEXT, FPTOSI, FPTOUI, FPTRUNC,
+  INTTOPTR, PTRTOINT,
+  SEXT, SITOFP, UITOFP
+} CASTOP;
+
+typedef enum {
+  // not implemented yet
 } MACHINEFLAG;
 
 #endif /* CONSTANTS_DEFS_H_ */
