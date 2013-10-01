@@ -53,7 +53,13 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     instrs.push_back(call);
   }
 
-  Instruction* call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, inx);
+  Instruction* call = NULL;
+  if (callInst->getCalledFunction()->getName() == "malloc") {
+    call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, inx);
+  }
+  else {
+    call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call", iid, noUnwindC, kind, callValue, inx);
+  }
   instrs.push_back(call);
 
   // instrument
