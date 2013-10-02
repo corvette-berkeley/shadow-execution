@@ -3,10 +3,10 @@
 
 #include "CastInstructionInstrumenter.h"
 
-class BitCastInstrumenter : public Instrumenter {
+class BitCastInstrumenter : public CastInstructionInstrumenter {
   public:
     BitCastInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
+      CastInstructionInstrumenter(name, instrumentation) {};
 };
 
 #endif

@@ -64,7 +64,6 @@ plugin = env.SharedLibrary(
     'InstrumenterBase.cpp',
     'Pass.cpp',
     'BinaryOperatorInstrumenter.cpp',
-    'BitCastInstrumenter.cpp',
     'CallInstrumenter.cpp',
     'GetElementPtrInstrumenter.cpp',
     'LoadInstrumenter.cpp',
