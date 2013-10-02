@@ -134,6 +134,27 @@ struct MonitorPass : public FunctionPass {
 #include "CallInstrumenter.h"
 #include "GetElementPtrInstrumenter.h"
 #include "BitCastInstrumenter.h"
+#include "TruncInstrumenter.h"
+#include "FPExtInstrumenter.h"
+#include "FPToSIInstrumenter.h"
+#include "FPToUIInstrumenter.h"
+#include "FPTruncInstrumenter.h"
+#include "IntToPtrInstrumenter.h"
+#include "PtrToIntInstrumenter.h"
+#include "SExtInstrumenter.h"
+#include "SIToFPInstrumenter.h"
+#include "TruncInstrumenter.h"
+#include "UIToFPInstrumenter.h"
+#include "ZExtInstrumenter.h"
+#include "ExtractElementInstrumenter.h"
+#include "InsertElementInstrumenter.h"
+#include "ShuffleVectorInstrumenter.h"
+#include "ExtractValueInstrumenter.h"
+#include "InsertValueInstrumenter.h"
+#include "UnreachableInstrumenter.h"
+#include "PHINodeInstrumenter.h"
+#include "SelectInstrumenter.h"
+#include "LandingPadInstrumenter.h"
 
 /*******************************************************************************************/
 
@@ -218,8 +239,8 @@ REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui") // done
 REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi") // done
 REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp") // done
 REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp") // done
-//REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
-//REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
+REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
+REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //

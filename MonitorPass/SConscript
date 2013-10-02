@@ -68,6 +68,8 @@ plugin = env.SharedLibrary(
     'CallInstrumenter.cpp',
     'GetElementPtrInstrumenter.cpp',
     'LoadInstrumenter.cpp',
+    'CastInstructionInstrumenter.cpp',
+    'UninterpretedInstrumenter.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
