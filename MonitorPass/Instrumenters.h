@@ -95,42 +95,6 @@ class AtomicRMWInstrumenter : public Instrumenter {
 
 // ***** TerminatorInst ***** //
 
-// Callback: void branch()
-class BranchInstrumenter : public Instrumenter {
-  public:
-    BranchInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(BranchInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Constant* conditional = BOOL_CONSTANT(SI->isConditional());
-      Constant* C_iid = IID_CONSTANT(SI);
-
-      if (SI->isConditional()) {
-        Value* op1 = KVALUE_VALUE(SI->getCondition(), Instrs, NOSIGN);
-        if(op1 == NULL) return false;
-        Instruction* call = CALL_IID_BOOL_KVALUE_INT(INSTR_TO_CALLBACK("branch"), C_iid, conditional, op1, computeIndex(SI));
-        Instrs.push_back(call);
-      } else {
-        Instruction* call = CALL_IID_BOOL_INT(INSTR_TO_CALLBACK("branch2"), C_iid, conditional, computeIndex(SI));
-        Instrs.push_back(call);
-      }
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      return true;
-    }
-};
-
-
 // Callback: void indirectbr()
 class IndirectBrInstrumenter : public Instrumenter {
   public:

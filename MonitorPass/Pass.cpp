@@ -157,6 +157,7 @@ struct MonitorPass : public FunctionPass {
 #include "SelectInstrumenter.h"
 #include "LandingPadInstrumenter.h"
 #include "AllocaInstrumenter.h"
+#include "BranchInstrumenter.h"
 
 /*******************************************************************************************/
 
