@@ -112,6 +112,7 @@ struct MonitorPass : public FunctionPass {
 /*******************************************************************************************/
 
 #include "Instrumenters.h"
+#include "StoreInstrumenter.h"
 #include "LoadInstrumenter.h"
 #include "AddInstrumenter.h"
 #include "SubInstrumenter.h"
@@ -155,6 +156,7 @@ struct MonitorPass : public FunctionPass {
 #include "PHINodeInstrumenter.h"
 #include "SelectInstrumenter.h"
 #include "LandingPadInstrumenter.h"
+#include "AllocaInstrumenter.h"
 
 /*******************************************************************************************/
 
@@ -245,12 +247,12 @@ REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
-//REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
-//REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
-//REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
+REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
+REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
+REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call") // nacuong: done, not for intrinsic yet
-//REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
-//REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
+REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
+REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
 
 
 
