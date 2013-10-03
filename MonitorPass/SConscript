@@ -73,6 +73,8 @@ plugin = env.SharedLibrary(
     'BranchInstrumenter.cpp',
     'CmpInstrumenter.cpp',
     'ReturnInstrumenter.cpp',
+    'SwitchInstrumenter.cpp',
+    'IndirectBrInstrumenter.cpp',
     'AtomicCmpXchgInstrumenter.cpp',
     'AllocaInstrumenter.cpp'
         ],
