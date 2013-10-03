@@ -583,14 +583,14 @@ void InterpreterObserver::atomicrmw() {
   abort();
 }
 
-void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KIND kind, uint64_t size, uint64_t elemIndex, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, size: %ld, elemIndex: %ld, [INX: %d]\n", 
+void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
-      KVALUE_ToString(*op).c_str(), 
+      KVALUE_ToString(*op).c_str(),
+      KVALUE_ToString(*index).c_str(),
       KIND_ToString(kind).c_str(),
       size,
-      elemIndex,
       inx);
 
   //Variable *var = currentFrame[inx];

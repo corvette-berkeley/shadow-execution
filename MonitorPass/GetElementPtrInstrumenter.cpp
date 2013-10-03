@@ -26,9 +26,14 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   Value* ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
   if(ptrOp == NULL) return false;
+  
+  if (gepInst->getNumIndices() != 1) {
+    cout << "[GetElementPtr] => Multiple indices\n";
+    abort();
+  }
 
-  // new
-  Constant* idxOp = INT64_CONSTANT(gepInst->getPointerOperandIndex(), UNSIGNED);
+  Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, NOSIGN);
+  if(idxOp == NULL) return false;  
 
   PointerType* T = (PointerType*) gepInst->getPointerOperandType();
   Type* elemT = T->getElementType();
@@ -44,7 +49,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     size = INT64_CONSTANT(0, UNSIGNED);
   }
 
-  Instruction* call = CALL_IID_BOOL_KVALUE_KIND_INT64_INT64_INT("llvm_getelementptr", iidC, inbound, ptrOp, kindC, size, idxOp, inxC);
+  Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, inxC);
   instrs.push_back(call);
 
   // instrument
