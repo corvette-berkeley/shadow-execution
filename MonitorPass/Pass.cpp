@@ -159,6 +159,7 @@ struct MonitorPass : public FunctionPass {
 #include "AllocaInstrumenter.h"
 #include "BranchInstrumenter.h"
 #include "ReturnInstrumenter.h"
+#include "AtomicCmpXchgInstrumenter.h"
 #include "FenceInstrumenter.h"
 #include "ICmpInstrumenter.h"
 #include "FCmpInstrumenter.h"

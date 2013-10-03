@@ -15,42 +15,6 @@
 
 /*******************************************************************************************/
 
-// ***** Memory Access and Addressing Operations ***** //
-
-// Callback: void cmpxchg()
-class AtomicCmpXchgInstrumenter : public Instrumenter {
-  public:
-    AtomicCmpXchgInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(AtomicCmpXchgInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-      Value* kvalue1 = KVALUE_VALUE(SI->getCompareOperand(), Instrs, NOSIGN);
-      if(kvalue1 == NULL) return false;
-
-      Value* kvalue2 = KVALUE_VALUE(SI->getNewValOperand(), Instrs, NOSIGN);
-      if(kvalue2 == NULL) return false;
-
-      Constant* C_iid = IID_CONSTANT(SI);
-      Instruction* I_cast_ptr = PTR_CAST_INSTR(SI->getPointerOperand());
-      Instrs.push_back(I_cast_ptr);
-
-      Instruction* call = CALL_IID_PTR_KVALUE_KVALUE_INT(INSTR_TO_CALLBACK("cmpxchg"), C_iid, I_cast_ptr, kvalue1, kvalue2, computeIndex(SI));
-      Instrs.push_back(call);
-
-      // instrument
-      InsertAllBefore(Instrs, I);
-
-      return true;
-    }
-};
-
 // ***** TerminatorInst ***** //
 
 // Callback: void indirectbr()

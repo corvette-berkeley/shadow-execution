@@ -73,6 +73,7 @@ plugin = env.SharedLibrary(
     'BranchInstrumenter.cpp',
     'CmpInstrumenter.cpp',
     'ReturnInstrumenter.cpp',
+    'AtomicCmpXchgInstrumenter.cpp',
     'AllocaInstrumenter.cpp'
         ],
     INCPREFIX='-isystem ',
