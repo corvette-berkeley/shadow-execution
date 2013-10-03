@@ -163,6 +163,7 @@ struct MonitorPass : public FunctionPass {
 #include "ICmpInstrumenter.h"
 #include "FCmpInstrumenter.h"
 #include "VAArgInstrumenter.h"
+#include "AtomicRMWInstrumenter.h"
 
 /*******************************************************************************************/
 

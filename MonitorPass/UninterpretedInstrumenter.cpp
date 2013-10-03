@@ -49,6 +49,9 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case VAARG:
       callback << "vaarg";
       break;
+    case ATOMICRMW:
+      callback << "atomicrmw";
+      break;
     default:
       return false; 
   }
@@ -88,6 +91,8 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return FENCE;
   } else if (dyn_cast<VAArgInst>(inst) != NULL) {
     return VAARG;
+  } else if (dyn_cast<AtomicRMWInst>(inst) != NULL) {
+    return ATOMICRMW;
   } else {
     return UNINTERPRETEDINST_INVALID;
   }

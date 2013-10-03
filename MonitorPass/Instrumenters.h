@@ -51,27 +51,6 @@ class AtomicCmpXchgInstrumenter : public Instrumenter {
     }
 };
 
-
-// Callback: void atomicrmw()
-class AtomicRMWInstrumenter : public Instrumenter {
-  public:
-    AtomicRMWInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(AtomicRMWInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_atomicrmw"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
-
-      return true;
-    }
-};
-
 // ***** TerminatorInst ***** //
 
 // Callback: void indirectbr()
