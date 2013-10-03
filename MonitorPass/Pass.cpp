@@ -165,6 +165,8 @@ struct MonitorPass : public FunctionPass {
 #include "FCmpInstrumenter.h"
 #include "VAArgInstrumenter.h"
 #include "AtomicRMWInstrumenter.h"
+#include "ResumeInstrumenter.h"
+#include "InvokeInstrumenter.h"
 
 /*******************************************************************************************/
 

@@ -52,6 +52,12 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case ATOMICRMW:
       callback << "atomicrmw";
       break;
+    case RESUME:
+      callback << "resume";
+      break;
+    case INVOKE:
+      callback << "invoke";
+      break;
     default:
       return false; 
   }
@@ -93,6 +99,10 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return VAARG;
   } else if (dyn_cast<AtomicRMWInst>(inst) != NULL) {
     return ATOMICRMW;
+  } else if (dyn_cast<ResumeInst>(inst) != NULL) {
+    return RESUME;
+  } else if (dyn_cast<InvokeInst>(inst) != NULL) {
+    return INVOKE;
   } else {
     return UNINTERPRETEDINST_INVALID;
   }
