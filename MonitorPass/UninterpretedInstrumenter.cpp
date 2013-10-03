@@ -43,6 +43,12 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case LANDINGPAD:
       callback << "landingpad";
       break;
+    case FENCE:
+      callback << "fence";
+      break;
+    case VAARG:
+      callback << "vaarg";
+      break;
     default:
       return false; 
   }
@@ -78,6 +84,10 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return SELECT;
   } else if (dyn_cast<LandingPadInst>(inst) != NULL) {
     return LANDINGPAD;
+  } else if (dyn_cast<FenceInst>(inst) != NULL) {
+    return FENCE;
+  } else if (dyn_cast<VAArgInst>(inst) != NULL) {
+    return VAARG;
   } else {
     return UNINTERPRETEDINST_INVALID;
   }

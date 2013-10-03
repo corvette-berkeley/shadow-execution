@@ -71,6 +71,8 @@ plugin = env.SharedLibrary(
     'CastInstructionInstrumenter.cpp',
     'UninterpretedInstrumenter.cpp',
     'BranchInstrumenter.cpp',
+    'CmpInstrumenter.cpp',
+    'ReturnInstrumenter.cpp',
     'AllocaInstrumenter.cpp'
         ],
     INCPREFIX='-isystem ',

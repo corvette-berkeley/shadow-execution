@@ -17,27 +17,6 @@
 
 // ***** Memory Access and Addressing Operations ***** //
 
-// Callback: void fence()
-class FenceInstrumenter : public Instrumenter {
-  public:
-    FenceInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(FenceInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_fence"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
-
-      return true;
-    }
-};
-
-
 // Callback: void cmpxchg()
 class AtomicCmpXchgInstrumenter : public Instrumenter {
   public:
@@ -196,42 +175,6 @@ class ResumeInstrumenter : public Instrumenter {
 };
 
 
-// Callback: void return()
-class ReturnInstrumenter : public Instrumenter {
-  public:
-    ReturnInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(ReturnInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Constant* C_iid = IID_CONSTANT(SI);
-      Value* retVal = SI->getReturnValue();
-
-      if (retVal == NULL) {
-        Instruction* call = CALL_IID_INT(INSTR_TO_CALLBACK("return2_"), C_iid, computeIndex(SI));
-        Instrs.push_back(call);
-      } else {
-        Value* op1 = KVALUE_VALUE(retVal, Instrs, NOSIGN);
-        if (op1 == NULL) return false;
-        Instruction* call = CALL_IID_KVALUE_INT(INSTR_TO_CALLBACK("return_"), C_iid, op1, computeIndex(SI));
-        Instrs.push_back(call);
-      }
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      return true;
-    }
-};
-
-
 // Callback: void switch_()
 class SwitchInstrumenter : public Instrumenter {
   public:
@@ -263,99 +206,6 @@ class SwitchInstrumenter : public Instrumenter {
 
 
 // ***** Other Operations ***** //
-
-// Callback: void icmp()
-class ICmpInstrumenter : public Instrumenter {
-  public:
-    ICmpInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(ICmpInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Value* op1 = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
-      if(op1 == NULL) return false;
-
-      Value* op2 = KVALUE_VALUE(SI->getOperand(1U), Instrs, NOSIGN);
-      if(op2 == NULL) return false;
-
-      Constant* C_iid = IID_CONSTANT(SI);
-
-      PRED pred = SI->getUnsignedPredicate();
-      Constant* C_pred = PRED_CONSTANT(pred);
-
-      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED_INT(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred, computeIndex(SI));
-      Instrs.push_back(call);
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      return true;
-    }
-};
-
-
-// Callback: void fcmp()
-class FCmpInstrumenter : public Instrumenter {
-  public:
-    FCmpInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(FCmpInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      InstrPtrVector Instrs;
-
-      Value* op1 = KVALUE_VALUE(SI->getOperand(0U), Instrs, NOSIGN);
-      if(op1 == NULL) return false;
-
-      Value* op2 = KVALUE_VALUE(SI->getOperand(1U), Instrs, NOSIGN);
-      if(op2 == NULL) return false;
-
-      Constant* C_iid = IID_CONSTANT(SI);
-
-      PRED pred = SI->getPredicate();
-      Constant* C_pred = PRED_CONSTANT(pred);
-
-      Instruction* call = CALL_IID_KVALUE_KVALUE_PRED_INT(INSTR_TO_CALLBACK("icmp"), C_iid, op1, op2, C_pred, computeIndex(SI));
-      Instrs.push_back(call);
-
-      // instrument
-      InsertAllBefore(Instrs, SI);
-
-      return true;
-    }
-};
-
-// Callback: void vaarg()
-class VAArgInstrumenter : public Instrumenter {
-  public:
-    VAArgInstrumenter(std::string name, Instrumentation* instrumentation) :
-      Instrumenter(name, instrumentation) {};
-
-    bool CheckAndInstrument(Instruction* I) {
-      CAST_OR_RETURN(VAArgInst, SI, I);
-
-      safe_assert(parent_ != NULL);
-
-      count_++;
-
-      Instruction *call = CallInst::Create(parent_->M_->getOrInsertFunction(StringRef("llvm_vaarg"), FunctionType::get(VOID_TYPE(), false)));
-      call->insertBefore(I);
-
-      return true;
-    }
-};
 
 #endif // INSTRUMENTERS_H_
 
