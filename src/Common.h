@@ -92,7 +92,6 @@ std::string KIND_ToString(int kind);
 void safe_assert(bool cond);
 void unimplemented();
 
-
 template<typename T>
 std::string Generic_ToString(T x) {
   std::stringstream s;

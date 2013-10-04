@@ -60,6 +60,7 @@ env.MergeFlags('!llvm-config --cxxflags --ldflags')
 plugin = env.SharedLibrary(
     'MonitorPass',
     [
+    'Common.cpp',
     'Instrumentation.cpp',
     'InstrumenterBase.cpp',
     'Pass.cpp',
