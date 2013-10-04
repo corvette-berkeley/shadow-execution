@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <stack>
+#include <vector>
 #include <llvm/InstrTypes.h>
 #include "Heap.h"
 	
@@ -902,7 +903,7 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
       callerVarIndex.pop();
     }
   } else {
-    currentFrame = NULL;
+    currentFrame.clear();
     cout << "The execution stack is empty.\n";
   }
 
@@ -919,7 +920,7 @@ void InterpreterObserver::return2_(IID iid, int inx) {
     currentFrame = executionStack.top();
     cout << "New stack size: " << executionStack.size() << "\n";
   } else {
-    currentFrame = NULL;
+    currentFrame.clear();
     cout << "The execution stack is empty.\n";
   }
 
@@ -1111,7 +1112,7 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
 
 void InterpreterObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK FRAME >>>>>\n");
-  currentFrame = (Variable**) malloc(sizeof(Variable*)*size);
+  std::vector<Variable*> currentFrame(size, new Variable());
   executionStack.push(currentFrame);
 }
 

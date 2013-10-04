@@ -22,6 +22,8 @@ class Variable {
  Variable(KIND t, VALUE v, unsigned int s, int o, bool l): type(t), value(v), size(s), offset(o), local(l) {}
 
  Variable(KIND t, bool l): type(t), size(0), offset(0), local(l) {}
+
+ Variable() {}
   
   void setType(KIND t);
 

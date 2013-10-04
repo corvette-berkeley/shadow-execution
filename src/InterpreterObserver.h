@@ -4,6 +4,7 @@
 #include "InstructionObserver.h"
 #include "Variable.h"
 #include <stack>
+#include <vector>
 
 namespace llvm {
   class CmpInst;
@@ -12,26 +13,16 @@ namespace llvm {
 using namespace std;
 using namespace llvm;
 
-/*******************************************************************************************/
-// helpful macros for defining instrumenters
-#define DEFAULT_CONSTRUCTOR(T) \
-		T(std::string name) \
-		: InstructionObserver(name) {}
-
-/*******************************************************************************************/
-
-
-/*******************************************************************************************/
-
 class InterpreterObserver : public InstructionObserver {
 
   typedef uint64_t IID;
 
  private:
+  stack< vector< Variable* > > executionStack;
+  vector< Variable* > currentFrame;
+
   stack<KVALUE*> myStack;
   stack<uint64_t> arrayType;
-  Variable** currentFrame;
-  stack<Variable**> executionStack;
   // index of callee in caller; 
   // to be assigned when call returns
   stack<int> callerVarIndex; 
@@ -48,7 +39,6 @@ class InterpreterObserver : public InstructionObserver {
 
  public:
   
-  //DEFAULT_CONSTRUCTOR(InterpreterObserver);
   InterpreterObserver(std::string name) : InstructionObserver(name) {}
   
   virtual void load(IID iid, KVALUE* op, int inx);
