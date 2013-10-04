@@ -61,7 +61,6 @@ plugin = env.SharedLibrary(
     'libmonitor',
     [
     'Common.cpp',
-    'Heap.cpp',
     'InstructionMonitor.cpp',
     'InterpreterObserver.cpp',
     'Variable.cpp',

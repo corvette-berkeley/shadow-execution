@@ -2,7 +2,6 @@
 #define INTERPRETER_OBSERVER_H_
 
 #include "InstructionObserver.h"
-#include "Heap.h"
 #include "Variable.h"
 #include <stack>
 
@@ -30,7 +29,6 @@ class InterpreterObserver : public InstructionObserver {
 
  private:
   stack<KVALUE*> myStack;
-  Heap *myHeap;
   stack<uint64_t> arrayType;
   Variable** currentFrame;
   stack<Variable**> executionStack;
@@ -51,9 +49,7 @@ class InterpreterObserver : public InstructionObserver {
  public:
   
   //DEFAULT_CONSTRUCTOR(InterpreterObserver);
-  InterpreterObserver(std::string name) : InstructionObserver(name) {
-    myHeap = new Heap();
-  }
+  InterpreterObserver(std::string name) : InstructionObserver(name) {}
   
   virtual void load(IID iid, KVALUE* op, int inx);
   

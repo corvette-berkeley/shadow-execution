@@ -1179,7 +1179,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   assert(myStack.size() == 0);
 
   // allocating space
-  void *addr = myHeap->Alloca(argValue->value.as_int);
+  void *addr = malloc(argValue->value.as_int);
 
   // creating return value
   VALUE returnValue;
