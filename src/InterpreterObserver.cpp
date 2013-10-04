@@ -1111,8 +1111,9 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
-  printf("<<<<< CREATE STACK FRAME >>>>>\n");
-  std::vector<Variable*> currentFrame(size, new Variable());
+  printf("<<<<< CREATE STACK FRAME OF SIZE %d>>>>>\n", size);
+  std::vector<Variable*> frame (size, new Variable());
+  currentFrame = frame;
   executionStack.push(currentFrame);
 }
 
