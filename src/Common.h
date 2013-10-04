@@ -1,3 +1,7 @@
+/**
+ * @file Common.h
+ * @brief Common Declarations.
+ */
 
 #ifndef COMMON_DEFS_H_
 #define COMMON_DEFS_H_
@@ -29,25 +33,8 @@
 #include <map>
 #include <set>
 
+// list of constants
 #include "Constants.h"
-
-/********************************************************************************/
-
-#define UNRECOVERABLE_ERROR 5
-#define safe_assert(cond) \
-		if (!(cond))  { \
-			printf("\nCounit: safe assert fail: safe_assert(%s):", #cond); \
-			printf(" \n\tfunction: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); \
-			fflush(stdout); \
-			_Exit(UNRECOVERABLE_ERROR); \
-		}
-
-#define unimplemented() \
-		VLOG(2) << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << " file: " << __FILE__; \
-		throw "Unimplemented operation!"
-
-
-/*******************************************************************************************/
 
 typedef uintptr_t	ADDRINT;
 typedef uint64_t 	IID;
@@ -102,6 +89,9 @@ std::string IID_ToString(IID& iid);
 std::string PTR_ToString(PTR& ptr);
 std::string KVALUE_ToString(KVALUE& kv);
 std::string KIND_ToString(int kind);
+void safe_assert(bool cond);
+void unimplemented();
+
 
 template<typename T>
 std::string Generic_ToString(T x) {
