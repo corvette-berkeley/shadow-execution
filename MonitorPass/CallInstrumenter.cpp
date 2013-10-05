@@ -4,6 +4,7 @@
  */
 
 #include "CallInstrumenter.h"
+#include "../src/Variable.h"
 
 bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   CallInst* callInst = dyn_cast<CallInst>(I);
@@ -54,12 +55,58 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   }
 
   Instruction* call = NULL;
-//  if (callInst->getCalledFunction()->getName() == "malloc") {
-//    call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, inx);
-//  }
-//  else {
+
+  /*
+  if (callInst->getCalledFunction()->getName() == "malloc") {
+
+    safe_assert(callInst->getNumUses() == 1);
+
+    Constant* size = NULL;
+    if (BitCastInst *bitcast = dyn_cast<BitCastInst>(*callInst->use_begin())) {
+      bitcast->dump();
+
+      PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
+      PointerType *dest = dyn_cast<PointerType>(bitcast->getDestTy());
+
+      src->dump();
+      dest->dump();
+      cout << "\nSizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
+      	dest->getElementType()->getPrimitiveSizeInBits() << endl;
+
+      cout << sizeof(Variable) << endl;
+      cout << "Number of bytes requested: ";
+      callInst->getOperand(0)->dump();
+      
+
+      // size of types in bytes?
+      // calculate new size
+      // need special case for structs
+
+      returnKind = TypeToKind(dest->getElementType());
+      if(returnKind == INV_KIND) {
+	return false; 
+      }
+      kind = KIND_CONSTANT(returnKind);
+
+      size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+      size->dump();
+
+    }
+    else {
+      cout << "else part of call_malloc" << endl;
+      abort();
+      // the type should be i8
+    }
+    
+
+    // kind is the type of each element (the return type is known to be PTR)
+    call = CALL_IID_BOOL_KIND_KVALUE_INT_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx);
+  }
+  else {
+    // kind is the return type of the function
+    */
     call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call", iid, noUnwindC, kind, callValue, inx);
-//  }
+    //}
   instrs.push_back(call);
 
   // instrument

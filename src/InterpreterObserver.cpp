@@ -1164,13 +1164,14 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 }
 
 
-void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
+void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx) {
   // debugging
-  printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, [INX: %d]", 
+  printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, size:%d, [INX: %d]", 
       IID_ToString(iid).c_str(), 
       KVALUE_ToString(*call_value).c_str(), 
       KIND_ToString(type).c_str(), 
       (nounwind ? 1 : 0),
+      size,
       inx);
 
   // retrieving number of bytes

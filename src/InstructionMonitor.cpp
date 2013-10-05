@@ -252,27 +252,27 @@ void llvm_construct_array_type(uint64_t i) {
 }
 
 void llvm_call_nounwind(KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(call_nounwind, value)
+  DISPATCH_TO_OBSERVERS(call_nounwind, value)
 }
 
 void llvm_create_stack_frame(int size) {
-	DISPATCH_TO_OBSERVERS(create_stack_frame, size)
+  DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
 void llvm_call(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
-	DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, value, inx)
+  DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, value, inx)
 }
 
-void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
-	DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, inx)
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, size, inx)
 }
 
 void llvm_vaarg() {
-	DISPATCH_TO_OBSERVERS(vaarg)
+  DISPATCH_TO_OBSERVERS(vaarg)
 }
 
 void llvm_landingpad() {
-	DISPATCH_TO_OBSERVERS(landingpad)
+  DISPATCH_TO_OBSERVERS(landingpad)
 }
 
 

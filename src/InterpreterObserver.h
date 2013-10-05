@@ -161,7 +161,7 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx);
 
-  virtual void call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx);
+  virtual void call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx);
   
   virtual void vaarg();
   
