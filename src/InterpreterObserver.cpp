@@ -12,16 +12,16 @@ void InterpreterObserver::load(IID iid, KVALUE* op, int inx) {
 	 KVALUE_ToString(*op).c_str(),
    inx);
 
-  Variable *nloc;
+  Variable *nloc = executionStack.top()[inx];
 
-  Variable *loc = currentFrame[op->inx];
+  Variable *loc = executionStack.top()[op->inx];
   if (loc->getType() == PTR_KIND) {
     nloc = static_cast<Variable*>(loc->getValue().as_ptr);
   } else {
     nloc = new Variable(loc->getType(), loc->getValue(), false);
   }
 
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
   
   return;
@@ -109,7 +109,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = currentFrame[op1->inx];
+    Variable *loc1 = executionStack.top()[op1->inx];
     v1 = getValueFromVariable(loc1);
   }
 
@@ -117,7 +117,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = currentFrame[op2->inx];
+    Variable *loc2 = executionStack.top()[op2->inx];
     v2 = getValueFromVariable(loc2);
   }
 
@@ -214,7 +214,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   }
 
   Variable *nloc = new Variable(op1->kind, vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -284,8 +284,8 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int << loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -294,7 +294,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -307,8 +307,8 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int; // same as arith?
 
   // put result back to VALUE
@@ -317,7 +317,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -330,8 +330,8 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -340,7 +340,7 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -353,8 +353,8 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int & loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -363,7 +363,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -376,8 +376,8 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int | loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -386,7 +386,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -399,8 +399,8 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = currentFrame[op1->inx];
-  Variable *loc2 = currentFrame[op2->inx];
+  Variable *loc1 = executionStack.top()[op1->inx];
+  Variable *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int ^ loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -409,7 +409,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   Variable *nloc = new Variable(loc1->getType(), vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -474,15 +474,15 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
       VALUE locArrVal;
       locArrVal.as_ptr = locArrAdr;
       location = new Variable(ARRAY_KIND, locArrVal, true);
-      currentFrame[inx] = location;
+      executionStack.top()[inx] = location;
     } else {
       location = new Variable(type, true);
-      currentFrame[inx] = location;
+      executionStack.top()[inx] = location;
     }
   } else {
     safe_assert(!callArgs.empty());
     location = callArgs.top();
-    currentFrame[inx] = location;
+    executionStack.top()[inx] = location;
     callArgs.pop();
   }
 
@@ -528,7 +528,7 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
       KVALUE_ToString(*kv).c_str(), inx);
 
   // retrieve Variable to store in
-  Variable *dest = currentFrame[op->inx];
+  Variable *dest = executionStack.top()[op->inx];
   cout << "Dest: " << dest->toString() << "\n";
 
   // the value to store is a constant
@@ -536,7 +536,7 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
     dest->setValue(kv->value);
   }
   else {
-    Variable* src = currentFrame[kv->inx];
+    Variable* src = executionStack.top()[kv->inx];
     if (dest->getType() == PTR_KIND) {
       void* srcAdr = src;
       VALUE destVal = dest->getValue();
@@ -623,7 +623,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
-  Variable *src = currentFrame[op->inx];
+  Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
   VALUE ext_value;
@@ -650,7 +650,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   }
 
   Variable *ext_loc = new Variable(type, ext_value, false);
-  currentFrame[inx] = ext_loc;
+  executionStack.top()[inx] = ext_loc;
   cout << ext_loc->toString() << "\n";
 }
 
@@ -658,7 +658,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -682,7 +682,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
   }
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
@@ -690,7 +690,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -714,7 +714,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
   }
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
@@ -722,14 +722,14 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
@@ -737,14 +737,14 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
@@ -752,7 +752,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -776,7 +776,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   }
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
 
@@ -784,7 +784,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
 
-  Variable *src = currentFrame[kv->inx];
+  Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -808,7 +808,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   }
 
   Variable *trunc_loc = new Variable(type, trunc_value, false);
-  currentFrame[inx] = trunc_loc;
+  executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 
 }
@@ -833,7 +833,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 
-  Variable *src = currentFrame[op->inx];
+  Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
   //////
@@ -841,7 +841,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   /////
 
   Variable *bitcast_loc = new Variable(type, value, false);
-  currentFrame[inx] = bitcast_loc;
+  executionStack.top()[inx] = bitcast_loc;
   cout << bitcast_loc->toString() << "\n";
   return;
 }
@@ -893,17 +893,16 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    currentFrame = executionStack.top();
     cout << "New stack size: " << executionStack.size() << "\n";
     if (!callerVarIndex.empty()) {
-      currentFrame[callerVarIndex.top()]->setValue(op1->value); 
-      cout << currentFrame[callerVarIndex.top()]->toString() << "\n";
+      executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
+      executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
+      cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
 
       safe_assert(!callerVarIndex.empty());
       callerVarIndex.pop();
     }
   } else {
-    currentFrame.clear();
     cout << "The execution stack is empty.\n";
   }
 
@@ -917,10 +916,8 @@ void InterpreterObserver::return2_(IID iid, int inx) {
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    currentFrame = executionStack.top();
     cout << "New stack size: " << executionStack.size() << "\n";
   } else {
-    currentFrame.clear();
     cout << "The execution stack is empty.\n";
   }
 
@@ -950,7 +947,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = currentFrame[op1->inx];
+    Variable *loc1 = executionStack.top()[op1->inx];
     v1 = getValueFromVariable(loc1);
   }
 
@@ -958,7 +955,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = currentFrame[op2->inx];
+    Variable *loc2 = executionStack.top()[op2->inx];
     v2 = getValueFromVariable(loc2);
   }
 
@@ -1004,7 +1001,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   vresult.as_int = result;
 
   Variable *nloc = new Variable(INT1_KIND, vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -1020,7 +1017,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = currentFrame[op1->inx];
+    Variable *loc1 = executionStack.top()[op1->inx];
     v1 = getValueFromVariable(loc1);
   }
 
@@ -1028,7 +1025,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = currentFrame[op2->inx];
+    Variable *loc2 = executionStack.top()[op2->inx];
     v2 = getValueFromVariable(loc2);
   }
 
@@ -1074,7 +1071,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   vresult.as_int = result;
 
   Variable *nloc = new Variable(INT1_KIND, vresult, false);
-  currentFrame[inx] = nloc;
+  executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
   return;
@@ -1105,16 +1102,18 @@ void InterpreterObserver::construct_array_type(uint64_t i) {
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
-  Variable* reg = currentFrame[callerVarIndex.top()];
+  Variable* reg = executionStack.top()[callerVarIndex.top()];
   reg->setValue(kvalue->value);
   callerVarIndex.pop();
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
-  printf("<<<<< CREATE STACK FRAME OF SIZE %d>>>>>\n", size);
-  std::vector<Variable*> frame (size, new Variable());
-  currentFrame = frame;
-  executionStack.push(currentFrame);
+  printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);
+  std::vector<Variable*> frame (size);
+  for (int i = 0; i < size; i++) {
+    frame[i] = new Variable();
+  }
+  executionStack.push(frame);
 }
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
@@ -1141,7 +1140,7 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
       // debugging
       printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
 
-      Variable* arg = currentFrame[value->inx];
+      Variable* arg = executionStack.top()[value->inx];
       Variable* argCopy;
       if (value->kind == PTR_KIND) {
         VALUE argValue;
@@ -1159,9 +1158,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
   printf("\n");
 
   callerVarIndex.push(inx);
-  currentFrame[inx] = new Variable(type, false);
+  executionStack.top()[inx] = new Variable(type, false);
 
-  cout << currentFrame[inx]->toString() << "\n";
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 
@@ -1188,9 +1187,9 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   returnValue.as_ptr = addr;
 
   callerVarIndex.push(inx);
-  currentFrame[inx] = new Variable(type, returnValue, false);
+  executionStack.top()[inx] = new Variable(type, returnValue, false);
 
-  cout << currentFrame[inx]->toString() << "\n";
+  cout << executionStack.top()[inx]->toString() << "\n";
   return;
 }
 

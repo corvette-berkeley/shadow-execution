@@ -23,7 +23,7 @@ class Variable {
 
  Variable(KIND t, bool l): type(t), size(0), offset(0), local(l) {}
 
- Variable() {}
+ Variable(): type(INV_KIND), size(0), offset(0), local(false) {}
   
   void setType(KIND t);
 

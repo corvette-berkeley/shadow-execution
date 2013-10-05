@@ -19,7 +19,6 @@ class InterpreterObserver : public InstructionObserver {
 
  private:
   stack< vector< Variable* > > executionStack;
-  vector< Variable* > currentFrame;
 
   stack<KVALUE*> myStack;
   stack<uint64_t> arrayType;
