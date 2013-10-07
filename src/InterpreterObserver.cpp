@@ -470,6 +470,10 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   if (callArgs.empty()) {
     if (type == ARRAY_KIND) {
       Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
+      for (uint64_t i = 0; i < size; i++) {
+        locArr[i] = new Variable();
+      }
+
       void* locArrAdr = (void*) locArr;
       VALUE locArrVal;
       locArrVal.as_ptr = locArrAdr;
@@ -599,6 +603,26 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
 
   cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
   abort();
+}
+
+void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
+  printf("<<<<< GETELEMENTPTR_ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+      IID_ToString(iid).c_str(),
+      (inbound ? "1" : "0"),
+      KVALUE_ToString(*op).c_str(),
+      KIND_ToString(kind).c_str(),
+      inx);
+
+  Variable* arrayPointerHolder = executionStack.top()[op->inx];
+  Variable** arrayPointer = static_cast<Variable**>(arrayPointerHolder->getValue().as_ptr);
+  Variable* array = arrayPointer[getElementPtrIndexList.front()];
+  getElementPtrIndexList.pop();
+  Variable arrayElem = array[getElementPtrIndexList.front()];
+  getElementPtrIndexList.pop();
+
+  executionStack.top()[inx] = &arrayElem;
+
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 // ***** Conversion Operations ***** //
@@ -1094,9 +1118,10 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   myStack.push(value);
 }
 
-void InterpreterObserver::construct_array_type(uint64_t i) {
-  printf("<<<<< CONSTRUCT ARRAY TYPE >>>>>: %ld\n", i);
-  arrayType.push(i);
+void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
+  int idx = int_value->value.as_int;
+  printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
+  getElementPtrIndexList.push(idx);
 }
 
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {

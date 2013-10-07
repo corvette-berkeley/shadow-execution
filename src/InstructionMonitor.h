@@ -49,6 +49,7 @@ extern "C" {
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int x);
+  void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int x);
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(IID iid, KIND type, KVALUE* op, int x);
@@ -81,6 +82,7 @@ extern "C" {
   void llvm_phinode();
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
+  void llvm_push_getelementptr_inx(KVALUE* value);
   void llvm_construct_array_type(uint64_t i);
   void llvm_call_nounwind(KVALUE* value);
   void llvm_create_stack_frame(int size);

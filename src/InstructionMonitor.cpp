@@ -137,6 +137,10 @@ void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIN
   DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, inx)
 }
 
+void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_array, iid, isbound, value, kind, inx)
+}
+
 
 // ***** Conversion Operations ***** //
 void llvm_trunc(IID iid, KIND type, KVALUE* op, int inx) {
@@ -245,6 +249,10 @@ void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx)
 
 void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
+}
+
+void llvm_push_getelementptr_inx(KVALUE* value) {
+  DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
 }
 
 void llvm_construct_array_type(uint64_t i) {

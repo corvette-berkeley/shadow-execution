@@ -86,6 +86,8 @@ public:
 
 	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx);
 
+  virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx); 
+
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);
 
@@ -147,6 +149,8 @@ public:
 	virtual void landingpad();
 
 	void push_stack(KVALUE* value);
+
+  void push_getelementptr_inx(KVALUE* value);
 
   void construct_array_type(uint64_t i);
 

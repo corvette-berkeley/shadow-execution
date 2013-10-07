@@ -4,6 +4,7 @@
 #include "InstructionObserver.h"
 #include "Variable.h"
 #include <stack>
+#include <queue>
 #include <vector>
 
 namespace llvm {
@@ -20,13 +21,10 @@ class InterpreterObserver : public InstructionObserver {
  private:
   stack< vector< Variable* > > executionStack;
 
-  stack<KVALUE*> myStack;
-  stack<uint64_t> arrayType;
-  // index of callee in caller; 
-  // to be assigned when call returns
-  stack<int> callerVarIndex; 
-  // copy value from callers to callee arguments
-  stack<Variable*> callArgs;
+  stack<KVALUE*> myStack; // store arguments of call instruction
+  queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
+  stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
+  stack<Variable*> callArgs; // copy value from callers to callee arguments
 
   long double getValueFromConstant(KVALUE* op); 
 
@@ -106,6 +104,8 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx);
 
+  virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
+
   // ***** Conversion Operations ***** //
   virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);
   
@@ -169,7 +169,7 @@ class InterpreterObserver : public InstructionObserver {
   
   void push_stack(KVALUE* value);
 
-  void construct_array_type(uint64_t i);
+  void push_getelementptr_inx(KVALUE* int_value);
 
   void call_nounwind(KVALUE* value);
 
