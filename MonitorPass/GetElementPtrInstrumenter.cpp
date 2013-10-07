@@ -52,7 +52,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
         abort();
     }
 
-    gepInst->idx_begin()->get()->dump();
     Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, NOSIGN);
     if(idxOp == NULL) return false;  
 

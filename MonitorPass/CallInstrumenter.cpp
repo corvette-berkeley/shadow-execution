@@ -68,35 +68,29 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
       PointerType *dest = dyn_cast<PointerType>(bitcast->getDestTy());
 
-      src->dump();
-      dest->dump();
-      cout << "\nSizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
+      cout << "Sizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
       dest->getElementType()->getPrimitiveSizeInBits() << endl;
 
-      cout << sizeof(Variable) << endl;
-      cout << "Number of bytes requested: ";
-      callInst->getOperand(0)->dump();
-      
+      cout << "Number of bytes requested: " << endl;
+      callInst->getOperand(0)->dump();      
 
-      //returnKind = TypeToKind(dest->getElementType()); //?????????????
-      returnKind = TypeToKind(dest);
+      returnKind = TypeToKind(dest->getElementType());
       if(returnKind == INV_KIND) {
 	return false; 
       }
       kind = KIND_CONSTANT(returnKind);
 
       size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
-      size->dump();
-
     }
     else {
-      cout << "else part of call_malloc" << endl;
-      abort();
-      // the type should be i8
+      returnKind = INT8_KIND;
+      kind = KIND_CONSTANT(returnKind);
+
+      size = INT32_CONSTANT(8, false);
     }
     
-
     // kind is the type of each element (the return type is known to be PTR)
+    noUnwind = true; // set to false when bug fixed
     call = CALL_IID_BOOL_KIND_KVALUE_INT_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx);
   }
   else {
