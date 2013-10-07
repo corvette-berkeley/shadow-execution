@@ -1149,9 +1149,8 @@ void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
-  //Variable* reg = executionStack.top()[callerVarIndex.top()]; // uncomment when bug fixed
-  //reg->setValue(kvalue->value); // uncomment when bug fixed
-  cout << &kvalue << endl; // remove when bug fixed
+  Variable* reg = executionStack.top()[callerVarIndex.top()];
+  reg->setValue(kvalue->value);
   callerVarIndex.pop();
 }
 
@@ -1240,7 +1239,6 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   VALUE returnValue;
   returnValue.as_ptr = addr;
 
-  callerVarIndex.push(inx); // remove when bug fixed
   executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, false);
 
   // create elements?

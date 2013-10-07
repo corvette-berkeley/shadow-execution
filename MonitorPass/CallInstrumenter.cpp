@@ -90,7 +90,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     }
     
     // kind is the type of each element (the return type is known to be PTR)
-    noUnwind = true; // set to false when bug fixed
+    noUnwind = false;
     call = CALL_IID_BOOL_KIND_KVALUE_INT_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx);
   }
   else {
