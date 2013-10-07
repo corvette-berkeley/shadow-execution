@@ -31,6 +31,10 @@ class Variable {
 
   void setLocal(bool l);
 
+  void setSize(unsigned int s);
+
+  void setOffset(int o);
+
   KIND getType();
 
   VALUE getValue();

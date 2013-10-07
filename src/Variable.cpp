@@ -13,6 +13,14 @@ void Variable::setLocal(bool l) {
   local = l;
 }
 
+void Variable::setSize(unsigned int s) {
+  size = s;
+}
+
+void Variable::setOffset(int o) {
+  offset = o;
+}
+
 KIND Variable::getType() {
   return type;
 }
