@@ -69,6 +69,7 @@ string Variable::toString() {
     // TODO: this is incorrect because value.as_flp returns a double
     s << "[FLP80X86: " << (long double) value.as_flp << "]";
   default: //safe_assert(false);
+    s << "[?]";
     break;
   }
 

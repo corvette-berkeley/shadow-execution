@@ -599,11 +599,44 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
       size,
       inx);
 
-  //Variable *var = currentFrame[inx];
-  //cout << var->getValue().as_int << "\n";
+  
+  Variable* arrayPointerHolder = executionStack.top()[op->inx];
+  cout << arrayPointerHolder->getValue().as_ptr << endl;
+  
+  Variable** arrayPointer = static_cast<Variable**>(arrayPointerHolder->getValue().as_ptr);
 
-  cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
-  abort();
+  int offset;
+  if (index->inx != -1) {
+    offset = executionStack.top()[index->inx]->getValue().as_int;
+  }
+  else {
+    offset = index->value.as_int;
+  }
+  cout << offset << endl;
+
+  Variable* arrayElem = arrayPointer[offset];
+
+  /*
+  Variable* array = arrayPointer[0];
+  Variable arrayElem = array[offset];
+  */
+  /*
+  cout << "==" << arrayElem << " " << arrayElem.toString() << endl;
+  
+  Variable** arrayPointer = static_cast<Variable**>(arrayPointerHolder->getValue().as_ptr);
+  Variable* array = arrayPointer[getElementPtrIndexList.front()];
+  getElementPtrIndexList.pop();
+  Variable arrayElem = array[getElementPtrIndexList.front()];
+  getElementPtrIndexList.pop();
+  */
+  
+  executionStack.top()[inx] = arrayElem;
+
+  cout << executionStack.top()[inx]->toString() << "\n";
+  
+
+  //cerr << "[InterpreterObserver::getelementptr] => Unimplemented\n";
+  //abort();
 }
 
 void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
@@ -861,7 +894,8 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   VALUE value = src->getValue();
 
   //////
-  cout << "------ " << type << "\n";
+  cout << src->toString() << endl;
+  cout << "------ " << type << " stack: " << &executionStack.top() << endl;
   /////
 
   Variable *bitcast_loc = new Variable(type, value, false);
@@ -1128,7 +1162,9 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
   Variable* reg = executionStack.top()[callerVarIndex.top()];
-  reg->setValue(kvalue->value);
+  //reg->setValue(kvalue->value);
+  cout << kvalue->value.as_ptr << endl;
+  cout << reg->toString() << endl;
   callerVarIndex.pop();
 }
 
@@ -1199,14 +1235,19 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
       size,
       inx);
 
-  // retrieving number of bytes
+  // retrieving original number of bytes
   KVALUE* argValue = myStack.top();
   myStack.pop();
-  printf("\n==== arg: %s", KVALUE_ToString(*argValue).c_str()); 
   assert(myStack.size() == 0);
 
+  // calculating number of elements
+  int elements = argValue->value.as_int*8 / size;
+  cout << endl << "# of elements: " << elements << endl;
+
+  int actualSize = sizeof(Variable) * elements;
+
   // allocating space
-  void *addr = malloc(argValue->value.as_int);
+  void *addr = malloc(actualSize);
 
   // creating return value
   VALUE returnValue;
@@ -1215,7 +1256,19 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   callerVarIndex.push(inx);
   executionStack.top()[inx] = new Variable(type, returnValue, false);
 
-  cout << executionStack.top()[inx]->toString() << "\n";
+  // create elements?
+  cout << "The address returned: " << addr << endl;
+  for(int i = 0; i < elements; i++) {
+    VALUE iValue;
+    iValue.as_int = i;
+    ((Variable**)addr)[i] = new Variable(INT32_KIND, iValue, false); // fix, this should be int
+    cout << &((Variable**)addr)[i] << endl;
+    cout << "**" << ((Variable**)addr)[i]->toString() << endl;
+  }
+
+
+  cout << endl << executionStack.top()[inx]->toString() << endl;
+  cout << "index: " << inx <<  " stack: " << &executionStack.top() << endl;
   return;
 }
 

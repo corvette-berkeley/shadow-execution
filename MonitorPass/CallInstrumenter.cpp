@@ -56,7 +56,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   Instruction* call = NULL;
 
-  /*
+  
   if (callInst->getCalledFunction()->getName() == "malloc") {
 
     safe_assert(callInst->getNumUses() == 1);
@@ -71,18 +71,15 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       src->dump();
       dest->dump();
       cout << "\nSizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
-      	dest->getElementType()->getPrimitiveSizeInBits() << endl;
+      dest->getElementType()->getPrimitiveSizeInBits() << endl;
 
       cout << sizeof(Variable) << endl;
       cout << "Number of bytes requested: ";
       callInst->getOperand(0)->dump();
       
 
-      // size of types in bytes?
-      // calculate new size
-      // need special case for structs
-
-      returnKind = TypeToKind(dest->getElementType());
+      //returnKind = TypeToKind(dest->getElementType()); //?????????????
+      returnKind = TypeToKind(dest);
       if(returnKind == INV_KIND) {
 	return false; 
       }
@@ -104,9 +101,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   }
   else {
     // kind is the return type of the function
-    */
     call = CALL_IID_BOOL_KIND_KVALUE_INT("llvm_call", iid, noUnwindC, kind, callValue, inx);
-    //}
+  }
   instrs.push_back(call);
 
   // instrument
