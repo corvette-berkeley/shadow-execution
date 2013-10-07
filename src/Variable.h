@@ -37,6 +37,10 @@ class Variable {
 
   bool getLocal();
 
+  unsigned int getSize();
+
+  int getOffset();
+
   string toString();
 
 };

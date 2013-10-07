@@ -25,6 +25,14 @@ bool Variable::getLocal() {
   return local;
 }
 
+unsigned int Variable::getSize() {
+  return size;
+}
+
+int Variable::getOffset() {
+  return offset;
+}
+
 string Variable::toString() {
   std::stringstream s;
 
