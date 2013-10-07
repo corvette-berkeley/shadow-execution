@@ -23,6 +23,8 @@ class InterpreterObserver : public InstructionObserver {
 
   stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
+  queue<uint64_t> arraySize; // store size of array
+
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<Variable*> callArgs; // copy value from callers to callee arguments
 
