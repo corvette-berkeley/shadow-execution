@@ -68,8 +68,9 @@ string Variable::toString() {
   case FLP80X86_KIND:
     // TODO: this is incorrect because value.as_flp returns a double
     s << "[FLP80X86: " << (long double) value.as_flp << "]";
-  default: //safe_assert(false);
-    s << "[?]";
+    break;
+  default: 
+    safe_assert(false);
     break;
   }
 
