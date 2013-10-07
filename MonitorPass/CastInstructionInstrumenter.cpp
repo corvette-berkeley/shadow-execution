@@ -39,28 +39,8 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     instrs.push_back(call);
 
-    /////////
-    /*
-       printf("Printing new instructions to add\n");
-       for(unsigned int i = 0; i < Instrs.size(); i++) {
-       Instrs[i]->dump();
-       }
-
-       printf("About to add instrumentation for bitcast\n");
-       SI->dump();
-       parent_->BB_->dump();
-       */
-    /////////
-
     // instrument
     InsertAllBefore(instrs, castInst);
-
-    ////////
-    /*
-      verifyModule(*parent_->M_, AbortProcessAction);
-      printf("Module verified after instrumenting bitcast\n");
-    */
-    ////////
     
     return true;
   } else {
