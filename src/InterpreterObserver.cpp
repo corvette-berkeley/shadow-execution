@@ -551,6 +551,8 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
       VALUE destVal = dest->getValue();
       destVal.as_ptr = srcAdr;
       dest->setValue(destVal);
+      dest->setSize(src->getSize());
+      dest->setOffset(src->getOffset());
     } else {
       dest->setValue(src->getValue());
     }
@@ -604,11 +606,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
       inx);
 
   cout << "Index with pointer: " << op->inx << endl;
-  Variable* arrayPointerHolder = executionStack.top()[op->inx];
-  cout << "Array pointer holder: " << arrayPointerHolder->getValue().as_ptr << endl;
+  Variable* arrayPointer = executionStack.top()[op->inx];
+  cout << "Array pointer: " << arrayPointer->getValue().as_ptr << endl;
   
-  Variable** arrayPointer = static_cast<Variable**>(arrayPointerHolder->getValue().as_ptr);
-
   int offset;
   if (index->inx != -1) {
     offset = executionStack.top()[index->inx]->getValue().as_int;
@@ -616,9 +616,16 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
   else {
     offset = index->value.as_int;
   }
+  cout << "Kind: " << kind << endl;
+  cout << "Size: " << size << endl;
   cout << "Offset: " << offset << endl;
 
-  Variable* arrayElem = arrayPointer[offset];
+  Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
+
+  // create new Variable, get actual offset, reconstruct object?
+  cout << "First element size: " << array[0]->getSize() << endl;
+  cout << "Base kind of element: " << arrayPointer->getSize() << endl; //?
+  Variable* arrayElem = array[offset];
   
   executionStack.top()[inx] = arrayElem;
 
@@ -886,7 +893,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   cout << "------ " << type << " stack: " << &executionStack.top() << endl;
   /////
 
-  Variable *bitcast_loc = new Variable(type, value, false);
+  Variable *bitcast_loc = new Variable(type, value, src->getSize(), src->getOffset(), false);
   executionStack.top()[inx] = bitcast_loc;
   cout << bitcast_loc->toString() << "\n";
   return;
@@ -1239,7 +1246,16 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   VALUE returnValue;
   returnValue.as_ptr = addr;
 
-  executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, false);
+  cout << "Size: " <<  size << endl;
+  executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, 0, false);
+
+  /*
+  // creating first element
+  VALUE iValue;
+  iValue.as_ptr = addr;
+  ((Variable**)addr)[0] = new Variable(PTR_KIND, iValue, size, 0, false);
+  */
+
 
   // create elements?
   cout << "The address returned: " << addr << endl;
