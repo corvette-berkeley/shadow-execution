@@ -112,6 +112,10 @@ void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx) {
   DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx)
 }
 
+void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx)
+}
+
 void llvm_load(IID iid, KVALUE* op, int inx) {
   DISPATCH_TO_OBSERVERS(load, iid, op, inx);
 }
@@ -253,6 +257,10 @@ void llvm_push_stack(KVALUE* value) {
 
 void llvm_push_getelementptr_inx(KVALUE* value) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
+}
+
+void llvm_push_array_size(uint64_t i) {
+  DISPATCH_TO_OBSERVERS(push_array_size, i);
 }
 
 void llvm_construct_array_type(uint64_t i) {

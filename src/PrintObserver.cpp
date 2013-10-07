@@ -195,6 +195,10 @@ void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
 }
 
+void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
+}
+
 void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
   printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str(),
@@ -375,6 +379,10 @@ void PrintObserver::push_stack(KVALUE* value) {
 
 void PrintObserver::push_getelementptr_inx(KVALUE* value) {
   printf("<<<<< PUSH GETELEMENTPTR INX >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::push_array_size(uint64_t i) {
+  printf("<<<<< PUSH ARRAY SIZE >>>>> size: %ld", i);
 }
 
 void PrintObserver::construct_array_type(uint64_t i) {

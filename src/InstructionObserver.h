@@ -45,6 +45,7 @@ public:
 
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 	virtual void load(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
@@ -86,6 +87,7 @@ public:
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
   virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
+  virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void call_nounwind(KVALUE* value UNUSED) {};
 	virtual void create_stack_frame(int size UNUSED) {};

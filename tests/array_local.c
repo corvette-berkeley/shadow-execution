@@ -6,5 +6,7 @@ int main() {
     a[c] = c*c;
   }
 
-  return a[1];
+  int d = a[1];
+
+  return d;
 }

@@ -75,6 +75,7 @@ public:
 
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx);
+	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx);
 
 	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
 
@@ -151,6 +152,8 @@ public:
 	void push_stack(KVALUE* value);
 
   void push_getelementptr_inx(KVALUE* value);
+
+  void push_array_size(uint64_t size);
 
   void construct_array_type(uint64_t i);
 

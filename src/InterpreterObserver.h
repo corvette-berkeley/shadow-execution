@@ -95,6 +95,7 @@ class InterpreterObserver : public InstructionObserver {
   
   // ***** Memory Access and Addressing Operations ***** //
   virtual void allocax(IID iid, KIND kind, uint64_t size, int inx);
+  virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx);
   
   virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
   
@@ -172,6 +173,8 @@ class InterpreterObserver : public InstructionObserver {
   void push_stack(KVALUE* value);
 
   void push_getelementptr_inx(KVALUE* int_value);
+
+  void push_array_size(uint64_t size);
 
   void call_nounwind(KVALUE* value);
 

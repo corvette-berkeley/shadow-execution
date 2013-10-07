@@ -466,28 +466,46 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 // ***** Memory Access and Addressing Operations ***** //
 
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
 
   Variable* location;
   if (callArgs.empty()) {
-    if (type == ARRAY_KIND) {
-      Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
-      for (uint64_t i = 0; i < size; i++) {
-        VALUE val;
-        val.as_int = 5;
-        Variable* var = new Variable(INT32_KIND, val, false); 
-        locArr[i] = var;
-      }
+    location = new Variable(type, true);
+    executionStack.top()[inx] = location;
+  } else {
+    safe_assert(!callArgs.empty());
+    location = callArgs.top();
+    executionStack.top()[inx] = location;
+    callArgs.pop();
+  }
 
-      void* locArrAdr = locArr;
-      VALUE locArrVal;
-      locArrVal.as_ptr = locArrAdr;
-      location = new Variable(ARRAY_KIND, locArrVal, true);
-      executionStack.top()[inx] = location;
-    } else {
-      location = new Variable(type, true);
-      executionStack.top()[inx] = location;
+  cout << location->toString() << "\n";
+
+  return;
+}
+
+void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx) {
+  printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
+
+  size = 1;
+  while (!arraySize.empty()) {
+    size = size * arraySize.front();
+    arraySize.pop();
+  }
+
+  Variable* location;
+  if (callArgs.empty()) {
+    Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
+    for (uint64_t i = 0; i < size; i++) {
+      Variable* var = new Variable(type, false); 
+      locArr[i] = var;
     }
+
+    void* locArrAdr = locArr;
+    VALUE locArrVal;
+    locArrVal.as_ptr = locArrAdr;
+    location = new Variable(ARRAY_KIND, locArrVal, true);
+    executionStack.top()[inx] = location;
   } else {
     safe_assert(!callArgs.empty());
     location = callArgs.top();
@@ -645,10 +663,27 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   Variable* arrayPointer = executionStack.top()[op->inx];
   Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
   getElementPtrIndexList.pop();
-  Variable* arrayElem = array[getElementPtrIndexList.front()];
-  getElementPtrIndexList.pop();
 
-  executionStack.top()[inx] = arrayElem;
+  int size = 1;
+  arraySize.pop();
+  while (!arraySize.empty()) {
+    size = size * arraySize.front();
+    arraySize.pop();
+  }
+  size = getElementPtrIndexList.front()*size;
+
+  cout << "Getting element at index : " << size << "\n";
+  if (kind == ARRAY_KIND) {
+    Variable** subArray = array + size;
+    VALUE subArrVal;
+    subArrVal.as_ptr = (void*) subArray;
+    Variable* subArrVar = new Variable(ARRAY_KIND, subArrVal, true);
+    executionStack.top()[inx] = subArrVar;
+  } else {
+    Variable* arrayElem = array[size];
+    getElementPtrIndexList.pop();
+    executionStack.top()[inx] = arrayElem;
+  }
 
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -697,8 +732,8 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
       ext_value.as_int = (int64_t) value.as_int;
       break;
     default:
-    cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
-    abort();
+      cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
+      abort();
   }
 
   Variable *ext_loc = new Variable(type, ext_value, false);
@@ -1151,6 +1186,11 @@ void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
   int idx = int_value->value.as_int;
   printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
   getElementPtrIndexList.push(idx);
+}
+
+void InterpreterObserver::push_array_size(uint64_t size) {
+  printf("<<<<< PUSH ARRAY SIZE >>>>>: %ld\n", size);
+  arraySize.push(size);
 }
 
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {

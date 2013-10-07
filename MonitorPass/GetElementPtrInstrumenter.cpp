@@ -38,6 +38,13 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     } 
 
+    while (dyn_cast<ArrayType>(elemT)) {
+      Constant* size = INT64_CONSTANT(((ArrayType*)elemT)->getNumElements(), UNSIGNED);
+      Instruction* call = CALL_INT64("llvm_push_array_size", size);
+      instrs.push_back(call);
+      elemT = ((ArrayType*)elemT)->getElementType();
+    }
+
     Type* gepInstType = ((PointerType*) gepInst->getType())->getElementType();
     KIND kind = TypeToKind(gepInstType);
     Constant* kindC = KIND_CONSTANT(kind);

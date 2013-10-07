@@ -43,6 +43,7 @@ extern "C" {
 
   // ***** Memory Access and Addressing Operations ***** //
   void llvm_allocax(IID iid, KIND kind, uint64_t size, int x);
+  void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x);
   void llvm_load(IID iid, KVALUE* op, int x);
   void llvm_store(IID iid, KVALUE* op, KVALUE* value, int x);
   void llvm_fence();
@@ -83,6 +84,7 @@ extern "C" {
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
   void llvm_push_getelementptr_inx(KVALUE* value);
+  void llvm_push_array_size(uint64_t i);
   void llvm_construct_array_type(uint64_t i);
   void llvm_call_nounwind(KVALUE* value);
   void llvm_create_stack_frame(int size);

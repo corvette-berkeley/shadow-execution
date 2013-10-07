@@ -22,23 +22,33 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Type *type = allocaInst->getAllocatedType();
     if (!type) return false;
+
     KIND kind = TypeToKind(type);
-
-    // if unsupported kind, return false
     if (kind == INV_KIND) return false;
-
-    Constant* size;
-    if (type->isArrayTy()) {
-      ArrayType* aType = (ArrayType*) type;
-      size = INT64_CONSTANT(aType->getNumElements(), UNSIGNED);
-    } else {
-      size = INT64_CONSTANT(0, UNSIGNED);
-    }
-
     Constant* kindC = KIND_CONSTANT(kind);
 
-    Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax", iidC, kindC, size, inxC);
-    instrs.push_back(call);
+
+    if (type->isArrayTy()) {
+      Type* elemType = type;
+      while (dyn_cast<ArrayType>(elemType)) {
+        Constant* size = INT64_CONSTANT(((ArrayType*)elemType)->getNumElements(), UNSIGNED);
+        Instruction* call = CALL_INT64("llvm_push_array_size", size);
+        instrs.push_back(call);
+        elemType = ((ArrayType*)elemType)->getElementType();
+      }
+
+      KIND elemKind = TypeToKind(elemType);
+      if (elemKind == INV_KIND) return false;
+      Constant* elemKindC = KIND_CONSTANT(elemKind);
+
+      Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC);
+      instrs.push_back(call);
+    } else {
+      Constant* size;
+      size = INT64_CONSTANT(0, UNSIGNED);
+      Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax", iidC, kindC, size, inxC);
+      instrs.push_back(call);
+    }
 
     // instrument
     InsertAllBefore(instrs, allocaInst);
