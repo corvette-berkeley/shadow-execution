@@ -469,9 +469,10 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   Variable* location;
   if (callArgs.empty()) {
     if (type == ARRAY_KIND) {
-      Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
+      Variable* locArr = (Variable*) malloc(size*sizeof(Variable));
       for (uint64_t i = 0; i < size; i++) {
-        locArr[i] = new Variable();
+        Variable* var = new Variable(); 
+        locArr[i] = *var;
       }
 
       void* locArrAdr = (void*) locArr;
@@ -613,9 +614,8 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  Variable* arrayPointerHolder = executionStack.top()[op->inx];
-  Variable** arrayPointer = static_cast<Variable**>(arrayPointerHolder->getValue().as_ptr);
-  Variable* array = arrayPointer[getElementPtrIndexList.front()];
+  Variable* arrayPointer = executionStack.top()[op->inx];
+  Variable* array = static_cast<Variable*>(arrayPointer->getValue().as_ptr);
   getElementPtrIndexList.pop();
   Variable arrayElem = array[getElementPtrIndexList.front()];
   getElementPtrIndexList.pop();
