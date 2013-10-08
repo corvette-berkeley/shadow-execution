@@ -199,6 +199,10 @@ void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
 }
 
+void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx) {
+  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, inx: %d\n", IID_ToString(iid).c_str(), size, inx);
+}
+
 void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
   printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str(),
@@ -232,7 +236,16 @@ void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* ind
 }
 
 void PrintObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+  printf("<<<<< GETELEMENTPTR ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+      IID_ToString(iid).c_str(),
+	 (inbound ? "1" : "0"),
+	 KVALUE_ToString(*op).c_str(),
+	 KIND_ToString(kind).c_str(),
+	 inx);
+}
+
+void PrintObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
+  printf("<<<<< GETELEMENTPTR STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
 	 KVALUE_ToString(*op).c_str(),
@@ -375,6 +388,10 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 
 void PrintObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH VALUE >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::push_struct_type(KIND kind) {
+  printf("<<<<< PUSH STRUCT TYPE >>>>> kind: %s\n", KIND_ToString(kind).c_str());
 }
 
 void PrintObserver::push_getelementptr_inx(KVALUE* value) {

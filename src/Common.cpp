@@ -55,6 +55,12 @@ std::string KVALUE_ToString(KVALUE& kv) {
       // TODO: this assumes value.as_flp returns a long double value 
 			s << "FLP80X86: " << kv.value.as_flp << "]";
 			break;
+    case ARRAY_KIND:
+      s << "ARRAY: " << kv.value.as_flp << "]";
+      break;
+    case STRUCT_KIND:
+      s << "STRUCT: " << kv.value.as_flp << "]";
+      break;
 		default: //safe_assert(false);
 			break;
 	}
@@ -95,6 +101,8 @@ std::string KIND_ToString(int kind) {
 			break;
     case FLP80X86_KIND:
       s << "[FLP80X86]";
+    case STRUCT_KIND:
+      s << "[STRUCT]";
 
 		default: //safe_assert(false);
 			break;

@@ -29,6 +29,8 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
 
     if (type->isArrayTy()) {
+      // alloca for array type
+      
       Type* elemType = type;
       while (dyn_cast<ArrayType>(elemType)) {
         Constant* size = INT64_CONSTANT(((ArrayType*)elemType)->getNumElements(), UNSIGNED);
@@ -43,7 +45,31 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC);
       instrs.push_back(call);
+
+    } else if (type->isStructTy()) {
+      // alloca for struct type
+      StructType* structType = (StructType*) type;
+      uint64_t size = structType->getNumElements();
+      for (uint64_t i = 0; i < size; i++) {
+        Type* elemType = structType->getElementType(i);
+        KIND elemKind = TypeToKind(elemType);
+        // debug information
+        if (elemKind == INV_KIND) {
+          printf("[AllocaIstrumenter => Unknown type of struct element!\n");
+          abort();
+        }
+        Constant* elemKindC = KIND_CONSTANT(elemKind);
+        Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+        instrs.push_back(call);
+      }
+
+      Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
+      
+      Instruction* call = CALL_IID_INT64_INT("llvm_allocax_struct", iidC, sizeC, inxC);
+        instrs.push_back(call);
     } else {
+      // alloca for scalar and pointer type
+      
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
       Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax", iidC, kindC, size, inxC);

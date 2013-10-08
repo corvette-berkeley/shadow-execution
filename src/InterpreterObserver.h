@@ -24,6 +24,7 @@ class InterpreterObserver : public InstructionObserver {
   stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
+  queue<KIND> structType; // store struct type
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<Variable*> callArgs; // copy value from callers to callee arguments
@@ -95,7 +96,10 @@ class InterpreterObserver : public InstructionObserver {
   
   // ***** Memory Access and Addressing Operations ***** //
   virtual void allocax(IID iid, KIND kind, uint64_t size, int inx);
+
   virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx);
+
+  virtual void allocax_struct(IID iid, uint64_t size, int inx);
   
   virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
   
@@ -108,6 +112,8 @@ class InterpreterObserver : public InstructionObserver {
   virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx);
 
   virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
+
+  virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
 
   // ***** Conversion Operations ***** //
   virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);
@@ -171,6 +177,8 @@ class InterpreterObserver : public InstructionObserver {
   virtual void landingpad();
   
   void push_stack(KVALUE* value);
+
+  void push_struct_type(KIND kind);
 
   void push_getelementptr_inx(KVALUE* int_value);
 

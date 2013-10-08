@@ -116,6 +116,10 @@ void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx) {
   DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx)
 }
 
+void llvm_allocax_struct(IID iid, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx);
+}
+
 void llvm_load(IID iid, KVALUE* op, int inx) {
   DISPATCH_TO_OBSERVERS(load, iid, op, inx);
 }
@@ -145,6 +149,10 @@ void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, i
   DISPATCH_TO_OBSERVERS(getelementptr_array, iid, isbound, value, kind, inx)
 }
 
+
+void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, isbound, value, kind, inx)
+}
 
 // ***** Conversion Operations ***** //
 void llvm_trunc(IID iid, KIND type, KVALUE* op, int inx) {
@@ -262,6 +270,10 @@ void llvm_push_getelementptr_inx(KVALUE* value) {
 void llvm_push_array_size(uint64_t i) {
   DISPATCH_TO_OBSERVERS(push_array_size, i);
 }
+
+void llvm_push_struct_type(KIND kind) {
+  DISPATCH_TO_OBSERVERS(push_struct_type, kind);
+} 
 
 void llvm_construct_array_type(uint64_t i) {
   DISPATCH_TO_OBSERVERS(construct_array_type, i);

@@ -166,6 +166,8 @@ protected:
 		  return PTR_KIND;
 		} else if (T->isArrayTy()) {
       return ARRAY_KIND;
+    } else if (T->isStructTy()) {
+      return STRUCT_KIND;
     }
 
 		return INV_KIND;
@@ -427,6 +429,21 @@ protected:
 
 		ValuePtrVector Args;
 		Args.push_back(value);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
+	Instruction* CALL_IID_INT64_INT(const char* func, Value* iid, Value* size, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(INT64_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(size);
+		Args.push_back(inx);
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}

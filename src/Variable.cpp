@@ -58,6 +58,9 @@ string Variable::toString() {
   case ARRAY_KIND:
     s << "[ARRAY: " << value.as_ptr << "]";
     break;
+  case STRUCT_KIND:
+    s << "[STRUCT: " << value.as_ptr << "]";
+    break;
   case INT1_KIND:
     s << "[INT1: " << value.as_int << "]";
     break;

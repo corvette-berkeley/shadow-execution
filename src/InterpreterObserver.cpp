@@ -518,6 +518,34 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   return;
 }
 
+void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
+  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
+
+  Variable* allocaVar;
+
+  if (callArgs.empty()) {
+    Variable** ptrToStructVar = (Variable**) malloc(size*sizeof(Variable*));
+    for (uint64_t i = 0; i < size; i++) {
+      KIND type = structType.front();
+      Variable* var = new Variable(type, false);
+      ptrToStructVar[i] = var;
+      structType.pop();
+    }
+
+    void* ptrToStructAdr = ptrToStructVar;
+    VALUE allocaVal;
+    allocaVal.as_ptr = ptrToStructAdr;
+    allocaVar = new Variable(STRUCT_KIND, allocaVal, true);
+    executionStack.top()[inx] = allocaVar;
+  } else {
+    allocaVar = callArgs.top();
+    executionStack.top()[inx] = allocaVar;
+    callArgs.pop();
+  }
+
+  cout << allocaVar->toString() << "\n";
+}
+
 bool checkStore(Variable *dest, KVALUE *kv) {
   bool result = false;
 
@@ -686,6 +714,28 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   }
 
   cout << executionStack.top()[inx]->toString() << "\n";
+}
+
+void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
+    printf("<<<<< GETELEMENTPTR_STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+      IID_ToString(iid).c_str(),
+      (inbound ? "1" : "0"),
+      KVALUE_ToString(*op).c_str(),
+      KIND_ToString(kind).c_str(),
+      inx);
+
+    Variable* structPointer = executionStack.top()[op->inx];
+    Variable** structVar = static_cast<Variable**>(structPointer->getValue().as_ptr);
+
+    int index;
+    getElementPtrIndexList.pop();
+    index = getElementPtrIndexList.front();
+    getElementPtrIndexList.pop();
+
+    Variable* structElem = structVar[index];
+    executionStack.top()[inx] = structElem;
+
+    cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 // ***** Conversion Operations ***** //
@@ -1180,6 +1230,11 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
 void InterpreterObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH ARGS TO STACK >>>>>\n");
   myStack.push(value);
+}
+
+void InterpreterObserver::push_struct_type(KIND kind) {
+  printf("<<<<< PUSH STRUCT TYPE >>>>>: %s\n", KIND_ToString(kind).c_str()); 
+  structType.push(kind);
 }
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
