@@ -45,10 +45,10 @@ string Variable::toString() {
   std::stringstream s;
 
   if (local) {
-    s << "LOCAL\t";
+    s << "LOCAL    => ";
   }
   else {
-    s << "REGISTER\t";
+    s << "REGISTER => ";
   }
 
   switch(type) {
@@ -92,6 +92,8 @@ string Variable::toString() {
     safe_assert(false);
     break;
   }
+
+  s << ", Size: " << size << ", Offset: " << offset; 
 
   return s.str();
 }
