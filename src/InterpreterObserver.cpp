@@ -651,9 +651,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
       size,
       inx);
 
-  cout << "Index with pointer: " << op->inx << endl;
+  //cout << "Index with pointer: " << op->inx << endl;
   Variable* arrayPointer = executionStack.top()[op->inx];
-  cout << "Array pointer: " << arrayPointer->getValue().as_ptr << endl;
+  //cout << "Array pointer: " << arrayPointer->getValue().as_ptr << endl;
   
   int offset;
   if (index->inx != -1) {
@@ -662,15 +662,15 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALU
   else {
     offset = index->value.as_int;
   }
-  cout << "Kind: " << kind << endl;
-  cout << "Size: " << size << endl;
-  cout << "Offset: " << offset << endl;
+  //cout << "Kind: " << kind << endl;
+  //cout << "Size: " << size << endl;
+  //cout << "Offset: " << offset << endl;
 
   Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
 
   // create new Variable, get actual offset, reconstruct object?
-  cout << "First element size: " << array[0]->getSize() << endl;
-  cout << "Base kind of element: " << arrayPointer->getSize() << endl; //?
+  //cout << "First element size: " << array[0]->getSize() << endl;
+  //cout << "Base kind of element: " << arrayPointer->getSize() << endl; //?
   Variable* arrayElem = array[offset];
   
   executionStack.top()[inx] = arrayElem;
@@ -972,11 +972,6 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
 
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
-
-  //////
-  cout << src->toString() << endl;
-  cout << "------ " << type << " stack: " << &executionStack.top() << endl;
-  /////
 
   Variable *bitcast_loc = new Variable(type, value, src->getSize(), src->getOffset(), false);
   executionStack.top()[inx] = bitcast_loc;
@@ -1330,7 +1325,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
 
   // calculating number of elements
   int elements = argValue->value.as_int*8 / size;
-  cout << endl << "# of elements: " << elements << endl;
+  //cout << endl << "# of elements: " << elements << endl;
 
   int actualSize = sizeof(Variable) * elements;
 
@@ -1341,28 +1336,19 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   VALUE returnValue;
   returnValue.as_ptr = addr;
 
-  cout << "Size: " <<  size << endl;
+  //cout << "Size: " <<  size << endl;
   executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, 0, false);
 
-  /*
-  // creating first element
-  VALUE iValue;
-  iValue.as_ptr = addr;
-  ((Variable**)addr)[0] = new Variable(PTR_KIND, iValue, size, 0, false);
-  */
-
-
   // create elements?
-  cout << "The address returned: " << addr << endl;
+  //cout << "The address returned: " << addr << endl;
   for(int i = 0; i < elements; i++) {
     VALUE iValue;
     ((Variable**)addr)[i] = new Variable(type, iValue, false);
-    cout << &((Variable**)addr)[i] << endl;
-    cout << "**" << ((Variable**)addr)[i]->toString() << endl;
+    //cout << &((Variable**)addr)[i] << endl;
+    //cout << "**" << ((Variable**)addr)[i]->toString() << endl;
   }
 
   cout << endl << executionStack.top()[inx]->toString() << endl;
-  cout << "index: " << inx <<  " stack: " << &executionStack.top() << endl;
   return;
 }
 
