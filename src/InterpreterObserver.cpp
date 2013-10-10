@@ -597,7 +597,8 @@ void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
       VALUE destVal = dest->getValue();
       destVal.as_ptr = srcAdr;
       dest->setValue(destVal);
-      dest->setSize(src->getSize());
+      dest->setOrigSize(src->getOrigSize());
+      dest->setCurrSize(src->getCurrSize());
       dest->setOffset(src->getOffset());
     } else {
       dest->setValue(src->getValue());
@@ -973,7 +974,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcast_loc = new Variable(type, value, src->getSize(), src->getOffset(), false);
+  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), src->getCurrSize(), src->getOffset(), false);
   executionStack.top()[inx] = bitcast_loc;
   cout << bitcast_loc->toString() << "\n";
   return;
@@ -1337,7 +1338,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   returnValue.as_ptr = addr;
 
   //cout << "Size: " <<  size << endl;
-  executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, 0, false);
+  executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, size, 0, false);
 
   // create elements?
   //cout << "The address returned: " << addr << endl;

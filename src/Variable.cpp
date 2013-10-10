@@ -13,8 +13,12 @@ void Variable::setLocal(bool l) {
   local = l;
 }
 
-void Variable::setSize(unsigned int s) {
-  size = s;
+void Variable::setOrigSize(unsigned int s) {
+  origSize = s;
+}
+
+void Variable::setCurrSize(unsigned int s) {
+  currSize = s;
 }
 
 void Variable::setOffset(int o) {
@@ -33,8 +37,12 @@ bool Variable::getLocal() {
   return local;
 }
 
-unsigned int Variable::getSize() {
-  return size;
+unsigned int Variable::getOrigSize() {
+  return origSize;
+}
+
+unsigned int Variable::getCurrSize() {
+  return currSize;
 }
 
 int Variable::getOffset() {
@@ -93,7 +101,11 @@ string Variable::toString() {
     break;
   }
 
-  s << ", Size: " << size << ", Offset: " << offset; 
+  s << ", Current Size: " << currSize;
+  if (currSize != origSize) {
+    s << ", Original Size: " << origSize;
+  }
+  s << ", Offset: " << offset; 
 
   return s.str();
 }
@@ -102,7 +114,8 @@ string Variable::toString() {
 void Variable::copy(Variable *dest) {
   dest->setType(type);
   dest->setValue(value);
-  dest->setSize(size);
+  dest->setOrigSize(origSize);
+  dest->setCurrSize(currSize);
   dest->setOffset(offset);
   dest->setLocal(local);
 }

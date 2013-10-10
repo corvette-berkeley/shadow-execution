@@ -10,20 +10,21 @@ class Variable {
  private:
   KIND type; // see Common.h for definitions
   VALUE value; // union type (use extension later on)
-  unsigned int size;
+  unsigned int origSize;
+  unsigned int currSize;
   int offset;
   bool local;
   MACHINEFLAG flag;
   void* metadata;
 
  public:
- Variable(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), local(l) {}
+ Variable(KIND t, VALUE v, bool l): type(t), value(v), origSize(0), currSize(0), offset(0), local(l) {}
 
- Variable(KIND t, VALUE v, unsigned int s, int o, bool l): type(t), value(v), size(s), offset(o), local(l) {}
+ Variable(KIND t, VALUE v, unsigned int s, unsigned int c, int o, bool l): type(t), value(v), origSize(s), currSize(c), offset(o), local(l) {}
 
- Variable(KIND t, bool l): type(t), size(0), offset(0), local(l) {}
+ Variable(KIND t, bool l): type(t), origSize(0), currSize(0), offset(0), local(l) {}
 
- Variable(): type(INV_KIND), size(0), offset(0), local(false) {}
+ Variable(): type(INV_KIND), origSize(0), currSize(0), offset(0), local(false) {}
   
   void setType(KIND t);
 
@@ -31,7 +32,9 @@ class Variable {
 
   void setLocal(bool l);
 
-  void setSize(unsigned int s);
+  void setOrigSize(unsigned int s);
+
+  void setCurrSize(unsigned int c);
 
   void setOffset(int o);
 
@@ -41,7 +44,9 @@ class Variable {
 
   bool getLocal();
 
-  unsigned int getSize();
+  unsigned int getOrigSize();
+
+  unsigned int getCurrSize();
 
   int getOffset();
 
