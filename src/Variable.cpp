@@ -98,3 +98,12 @@ string Variable::toString() {
   return s.str();
 }
 
+
+void Variable::copy(Variable *dest) {
+  dest->setType(type);
+  dest->setValue(value);
+  dest->setSize(size);
+  dest->setOffset(offset);
+  dest->setLocal(local);
+}
+

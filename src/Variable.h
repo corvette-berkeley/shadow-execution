@@ -47,6 +47,8 @@ class Variable {
 
   string toString();
 
+  void copy(Variable* dest);
+
 };
 
 #endif /* LOCATION_H_ */
