@@ -19,7 +19,7 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
     Value* op = KVALUE_VALUE(castInst->getOperand(0U), instrs, NOSIGN);
     if(op == NULL) return false;
 
-    castInst->getDestTy()->dump();
+    //castInst->getDestTy()->dump();
 
     Value* size;
     if (PointerType* dest = dyn_cast<PointerType>(castInst->getDestTy())) {

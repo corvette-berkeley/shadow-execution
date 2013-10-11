@@ -55,17 +55,17 @@ extern "C" {
   void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind, int x);
 
   // ***** Conversion Operations ***** //
-  void llvm_trunc(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_zext(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_sext(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_fptrunc(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_fpext(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_fptoui(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_fptosi(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_uitofp(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_sitofp(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_inttoptr(IID iid, KIND type, KVALUE* op, int x);
+  void llvm_trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_zext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_sext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
   void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
 
   // ***** Terminator Instructions ***** //

@@ -7,25 +7,20 @@
 #include <llvm/InstrTypes.h>
 #include "Heap.h"
 	
-void InterpreterObserver::load(IID iid, KVALUE* op, int inx) {
+void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str(),
-   inx);
+	 KVALUE_ToString(*src).c_str(),
+	 inx);
 
-  Variable *nloc = executionStack.top()[inx];
+  Variable *srcPtrLocation = executionStack.top()[src->inx];
+  Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
 
-  Variable *loc = executionStack.top()[op->inx];
-
-  cout << loc->toString() << "\n";
-  if (loc->getType() == PTR_KIND) {
-    nloc = static_cast<Variable*>(loc->getValue().as_ptr);
-  } else {
-    nloc = new Variable(loc->getType(), loc->getValue(), false);
-  }
-
-  executionStack.top()[inx] = nloc;
-  cout << nloc->toString() << "\n";
+  Variable *destLocation = new Variable();
+  srcLocation->copy(destLocation);
   
+  executionStack.top()[inx] = destLocation;
+  cout << destLocation->toString() << "\n";
+    
   return;
 }
 
@@ -35,8 +30,8 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
 	std::stringstream s;
 	switch(binop) {
     case ADD:
-			s << "ADD";
-			break;
+      s << "ADD";
+      break;
     case FADD:
       s << "FADD";
       break;
@@ -468,18 +463,24 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
 
-  Variable* location;
+  Variable* ptrLocation;
   if (callArgs.empty()) {
-    location = new Variable(type, true);
-    executionStack.top()[inx] = location;
+    Variable *location = new Variable(type, true);
+    VALUE value;
+    value.as_ptr = location;
+    ptrLocation = new Variable(PTR_KIND, value, false); // false?
+    executionStack.top()[inx] = ptrLocation;
   } else {
     safe_assert(!callArgs.empty());
-    location = callArgs.top();
-    executionStack.top()[inx] = location;
+    Variable *location = callArgs.top();
+    VALUE value;
+    value.as_ptr = location;
+    ptrLocation = new Variable(PTR_KIND, value, false); // false?
+    executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
 
-  cout << location->toString() << "\n";
+  cout << ptrLocation->toString() << "\n";
 
   return;
 }
@@ -577,43 +578,33 @@ bool checkStore(Variable *dest, KVALUE *kv) {
   return result;
 }
 
-void InterpreterObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
+void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KVALUE_ToString(*op).c_str(),
-      KVALUE_ToString(*kv).c_str(), inx);
+	 KVALUE_ToString(*dest).c_str(), //op
+	 KVALUE_ToString(*src).c_str(), inx); // kv
 
   // retrieve Variable to store in
-  Variable *dest = executionStack.top()[op->inx];
-  cout << "Dest: " << dest->toString() << "\n";
+  Variable *destPtrLocation = executionStack.top()[dest->inx];
+  Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
+  cout << "Dest: " << destLocation->toString() << "\n";
 
   // the value to store is a constant
-  if (kv->iid == 0) {
-    dest->setValue(kv->value);
+  if (src->iid == 0) {
+    destLocation->setValue(src->value);
   }
   else {
-    Variable* src = executionStack.top()[kv->inx];
-    if (dest->getType() == PTR_KIND) {
-      void* srcAdr = src;
-      VALUE destVal = dest->getValue();
-      destVal.as_ptr = srcAdr;
-      dest->setValue(destVal);
-      dest->setOrigSize(src->getOrigSize());
-      dest->setCurrSize(src->getCurrSize());
-      dest->setOffset(src->getOffset());
-    } else {
-      dest->setValue(src->getValue());
-    }
+    Variable* srcLocation = executionStack.top()[src->inx];
+    srcLocation->copy(destLocation);
+    cout << "Src: " << srcLocation->toString() << endl;
   }
+  cout << "Updated Dest: " << destLocation->toString() << endl;
 
-  cout << "Updated Dest: " << dest->toString() << "\n";
-
-
-  if (!checkStore(dest, kv)) {
-    cerr << "KVALUE: " << KVALUE_ToString(*kv) << "\n";
+  if (!checkStore(destLocation, src)) {
+    cerr << "KVALUE: " << KVALUE_ToString(*src) << "\n";
     cerr << "Mismatched values found in Store\n";
     abort();
   }
-
+  
   return;
 }
 
@@ -741,25 +732,25 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
 // ***** Conversion Operations ***** //
 
-void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< TRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< ZEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::zext] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -792,9 +783,9 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
   cout << ext_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -824,9 +815,9 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, int inx) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -856,9 +847,9 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, int inx) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -871,9 +862,9 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, int inx) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -886,9 +877,9 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, int inx) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -918,9 +909,9 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, int inx) {
   cout << trunc_loc->toString() << "\n";
 }
 
-void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
-  printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), inx);
+void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -951,17 +942,17 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, int inx) {
 
 }
 
-void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
   abort();
 }
 
-void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
   abort();

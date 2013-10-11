@@ -58,17 +58,17 @@ public:
   virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
-	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void zext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void sext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void fptrunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void fpext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void fptoui(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void fptosi(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void uitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void sitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void ptrtoint(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void inttoptr(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
+	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void zext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void sext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void fptrunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void fpext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void fptoui(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void fptosi(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void uitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void sitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void ptrtoint(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void inttoptr(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 	virtual void bitcast(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 
 	// ***** Terminator Instructions *****/

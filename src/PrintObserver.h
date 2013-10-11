@@ -95,27 +95,27 @@ public:
 	virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx); 
 
 	// ***** Conversion Operations ***** //
-	virtual void trunc(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void zext(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void sext(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void fptrunc(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void fpext(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void fptoui(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void fptosi(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void uitofp(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void sitofp(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void ptrtoint(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-	virtual void inttoptr(IID iid, KIND type, KVALUE* op, int inx);
+	virtual void inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
 	virtual void bitcast(IID iid, KIND type, KVALUE* op,  uint64_t size, int inx);
 

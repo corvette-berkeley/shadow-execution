@@ -155,48 +155,48 @@ void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind, 
 }
 
 // ***** Conversion Operations ***** //
-void llvm_trunc(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(trunc, iid, type, op, inx);
+void llvm_trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(trunc, iid, type, op, size, inx);
 }
 
-void llvm_zext(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(zext, iid, type, op, inx);
+void llvm_zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(zext, iid, type, op, size, inx);
 }
 
-void llvm_sext(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(sext, iid, type, op, inx);
+void llvm_sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(sext, iid, type, op, size, inx);
 }
 
-void llvm_fptrunc(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(fptrunc, iid, type, op, inx);
+void llvm_fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptrunc, iid, type, op, size, inx);
 }
 
-void llvm_fpext(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(fpext, iid, type, op, inx);
+void llvm_fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(fpext, iid, type, op, size, inx);
 }
 
-void llvm_fptoui(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(fptoui, iid, type, op, inx);
+void llvm_fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptoui, iid, type, op, size, inx);
 }
 
-void llvm_fptosi(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(fptosi, iid, type, op, inx);
+void llvm_fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptosi, iid, type, op, size, inx);
 }
 
-void llvm_uitofp(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(uitofp, iid, type, op, inx);
+void llvm_uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(uitofp, iid, type, op, size, inx);
 }
 
-void llvm_sitofp(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(sitofp, iid, type, op, inx);
+void llvm_sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(sitofp, iid, type, op, size, inx);
 }
 
-void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(ptrtoint, iid, type, op, inx);
+void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(ptrtoint, iid, type, op, size, inx);
 }
 
-void llvm_inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(inttoptr, iid, type, op, inx);
+void llvm_inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(inttoptr, iid, type, op, size, inx);
 }
 
 void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {

@@ -255,59 +255,59 @@ void PrintObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND
 
 // ***** Conversion Operations ***** //
 
-void PrintObserver::trunc(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< TRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< TRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::zext(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< ZEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::sext(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< SEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< FPTRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::fpext(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< FPEXT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< FPEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< FPTOUII >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< FPTOUII >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< FPTOSI >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< FPTOSI >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< UITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< UITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< SITOFP >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< SITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< PTRTOINT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
-void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< INTTOPTR >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
 void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op,  uint64_t size, int inx) {

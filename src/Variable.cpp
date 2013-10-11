@@ -97,6 +97,7 @@ string Variable::toString() {
     s << "[FLP80X86: " << (long double) value.as_flp << "]";
     break;
   default: 
+    cout << "Here?\n";
     safe_assert(false);
     break;
   }
