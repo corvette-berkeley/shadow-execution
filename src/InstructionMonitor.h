@@ -66,7 +66,7 @@ extern "C" {
   void llvm_sitofp(IID iid, KIND type, KVALUE* op, int x);
   void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, int x);
   void llvm_inttoptr(IID iid, KIND type, KVALUE* op, int x);
-  void llvm_bitcast(IID iid, KIND type, KVALUE* op, int x);
+  void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
 
   // ***** Terminator Instructions ***** //
   void llvm_branch(IID iid, bool conditional, KVALUE* op1, int x);

@@ -310,9 +310,9 @@ void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
 }
 
-void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op,  uint64_t size, int inx) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 }
 
 

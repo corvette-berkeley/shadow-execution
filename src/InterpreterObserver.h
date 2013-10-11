@@ -138,7 +138,7 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void inttoptr(IID iid, KIND type, KVALUE* op, int inx);
   
-  virtual void bitcast(IID iid, KIND type, KVALUE* op, int inx);
+  virtual void bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
   
   // ***** TerminatorInst ***** //
   virtual void branch(IID iid, bool conditional, KVALUE* op1, int inx);

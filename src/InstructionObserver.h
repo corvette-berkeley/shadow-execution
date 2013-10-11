@@ -69,7 +69,7 @@ public:
 	virtual void sitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void ptrtoint(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void inttoptr(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
-	virtual void bitcast(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
+	virtual void bitcast(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
 
 	// ***** Terminator Instructions *****/
 	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED, int inx UNUSED) {};

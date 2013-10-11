@@ -967,14 +967,14 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
   abort();
 }
 
-void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< BITCAST >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), inx);
+void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  printf("<<<<< BITCAST >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), src->getCurrSize(), src->getOffset(), false);
+  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), size, src->getOffset(), false);
   executionStack.top()[inx] = bitcast_loc;
   cout << bitcast_loc->toString() << "\n";
   return;

@@ -19,6 +19,16 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
     Value* op = KVALUE_VALUE(castInst->getOperand(0U), instrs, NOSIGN);
     if(op == NULL) return false;
 
+    castInst->getDestTy()->dump();
+
+    Value* size;
+    if (PointerType* dest = dyn_cast<PointerType>(castInst->getDestTy())) {
+      size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+    }
+    else {
+      size = INT32_CONSTANT(0, false);
+    }
+
     Type *type = castInst->getType();
     if (!type) return false;
 
@@ -34,8 +44,9 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
     std::stringstream callback;
     callback << "llvm_";
     callback << Instruction::getOpcodeName(castInst->getOpcode());
+    cout << Instruction::getOpcodeName(castInst->getOpcode()) << endl;
 
-    Instruction* call = CALL_IID_KIND_KVALUE_INT(callback.str().c_str(), iidC, kindC, op, inxC);
+    Instruction* call = CALL_IID_KIND_KVALUE_INT_INT(callback.str().c_str(), iidC, kindC, op, size, inxC);
 
     instrs.push_back(call);
 

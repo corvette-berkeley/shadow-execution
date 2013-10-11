@@ -199,8 +199,8 @@ void llvm_inttoptr(IID iid, KIND type, KVALUE* op, int inx) {
   DISPATCH_TO_OBSERVERS(inttoptr, iid, type, op, inx);
 }
 
-void llvm_bitcast(IID iid, KIND type, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(bitcast, iid, type, op, inx);
+void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  DISPATCH_TO_OBSERVERS(bitcast, iid, type, op, size, inx);
 }
 
 
