@@ -112,7 +112,7 @@ std::string KIND_ToString(int kind) {
 
 #define UNRECOVERABLE_ERROR 5
 
-void safe_assert(bool cond) {
+inline void safe_assert(bool cond) {
   if (!cond) {
     printf("\nCounit: safe assert fail."); 
     printf(" \n\tfunction: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); 
@@ -121,7 +121,7 @@ void safe_assert(bool cond) {
   }
 }
 
-void unimpelemented() {
+inline void unimpelemented() {
   printf(" \n Executing unimplemented code in function: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); 
   _Exit(UNRECOVERABLE_ERROR); 
 }
