@@ -590,6 +590,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   // the value to store is a constant
   if (src->iid == 0) {
+    //destLocation = new Variable(src->kind, src->value, false);
     destLocation->setValue(src->value);
   }
   else {
@@ -633,39 +634,35 @@ void InterpreterObserver::atomicrmw() {
   abort();
 }
 
-void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx) {
+void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int inx) {
   printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
-      KVALUE_ToString(*op).c_str(),
-      KVALUE_ToString(*index).c_str(),
-      KIND_ToString(kind).c_str(),
+      KVALUE_ToString(*base).c_str(),
+      KVALUE_ToString(*offset).c_str(),
+      KIND_ToString(type).c_str(),
       size,
       inx);
 
-  //cout << "Index with pointer: " << op->inx << endl;
-  Variable* arrayPointer = executionStack.top()[op->inx];
-  //cout << "Array pointer: " << arrayPointer->getValue().as_ptr << endl;
+  Variable* basePtrLocation = executionStack.top()[base->inx];
   
-  int offset;
-  if (index->inx != -1) {
-    offset = executionStack.top()[index->inx]->getValue().as_int;
+  int offsetValue;
+  if (offset->inx != -1) {
+    offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
   }
   else {
-    offset = index->value.as_int;
+    offsetValue = offset->value.as_int;
   }
-  //cout << "Kind: " << kind << endl;
-  //cout << "Size: " << size << endl;
-  //cout << "Offset: " << offset << endl;
 
-  Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
+  // creating PTR variable to be returned
+  void *baseAddr = basePtrLocation->getValue().as_ptr;
+  Variable *actualAddr = ((Variable*)baseAddr) + offsetValue;
 
-  // create new Variable, get actual offset, reconstruct object?
-  //cout << "First element size: " << array[0]->getSize() << endl;
-  //cout << "Base kind of element: " << arrayPointer->getSize() << endl; //?
-  Variable* arrayElem = array[offset];
-  
-  executionStack.top()[inx] = arrayElem;
+  VALUE value;
+  value.as_ptr = actualAddr;
+  Variable* ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, offsetValue, false);
+
+  executionStack.top()[inx] = ptrLocation;
 
   cout << executionStack.top()[inx]->toString() << "\n";
 
@@ -1331,13 +1328,11 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   //cout << "Size: " <<  size << endl;
   executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, size, 0, false);
 
-  // create elements?
-  //cout << "The address returned: " << addr << endl;
+  // creating locations
   for(int i = 0; i < elements; i++) {
     VALUE iValue;
-    ((Variable**)addr)[i] = new Variable(type, iValue, false);
-    //cout << &((Variable**)addr)[i] << endl;
-    //cout << "**" << ((Variable**)addr)[i]->toString() << endl;
+    Variable *var = new Variable(type, iValue, false);
+    ((Variable*)addr)[i] = *var;
   }
 
   cout << endl << executionStack.top()[inx]->toString() << endl;
