@@ -86,7 +86,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* kindC = KIND_CONSTANT(kind);
 
-    Constant* size = INT64_CONSTANT(0, UNSIGNED);
+    Constant* size = INT64_CONSTANT(elemT->getPrimitiveSizeInBits(), false);
 
     Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, inxC);
     instrs.push_back(call);
