@@ -121,6 +121,11 @@ void Variable::copy(Variable *dest) {
   dest->setLocal(local);
 }
 
-bool Variable::sameSize() {
+bool Variable::isEqualPtrSize() {
   return origSize == currSize;
 }
+
+bool Variable::isSmallerPtrSize() {
+  return currSize < origSize;
+}
+

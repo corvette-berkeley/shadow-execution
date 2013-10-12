@@ -14,7 +14,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 
   Variable *srcPtrLocation = executionStack.top()[src->inx];
 
-  if (srcPtrLocation->sameSize()) {
+  if (srcPtrLocation->isEqualPtrSize()) {
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
     srcLocation += srcPtrLocation->getOffset();
 
@@ -23,6 +23,10 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   
     executionStack.top()[inx] = destLocation;
     cout << destLocation->toString() << endl;
+  }
+  else if (srcPtrLocation->isSmallerPtrSize()) {
+    cerr << "Pointer is smaller than original" << endl;
+    safe_assert(false);
   }
   else {
     cerr << "Pointers of different size" << endl;
@@ -594,7 +598,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
 
-  if (destPtrLocation->sameSize()) {
+  if (destPtrLocation->isEqualPtrSize()) {
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
     destLocation += destPtrLocation->getOffset();
     cout << "Dest: " << destLocation->toString() << endl;
@@ -615,6 +619,10 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
       cerr << "Mismatched values found in Store" << endl;
       abort();
     }
+  }
+  else if (destPtrLocation->isSmallerPtrSize()) {
+    cerr << "Pointer is smaller than original pointer" << endl;
+    safe_assert(false);
   }
   else {
     cerr << "Pointers do not have the same size" << endl;

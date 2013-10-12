@@ -54,7 +54,9 @@ class Variable {
 
   void copy(Variable* dest);
 
-  bool sameSize();
+  bool isEqualPtrSize();
+
+  bool isSmallerPtrSize();
 
 };
 
