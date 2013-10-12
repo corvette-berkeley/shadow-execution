@@ -13,14 +13,22 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 	 inx);
 
   Variable *srcPtrLocation = executionStack.top()[src->inx];
-  Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
 
-  Variable *destLocation = new Variable();
-  srcLocation->copy(destLocation);
+  if (srcPtrLocation->sameSize()) {
+    Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
+    srcLocation += srcPtrLocation->getOffset();
+
+    Variable *destLocation = new Variable();
+    srcLocation->copy(destLocation);
   
-  executionStack.top()[inx] = destLocation;
-  cout << destLocation->toString() << "\n";
-    
+    executionStack.top()[inx] = destLocation;
+    cout << destLocation->toString() << endl;
+  }
+  else {
+    cerr << "Pointers of different size" << endl;
+    safe_assert(false);
+  }
+
   return;
 }
 
@@ -585,25 +593,32 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
-  Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
-  cout << "Dest: " << destLocation->toString() << "\n";
 
-  // the value to store is a constant
-  if (src->iid == 0) {
-    //destLocation = new Variable(src->kind, src->value, false);
-    destLocation->setValue(src->value);
+  if (destPtrLocation->sameSize()) {
+    Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
+    destLocation += destPtrLocation->getOffset();
+    cout << "Dest: " << destLocation->toString() << endl;
+
+    // the value to store is a constant
+    if (src->iid == 0) {
+      destLocation->setValue(src->value);
+    }
+    else {
+      Variable* srcLocation = executionStack.top()[src->inx];
+      srcLocation->copy(destLocation);
+      cout << "Src: " << srcLocation->toString() << endl;
+    }
+    cout << "Updated Dest: " << destLocation->toString() << endl;
+    
+    if (!checkStore(destLocation, src)) {
+      cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
+      cerr << "Mismatched values found in Store" << endl;
+      abort();
+    }
   }
   else {
-    Variable* srcLocation = executionStack.top()[src->inx];
-    srcLocation->copy(destLocation);
-    cout << "Src: " << srcLocation->toString() << endl;
-  }
-  cout << "Updated Dest: " << destLocation->toString() << endl;
-
-  if (!checkStore(destLocation, src)) {
-    cerr << "KVALUE: " << KVALUE_ToString(*src) << "\n";
-    cerr << "Mismatched values found in Store\n";
-    abort();
+    cerr << "Pointers do not have the same size" << endl;
+    safe_assert(false);
   }
   
   return;
@@ -656,10 +671,11 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
   // creating PTR variable to be returned
   void *baseAddr = basePtrLocation->getValue().as_ptr;
-  Variable *actualAddr = ((Variable*)baseAddr) + offsetValue;
+  //Variable *actualAddr = ((Variable*)baseAddr) + offsetValue;
 
   VALUE value;
-  value.as_ptr = actualAddr;
+  //value.as_ptr = actualAddr;
+  value.as_ptr = baseAddr;
   Variable* ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, offsetValue, false);
 
   executionStack.top()[inx] = ptrLocation;

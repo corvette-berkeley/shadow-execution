@@ -121,3 +121,6 @@ void Variable::copy(Variable *dest) {
   dest->setLocal(local);
 }
 
+bool Variable::sameSize() {
+  return origSize == currSize;
+}

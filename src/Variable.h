@@ -54,6 +54,8 @@ class Variable {
 
   void copy(Variable* dest);
 
+  bool sameSize();
+
 };
 
 #endif /* LOCATION_H_ */
