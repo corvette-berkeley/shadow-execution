@@ -6,7 +6,17 @@
 #include <vector>
 #include <llvm/InstrTypes.h>
 #include "Heap.h"
-	
+
+static unsigned retrieveLocation(Variable* srcPtrLocation) {
+
+  unsigned origSize = srcPtrLocation->getOrigSize();
+  unsigned currSize = srcPtrLocation->getCurrSize();
+  unsigned offset = srcPtrLocation->getOffset();
+  unsigned newOffset = offset / (origSize / currSize);
+
+  return newOffset;
+}
+
 void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*src).c_str(),
@@ -25,11 +35,41 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     cout << destLocation->toString() << endl;
   }
   else if (srcPtrLocation->isSmallerPtrSize()) {
-    cerr << "Pointer is smaller than original" << endl;
-    safe_assert(false);
+    cout << "[STORE] => Pointer is smaller than original" << endl;
+
+    unsigned newOffset;
+    Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
+    newOffset = retrieveLocation(srcPtrLocation);
+    srcLocation += newOffset;
+
+    // retrieving data
+    void* data;
+    if (srcPtrLocation->getOrigSize() == 32) {
+      data = (int*)malloc(sizeof(int));
+      *((int*)data) = srcLocation->getValue().as_int;
+    }
+    else {
+      cerr << "[LOAD] => unhandled type" << endl;
+      safe_assert(false);
+    }
+
+    // reconstructing data
+    if (srcPtrLocation->getCurrSize() == 16) {
+      short* sdata = (short*)data;
+      VALUE value;
+      value.as_int = sdata[0];
+      Variable* destLocation = new Variable(INT16_KIND, value, false);
+      executionStack.top()[inx] = destLocation;
+      cout << destLocation->toString() << endl;
+    }
+    else {
+      cerr << "[LOAD] => unhandled type" << endl;
+      safe_assert(false);      
+    }
+
   }
   else {
-    cerr << "Pointers of different size" << endl;
+    cerr << "[LOAD] => Pointers of different size" << endl;
     safe_assert(false);
   }
 
