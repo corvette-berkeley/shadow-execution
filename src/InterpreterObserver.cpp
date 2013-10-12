@@ -7,12 +7,13 @@
 #include <llvm/InstrTypes.h>
 #include "Heap.h"
 
-static unsigned retrieveLocation(Variable* srcPtrLocation) {
+static unsigned retrieveLocation(Variable* srcPtrLocation, unsigned &internalOffset) {
 
   unsigned origSize = srcPtrLocation->getOrigSize();
   unsigned currSize = srcPtrLocation->getCurrSize();
   unsigned offset = srcPtrLocation->getOffset();
   unsigned newOffset = offset / (origSize / currSize);
+  internalOffset = offset % (origSize / currSize);
 
   return newOffset;
 }
@@ -35,11 +36,11 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     cout << destLocation->toString() << endl;
   }
   else if (srcPtrLocation->isSmallerPtrSize()) {
-    cout << "[STORE] => Pointer is smaller than original" << endl;
+    cout << "[LOAD] => Pointer is smaller than original" << endl;
 
-    unsigned newOffset;
-    Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
-    newOffset = retrieveLocation(srcPtrLocation);
+    unsigned newOffset, internalOffset = 0;
+    Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
+    newOffset = retrieveLocation(srcPtrLocation, internalOffset);
     srcLocation += newOffset;
 
     // retrieving data
@@ -55,9 +56,10 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 
     // reconstructing data
     if (srcPtrLocation->getCurrSize() == 16) {
+      cout << "internalOffset: " << internalOffset << endl;
       short* sdata = (short*)data;
       VALUE value;
-      value.as_int = sdata[0];
+      value.as_int = sdata[internalOffset];
       Variable* destLocation = new Variable(INT16_KIND, value, false);
       executionStack.top()[inx] = destLocation;
       cout << destLocation->toString() << endl;
