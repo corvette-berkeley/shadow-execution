@@ -361,6 +361,28 @@ protected:
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
+
+	/*******************************************************************************************/
+	Instruction* CALL_IID_BOOL_KVALUE_KIND_KIND_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind1, Value* kind2, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(BOOL_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(KIND_TYPE());
+		ArgTypes.push_back(KIND_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(b1);
+		Args.push_back(kvalue);
+		Args.push_back(kind1);
+		Args.push_back(kind2);
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
 	/*******************************************************************************************/
 	Instruction* CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* index,
 								Value* kind, Value* size, Value* inx) {

@@ -63,20 +63,57 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     } 
 
+
     Type* gepInstType = ((PointerType*) gepInst->getType())->getElementType();
     KIND kind = TypeToKind(gepInstType);
     Constant* kindC = KIND_CONSTANT(kind);
 
-    Instruction* call = CALL_IID_BOOL_KVALUE_KIND_INT("llvm_getelementptr_struct", iidC, inbound, ptrOp, kindC, inxC);
+    Type* elemArrayType = gepInstType; // used only when element is array type
+
+    if (gepInstType->isArrayTy()) {
+
+      Type* elemType = gepInstType;
+      while (dyn_cast<ArrayType>(elemType)) {
+        Constant* size = INT64_CONSTANT(((ArrayType*)elemType)->getNumElements(), UNSIGNED);
+        Instruction* call = CALL_INT64("llvm_push_array_size", size);
+        instrs.push_back(call);
+        elemType = ((ArrayType*)elemType)->getElementType();
+      }
+
+      elemArrayType = elemType;
+
+    } else if (gepInstType->isStructTy()) {
+
+      StructType* structType = (StructType*) gepInstType;
+      uint64_t size = structType->getNumElements();
+      for (uint64_t i = 0; i < size; i++) {
+        Type* elemType = structType->getElementType(i);
+        KIND elemKind = TypeToKind(elemType);
+        // debug information
+        if (elemKind == INV_KIND) {
+          printf("[AllocaIstrumenter => Unknown type of struct element!\n");
+          abort();
+        }
+        Constant* elemKindC = KIND_CONSTANT(elemKind);
+        Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+        instrs.push_back(call);
+      }
+
+    }
+
+    KIND elemArrayKind = TypeToKind(elemArrayType);
+    Constant* elemArrayKindC = KIND_CONSTANT(elemArrayKind);
+
+    Instruction* call = CALL_IID_BOOL_KVALUE_KIND_KIND_INT("llvm_getelementptr_struct", iidC, inbound, ptrOp, kindC, elemArrayKindC, inxC);
 
     instrs.push_back(call);
 
   } else {
     // this branch is the case for heap
-    
+
     if (gepInst->getNumIndices() != 1) {
-        cout << "[GetElementPtr] => Multiple indices\n";
-        abort();
+      cout << "[GetElementPtr] => Multiple indices\n";
+      abort();
     }
 
     Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, NOSIGN);

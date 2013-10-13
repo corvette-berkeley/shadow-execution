@@ -55,7 +55,7 @@ public:
 	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KVALUE* index UNUSED, KIND kind UNUSED, 
 				   uint64_t size UNUSED, int inx UNUSED) {};
   virtual void getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, int inx UNUSED) {};
-  virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, int inx UNUSED) {};
+  virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};

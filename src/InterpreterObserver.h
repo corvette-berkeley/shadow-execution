@@ -113,7 +113,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
 
-  virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
+  virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx);
 
   // ***** Conversion Operations ***** //
   virtual void trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);

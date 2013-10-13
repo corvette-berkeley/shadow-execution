@@ -52,7 +52,7 @@ extern "C" {
   void llvm_atomicrmw();
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int x);
   void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int x);
-  void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind, int x);
+  void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int x);

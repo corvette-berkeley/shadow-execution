@@ -786,12 +786,13 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   cout << executionStack.top()[inx]->toString() << "\n";
 }
 
-void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
-    printf("<<<<< GETELEMENTPTR_STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx) {
+    printf("<<<<< GETELEMENTPTR_STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, arrayKind: %s, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
       KVALUE_ToString(*op).c_str(),
       KIND_ToString(kind).c_str(),
+      KIND_ToString(arrayKind).c_str(),
       inx);
 
     Variable* structPointer = static_cast<Variable*>(executionStack.top()[op->inx]->getValue().as_ptr);
@@ -803,6 +804,48 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
 
     Variable* structElem = structVar[index];
+
+    //
+    // we need to initialize structElem if it is of array/struct type
+    // and is not initialized
+    //
+    if (!structElem->isInitialized()) {
+      if (kind == ARRAY_KIND) {
+
+        uint64_t size = 1;
+        while (!arraySize.empty()) {
+          size = size * arraySize.front();
+          arraySize.pop();
+        }
+
+        Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
+        for (uint64_t i = 0; i < size; i++) {
+          Variable* var = new Variable(arrayKind, false); 
+          locArr[i] = var;
+        }
+
+        void* locArrAdr = locArr;
+        VALUE locArrVal;
+        locArrVal.as_ptr = locArrAdr;
+        structElem->setValue(locArrVal);
+
+      } else if (kind == STRUCT_KIND) {
+
+        uint64_t size = structType.size();
+        Variable** ptrToStructVar = (Variable**) malloc(size*sizeof(Variable*));
+        for (uint64_t i = 0; i < size; i++) {
+          KIND type = structType.front();
+          Variable* var = new Variable(type, false);
+          ptrToStructVar[i] = var;
+          structType.pop();
+        }
+
+        void* ptrToStructAdr = ptrToStructVar;
+        VALUE allocaVal;
+        allocaVal.as_ptr = ptrToStructAdr;
+        structElem->setValue(allocaVal);
+      }
+    }
 
     VALUE structElemPtrVal;
     structElemPtrVal.as_ptr = (void*) structElem;
@@ -817,7 +860,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
 void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   printf("<<<<< TRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
   abort();
@@ -825,7 +868,7 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
 
 void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   cerr << "[InterpreterObserver::zext] => Unimplemented\n";
   abort();
@@ -833,7 +876,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 
 void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -868,7 +911,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
