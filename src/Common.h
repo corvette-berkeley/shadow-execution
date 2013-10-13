@@ -93,17 +93,18 @@ std::string KIND_ToString(int kind);
 
 #define UNRECOVERABLE_ERROR 5
 
-inline void safe_assert(bool cond) {
+#define safe_assert(cond) _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)  
+
+inline void _safe_assert(bool cond, const char* func, std::string file, int line) {
   if (!cond) {
     printf("\nCounit: safe assert fail."); 
-    printf(" \n\tfunction: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); 
+    printf(" \n\tfunction: %s\n\tfile: %s\n\tline: %d\n", func, file.c_str(), line); 
     fflush(stdout); 
     _Exit(UNRECOVERABLE_ERROR); 
   }
 }
 
-
-inline void unimpelemented() {
+inline void unimplemented() {
   printf(" \n Executing unimplemented code in function: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); 
   _Exit(UNRECOVERABLE_ERROR); 
 }
