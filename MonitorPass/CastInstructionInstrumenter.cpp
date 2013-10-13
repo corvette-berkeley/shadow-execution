@@ -44,7 +44,6 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
     std::stringstream callback;
     callback << "llvm_";
     callback << Instruction::getOpcodeName(castInst->getOpcode());
-    cout << Instruction::getOpcodeName(castInst->getOpcode()) << endl;
 
     Instruction* call = CALL_IID_KIND_KVALUE_INT_INT(callback.str().c_str(), iidC, kindC, op, size, inxC);
 
