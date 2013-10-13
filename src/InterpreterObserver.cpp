@@ -559,8 +559,12 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     void* locArrAdr = locArr;
     VALUE locArrVal;
     locArrVal.as_ptr = locArrAdr;
-    location = new Variable(ARRAY_KIND, locArrVal, true);
-    executionStack.top()[inx] = location;
+    location = new Variable(ARRAY_KIND, locArrVal, false);
+
+    VALUE locArrPtrVal;
+    locArrPtrVal.as_ptr = (void*) location; 
+    Variable* locArrPtr = new Variable(PTR_KIND, locArrPtrVal, true);
+    executionStack.top()[inx] = locArrPtr;
   } else {
     safe_assert(!callArgs.empty());
     location = callArgs.top();
@@ -743,7 +747,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  Variable* arrayPointer = executionStack.top()[op->inx];
+  Variable* arrayPointer = static_cast<Variable*>(executionStack.top()[op->inx]->getValue().as_ptr);
   Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
   getElementPtrIndexList.pop();
 
@@ -754,18 +758,24 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     arraySize.pop();
   }
   size = getElementPtrIndexList.front()*size;
+  getElementPtrIndexList.pop();
 
   cout << "Getting element at index : " << size << "\n";
   if (kind == ARRAY_KIND) {
     Variable** subArray = array + size;
     VALUE subArrVal;
     subArrVal.as_ptr = (void*) subArray;
-    Variable* subArrVar = new Variable(ARRAY_KIND, subArrVal, true);
-    executionStack.top()[inx] = subArrVar;
+    Variable* subArrVar = new Variable(ARRAY_KIND, subArrVal, false);
+    VALUE subArrPtrVal;
+    subArrPtrVal.as_ptr = (void*) subArrVar; 
+    Variable* subArrPtrVar = new Variable(PTR_KIND, subArrPtrVal, false);
+    executionStack.top()[inx] = subArrPtrVar;
   } else {
     Variable* arrayElem = array[size];
-    getElementPtrIndexList.pop();
-    executionStack.top()[inx] = arrayElem;
+    VALUE arrayElemAddrVal;
+    arrayElemAddrVal.as_ptr = (void*) arrayElem;
+    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, false);
+    executionStack.top()[inx] = arrayElemPtr;
   }
 
   cout << executionStack.top()[inx]->toString() << "\n";
