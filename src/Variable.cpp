@@ -37,6 +37,10 @@ bool Variable::getLocal() {
   return local;
 }
 
+bool Variable::isInitialized() {
+  return init;
+}
+
 unsigned int Variable::getOrigSize() {
   return origSize;
 }

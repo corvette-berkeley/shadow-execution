@@ -14,17 +14,18 @@ class Variable {
   unsigned int currSize;
   int offset;
   bool local;
+  bool init;
   MACHINEFLAG flag;
   void* metadata;
 
  public:
- Variable(KIND t, VALUE v, bool l): type(t), value(v), origSize(0), currSize(0), offset(0), local(l) {}
+ Variable(KIND t, VALUE v, bool l): type(t), value(v), origSize(0), currSize(0), offset(0), local(l), init(true) {}
 
- Variable(KIND t, VALUE v, unsigned int s, unsigned int c, int o, bool l): type(t), value(v), origSize(s), currSize(c), offset(o), local(l) {}
+ Variable(KIND t, VALUE v, unsigned int s, unsigned int c, int o, bool l): type(t), value(v), origSize(s), currSize(c), offset(o), local(l), init(true) {}
 
- Variable(KIND t, bool l): type(t), origSize(0), currSize(0), offset(0), local(l) {}
+ Variable(KIND t, bool l): type(t), origSize(0), currSize(0), offset(0), local(l), init(false) {}
 
- Variable(): type(INV_KIND), origSize(0), currSize(0), offset(0), local(false) {}
+ Variable(): type(INV_KIND), origSize(0), currSize(0), offset(0), local(false), init(false) {}
   
   void setType(KIND t);
 
@@ -43,6 +44,8 @@ class Variable {
   VALUE getValue();
 
   bool getLocal();
+
+  bool isInitialized();
 
   unsigned int getOrigSize();
 
