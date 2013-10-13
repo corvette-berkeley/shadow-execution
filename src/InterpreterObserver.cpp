@@ -595,7 +595,12 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     VALUE allocaVal;
     allocaVal.as_ptr = ptrToStructAdr;
     allocaVar = new Variable(STRUCT_KIND, allocaVal, true);
-    executionStack.top()[inx] = allocaVar;
+
+    VALUE structPtrVal;
+    structPtrVal.as_ptr = (void*) allocaVar;
+    Variable* structPtrVar = new Variable(PTR_KIND, structPtrVal, false);
+
+    executionStack.top()[inx] = structPtrVar;
   } else {
     allocaVar = callArgs.top();
     executionStack.top()[inx] = allocaVar;
@@ -789,7 +794,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       KIND_ToString(kind).c_str(),
       inx);
 
-    Variable* structPointer = executionStack.top()[op->inx];
+    Variable* structPointer = static_cast<Variable*>(executionStack.top()[op->inx]->getValue().as_ptr);
     Variable** structVar = static_cast<Variable**>(structPointer->getValue().as_ptr);
 
     int index;
@@ -798,7 +803,12 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
 
     Variable* structElem = structVar[index];
-    executionStack.top()[inx] = structElem;
+
+    VALUE structElemPtrVal;
+    structElemPtrVal.as_ptr = (void*) structElem;
+    Variable* structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
+
+    executionStack.top()[inx] = structElemPtr;
 
     cout << executionStack.top()[inx]->toString() << "\n";
 }
