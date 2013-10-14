@@ -14,6 +14,9 @@ class AllocaInstrumenter : public Instrumenter {
     AllocaInstrumenter(std::string name, Instrumentation* instrumentation) :
       Instrumenter(name, instrumentation) {};
     bool CheckAndInstrument(Instruction* I);
+  private:
+    uint64_t pushStructType(StructType* structType, InstrPtrVector& instrs);
+    uint64_t pushStructType(ArrayType* arrayType, InstrPtrVector& instrs);
 };
 
 #endif /* ALLOCA_INSTRUMENTER_H_ */

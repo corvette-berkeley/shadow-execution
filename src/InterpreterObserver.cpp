@@ -585,14 +585,10 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
       ptrToStructVar[i] = var;
       structType.pop();
     }
-
-    void* ptrToStructAdr = ptrToStructVar;
-    VALUE allocaVal;
-    allocaVal.as_ptr = ptrToStructAdr;
-    allocaVar = new Variable(STRUCT_KIND, allocaVal, true);
+    safe_assert(structType.empty());
 
     VALUE structPtrVal;
-    structPtrVal.as_ptr = (void*) allocaVar;
+    structPtrVal.as_ptr = (void*) ptrToStructVar;
     Variable* structPtrVar = new Variable(PTR_KIND, structPtrVal, false);
 
     executionStack.top()[inx] = structPtrVar;
@@ -602,7 +598,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     callArgs.pop();
   }
 
-  cout << allocaVar->toString() << "\n";
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 bool checkStore(Variable *dest, KVALUE *kv) {
@@ -786,61 +782,26 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       KIND_ToString(arrayKind).c_str(),
       inx);
 
-    Variable* structPointer = static_cast<Variable*>(executionStack.top()[op->inx]->getValue().as_ptr);
-    Variable** structVar = static_cast<Variable**>(structPointer->getValue().as_ptr);
+    Variable** structVar = static_cast<Variable**>(executionStack.top()[op->inx]->getValue().as_ptr);
 
     int index;
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
 
-    Variable* structElem = structVar[index];
+    Variable* structElemPtr;
 
-    //
-    // we need to initialize structElem if it is of array/struct type
-    // and is not initialized
-    //
-    if (!structElem->isInitialized()) {
-      if (kind == ARRAY_KIND) {
-
-        uint64_t size = 1;
-        while (!arraySize.empty()) {
-          size = size * arraySize.front();
-          arraySize.pop();
-        }
-
-        Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
-        for (uint64_t i = 0; i < size; i++) {
-          Variable* var = new Variable(arrayKind, false); 
-          locArr[i] = var;
-        }
-
-        void* locArrAdr = locArr;
-        VALUE locArrVal;
-        locArrVal.as_ptr = locArrAdr;
-        structElem->setValue(locArrVal);
-
-      } else if (kind == STRUCT_KIND) {
-
-        uint64_t size = structType.size();
-        Variable** ptrToStructVar = (Variable**) malloc(size*sizeof(Variable*));
-        for (uint64_t i = 0; i < size; i++) {
-          KIND type = structType.front();
-          Variable* var = new Variable(type, false);
-          ptrToStructVar[i] = var;
-          structType.pop();
-        }
-
-        void* ptrToStructAdr = ptrToStructVar;
-        VALUE allocaVal;
-        allocaVal.as_ptr = ptrToStructAdr;
-        structElem->setValue(allocaVal);
-      }
+    if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
+      Variable** subElem = structVar + index;
+      VALUE structElemPtrVal;
+      structElemPtrVal.as_ptr = (void*) subElem;
+      structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
+    } else {
+      Variable* structElem = structVar[index];
+      VALUE structElemPtrVal;
+      structElemPtrVal.as_ptr = (void*) structElem;
+      structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
     }
-
-    VALUE structElemPtrVal;
-    structElemPtrVal.as_ptr = (void*) structElem;
-    Variable* structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
 
     executionStack.top()[inx] = structElemPtr;
 

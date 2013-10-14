@@ -49,19 +49,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     } else if (type->isStructTy()) {
       // alloca for struct type
       StructType* structType = (StructType*) type;
-      uint64_t size = structType->getNumElements();
-      for (uint64_t i = 0; i < size; i++) {
-        Type* elemType = structType->getElementType(i);
-        KIND elemKind = TypeToKind(elemType);
-        // debug information
-        if (elemKind == INV_KIND) {
-          printf("[AllocaIstrumenter => Unknown type of struct element!\n");
-          abort();
-        }
-        Constant* elemKindC = KIND_CONSTANT(elemKind);
-        Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
-        instrs.push_back(call);
-      }
+      uint64_t size = pushStructType(structType, instrs);
 
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
@@ -85,3 +73,56 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     return false;
   }
 }
+
+uint64_t AllocaInstrumenter::pushStructType(StructType* structType, InstrPtrVector& instrs) {
+  uint64_t size = structType->getNumElements();
+  uint64_t allocation = 0;
+  for (uint64_t i = 0; i < size; i++) {
+    Type* elemType = structType->getElementType(i);
+    KIND elemKind = TypeToKind(elemType);
+    safe_assert(elemKind != INV_KIND);
+    if (elemKind == ARRAY_KIND) {
+      allocation += pushStructType((ArrayType*)elemType, instrs);
+    } else if (elemKind == STRUCT_KIND) {
+      allocation += pushStructType((StructType*)elemType, instrs);
+    } else {
+      Constant* elemKindC = KIND_CONSTANT(elemKind);
+      Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+      instrs.push_back(call);
+      allocation++;
+    }
+  }
+
+  return allocation;
+}
+
+uint64_t AllocaInstrumenter::pushStructType(ArrayType* arrayType, InstrPtrVector& instrs) {
+  Type* elemTy = arrayType;
+  int size = 1;
+  uint64_t allocation = 0;
+
+  while (dyn_cast<ArrayType>(elemTy)) {
+    size = size*((ArrayType*)elemTy)->getNumElements();
+    elemTy = ((ArrayType*)elemTy)->getElementType();
+  }
+
+  KIND elemKind = TypeToKind(elemTy);
+  safe_assert(elemKind != INV_KIND);
+
+  if (elemKind == STRUCT_KIND) {
+    for (int i = 0; i < size; i++) {
+      allocation += pushStructType((StructType*)elemTy, instrs);
+    }
+  } else {
+    Constant* elemKindC = KIND_CONSTANT(elemKind);
+
+    for (int i = 0; i < size; i++) {
+      Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+      instrs.push_back(call);
+      allocation++;
+    }
+  }
+
+  return allocation;
+}
+

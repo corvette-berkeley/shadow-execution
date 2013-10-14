@@ -70,6 +70,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Type* elemArrayType = gepInstType; // used only when element is array type
 
+    /*
     if (gepInstType->isArrayTy()) {
 
       Type* elemType = gepInstType;
@@ -100,6 +101,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       }
 
     }
+    */
 
     KIND elemArrayKind = TypeToKind(elemArrayType);
     Constant* elemArrayKindC = KIND_CONSTANT(elemArrayKind);
