@@ -556,13 +556,8 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       locArr[i] = var;
     }
 
-    void* locArrAdr = locArr;
-    VALUE locArrVal;
-    locArrVal.as_ptr = locArrAdr;
-    location = new Variable(ARRAY_KIND, locArrVal, false);
-
     VALUE locArrPtrVal;
-    locArrPtrVal.as_ptr = (void*) location; 
+    locArrPtrVal.as_ptr = (void*) locArr; 
     Variable* locArrPtr = new Variable(PTR_KIND, locArrPtrVal, true);
     executionStack.top()[inx] = locArrPtr;
   } else {
@@ -572,7 +567,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     callArgs.pop();
   }
 
-  cout << location->toString() << "\n";
+  cout << executionStack.top()[inx]->toString() << "\n";
 
   return;
 }
@@ -752,8 +747,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  Variable* arrayPointer = static_cast<Variable*>(executionStack.top()[op->inx]->getValue().as_ptr);
-  Variable** array = static_cast<Variable**>(arrayPointer->getValue().as_ptr);
+  Variable** array = static_cast<Variable**>(executionStack.top()[op->inx]->getValue().as_ptr);
   getElementPtrIndexList.pop();
 
   int size = 1;
@@ -770,10 +764,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     Variable** subArray = array + size;
     VALUE subArrVal;
     subArrVal.as_ptr = (void*) subArray;
-    Variable* subArrVar = new Variable(ARRAY_KIND, subArrVal, false);
-    VALUE subArrPtrVal;
-    subArrPtrVal.as_ptr = (void*) subArrVar; 
-    Variable* subArrPtrVar = new Variable(PTR_KIND, subArrPtrVal, false);
+    Variable* subArrPtrVar = new Variable(PTR_KIND, subArrVal, false);
     executionStack.top()[inx] = subArrPtrVar;
   } else {
     Variable* arrayElem = array[size];

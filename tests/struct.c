@@ -10,5 +10,8 @@ int main() {
   p.y = 3;
   a = p.x + p.y;
 
+  printf("Address of struct p is: %ld\n", &p);
+  printf("Address of the first field in p is: %ld\n", &p.x);
+
   return a;
 }
