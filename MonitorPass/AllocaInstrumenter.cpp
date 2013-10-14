@@ -41,6 +41,9 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       KIND elemKind = TypeToKind(elemType);
       if (elemKind == INV_KIND) return false;
+
+      if (elemKind == STRUCT_KIND) pushStructType((StructType*) elemType, instrs);
+
       Constant* elemKindC = KIND_CONSTANT(elemKind);
 
       Instruction* call = CALL_IID_KIND_INT64_INT("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC);

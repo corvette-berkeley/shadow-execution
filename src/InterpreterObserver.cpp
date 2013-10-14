@@ -548,12 +548,27 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     arraySize.pop();
   }
 
+  uint64_t structSize = 1;
+  if (type == STRUCT_KIND) structSize = structType.size();
+  KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
+  for (uint64_t i = 0; i < structSize; i++) {
+    structKind[i] = structType.front();
+    structType.pop();
+  }
+
   Variable* location;
   if (callArgs.empty()) {
-    Variable** locArr = (Variable**) malloc(size*sizeof(Variable*));
+    Variable** locArr = (Variable**) malloc(size*structSize*sizeof(Variable*));
     for (uint64_t i = 0; i < size; i++) {
-      Variable* var = new Variable(type, false); 
-      locArr[i] = var;
+      if (type == STRUCT_KIND) {
+        for (uint64_t j = 0; j < structSize; j++) {
+          Variable* var = new Variable(structKind[j], false);
+          locArr[i*structSize+j] = var;
+        }
+      } else {
+        Variable* var = new Variable(type, false); 
+        locArr[i] = var;
+      }
     }
 
     VALUE locArrPtrVal;
@@ -756,7 +771,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   getElementPtrIndexList.pop();
 
   cout << "Getting element at index : " << size << "\n";
-  if (kind == ARRAY_KIND) {
+  if (kind == ARRAY_KIND || kind == STRUCT_KIND ) {
     Variable** subArray = array + size;
     VALUE subArrVal;
     subArrVal.as_ptr = (void*) subArray;
