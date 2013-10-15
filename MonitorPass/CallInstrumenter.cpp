@@ -80,6 +80,17 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       }
       kind = KIND_CONSTANT(returnKind);
 
+      if (TypeToKind(dest->getElementType()) == STRUCT_KIND) {
+	if (StructType *st = dyn_cast<StructType>(dest->getElementType())) {
+	  unsigned numElems = st->getNumElements();
+	  unsigned sum = 0;
+	  for(unsigned i = 0; i < numElems; i++) {
+	    Type* type = st->getElementType(i);
+	    sum =+ type->getPrimitiveSizeInBits();
+	    cout << "YES!!!!" << sum << endl;
+	  }
+	}
+      }
       size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
     }
     else {

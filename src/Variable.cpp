@@ -25,6 +25,10 @@ void Variable::setOffset(int o) {
   offset = o;
 }
 
+void Variable::setOffsetSize(unsigned int os) {
+  offsetSize = os;
+}
+
 KIND Variable::getType() {
   return type;
 }
@@ -51,6 +55,10 @@ unsigned int Variable::getCurrSize() {
 
 int Variable::getOffset() {
   return offset;
+}
+
+unsigned int Variable::getOffsetSize() {
+  return offsetSize;
 }
 
 string Variable::toString() {
@@ -110,7 +118,7 @@ string Variable::toString() {
   if (currSize != origSize) {
     s << ", Original Size: " << origSize;
   }
-  s << ", Offset: " << offset; 
+  s << ", Offset: " << offset << " OffsetSize: " << offsetSize; 
 
   return s.str();
 }
@@ -122,6 +130,7 @@ void Variable::copy(Variable *dest) {
   dest->setOrigSize(origSize);
   dest->setCurrSize(currSize);
   dest->setOffset(offset);
+  dest->setOffsetSize(offsetSize);
   dest->setLocal(local);
 }
 

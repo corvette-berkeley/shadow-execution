@@ -7,16 +7,6 @@
 #include <llvm/InstrTypes.h>
 #include "Heap.h"
 
-static unsigned retrieveLocation(Variable* srcPtrLocation, unsigned &internalOffset) {
-
-  unsigned origSize = srcPtrLocation->getOrigSize();
-  unsigned currSize = srcPtrLocation->getCurrSize();
-  unsigned offset = srcPtrLocation->getOffset();
-  unsigned newOffset = offset / (origSize / currSize);
-  internalOffset = offset % (origSize / currSize);
-
-  return newOffset;
-}
 
 void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
@@ -25,9 +15,8 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 
   Variable *srcPtrLocation = executionStack.top()[src->inx];
 
-  if (srcPtrLocation->isEqualPtrSize()) {
+  if (srcPtrLocation->isEqualPtrSize() && srcPtrLocation->getOffset() == 0) {
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
-    srcLocation += srcPtrLocation->getOffset();
 
     Variable *destLocation = new Variable();
     srcLocation->copy(destLocation);
@@ -35,48 +24,65 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     executionStack.top()[inx] = destLocation;
     cout << destLocation->toString() << endl;
   }
-  else if (srcPtrLocation->isSmallerPtrSize()) {
-    cout << "[LOAD] => Pointer is smaller than original" << endl;
+  else {
+    cout << "[LOAD] => Pointers of different size" << endl;
 
-    unsigned newOffset, internalOffset = 0;
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
-    newOffset = retrieveLocation(srcPtrLocation, internalOffset);
-    srcLocation += newOffset;
+    
+    unsigned ptrCurrSize = srcPtrLocation->getCurrSize();
+    unsigned ptrOrigSize = srcPtrLocation->getOrigSize();
+    unsigned ptrOffset = srcPtrLocation->getOffset();
+    unsigned ptrOffsetSize = srcPtrLocation->getOffsetSize();
+    
+    unsigned elems =  ((ptrOffset*ptrOffsetSize) + ptrCurrSize) / ptrOrigSize + 1;
+    cout << "elems to read: " << elems << endl;
 
-    // retrieving data
+    // retrieving data, we need actual type to distinguish between int/float, etc.
     void* data;
     if (srcPtrLocation->getOrigSize() == 32) {
-      data = (int*)malloc(sizeof(int));
-      *((int*)data) = srcLocation->getValue().as_int;
+      data = malloc(sizeof(int)*elems);
+      int* idata = (int*)data;
+      for(unsigned i = 0; i < elems; i++) {
+	idata[i] = srcLocation->getValue().as_int;
+	srcLocation++;
+      }
     }
     else {
-      cerr << "[LOAD] => unhandled type" << endl;
+      cerr << "[LOAD] => unhandled type when reading data" << endl;
       safe_assert(false);
     }
-
+    
     // reconstructing data
-    if (srcPtrLocation->getCurrSize() == 16) {
-      cout << "internalOffset: " << internalOffset << endl;
+    if (ptrCurrSize == 16) {
       short* sdata = (short*)data;
       VALUE value;
-      value.as_int = sdata[internalOffset];
+      value.as_int = sdata[ptrOffset]; /// check!!!!
       Variable* destLocation = new Variable(INT16_KIND, value, false);
       executionStack.top()[inx] = destLocation;
       cout << destLocation->toString() << endl;
+    }
+    else if (ptrCurrSize == 64) {
+      void *newPtr = NULL;
+      if (ptrOffsetSize == 16) {
+	short* sdata = (short*)data;
+	sdata += ptrOffset;
+	newPtr = sdata;
+      }
+      long* ldata = (long*)newPtr;
+      VALUE value;
+      value.as_int = *ldata;
+      Variable* destLocation = new Variable(INT64_KIND, value, false);
+      executionStack.top()[inx] = destLocation;
+      cout << destLocation->toString() << endl;      
     }
     else {
       cerr << "[LOAD] => unhandled type" << endl;
       safe_assert(false);      
     }
-
+    
   }
-  else {
-    cerr << "[LOAD] => Pointers of different size" << endl;
-    safe_assert(false);
-  }
-
   return;
-}
+ }
 
 // ***** Binary Operations ***** //
 
@@ -577,7 +583,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     Variable *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
+    Variable* ptrLocation = new Variable(PTR_KIND, value, 64, 64, 0, true); 
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -658,7 +664,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   if (destPtrLocation->isEqualPtrSize()) {
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
-    destLocation += destPtrLocation->getOffset();
+    //destLocation += destPtrLocation->getOffset();
     cout << "Dest: " << destLocation->toString() << endl;
 
     // the value to store is a constant
@@ -678,13 +684,81 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
       abort();
     }
   }
-  else if (destPtrLocation->isSmallerPtrSize()) {
-    cerr << "Pointer is smaller than original pointer" << endl;
-    safe_assert(false);
-  }
   else {
-    cerr << "Pointers do not have the same size" << endl;
-    safe_assert(false);
+    Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
+    cout << "Dest: " << destLocation->toString() << endl;
+
+    unsigned ptrCurrSize = destPtrLocation->getCurrSize();
+    unsigned ptrOrigSize = destPtrLocation->getOrigSize();
+    unsigned ptrOffset = destPtrLocation->getOffset();
+    unsigned ptrOffsetSize = destPtrLocation->getOffsetSize();
+    
+    unsigned elems =  ((ptrOffset*ptrOffsetSize) + ptrCurrSize) / ptrOrigSize + 1; // ????
+    cout << "elems to write: " << elems << endl;
+
+    // data to be written
+    Variable* srcLocation = NULL;
+    // the value to store is a constant
+    if (src->iid == 0) {
+      srcLocation = new Variable(INT64_KIND, src->value, false);
+    }
+    else {
+      srcLocation = executionStack.top()[src->inx];
+    }
+    cout << "Src: " << srcLocation->toString() << endl;
+
+    if (srcLocation->getType() == INT64_KIND) {
+      long *data = (long*)malloc(sizeof(long));
+      *data = srcLocation->getValue().as_int;
+      cout << "data to write: " << *data << endl;
+
+      void *vdata = NULL;
+      if (ptrOffsetSize == 16) {
+	short* sdata = (short*)data;
+	//sdata += (ptrOffset - 1);
+	
+	// first element has to be split and updated
+	int val = destLocation->getValue().as_int;
+	short* sdataOrig = (short*)&val;
+	sdataOrig[1] = *sdata;
+	int* idata = (int*)sdataOrig;
+	VALUE value;
+	value.as_int = *idata;
+	destLocation->setValue(value);
+	vdata = sdata++;
+	cout << destLocation->toString() << endl;
+      }
+
+      int* idata = (int*)vdata;
+      for(unsigned i = 1; i < elems - 1; i++ ) {
+	VALUE value;
+	value.as_int = idata[i];
+	destLocation++;
+	destLocation->setValue(value);
+	executionStack.top()[inx] = destLocation; // no need for this...
+	cout << destLocation->toString() << endl;
+
+	// need to check each store
+      }
+
+      // last update first half
+      short* sdata = (short*)(&idata[elems-1]);
+      destLocation++;
+      cout << "last element before updating: " << destLocation->toString() << endl;
+
+      int val = destLocation->getValue().as_int;
+      short* sdataOrig = (short*)&val;
+      sdataOrig[0] = sdata[0];
+      idata = (int*)sdataOrig;
+      VALUE value;
+      value.as_int = *idata;
+      destLocation->setValue(value);
+      cout << destLocation->toString() << endl;
+
+    }
+    else {
+      cout << "[STORE] => unhandled type of data to write" << endl;
+    }
   }
   
   return;
@@ -736,17 +810,54 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   }
 
   // creating PTR variable to be returned
+  unsigned ptrOrigSize = basePtrLocation->getOrigSize();
+  unsigned ptrCurrSize = basePtrLocation->getCurrSize();
+  unsigned ptrOffsetSize = basePtrLocation->getOffsetSize();
+  unsigned ptrOffset = basePtrLocation->getOffset();
+
   void *baseAddr = basePtrLocation->getValue().as_ptr;
-  //Variable *actualAddr = ((Variable*)baseAddr) + offsetValue;
 
-  VALUE value;
-  //value.as_ptr = actualAddr;
-  value.as_ptr = baseAddr;
-  Variable* ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, offsetValue, false);
+  if (ptrOrigSize == ptrCurrSize) {
+    
+    VALUE value;
+    value.as_ptr = ((Variable*)baseAddr) + offsetValue;
+    Variable* ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, 0, size, false);
+    
+    executionStack.top()[inx] = ptrLocation;
+    cout << executionStack.top()[inx]->toString() << "\n";
+  }
+  else {
+    unsigned elems;
+    unsigned ptrNewOffset;
 
-  executionStack.top()[inx] = ptrLocation;
+    elems = ((ptrOffset*ptrOffsetSize) + (ptrCurrSize*offsetValue)) / ptrOrigSize;
+    ptrNewOffset = ((ptrOffset*ptrOffsetSize) + (ptrCurrSize*offsetValue)) % ptrOrigSize;
+    
+    cout << elems << " " << ptrNewOffset << endl;
 
-  cout << executionStack.top()[inx]->toString() << "\n";
+    // retrieving address
+    Variable *elemAddr = (Variable*)baseAddr;
+    while(elems) {
+      elemAddr++;
+      elems--;
+    }
+    cout << elemAddr->toString() << endl;
+    
+    VALUE value;
+    value.as_ptr = elemAddr;
+
+    Variable* ptrLocation;
+    if (ptrNewOffset == ptrOffset*ptrOffsetSize) {
+      ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, ptrNewOffset/ptrOffsetSize, ptrOffsetSize, false);
+    }
+    else {
+      cout << "update: " << size << endl;
+      ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, ptrNewOffset/size, size, false);
+    }
+
+    executionStack.top()[inx] = ptrLocation;
+    cout << executionStack.top()[inx]->toString() << "\n";	
+  }
 
   return;
 }
@@ -782,7 +893,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     Variable* arrayElem = array[size];
     VALUE arrayElemAddrVal;
     arrayElemAddrVal.as_ptr = (void*) arrayElem;
-    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, false);
+    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, 64, 64, 0, false);
     executionStack.top()[inx] = arrayElemPtr;
   }
 
@@ -1122,7 +1233,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), size, src->getOffset(), false);
+  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), size, src->getOffset(), src->getOffsetSize(), false);
   executionStack.top()[inx] = bitcast_loc;
   cout << bitcast_loc->toString() << "\n";
   return;
@@ -1375,6 +1486,7 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH ARGS TO STACK >>>>>");
   printf(" value %s\n", KVALUE_ToString(*value).c_str());
   myStack.push(value);
+  cout << value->value.as_int << endl;
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {
@@ -1456,6 +1568,7 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 
 void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx) {
   // debugging
+  cout << "here\n";
   printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, size:%d, [INX: %d]", 
       IID_ToString(iid).c_str(), 
       KVALUE_ToString(*call_value).c_str(), 
@@ -1464,35 +1577,42 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
       size,
       inx);
 
-  // retrieving original number of bytes
-  KVALUE* argValue = myStack.top();
-  myStack.pop();
-  assert(myStack.size() == 0);
+  if (type != STRUCT_KIND) {
+    // retrieving original number of bytes
+    KVALUE* argValue = myStack.top();
+    myStack.pop();
+    assert(myStack.size() == 0);
 
-  // calculating number of elements
-  int elements = argValue->value.as_int*8 / size;
-  //cout << endl << "# of elements: " << elements << endl;
-
-  int actualSize = sizeof(Variable) * elements;
-
-  // allocating space
-  void *addr = malloc(actualSize);
-
-  // creating return value
-  VALUE returnValue;
-  returnValue.as_ptr = addr;
-
-  //cout << "Size: " <<  size << endl;
-  executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, size, 0, false);
-
-  // creating locations
-  for(int i = 0; i < elements; i++) {
-    VALUE iValue;
-    Variable *var = new Variable(type, iValue, false);
-    ((Variable*)addr)[i] = *var;
+    // calculating number of elements
+    int elements = argValue->value.as_int*8 / size;
+    cout << endl << "# of elements: " << elements << endl;
+    
+    int actualSize = sizeof(Variable) * elements;
+    
+    // allocating space
+    void *addr = malloc(actualSize);
+    
+    // creating return value
+    VALUE returnValue;
+    returnValue.as_ptr = addr;
+    
+    //cout << "Size: " <<  size << endl;
+    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, size, 0, size, false);
+    
+    // creating locations
+    for(int i = 0; i < elements; i++) {
+      VALUE iValue;
+      Variable *var = new Variable(type, iValue, false);
+      ((Variable*)addr)[i] = *var;
+    }
+    
+    cout << endl << executionStack.top()[inx]->toString() << endl;
   }
+  else {
 
-  cout << endl << executionStack.top()[inx]->toString() << endl;
+    cerr << "[Interpreter::call_malloc] => Unimplemented Structs" << endl;
+    abort();
+  }
   return;
 }
 
