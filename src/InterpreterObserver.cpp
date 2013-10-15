@@ -873,6 +873,9 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
+  cerr << "[InterpreterObserver::sext] => Unimplemented.\n";
+  abort();
+  /*
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
@@ -902,6 +905,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   Variable *ext_loc = new Variable(type, ext_value, false);
   executionStack.top()[inx] = ext_loc;
   cout << ext_loc->toString() << "\n";
+  */
 }
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
