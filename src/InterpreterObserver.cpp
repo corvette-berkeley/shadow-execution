@@ -1040,16 +1040,48 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
   printf("<<<<< PTRTOINT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  cerr << "[InterpreterObserver::ptrtoint] => Unimplemented\n";
-  abort();
+  Variable *src = executionStack.top()[op->inx];
+  VALUE value = src->getValue();
+  int64_t ptrValue = value.as_int;
+
+  VALUE int_value;
+
+  switch (type) {
+    case INT1_KIND:
+      int_value.as_int = ptrValue & (1<<0); // TODO: confirm this
+      break;
+    case INT8_KIND:
+      int_value.as_int = (int8_t) ptrValue;
+      break;
+    case INT16_KIND:
+      int_value.as_int = (int16_t) ptrValue;
+      break;
+    case INT32_KIND:
+      int_value.as_int = (int32_t) ptrValue;
+      break;
+    case INT64_KIND:
+      int_value.as_int = ptrValue;
+      break;
+    default:
+      safe_assert(false); // this cannot happen
+  }
+
+  Variable *ptrToInt = new Variable(type, int_value, false);
+  executionStack.top()[inx] = ptrToInt;
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   printf("<<<<< INTTOPTR >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  cerr << "[InterpreterObserver::inttoptr] => Unimplemented\n";
-  abort();
+  Variable *src = executionStack.top()[op->inx];
+  VALUE value = src->getValue();
+  VALUE ptr_value;
+  ptr_value.as_ptr = value.as_ptr;
+  Variable *intToPtr = new Variable(type, ptr_value, false);
+  executionStack.top()[inx] = intToPtr;
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
