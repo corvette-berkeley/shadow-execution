@@ -838,8 +838,35 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  cerr << "[InterpreterObserver::zext] => Unimplemented\n";
-  abort();
+  Variable *src = executionStack.top()[op->inx];
+  VALUE value = src->getValue();
+  int64_t intValue = value.as_int;
+  VALUE zextValue;
+
+  switch (type) {
+    case INT1_KIND:
+      zextValue.as_int = intValue & (1<<0); // TODO: confirm this
+      break;
+    case INT8_KIND:
+      zextValue.as_int = (int8_t) intValue;
+      break;
+    case INT16_KIND:
+      zextValue.as_int = (int16_t) intValue;
+      break;
+    case INT32_KIND: 
+      zextValue.as_int = (int32_t) intValue;
+      break;
+    case INT64_KIND:
+      zextValue.as_int = (int64_t) intValue;
+      break;
+    default:
+      cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
+      safe_assert(false);
+  }
+
+  Variable* zextVar = new Variable(type, zextValue, false);
+  executionStack.top()[inx] = zextVar;
+  cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
@@ -911,7 +938,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size,
 
 void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
   printf("<<<<< FPEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
+      KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
   Variable *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
