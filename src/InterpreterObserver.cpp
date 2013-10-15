@@ -860,7 +860,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       zextValue.as_int = (int64_t) intValue;
       break;
     default:
-      cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
+      cerr << "[InterpreterObserver::zext] => Unsupport integer type " << type << "\n";
       safe_assert(false);
   }
 
@@ -873,9 +873,10 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
+  /*
   cerr << "[InterpreterObserver::sext] => Unimplemented.\n";
   abort();
-  /*
+  */
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
@@ -883,7 +884,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 
   switch (type) {
     case INT1_KIND:
-      ext_value.as_int = (char) value.as_int;
+      ext_value.as_int = value.as_int & (1<<0); // TODO: confirm this
       break;
     case INT8_KIND:
       ext_value.as_int = (int8_t) value.as_int;
@@ -905,7 +906,6 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   Variable *ext_loc = new Variable(type, ext_value, false);
   executionStack.top()[inx] = ext_loc;
   cout << ext_loc->toString() << "\n";
-  */
 }
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
@@ -1372,7 +1372,8 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
 }
 
 void InterpreterObserver::push_stack(KVALUE* value) {
-  printf("<<<<< PUSH ARGS TO STACK >>>>>\n");
+  printf("<<<<< PUSH ARGS TO STACK >>>>>");
+  printf(" value %s\n", KVALUE_ToString(*value).c_str());
   myStack.push(value);
 }
 
@@ -1411,13 +1412,12 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
   // debugging
-  printf("<<<<< CALL >>>>> %s, call_value: %s, return type: %s, nounwind: %d, [INX: %d]", 
-      IID_ToString(iid).c_str(), 
-      KVALUE_ToString(*call_value).c_str(), 
-      KIND_ToString(type).c_str(), 
-      (nounwind ? 1 : 0),
-      inx);
-
+  printf("<<<<< CALL >>>>> %s, ", IID_ToString(iid).c_str());
+  printf(" call_value %s,", KVALUE_ToString(*call_value).c_str());
+  printf(" return type %s,", KIND_ToString(type).c_str());
+  printf(" nounwind %d,", (nounwind ? 1 : 0));
+  printf(" [INX: %d]\n", inx);
+  
   if (nounwind) {
     while (!myStack.empty()) {
       myStack.pop();
@@ -1433,16 +1433,13 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
       // debugging
       printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
 
-      Variable* arg = executionStack.top()[value->inx];
       Variable* argCopy;
-//      if (value->kind == PTR_KIND) {
-//        VALUE argValue;
-//        void* argAddr = arg;
-//        argValue.as_ptr = argAddr;
-//        argCopy = new Variable(PTR_KIND, argValue, true);
-//      } else {
-      argCopy= new Variable(arg->getType(), arg->getValue(), true);
-//      }
+      if (value->inx != -1) {
+        Variable* arg = executionStack.top()[value->inx];
+        argCopy= new Variable(arg->getType(), arg->getValue(), true);
+      } else {
+        argCopy = new Variable(value->kind, value->value, true);
+      }
       callArgs.push(argCopy);
     }
   }

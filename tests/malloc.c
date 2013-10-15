@@ -11,5 +11,7 @@ int main() {
   int b = *(a+2);
   b = 5;
 
+  printf("value of b is %d\n", *(a+2));
+
   return *(a+2);
 }
