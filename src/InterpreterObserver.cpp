@@ -519,17 +519,16 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
 
   Variable* ptrLocation;
   if (callArgs.empty()) {
-    Variable *location = new Variable(type, true);
+    Variable *location = new Variable(type, false);
     VALUE value;
     value.as_ptr = location;
-    ptrLocation = new Variable(PTR_KIND, value, false); // false?
+    ptrLocation = new Variable(PTR_KIND, value, true); 
     executionStack.top()[inx] = ptrLocation;
   } else {
-    safe_assert(!callArgs.empty());
     Variable *location = callArgs.top();
     VALUE value;
-    value.as_ptr = location;
-    ptrLocation = new Variable(PTR_KIND, value, false); // false?
+    value.as_ptr = (void*) location;
+    ptrLocation = new Variable(PTR_KIND, value, true); 
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -556,7 +555,6 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     structType.pop();
   }
 
-  Variable* location;
   if (callArgs.empty()) {
     Variable** locArr = (Variable**) malloc(size*structSize*sizeof(Variable*));
     for (uint64_t i = 0; i < size; i++) {
@@ -576,9 +574,11 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     Variable* locArrPtr = new Variable(PTR_KIND, locArrPtrVal, true);
     executionStack.top()[inx] = locArrPtr;
   } else {
-    safe_assert(!callArgs.empty());
-    location = callArgs.top();
-    executionStack.top()[inx] = location;
+    Variable *location = callArgs.top();
+    VALUE value;
+    value.as_ptr = (void*) location;
+    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
+    executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
 
@@ -589,8 +589,6 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
 
 void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
-
-  Variable* allocaVar;
 
   if (callArgs.empty()) {
     Variable** ptrToStructVar = (Variable**) malloc(size*sizeof(Variable*));
@@ -608,8 +606,11 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
 
     executionStack.top()[inx] = structPtrVar;
   } else {
-    allocaVar = callArgs.top();
-    executionStack.top()[inx] = allocaVar;
+    Variable *location = callArgs.top();
+    VALUE value;
+    value.as_ptr = (void*) location;
+    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
+    executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
 
@@ -1371,14 +1372,14 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 
       Variable* arg = executionStack.top()[value->inx];
       Variable* argCopy;
-      if (value->kind == PTR_KIND) {
-        VALUE argValue;
-        void* argAddr = arg;
-        argValue.as_ptr = argAddr;
-        argCopy = new Variable(PTR_KIND, argValue, true);
-      } else {
-        argCopy= new Variable(arg->getType(), arg->getValue(), true);
-      }
+//      if (value->kind == PTR_KIND) {
+//        VALUE argValue;
+//        void* argAddr = arg;
+//        argValue.as_ptr = argAddr;
+//        argCopy = new Variable(PTR_KIND, argValue, true);
+//      } else {
+      argCopy= new Variable(arg->getType(), arg->getValue(), true);
+//      }
       callArgs.push(argCopy);
     }
   }
