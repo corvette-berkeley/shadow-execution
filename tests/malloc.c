@@ -2,16 +2,15 @@
 #include <stdio.h>
 
 int main() {
-  int* a = (int*) malloc(sizeof(int)*3);
+  int* a = (int*) malloc(sizeof(int)*12);
   
   for(unsigned i = 0; i < 3; i++) {
-    a[i] = i+1;
+    for (unsigned j = 0; j < 4; j++) {
+      a[i][j] = i+j+1;
+    }
   }
 
-  int b = *(a+2);
-  b = 5;
+  int b = a[2][3];
 
-  printf("value of b is %d\n", *(a+2));
-
-  return *(a+2);
+  return b;
 }
