@@ -15,14 +15,19 @@ void InterpreterObserver::printOffsets(void* addr) {
 
 
 unsigned InterpreterObserver::findIndex(void* addr, unsigned offset) {
-
   int low = 0;
   int high = mapOffsets[addr].size() - 1;
   while(low < high){
+
     int mid = (low + high) / 2;
-    if(offset <= mapOffsets[addr][mid]){
+    cout << "mid: " << mid << endl;
+    
+    if (offset == mapOffsets[addr][mid]) {
+      return mid;
+    }
+    else if (offset < mapOffsets[addr][mid]) {
       high = mid - 1;
-    }else {
+    } else {
       low = mid + 1;
     }
   }
@@ -51,6 +56,8 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     void* addr = srcPtrLocation->getValue().as_ptr;
     unsigned objectIndex = findIndex(addr, srcOffset);
     unsigned currOffset = mapOffsets[addr][objectIndex];
+    cout << "objectIndex " << objectIndex << " " << srcOffset << " " << currOffset << endl;
+    printOffsets(addr);
 
     if (srcOffset == currOffset) {
       Variable *srcLocation = static_cast<Variable*>((Variable*)(srcPtrLocation->getValue().as_ptr) + objectIndex);  
@@ -701,8 +708,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
+  unsigned destPtrOffset = destPtrLocation->getOffset();
 
-  if (destPtrLocation->getOffset() == 0) {
+  if (destPtrOffset == 0) {
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
     //destLocation += destPtrLocation->getOffset();
     cout << "Dest: " << destLocation->toString() << endl;
@@ -725,9 +733,41 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     }
   }
   else {
-    cout << "[STORE] => Offset is not zero" << endl;
-    /*
 
+    void* addr = destPtrLocation->getValue().as_ptr;
+    cout << "destPtrOffset: " << destPtrOffset << endl;
+    unsigned objectIndex = findIndex(addr, destPtrOffset);
+    unsigned currOffset = mapOffsets[addr][objectIndex];
+    cout << "objectIndex: " << objectIndex << " currOffset: " << currOffset << endl;
+
+    if (destPtrOffset == currOffset) {
+      Variable *destLocation = ((Variable*)destPtrLocation->getValue().as_ptr) + objectIndex;
+      cout << "Dest: " << destLocation->toString() << endl;
+
+      Variable* srcLocation = NULL;
+      // the value to store is a constant
+      if (src->iid == 0) {
+	srcLocation = new Variable(INT64_KIND, src->value, false);
+      }
+      else {
+	srcLocation = executionStack.top()[src->inx];
+      }
+      cout << "Src: " << srcLocation->toString() << endl;
+      srcLocation->copy(destLocation);
+
+      cout << "Updated Dest: " << destLocation->toString() << endl;
+      
+      if (!checkStore(destLocation, src)) {
+	cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
+	cerr << "Mismatched values found in Store" << endl;
+	abort();
+      }
+    }
+    else {
+      cout << "[STORE] => Offset is not zero" << endl;
+    }
+
+  /*
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
     cout << "Dest: " << destLocation->toString() << endl;
 
