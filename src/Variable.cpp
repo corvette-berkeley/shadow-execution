@@ -13,20 +13,12 @@ void Variable::setLocal(bool l) {
   local = l;
 }
 
-void Variable::setOrigSize(unsigned int s) {
-  origSize = s;
-}
-
-void Variable::setCurrSize(unsigned int s) {
-  currSize = s;
+void Variable::setSize(unsigned int s) {
+  size = s;
 }
 
 void Variable::setOffset(int o) {
   offset = o;
-}
-
-void Variable::setOffsetSize(unsigned int os) {
-  offsetSize = os;
 }
 
 KIND Variable::getType() {
@@ -45,20 +37,12 @@ bool Variable::isInitialized() {
   return init;
 }
 
-unsigned int Variable::getOrigSize() {
-  return origSize;
-}
-
-unsigned int Variable::getCurrSize() {
-  return currSize;
+unsigned int Variable::getSize() {
+  return size;
 }
 
 int Variable::getOffset() {
   return offset;
-}
-
-unsigned int Variable::getOffsetSize() {
-  return offsetSize;
 }
 
 string Variable::toString() {
@@ -114,11 +98,8 @@ string Variable::toString() {
     break;
   }
 
-  s << ", Current Size: " << currSize;
-  if (currSize != origSize) {
-    s << ", Original Size: " << origSize;
-  }
-  s << ", Offset: " << offset << " OffsetSize: " << offsetSize; 
+  s << ", Size: " << size;
+  s << ", Offset: " << offset; 
 
   return s.str();
 }
@@ -127,18 +108,8 @@ string Variable::toString() {
 void Variable::copy(Variable *dest) {
   dest->setType(type);
   dest->setValue(value);
-  dest->setOrigSize(origSize);
-  dest->setCurrSize(currSize);
+  dest->setSize(size);
   dest->setOffset(offset);
-  dest->setOffsetSize(offsetSize);
   dest->setLocal(local);
-}
-
-bool Variable::isEqualPtrSize() {
-  return origSize == currSize;
-}
-
-bool Variable::isSmallerPtrSize() {
-  return currSize < origSize;
 }
 

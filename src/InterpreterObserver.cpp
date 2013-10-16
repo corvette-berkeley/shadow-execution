@@ -15,7 +15,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 
   Variable *srcPtrLocation = executionStack.top()[src->inx];
 
-  if (srcPtrLocation->isEqualPtrSize() && srcPtrLocation->getOffset() == 0) {
+  if (srcPtrLocation->getOffset() == 0) {
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
 
     Variable *destLocation = new Variable();
@@ -25,8 +25,9 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     cout << destLocation->toString() << endl;
   }
   else {
-    cout << "[LOAD] => Pointers of different size" << endl;
+    cout << "[LOAD] => Offset is not zero" << endl;
 
+    /*
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
     
     unsigned ptrCurrSize = srcPtrLocation->getCurrSize();
@@ -79,7 +80,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
       cerr << "[LOAD] => unhandled type" << endl;
       safe_assert(false);      
     }
-    
+    */
   }
   return;
  }
@@ -583,7 +584,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     Variable *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    Variable* ptrLocation = new Variable(PTR_KIND, value, 64, 64, 0, true); 
+    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -662,7 +663,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
 
-  if (destPtrLocation->isEqualPtrSize()) {
+  if (destPtrLocation->getOffset() == 0) {
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
     //destLocation += destPtrLocation->getOffset();
     cout << "Dest: " << destLocation->toString() << endl;
@@ -685,6 +686,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     }
   }
   else {
+    cout << "[STORE] => Offset is not zero" << endl;
+    /*
+
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
     cout << "Dest: " << destLocation->toString() << endl;
 
@@ -759,8 +763,8 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     else {
       cout << "[STORE] => unhandled type of data to write" << endl;
     }
+    */
   }
-  
   return;
 }
 
@@ -798,9 +802,10 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
       KIND_ToString(type).c_str(),
       size,
       inx);
-
-  Variable* basePtrLocation = executionStack.top()[base->inx];
   
+  Variable* basePtrLocation = executionStack.top()[base->inx];
+  cout << basePtrLocation->toString() << endl;
+
   int offsetValue;
   if (offset->inx != -1) {
     offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
@@ -808,7 +813,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   else {
     offsetValue = offset->value.as_int;
   }
+  cout << offsetValue << endl;
 
+  /*
   // creating PTR variable to be returned
   unsigned ptrOrigSize = basePtrLocation->getOrigSize();
   unsigned ptrCurrSize = basePtrLocation->getCurrSize();
@@ -858,6 +865,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
     executionStack.top()[inx] = ptrLocation;
     cout << executionStack.top()[inx]->toString() << "\n";	
   }
+  */
+  cout << "[GETELEMENTPTR] => incomplete" << endl;
+  abort();
 
   return;
 }
@@ -893,7 +903,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     Variable* arrayElem = array[size];
     VALUE arrayElemAddrVal;
     arrayElemAddrVal.as_ptr = (void*) arrayElem;
-    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, 64, 64, 0, false);
+    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, false);
     executionStack.top()[inx] = arrayElemPtr;
   }
 
@@ -1233,9 +1243,9 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcast_loc = new Variable(type, value, src->getOrigSize(), size, src->getOffset(), src->getOffsetSize(), false);
-  executionStack.top()[inx] = bitcast_loc;
-  cout << bitcast_loc->toString() << "\n";
+  Variable *bitcastLoc = new Variable(type, value, src->getSize(), src->getOffset(), false); // TODO: check
+  executionStack.top()[inx] = bitcastLoc;
+  cout << bitcastLoc->toString() << endl;
   return;
 }
 
@@ -1597,7 +1607,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     returnValue.as_ptr = addr;
     
     //cout << "Size: " <<  size << endl;
-    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, size, 0, size, false);
+    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, 0, false);
     
     // creating locations
     for(int i = 0; i < elements; i++) {
