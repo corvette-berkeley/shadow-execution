@@ -9,6 +9,7 @@ int main() {
   for(; i < 10; i++) {
     a[i] = i;
   }
+  
   int result = a[3];
 
   

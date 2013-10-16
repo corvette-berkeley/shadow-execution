@@ -17,17 +17,20 @@ class Variable {
   unsigned length; // number of elements (only for pointers)
   bool local;
   bool init;
+  bool heap;
   MACHINEFLAG flag;
   void* metadata;
 
  public:
- Variable(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), local(l), init(true) {}
+ Variable(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(true), heap(false) {}
 
- Variable(KIND t, VALUE v, unsigned int s, int o, bool l): type(t), value(v), size(s), offset(o), local(l), init(true) {}
+ Variable(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), init(true), heap(h) {}
 
- Variable(KIND t, bool l): type(t), size(0), offset(0), local(l), init(false) {}
+ Variable(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), init(true), heap(false) {}
 
- Variable(): type(INV_KIND), size(0), offset(0), local(false), init(false) {}
+ Variable(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(false), heap(false) {}
+
+ Variable(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), init(false), heap(false) {}
   
   void setType(KIND t);
 
@@ -38,6 +41,12 @@ class Variable {
   void setSize(unsigned int s);
 
   void setOffset(int o);
+
+  void setIndex(unsigned i);
+
+  void setFirstByte(unsigned f);
+
+  void setLength(unsigned l);
 
   KIND getType();
 
@@ -61,6 +70,7 @@ class Variable {
 
   void copy(Variable* dest);
 
+  bool isInHeap();
 };
 
 #endif /* LOCATION_H_ */

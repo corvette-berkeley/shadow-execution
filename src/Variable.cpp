@@ -21,6 +21,18 @@ void Variable::setOffset(int o) {
   offset = o;
 }
 
+void Variable::setIndex(unsigned i) {
+  index = i;
+}
+
+void Variable::setFirstByte(unsigned f) {
+  firstByte = f;
+}
+
+void Variable::setLength(unsigned l) {
+  length = l;
+}
+
 KIND Variable::getType() {
   return type;
 }
@@ -112,6 +124,9 @@ string Variable::toString() {
 
   s << ", Size: " << size;
   s << ", Offset: " << offset; 
+  s << ", Index: " << index;
+  s << ", FirstByte: " << firstByte;
+  s << ", Length: " << length;
 
   return s.str();
 }
@@ -121,7 +136,18 @@ void Variable::copy(Variable *dest) {
   dest->setType(type);
   dest->setValue(value);
   dest->setSize(size);
-  dest->setOffset(offset);
+
+  // we never want to rewrite these fields in heap objects
+  if (!dest->isInHeap()) {
+    dest->setOffset(offset);
+    dest->setIndex(index);
+    dest->setFirstByte(firstByte);
+  }
+
+  dest->setLength(length);
   dest->setLocal(local);
 }
 
+bool Variable::isInHeap() {
+  return heap;
+}

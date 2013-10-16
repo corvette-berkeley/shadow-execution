@@ -6,31 +6,29 @@
 #include <vector>
 #include <llvm/InstrTypes.h>
 
-void InterpreterObserver::printOffsets(void* addr) {
-  for(unsigned i = 0; i < mapOffsets[addr].size(); i++) {
-    cout << "i: " << i << "offset: " << mapOffsets[addr][i] << endl;
-  }
-  return;
-}
 
-
-unsigned InterpreterObserver::findIndex(void* addr, unsigned offset) {
+unsigned InterpreterObserver::findIndex(Variable* values, unsigned offset, unsigned length) {
   int low = 0;
-  int high = mapOffsets[addr].size() - 1;
-  while(low < high){
+  int high = length - 1;
+  cout << "Offset: " << offset << " Length: " << length << endl;
 
+  while(low < high){
     int mid = (low + high) / 2;
-    cout << "mid: " << mid << endl;
+    cout << "mid: " << mid;
     
-    if (offset == mapOffsets[addr][mid]) {
+    unsigned firstByte = values[mid].getFirstByte();
+    cout << " FirstByte: " << firstByte << endl;
+    if (offset == firstByte) {
+      cout << "Returning mid: " << mid << endl;
       return mid;
     }
-    else if (offset < mapOffsets[addr][mid]) {
+    else if (offset < firstByte) {
       high = mid - 1;
     } else {
       low = mid + 1;
     }
   }
+  cout << "Returning high: " << high << endl;
   return high;
 }
 
@@ -53,14 +51,13 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   }
   else {
 
-    void* addr = srcPtrLocation->getValue().as_ptr;
-    unsigned objectIndex = findIndex(addr, srcOffset);
-    unsigned currOffset = mapOffsets[addr][objectIndex];
+    Variable* values = (Variable*)srcPtrLocation->getValue().as_ptr;
+    unsigned objectIndex = findIndex(values, srcOffset, srcPtrLocation->getLength());
+    unsigned currOffset = values[objectIndex].getFirstByte();
     cout << "objectIndex " << objectIndex << " " << srcOffset << " " << currOffset << endl;
-    printOffsets(addr);
 
     if (srcOffset == currOffset) {
-      Variable *srcLocation = static_cast<Variable*>((Variable*)(srcPtrLocation->getValue().as_ptr) + objectIndex);  
+      Variable *srcLocation = &values[objectIndex];  
 
       Variable *destLocation = new Variable();
       srcLocation->copy(destLocation);
@@ -709,10 +706,10 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
   unsigned destPtrOffset = destPtrLocation->getOffset();
+  cout << "DestPtr: " << destPtrLocation->toString() << endl;
 
   if (destPtrOffset == 0) {
     Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
-    //destLocation += destPtrLocation->getOffset();
     cout << "Dest: " << destLocation->toString() << endl;
 
     // the value to store is a constant
@@ -731,29 +728,32 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
       cerr << "Mismatched values found in Store" << endl;
       abort();
     }
+    else {
+      cout << "VALUES MATCHED" << endl;
+    }
   }
   else {
 
-    void* addr = destPtrLocation->getValue().as_ptr;
+    Variable* values = (Variable*)destPtrLocation->getValue().as_ptr;
     cout << "destPtrOffset: " << destPtrOffset << endl;
-    unsigned objectIndex = findIndex(addr, destPtrOffset);
-    unsigned currOffset = mapOffsets[addr][objectIndex];
+    unsigned objectIndex = findIndex(values, destPtrOffset, destPtrLocation->getLength());
+    unsigned currOffset = values[objectIndex].getFirstByte();
     cout << "objectIndex: " << objectIndex << " currOffset: " << currOffset << endl;
 
     if (destPtrOffset == currOffset) {
-      Variable *destLocation = ((Variable*)destPtrLocation->getValue().as_ptr) + objectIndex;
+      Variable *destLocation = &values[objectIndex];
       cout << "Dest: " << destLocation->toString() << endl;
 
       Variable* srcLocation = NULL;
       // the value to store is a constant
       if (src->iid == 0) {
-	srcLocation = new Variable(INT64_KIND, src->value, false);
+	destLocation->setValue(src->value);
       }
       else {
 	srcLocation = executionStack.top()[src->inx];
+	cout << "Src: " << srcLocation->toString() << endl;
+	srcLocation->copy(destLocation);
       }
-      cout << "Src: " << srcLocation->toString() << endl;
-      srcLocation->copy(destLocation);
 
       cout << "Updated Dest: " << destLocation->toString() << endl;
       
@@ -762,9 +762,13 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 	cerr << "Mismatched values found in Store" << endl;
 	abort();
       }
+      else {
+	cout << "VALUES MATCHED" << endl;
+      }
     }
     else {
       cout << "[STORE] => Offset is not zero" << endl;
+      abort();
     }
 
   /*
@@ -894,10 +898,12 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
   // offset in bytes from base ptr
   unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
-  Variable* ptrLocation = new Variable(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, false);
+  cout << "newOffset: " << newOffset << endl;
+  unsigned index = findIndex((Variable*)basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength());
+  Variable* ptrLocation = new Variable(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
   
   executionStack.top()[inx] = ptrLocation;
-  cout << executionStack.top()[inx]->toString() << "\n";
+  cout << executionStack.top()[inx]->toString() << endl;
   
   return;
 }
@@ -1273,7 +1279,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcastLoc = new Variable(type, value, size/8, src->getOffset(), false); // TODO: check
+  Variable *bitcastLoc = new Variable(type, value, size/8, src->getOffset(), src->getIndex(), src->getLength(), false); // TODO: check
   executionStack.top()[inx] = bitcastLoc;
   cout << bitcastLoc->toString() << endl;
   return;
@@ -1621,37 +1627,29 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     myStack.pop();
     assert(myStack.size() == 0);
 
-    // calculating number of objects
-    int numObjects = argValue->value.as_int*8 / size;
-    cout << endl << "Number of objects to allocate: " << numObjects << endl;
-    
-    int actualSize = sizeof(Variable) * numObjects;
-    
     // allocating space
+    int numObjects = argValue->value.as_int*8 / size;
+    int actualSize = sizeof(Variable) * numObjects;    
     void *addr = malloc(actualSize);
     
-    // creating return value
+    // creating pointer object
     VALUE returnValue;
     returnValue.as_ptr = addr;    
-    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size/8, 0, false);
+    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size/8, 0, 0, numObjects, false);
     
     // creating locations
-    std::vector<unsigned> offsets(numObjects);
     unsigned currOffset = 0;
     for(int i = 0; i < numObjects; i++) {
-      // recording offset
-      offsets[i] = currOffset;
 
       // creating object
       VALUE iValue;
-      Variable *var = new Variable(type, iValue, false);
+      Variable *var = new Variable(type, iValue, currOffset, false, true);
       ((Variable*)addr)[i] = *var;
 
       // update offset
       currOffset += (size/8);
     }
-    mapOffsets[addr] = offsets;
-    cout << executionStack.top()[inx]->toString() << endl;
+    cout << endl << executionStack.top()[inx]->toString() << endl;
   }
   else {
     cerr << "[Interpreter::call_malloc] => Unimplemented Structs" << endl;
