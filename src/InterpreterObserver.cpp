@@ -529,13 +529,13 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     Variable *location = new Variable(type, false);
     VALUE value;
     value.as_ptr = location;
-    ptrLocation = new Variable(PTR_KIND, value, true); 
+    ptrLocation = new Variable(PTR_KIND, value, true);
     executionStack.top()[inx] = ptrLocation;
   } else {
     Variable *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    ptrLocation = new Variable(PTR_KIND, value, true); 
+    ptrLocation = new Variable(PTR_KIND, value, true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -1496,7 +1496,6 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH ARGS TO STACK >>>>>");
   printf(" value %s\n", KVALUE_ToString(*value).c_str());
   myStack.push(value);
-  cout << value->value.as_int << endl;
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {
@@ -1578,7 +1577,6 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
 
 void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx) {
   // debugging
-  cout << "here\n";
   printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, size:%d, [INX: %d]", 
       IID_ToString(iid).c_str(), 
       KVALUE_ToString(*call_value).c_str(), 
@@ -1593,33 +1591,30 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     myStack.pop();
     assert(myStack.size() == 0);
 
-    // calculating number of elements
-    int elements = argValue->value.as_int*8 / size;
-    cout << endl << "# of elements: " << elements << endl;
+    // calculating number of objects
+    int numObjects = argValue->value.as_int*8 / size;
+    cout << endl << "Number of objects to allocate: " << numObjects << endl;
     
-    int actualSize = sizeof(Variable) * elements;
+    int actualSize = sizeof(Variable) * numObjects;
     
     // allocating space
     void *addr = malloc(actualSize);
     
     // creating return value
     VALUE returnValue;
-    returnValue.as_ptr = addr;
-    
-    //cout << "Size: " <<  size << endl;
-    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size, 0, false);
+    returnValue.as_ptr = addr;    
+    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size/8, 0, false);
     
     // creating locations
-    for(int i = 0; i < elements; i++) {
+    for(int i = 0; i < numObjects; i++) {
       VALUE iValue;
       Variable *var = new Variable(type, iValue, false);
       ((Variable*)addr)[i] = *var;
     }
     
-    cout << endl << executionStack.top()[inx]->toString() << endl;
+    cout << executionStack.top()[inx]->toString() << endl;
   }
   else {
-
     cerr << "[Interpreter::call_malloc] => Unimplemented Structs" << endl;
     abort();
   }
