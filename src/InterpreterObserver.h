@@ -193,6 +193,10 @@ class InterpreterObserver : public InstructionObserver {
 
   void printCurrentFrame();
 
+  unsigned findIndex(void* addr, unsigned offset);
+
+  void printOffsets(void* addr);
+
 };
 
 

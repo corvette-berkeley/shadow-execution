@@ -5,8 +5,29 @@
 #include <stack>
 #include <vector>
 #include <llvm/InstrTypes.h>
-#include "Heap.h"
 
+void InterpreterObserver::printOffsets(void* addr) {
+  for(unsigned i = 0; i < mapOffsets[addr].size(); i++) {
+    cout << "i: " << i << "offset: " << mapOffsets[addr][i] << endl;
+  }
+  return;
+}
+
+
+unsigned InterpreterObserver::findIndex(void* addr, unsigned offset) {
+
+  int low = 0;
+  int high = mapOffsets[addr].size() - 1;
+  while(low < high){
+    int mid = (low + high) / 2;
+    if(offset <= mapOffsets[addr][mid]){
+      high = mid - 1;
+    }else {
+      low = mid + 1;
+    }
+  }
+  return high;
+}
 
 void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
@@ -15,7 +36,8 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 
   Variable *srcPtrLocation = executionStack.top()[src->inx];
 
-  if (srcPtrLocation->getOffset() == 0) {
+  unsigned srcOffset = srcPtrLocation->getOffset();
+  if (srcOffset == 0) {
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);  
 
     Variable *destLocation = new Variable();
@@ -25,8 +47,24 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     cout << destLocation->toString() << endl;
   }
   else {
-    cout << "[LOAD] => Offset is not zero" << endl;
-    abort();
+
+    void* addr = srcPtrLocation->getValue().as_ptr;
+    unsigned objectIndex = findIndex(addr, srcOffset);
+    unsigned currOffset = mapOffsets[addr][objectIndex];
+
+    if (srcOffset == currOffset) {
+      Variable *srcLocation = static_cast<Variable*>((Variable*)(srcPtrLocation->getValue().as_ptr) + objectIndex);  
+
+      Variable *destLocation = new Variable();
+      srcLocation->copy(destLocation);
+      
+      executionStack.top()[inx] = destLocation;
+      cout << destLocation->toString() << endl;
+    }
+    else {
+      cout << "[LOAD] => Offset is not zero" << endl;
+      abort();
+    }
     /*
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
     
