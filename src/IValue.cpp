@@ -1,75 +1,75 @@
-#include "Variable.h"
+#include "IValue.h"
 
 
-void Variable::setType(KIND t) {
+void IValue::setType(KIND t) {
   type = t;
 }
 
-void Variable::setValue(VALUE v) {
+void IValue::setValue(VALUE v) {
   value = v;
 }
 
-void Variable::setLocal(bool l) {
+void IValue::setLocal(bool l) {
   local = l;
 }
 
-void Variable::setSize(unsigned int s) {
+void IValue::setSize(unsigned int s) {
   size = s;
 }
 
-void Variable::setOffset(int o) {
+void IValue::setOffset(int o) {
   offset = o;
 }
 
-void Variable::setIndex(unsigned i) {
+void IValue::setIndex(unsigned i) {
   index = i;
 }
 
-void Variable::setFirstByte(unsigned f) {
+void IValue::setFirstByte(unsigned f) {
   firstByte = f;
 }
 
-void Variable::setLength(unsigned l) {
+void IValue::setLength(unsigned l) {
   length = l;
 }
 
-KIND Variable::getType() {
+KIND IValue::getType() {
   return type;
 }
 
-VALUE Variable::getValue() {
+VALUE IValue::getValue() {
   return value;
 }
 
-bool Variable::getLocal() {
+bool IValue::getLocal() {
   return local;
 }
 
-unsigned int Variable::getSize() {
+unsigned int IValue::getSize() {
   return size;
 }
 
-int Variable::getOffset() {
+int IValue::getOffset() {
   return offset;
 }
 
-unsigned Variable::getIndex() {
+unsigned IValue::getIndex() {
   return index;
 }
 
-unsigned Variable::getFirstByte() {
+unsigned IValue::getFirstByte() {
   return firstByte;
 }
 
-unsigned Variable::getLength() {
+unsigned IValue::getLength() {
   return length;
 }
 
-bool Variable::isInitialized() {
+bool IValue::isInitialized() {
   return init;
 }
 
-string Variable::toString() {
+string IValue::toString() {
   std::stringstream s;
 
   if (local) {
@@ -132,7 +132,7 @@ string Variable::toString() {
 }
 
 
-void Variable::copy(Variable *dest) {
+void IValue::copy(IValue *dest) {
   dest->setType(type);
   dest->setValue(value);
   dest->setSize(size);
@@ -148,6 +148,6 @@ void Variable::copy(Variable *dest) {
   dest->setLocal(local);
 }
 
-bool Variable::isInHeap() {
+bool IValue::isInHeap() {
   return heap;
 }

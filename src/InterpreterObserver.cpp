@@ -7,7 +7,7 @@
 #include <llvm/InstrTypes.h>
 
 
-unsigned InterpreterObserver::findIndex(Variable* values, unsigned offset, unsigned length) {
+unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigned length) {
   int low = 0;
   int high = length - 1;
   cout << "Offset: " << offset << " Length: " << length << endl;
@@ -37,15 +37,15 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
 	 KVALUE_ToString(*src).c_str(),
 	 inx);
 
-  Variable *srcPtrLocation = executionStack.top()[src->inx];
-  Variable *srcLocation = NULL;
+  IValue *srcPtrLocation = executionStack.top()[src->inx];
+  IValue *srcLocation = NULL;
   unsigned srcOffset = srcPtrLocation->getOffset();
 
   if (srcOffset == 0) { // TODO: check for size
-    srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
+    srcLocation = static_cast<IValue*>(srcPtrLocation->getValue().as_ptr);
   }
   else {
-    Variable* values = (Variable*)srcPtrLocation->getValue().as_ptr;
+    IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
     unsigned valueIndex = findIndex(values, srcOffset, srcPtrLocation->getLength());
     unsigned currOffset = values[valueIndex].getFirstByte();
     cout << "valueIndex " << valueIndex << " " << srcOffset << " " << currOffset << endl;
@@ -59,7 +59,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     }
   }
 
-  Variable *destLocation = new Variable();
+  IValue *destLocation = new IValue();
   srcLocation->copy(destLocation);
   
   executionStack.top()[inx] = destLocation;
@@ -124,7 +124,7 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
     }
   }
 
-  long double InterpreterObserver::getValueFromVariable(Variable* loc) {
+  long double InterpreterObserver::getValueFromIValue(IValue* loc) {
     KIND kind = loc->getType();
     if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
       return loc->getValue().as_int;
@@ -149,16 +149,16 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromVariable(loc1);
+    IValue *loc1 = executionStack.top()[op1->inx];
+    v1 = getValueFromIValue(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromVariable(loc2);
+    IValue *loc2 = executionStack.top()[op2->inx];
+    v2 = getValueFromIValue(loc2);
   }
 
   VALUE vresult;
@@ -253,7 +253,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
       abort();
   }
 
-  Variable *nloc = new Variable(op1->kind, vresult, false);
+  IValue *nloc = new IValue(op1->kind, vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -324,8 +324,8 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int << loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -333,7 +333,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -347,8 +347,8 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int; // same as arith?
 
   // put result back to VALUE
@@ -356,7 +356,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -370,8 +370,8 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int >> loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -379,7 +379,7 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -393,8 +393,8 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int & loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -402,7 +402,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -416,8 +416,8 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int | loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -425,7 +425,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -439,8 +439,8 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  Variable *loc1 = executionStack.top()[op1->inx];
-  Variable *loc2 = executionStack.top()[op2->inx];
+  IValue *loc1 = executionStack.top()[op1->inx];
+  IValue *loc2 = executionStack.top()[op2->inx];
   int result = loc1->getValue().as_int ^ loc2->getValue().as_int;
 
   // put result back to VALUE
@@ -448,7 +448,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(loc1->getType(), vresult, false);
+  IValue *nloc = new IValue(loc1->getType(), vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -506,18 +506,18 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
 
-  Variable* ptrLocation;
+  IValue* ptrLocation;
   if (callArgs.empty()) {
-    Variable *location = new Variable(type, false);
+    IValue *location = new IValue(type, false);
     VALUE value;
     value.as_ptr = location;
-    ptrLocation = new Variable(PTR_KIND, value, true);
+    ptrLocation = new IValue(PTR_KIND, value, true);
     executionStack.top()[inx] = ptrLocation;
   } else {
-    Variable *location = callArgs.top();
+    IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    ptrLocation = new Variable(PTR_KIND, value, true);
+    ptrLocation = new IValue(PTR_KIND, value, true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -545,28 +545,28 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   }
 
   if (callArgs.empty()) {
-    Variable** locArr = (Variable**) malloc(size*structSize*sizeof(Variable*));
+    IValue** locArr = (IValue**) malloc(size*structSize*sizeof(IValue*));
     for (uint64_t i = 0; i < size; i++) {
       if (type == STRUCT_KIND) {
         for (uint64_t j = 0; j < structSize; j++) {
-          Variable* var = new Variable(structKind[j], false);
+          IValue* var = new IValue(structKind[j], false);
           locArr[i*structSize+j] = var;
         }
       } else {
-        Variable* var = new Variable(type, false); 
+        IValue* var = new IValue(type, false); 
         locArr[i] = var;
       }
     }
 
     VALUE locArrPtrVal;
     locArrPtrVal.as_ptr = (void*) locArr; 
-    Variable* locArrPtr = new Variable(PTR_KIND, locArrPtrVal, true);
+    IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
     executionStack.top()[inx] = locArrPtr;
   } else {
-    Variable *location = callArgs.top();
+    IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
+    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -580,10 +580,10 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
   if (callArgs.empty()) {
-    Variable** ptrToStructVar = (Variable**) malloc(size*sizeof(Variable*));
+    IValue** ptrToStructVar = (IValue**) malloc(size*sizeof(IValue*));
     for (uint64_t i = 0; i < size; i++) {
       KIND type = structType.front();
-      Variable* var = new Variable(type, false);
+      IValue* var = new IValue(type, false);
       ptrToStructVar[i] = var;
       structType.pop();
     }
@@ -591,14 +591,14 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
 
     VALUE structPtrVal;
     structPtrVal.as_ptr = (void*) ptrToStructVar;
-    Variable* structPtrVar = new Variable(PTR_KIND, structPtrVal, false);
+    IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
 
     executionStack.top()[inx] = structPtrVar;
   } else {
-    Variable *location = callArgs.top();
+    IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
-    Variable* ptrLocation = new Variable(PTR_KIND, value, true); 
+    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -606,7 +606,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   cout << executionStack.top()[inx]->toString() << "\n";
 }
 
-bool checkStore(Variable *dest, KVALUE *kv) {
+bool checkStore(IValue *dest, KVALUE *kv) {
   bool result = false;
 
   switch(kv->kind) {
@@ -642,19 +642,19 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 	 KVALUE_ToString(*dest).c_str(), //op
 	 KVALUE_ToString(*src).c_str(), inx); // kv
 
-  // retrieve Variable to store in
-  Variable *destPtrLocation = executionStack.top()[dest->inx];
+  // retrieve IValue to store in
+  IValue *destPtrLocation = executionStack.top()[dest->inx];
 
   unsigned destPtrOffset = destPtrLocation->getOffset();
   cout << "DestPtr: " << destPtrLocation->toString() << endl;
 
-  Variable *destLocation = NULL;
+  IValue *destLocation = NULL;
 
   if (destPtrOffset == 0) {
-    destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
+    destLocation = static_cast<IValue*>(destPtrLocation->getValue().as_ptr);
   }
   else {
-    Variable* values = (Variable*)destPtrLocation->getValue().as_ptr;
+    IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
     cout << "destPtrOffset: " << destPtrOffset << endl;
     unsigned objectIndex = findIndex(values, destPtrOffset, destPtrLocation->getLength());
     unsigned currOffset = values[objectIndex].getFirstByte();
@@ -676,7 +676,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     destLocation->setValue(src->value);
   }
   else {
-    Variable* srcLocation = executionStack.top()[src->inx];
+    IValue* srcLocation = executionStack.top()[src->inx];
     srcLocation->copy(destLocation);
     cout << "Src: " << srcLocation->toString() << endl;
   }
@@ -726,7 +726,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
       size,
       inx);
   
-  Variable* basePtrLocation = executionStack.top()[base->inx];
+  IValue* basePtrLocation = executionStack.top()[base->inx];
 
   int offsetValue;
   if (offset->inx != -1) {
@@ -738,8 +738,8 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
   // offset in bytes from base ptr
   unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
-  unsigned index = findIndex((Variable*)basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
-  Variable* ptrLocation = new Variable(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
+  unsigned index = findIndex((IValue*)basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
+  IValue* ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
   
   executionStack.top()[inx] = ptrLocation;
   cout << executionStack.top()[inx]->toString() << endl;
@@ -755,7 +755,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  Variable** array = static_cast<Variable**>(executionStack.top()[op->inx]->getValue().as_ptr);
+  IValue** array = static_cast<IValue**>(executionStack.top()[op->inx]->getValue().as_ptr);
   getElementPtrIndexList.pop();
 
   int size = 1;
@@ -769,16 +769,16 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
 
   cout << "Getting element at index : " << size << "\n";
   if (kind == ARRAY_KIND || kind == STRUCT_KIND ) {
-    Variable** subArray = array + size;
+    IValue** subArray = array + size;
     VALUE subArrVal;
     subArrVal.as_ptr = (void*) subArray;
-    Variable* subArrPtrVar = new Variable(PTR_KIND, subArrVal, false);
+    IValue* subArrPtrVar = new IValue(PTR_KIND, subArrVal, false);
     executionStack.top()[inx] = subArrPtrVar;
   } else {
-    Variable* arrayElem = array[size];
+    IValue* arrayElem = array[size];
     VALUE arrayElemAddrVal;
     arrayElemAddrVal.as_ptr = (void*) arrayElem;
-    Variable* arrayElemPtr = new Variable(PTR_KIND, arrayElemAddrVal, false);
+    IValue* arrayElemPtr = new IValue(PTR_KIND, arrayElemAddrVal, false);
     executionStack.top()[inx] = arrayElemPtr;
   }
 
@@ -794,25 +794,25 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       KIND_ToString(arrayKind).c_str(),
       inx);
 
-    Variable** structVar = static_cast<Variable**>(executionStack.top()[op->inx]->getValue().as_ptr);
+    IValue** structVar = static_cast<IValue**>(executionStack.top()[op->inx]->getValue().as_ptr);
 
     int index;
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
 
-    Variable* structElemPtr;
+    IValue* structElemPtr;
 
     if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
-      Variable** subElem = structVar + index;
+      IValue** subElem = structVar + index;
       VALUE structElemPtrVal;
       structElemPtrVal.as_ptr = (void*) subElem;
-      structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
+      structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
     } else {
-      Variable* structElem = structVar[index];
+      IValue* structElem = structVar[index];
       VALUE structElemPtrVal;
       structElemPtrVal.as_ptr = (void*) structElem;
-      structElemPtr = new Variable(PTR_KIND, structElemPtrVal, false);
+      structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
     }
 
     executionStack.top()[inx] = structElemPtr;
@@ -834,7 +834,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[op->inx];
+  IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
   int64_t intValue = value.as_int;
   VALUE zextValue;
@@ -860,7 +860,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       safe_assert(false);
   }
 
-  Variable* zextVar = new Variable(type, zextValue, false);
+  IValue* zextVar = new IValue(type, zextValue, false);
   executionStack.top()[inx] = zextVar;
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -873,7 +873,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   cerr << "[InterpreterObserver::sext] => Unimplemented.\n";
   abort();
   */
-  Variable *src = executionStack.top()[op->inx];
+  IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
   VALUE ext_value;
@@ -899,7 +899,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       abort();
   }
 
-  Variable *ext_loc = new Variable(type, ext_value, false);
+  IValue *ext_loc = new IValue(type, ext_value, false);
   executionStack.top()[inx] = ext_loc;
   cout << ext_loc->toString() << "\n";
 }
@@ -908,7 +908,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size,
   printf("<<<<< FPTRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -931,7 +931,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size,
     abort();
   }
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -940,7 +940,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, i
   printf("<<<<< FPEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -963,7 +963,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, i
     abort();
   }
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -972,13 +972,13 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, uint64_t size, 
   printf("<<<<< FPTOUII >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -987,13 +987,13 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, uint64_t size, 
   printf("<<<<< FPTOSI >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
   trunc_value.as_int = (int) value.as_flp;
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -1002,7 +1002,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
   printf("<<<<< UITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1025,7 +1025,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
     abort();
   }
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 }
@@ -1034,7 +1034,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
   printf("<<<<< SITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*kv).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[kv->inx];
+  IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1057,7 +1057,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
     abort();
   }
 
-  Variable *trunc_loc = new Variable(type, trunc_value, false);
+  IValue *trunc_loc = new IValue(type, trunc_value, false);
   executionStack.top()[inx] = trunc_loc;
   cout << trunc_loc->toString() << "\n";
 
@@ -1067,7 +1067,7 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
   printf("<<<<< PTRTOINT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[op->inx];
+  IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
   int64_t ptrValue = value.as_int;
 
@@ -1093,7 +1093,7 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
       safe_assert(false); // this cannot happen
   }
 
-  Variable *ptrToInt = new Variable(type, int_value, false);
+  IValue *ptrToInt = new IValue(type, int_value, false);
   executionStack.top()[inx] = ptrToInt;
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -1102,11 +1102,11 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size
   printf("<<<<< INTTOPTR >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[op->inx];
+  IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
   VALUE ptr_value;
   ptr_value.as_ptr = value.as_ptr;
-  Variable *intToPtr = new Variable(type, ptr_value, false);
+  IValue *intToPtr = new IValue(type, ptr_value, false);
   executionStack.top()[inx] = intToPtr;
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -1115,10 +1115,10 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   printf("<<<<< BITCAST >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  Variable *src = executionStack.top()[op->inx];
+  IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcastLoc = new Variable(type, value, size/8, src->getOffset(), src->getIndex(), src->getLength(), false); // TODO: check
+  IValue *bitcastLoc = new IValue(type, value, size/8, src->getOffset(), src->getIndex(), src->getLength(), false); // TODO: check
   executionStack.top()[inx] = bitcastLoc;
   cout << bitcastLoc->toString() << endl;
   return;
@@ -1225,16 +1225,16 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromVariable(loc1);
+    IValue *loc1 = executionStack.top()[op1->inx];
+    v1 = getValueFromIValue(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromVariable(loc2);
+    IValue *loc2 = executionStack.top()[op2->inx];
+    v2 = getValueFromIValue(loc2);
   }
 
   int result = 0;
@@ -1278,7 +1278,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(INT1_KIND, vresult, false);
+  IValue *nloc = new IValue(INT1_KIND, vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -1295,16 +1295,16 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   if (op1->iid == 0) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
-    Variable *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromVariable(loc1);
+    IValue *loc1 = executionStack.top()[op1->inx];
+    v1 = getValueFromIValue(loc1);
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
-    Variable *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromVariable(loc2);
+    IValue *loc2 = executionStack.top()[op2->inx];
+    v2 = getValueFromIValue(loc2);
   }
 
   int result = 0;
@@ -1348,7 +1348,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   VALUE vresult;
   vresult.as_int = result;
 
-  Variable *nloc = new Variable(INT1_KIND, vresult, false);
+  IValue *nloc = new IValue(INT1_KIND, vresult, false);
   executionStack.top()[inx] = nloc;
   cout << nloc->toString() << "\n";
 
@@ -1392,16 +1392,16 @@ void InterpreterObserver::push_array_size(uint64_t size) {
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   printf("<<<<< CALL NOUNWIND >>>>>\n");
   safe_assert(!callerVarIndex.empty());
-  Variable* reg = executionStack.top()[callerVarIndex.top()];
+  IValue* reg = executionStack.top()[callerVarIndex.top()];
   reg->setValue(kvalue->value);
   callerVarIndex.pop();
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);
-  std::vector<Variable*> frame (size);
+  std::vector<IValue*> frame (size);
   for (int i = 0; i < size; i++) {
-    frame[i] = new Variable();
+    frame[i] = new IValue();
   }
   executionStack.push(frame);
 }
@@ -1429,12 +1429,12 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
       // debugging
       printf(", arg: %s", KVALUE_ToString(*value).c_str()); 
 
-      Variable* argCopy;
+      IValue* argCopy;
       if (value->inx != -1) {
-        Variable* arg = executionStack.top()[value->inx];
-        argCopy= new Variable(arg->getType(), arg->getValue(), true);
+        IValue* arg = executionStack.top()[value->inx];
+        argCopy= new IValue(arg->getType(), arg->getValue(), true);
       } else {
-        argCopy = new Variable(value->kind, value->value, true);
+        argCopy = new IValue(value->kind, value->value, true);
       }
       callArgs.push(argCopy);
     }
@@ -1444,7 +1444,7 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_v
   printf("\n");
 
   callerVarIndex.push(inx);
-  executionStack.top()[inx] = new Variable(type, false);
+  executionStack.top()[inx] = new IValue(type, false);
 
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -1468,21 +1468,21 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
 
     // allocating space
     int numObjects = argValue->value.as_int*8 / size;
-    int actualSize = sizeof(Variable) * numObjects;    
+    int actualSize = sizeof(IValue) * numObjects;    
     void *addr = malloc(actualSize);
     
     // creating pointer object
     VALUE returnValue;
     returnValue.as_ptr = addr;    
-    executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size/8, 0, 0, numObjects, false);
+    executionStack.top()[inx] = new IValue(PTR_KIND, returnValue, size/8, 0, 0, numObjects, false);
     
     // creating locations
     unsigned currOffset = 0;
     for(int i = 0; i < numObjects; i++) {
       // creating object
       VALUE iValue;
-      Variable *var = new Variable(type, iValue, currOffset, false, true);
-      ((Variable*)addr)[i] = *var;
+      IValue *var = new IValue(type, iValue, currOffset, false, true);
+      ((IValue*)addr)[i] = *var;
 
       // updating offset
       currOffset += (size/8);

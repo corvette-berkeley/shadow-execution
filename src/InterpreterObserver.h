@@ -2,7 +2,7 @@
 #define INTERPRETER_OBSERVER_H_
 
 #include "InstructionObserver.h"
-#include "Variable.h"
+#include "IValue.h"
 #include <stack>
 #include <queue>
 #include <vector>
@@ -19,7 +19,7 @@ class InterpreterObserver : public InstructionObserver {
   typedef uint64_t IID;
 
  private:
-  stack< vector< Variable* > > executionStack;
+  stack< vector< IValue* > > executionStack;
 
   stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
@@ -27,11 +27,11 @@ class InterpreterObserver : public InstructionObserver {
   queue<KIND> structType; // store struct type
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
-  stack<Variable*> callArgs; // copy value from callers to callee arguments
+  stack<IValue*> callArgs; // copy value from callers to callee arguments
 
   long double getValueFromConstant(KVALUE* op); 
 
-  long double getValueFromVariable(Variable* loc); 
+  long double getValueFromIValue(IValue* loc); 
 
   std::string BINOP_ToString(int binop); 
   
@@ -190,7 +190,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void printCurrentFrame();
 
-  unsigned findIndex(Variable* values, unsigned offset, unsigned length);
+  unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 
 };
 
