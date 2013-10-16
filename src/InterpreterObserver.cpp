@@ -26,7 +26,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   }
   else {
     cout << "[LOAD] => Offset is not zero" << endl;
-
+    abort();
     /*
     Variable *srcLocation = static_cast<Variable*>(srcPtrLocation->getValue().as_ptr);
     
@@ -81,6 +81,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
       safe_assert(false);      
     }
     */
+
   }
   return;
  }
@@ -804,7 +805,6 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
       inx);
   
   Variable* basePtrLocation = executionStack.top()[base->inx];
-  cout << basePtrLocation->toString() << endl;
 
   int offsetValue;
   if (offset->inx != -1) {
@@ -813,62 +813,14 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   else {
     offsetValue = offset->value.as_int;
   }
-  cout << offsetValue << endl;
 
-  /*
-  // creating PTR variable to be returned
-  unsigned ptrOrigSize = basePtrLocation->getOrigSize();
-  unsigned ptrCurrSize = basePtrLocation->getCurrSize();
-  unsigned ptrOffsetSize = basePtrLocation->getOffsetSize();
-  unsigned ptrOffset = basePtrLocation->getOffset();
-
-  void *baseAddr = basePtrLocation->getValue().as_ptr;
-
-  if (ptrOrigSize == ptrCurrSize) {
-    
-    VALUE value;
-    value.as_ptr = ((Variable*)baseAddr) + offsetValue;
-    Variable* ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, 0, size, false);
-    
-    executionStack.top()[inx] = ptrLocation;
-    cout << executionStack.top()[inx]->toString() << "\n";
-  }
-  else {
-    unsigned elems;
-    unsigned ptrNewOffset;
-
-    elems = ((ptrOffset*ptrOffsetSize) + (ptrCurrSize*offsetValue)) / ptrOrigSize;
-    ptrNewOffset = ((ptrOffset*ptrOffsetSize) + (ptrCurrSize*offsetValue)) % ptrOrigSize;
-    
-    cout << elems << " " << ptrNewOffset << endl;
-
-    // retrieving address
-    Variable *elemAddr = (Variable*)baseAddr;
-    while(elems) {
-      elemAddr++;
-      elems--;
-    }
-    cout << elemAddr->toString() << endl;
-    
-    VALUE value;
-    value.as_ptr = elemAddr;
-
-    Variable* ptrLocation;
-    if (ptrNewOffset == ptrOffset*ptrOffsetSize) {
-      ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, ptrNewOffset/ptrOffsetSize, ptrOffsetSize, false);
-    }
-    else {
-      cout << "update: " << size << endl;
-      ptrLocation = new Variable(PTR_KIND, value, basePtrLocation->getOrigSize(), size, ptrNewOffset/size, size, false);
-    }
-
-    executionStack.top()[inx] = ptrLocation;
-    cout << executionStack.top()[inx]->toString() << "\n";	
-  }
-  */
-  cout << "[GETELEMENTPTR] => incomplete" << endl;
-  abort();
-
+  // offset in bytes from base ptr
+  unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
+  Variable* ptrLocation = new Variable(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, false);
+  
+  executionStack.top()[inx] = ptrLocation;
+  cout << executionStack.top()[inx]->toString() << "\n";
+  
   return;
 }
 
