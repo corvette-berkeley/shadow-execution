@@ -1558,12 +1558,21 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     executionStack.top()[inx] = new Variable(PTR_KIND, returnValue, size/8, 0, false);
     
     // creating locations
+    std::vector<unsigned> offsets(numObjects);
+    unsigned currOffset = 0;
     for(int i = 0; i < numObjects; i++) {
+      // recording offset
+      offsets[i] = currOffset;
+
+      // creating object
       VALUE iValue;
       Variable *var = new Variable(type, iValue, false);
       ((Variable*)addr)[i] = *var;
+
+      // update offset
+      currOffset += (size/8);
     }
-    
+    mapOffsets[addr] = offsets;
     cout << executionStack.top()[inx]->toString() << endl;
   }
   else {

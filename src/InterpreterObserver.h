@@ -3,6 +3,7 @@
 
 #include "InstructionObserver.h"
 #include "Variable.h"
+#include <map>
 #include <stack>
 #include <queue>
 #include <vector>
@@ -28,6 +29,8 @@ class InterpreterObserver : public InstructionObserver {
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<Variable*> callArgs; // copy value from callers to callee arguments
+
+  map<void*, vector< unsigned > > mapOffsets; // map from base addresses to offsets
 
   long double getValueFromConstant(KVALUE* op); 
 
