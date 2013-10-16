@@ -4,7 +4,7 @@
  */
 
 #include "CallInstrumenter.h"
-#include "../src/Variable.h"
+#include "../src/IValue.h"
 
 bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   CallInst* callInst = dyn_cast<CallInst>(I);
