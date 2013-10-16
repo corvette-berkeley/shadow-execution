@@ -1243,7 +1243,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   Variable *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
-  Variable *bitcastLoc = new Variable(type, value, src->getSize(), src->getOffset(), false); // TODO: check
+  Variable *bitcastLoc = new Variable(type, value, size/8, src->getOffset(), false); // TODO: check
   executionStack.top()[inx] = bitcastLoc;
   cout << bitcastLoc->toString() << endl;
   return;
