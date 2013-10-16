@@ -644,35 +644,16 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   // retrieve Variable to store in
   Variable *destPtrLocation = executionStack.top()[dest->inx];
+
   unsigned destPtrOffset = destPtrLocation->getOffset();
   cout << "DestPtr: " << destPtrLocation->toString() << endl;
 
-  if (destPtrOffset == 0) {
-    Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
-    cout << "Dest: " << destLocation->toString() << endl;
+  Variable *destLocation = NULL;
 
-    // the value to store is a constant
-    if (src->iid == 0) {
-      destLocation->setValue(src->value);
-    }
-    else {
-      Variable* srcLocation = executionStack.top()[src->inx];
-      srcLocation->copy(destLocation);
-      cout << "Src: " << srcLocation->toString() << endl;
-    }
-    cout << "Updated Dest: " << destLocation->toString() << endl;
-    
-    if (!checkStore(destLocation, src)) {
-      cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
-      cerr << "Mismatched values found in Store" << endl;
-      abort();
-    }
-    else {
-      cout << "VALUES MATCHED" << endl;
-    }
+  if (destPtrOffset == 0) {
+    destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
   }
   else {
-
     Variable* values = (Variable*)destPtrLocation->getValue().as_ptr;
     cout << "destPtrOffset: " << destPtrOffset << endl;
     unsigned objectIndex = findIndex(values, destPtrOffset, destPtrLocation->getLength());
@@ -680,115 +661,35 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     cout << "objectIndex: " << objectIndex << " currOffset: " << currOffset << endl;
 
     if (destPtrOffset == currOffset) {
-      Variable *destLocation = &values[objectIndex];
-      cout << "Dest: " << destLocation->toString() << endl;
-
-      Variable* srcLocation = NULL;
-      // the value to store is a constant
-      if (src->iid == 0) {
-	destLocation->setValue(src->value);
-      }
-      else {
-	srcLocation = executionStack.top()[src->inx];
-	cout << "Src: " << srcLocation->toString() << endl;
-	srcLocation->copy(destLocation);
-      }
-
-      cout << "Updated Dest: " << destLocation->toString() << endl;
-      
-      if (!checkStore(destLocation, src)) {
-	cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
-	cerr << "Mismatched values found in Store" << endl;
-	abort();
-      }
-      else {
-	cout << "VALUES MATCHED" << endl;
-      }
+      destLocation = &values[objectIndex];
     }
     else {
       cout << "[STORE] => Offset is not zero" << endl;
       abort();
     }
+  }
 
-  /*
-    Variable *destLocation = static_cast<Variable*>(destPtrLocation->getValue().as_ptr);
-    cout << "Dest: " << destLocation->toString() << endl;
+  cout << "Dest: " << destLocation->toString() << endl;
 
-    unsigned ptrCurrSize = destPtrLocation->getCurrSize();
-    unsigned ptrOrigSize = destPtrLocation->getOrigSize();
-    unsigned ptrOffset = destPtrLocation->getOffset();
-    unsigned ptrOffsetSize = destPtrLocation->getOffsetSize();
-    
-    unsigned elems =  ((ptrOffset*ptrOffsetSize) + ptrCurrSize) / ptrOrigSize + 1; // ????
-    cout << "elems to write: " << elems << endl;
-
-    // data to be written
-    Variable* srcLocation = NULL;
-    // the value to store is a constant
-    if (src->iid == 0) {
-      srcLocation = new Variable(INT64_KIND, src->value, false);
-    }
-    else {
-      srcLocation = executionStack.top()[src->inx];
-    }
+  // the value to store is a constant
+  if (src->iid == 0) {
+    destLocation->setValue(src->value);
+  }
+  else {
+    Variable* srcLocation = executionStack.top()[src->inx];
+    srcLocation->copy(destLocation);
     cout << "Src: " << srcLocation->toString() << endl;
-
-    if (srcLocation->getType() == INT64_KIND) {
-      long *data = (long*)malloc(sizeof(long));
-      *data = srcLocation->getValue().as_int;
-      cout << "data to write: " << *data << endl;
-
-      void *vdata = NULL;
-      if (ptrOffsetSize == 16) {
-	short* sdata = (short*)data;
-	//sdata += (ptrOffset - 1);
-	
-	// first element has to be split and updated
-	int val = destLocation->getValue().as_int;
-	short* sdataOrig = (short*)&val;
-	sdataOrig[1] = *sdata;
-	int* idata = (int*)sdataOrig;
-	VALUE value;
-	value.as_int = *idata;
-	destLocation->setValue(value);
-	vdata = sdata++;
-	cout << destLocation->toString() << endl;
-      }
-
-      int* idata = (int*)vdata;
-      for(unsigned i = 1; i < elems - 1; i++ ) {
-	VALUE value;
-	value.as_int = idata[i];
-	destLocation++;
-	destLocation->setValue(value);
-	executionStack.top()[inx] = destLocation; // no need for this...
-	cout << destLocation->toString() << endl;
-
-	// need to check each store
-      }
-
-      // last update first half
-      short* sdata = (short*)(&idata[elems-1]);
-      destLocation++;
-      cout << "last element before updating: " << destLocation->toString() << endl;
-
-      int val = destLocation->getValue().as_int;
-      short* sdataOrig = (short*)&val;
-      sdataOrig[0] = sdata[0];
-      idata = (int*)sdataOrig;
-      VALUE value;
-      value.as_int = *idata;
-      destLocation->setValue(value);
-      cout << destLocation->toString() << endl;
-
-    }
-    else {
-      cout << "[STORE] => unhandled type of data to write" << endl;
-    }
-    */
+  }
+  cout << "Updated Dest: " << destLocation->toString() << endl;
+  
+  if (!checkStore(destLocation, src)) {
+    cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
+    cerr << "Mismatched values found in Store" << endl;
+    abort();
   }
   return;
 }
+
 
 void InterpreterObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
