@@ -33,16 +33,28 @@ bool Variable::getLocal() {
   return local;
 }
 
-bool Variable::isInitialized() {
-  return init;
-}
-
 unsigned int Variable::getSize() {
   return size;
 }
 
 int Variable::getOffset() {
   return offset;
+}
+
+unsigned Variable::getIndex() {
+  return index;
+}
+
+unsigned Variable::getFirstByte() {
+  return firstByte;
+}
+
+unsigned Variable::getLength() {
+  return length;
+}
+
+bool Variable::isInitialized() {
+  return init;
 }
 
 string Variable::toString() {

@@ -10,8 +10,11 @@ class Variable {
  private:
   KIND type; // see Common.h for definitions
   VALUE value; // union type (use extension later on)
-  unsigned int size; // dataSize
+  unsigned size; // dataSize
   int offset;
+  unsigned index; // index of this object
+  unsigned firstByte;
+  unsigned length; // number of elements (only for pointers)
   bool local;
   bool init;
   MACHINEFLAG flag;
@@ -42,11 +45,18 @@ class Variable {
 
   bool getLocal();
 
-  bool isInitialized();
+  unsigned getIndex();
+
+  unsigned getFirstByte();
+
+  unsigned getLength();
 
   unsigned int getSize();
 
   int getOffset();
+
+  bool isInitialized();
+
   string toString();
 
   void copy(Variable* dest);
