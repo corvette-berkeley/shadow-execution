@@ -52,7 +52,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
     unsigned valueIndex = srcPtrLocation->getIndex();
     unsigned currOffset = values[valueIndex].getFirstByte();
-    cout << "valueIndex " << valueIndex << " " << srcOffset << " " << currOffset << endl;
+    cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << endl;
 
     if (srcOffset == currOffset) {
       srcLocation = &values[valueIndex];
@@ -64,7 +64,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   }
   
   cout << "srcPtrLocation: " << srcPtrLocation->toString() << endl;
-  cout << "Calling readValue: " << internalOffset << " " << srcPtrLocation->getSize() << endl; 
+  cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << srcPtrLocation->getSize() << endl; 
   VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
   cout << "VALUE: " << value.as_int << endl;
 
