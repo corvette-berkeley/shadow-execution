@@ -59,6 +59,10 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     }
   }
 
+
+  // get size for this srcLocation
+  // calculate size of this bucket from the type?
+
   IValue *destLocation = new IValue();
   srcLocation->copy(destLocation);
   

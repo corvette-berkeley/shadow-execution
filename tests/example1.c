@@ -12,7 +12,9 @@ int main() {
   
   int result = a[3];
 
-  
+  long* z = (long*)a;
+  long value = *(z+1);
+
   int* b = a + 2;
   int c = *b;
   
