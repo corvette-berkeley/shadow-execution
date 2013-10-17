@@ -112,25 +112,27 @@ std::string KIND_ToString(int kind) {
 int KIND_GetSize(int kind) {
   switch(kind) {
     case PTR_KIND:
-      return sizeof(void*);
-    case INT1_KIND:
-      return 1;
+      return sizeof(void*)/8;
     case INT16_KIND:
-      return 16;
-    case INT32_KIND:
-      return 32;
-    case INT64_KIND:
-      return 64;
     case FLP32_KIND:
-      return 32;
+      return 2;
+    case INT32_KIND:
+      return 4;
+    case INT64_KIND:
     case FLP64_KIND:
-      return 64;
+      return 8;
     case FLP128_KIND:
-      return 128;
+      return 16;
     case FLP80X86_KIND:
-      return 80;
+      return 10;
+    case FLP128PPC_KIND:
+      return 16;
+    case INT1_KIND:
+      printf("Don't support bit right now!\n");
+      safe_assert(false);
     default:
       // shouldn't reach here
+      printf("Shouldn't reach here!\n");
       safe_assert(false);
       return 0;
   }
