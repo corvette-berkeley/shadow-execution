@@ -162,7 +162,7 @@ VALUE IValue::readValue(int offset, int byte) {
     int tocInx = 0;
 
     for (unsigned i = index; i < nextIndex; i++) {
-      IValue value = valueArray[index];
+      IValue value = valueArray[i];
       KIND type = value.getType();
       int size = KIND_GetSize(type);
       VALUE valValue = value.getValue();

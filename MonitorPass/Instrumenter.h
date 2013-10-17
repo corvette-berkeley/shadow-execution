@@ -244,6 +244,26 @@ protected:
 
   /*******************************************************************************************/
 
+  /**
+   * Pass a struct value to call backs.
+   *
+   * @param value struct value to be passed
+   * @param instrs accumulation of instructions to be instrumented
+   */
+  /*
+  void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
+    safe_assert(value->getType()->isStructTy());
+    StructType* type = (StructType*) value->getType();
+    uint64_t size = structType->getNumElements();
+    for (uint64_t i = 0 ; i < size; i++) {
+      // TODO: use extract value
+      Type* elemType = structType->getElementType(i);
+    }
+  }
+  */
+
+  /*******************************************************************************************/
+
   void InsertAllBefore(InstrPtrVector& Instrs, Instruction* I) {
     for(InstrPtrVector::iterator itr = Instrs.begin(); itr < Instrs.end(); ++itr) {
       (*itr)->insertBefore(I);

@@ -25,6 +25,7 @@ class InterpreterObserver : public InstructionObserver {
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
   queue<KIND> structType; // store struct type
+  queue<KVALUE*> returnStruct; // store values of returned struct
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<IValue*> callArgs; // copy value from callers to callee arguments
