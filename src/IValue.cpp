@@ -133,11 +133,11 @@ void IValue::copy(IValue *dest) {
   dest->setSize(size);
 
   // we never want to rewrite these fields in heap objects
-  if (!dest->isInHeap()) {
-    dest->setOffset(offset);
-    dest->setIndex(index);
-    dest->setFirstByte(firstByte);
-  }
+  //if (!dest->isInHeap()) {
+  dest->setOffset(offset);
+   dest->setIndex(index);
+  //dest->setFirstByte(firstByte);
+    //}
 
   dest->setLength(length);
   dest->setLocal(local);

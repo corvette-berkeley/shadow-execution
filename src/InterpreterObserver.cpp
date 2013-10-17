@@ -10,7 +10,7 @@
 unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigned length) {
   int low = 0;
   int high = length - 1;
-  cout << "Offset: " << offset << " Length: " << length << endl;
+  //cout << "Offset: " << offset << " Length: " << length << endl;
 
   while(low < high){
     int mid = (low + high) / 2;
@@ -19,7 +19,7 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
     unsigned firstByte = values[mid].getFirstByte();
     cout << " FirstByte: " << firstByte << endl;
     if (offset == firstByte) {
-      cout << "Returning mid: " << mid << endl;
+      //cout << "Returning mid: " << mid << endl;
       return mid;
     }
     else if (offset < firstByte) {
@@ -28,7 +28,7 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
       low = mid + 1;
     }
   }
-  cout << "Returning high: " << high << endl;
+  //cout << "Returning high: " << high << endl;
   return high;
 }
 
@@ -673,9 +673,10 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     }
   }
 
-  // check for size
-  unsigned destSize = destLocation->getSize();
-  unsigned srcSize = destSize;
+  // check size in case of pointers
+  unsigned destPtrSize = destPtrLocation->getSize();
+  unsigned origSize = (static_cast<IValue*>(destPtrLocation->getValue().as_ptr))->getSize();
+
   cout << "Dest: " << destLocation->toString() << endl;
 
   // the value to store is a constant
@@ -684,13 +685,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   }
   else {
     IValue* srcLocation = executionStack.top()[src->inx];
-    srcSize = srcLocation->getSize()/8;
+    //srcSize = srcLocation->getSize()/8;
 
-    if (srcSize == destSize) {
+    if (destPtrLocation->getType() == PTR_KIND || destPtrSize == origSize) {
       srcLocation->copy(destLocation);
       cout << "Src: " << srcLocation->toString() << endl;
     }
     else {
+      cout << destPtrSize << " " << origSize << endl;
       cout << "[STORE] => Size of data to be stored is different" << endl;
       abort();
     }
