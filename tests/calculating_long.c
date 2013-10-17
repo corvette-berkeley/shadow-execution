@@ -10,5 +10,9 @@ int main() {
   long result = *b;
   printf("result: %ld\n", result);
 
+  a[0] = 3;
+  a[1] = 2;
+  long result2 = *b;
+  printf("result2: %ld\n", result2);
   return;
 }
