@@ -131,20 +131,11 @@ void IValue::copy(IValue *dest) {
   dest->setType(type);
   dest->setValue(value);
   dest->setSize(size);
-
-  // we never want to rewrite these fields in heap objects
-  //if (!dest->isInHeap()) {
   dest->setOffset(offset);
-   dest->setIndex(index);
-  //dest->setFirstByte(firstByte);
-    //}
-
+  dest->setIndex(index);
   dest->setLength(length);
   dest->setLocal(local);
-}
-
-bool IValue::isInHeap() {
-  return heap;
+  // note: we do never overwrite the field firstByte
 }
 
 VALUE IValue::readValue(int offset, int byte) {

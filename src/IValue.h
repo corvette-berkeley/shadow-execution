@@ -16,20 +16,19 @@ class IValue {
     unsigned firstByte;
     unsigned length; // number of elements (only for pointers)
     bool local;
-    bool heap;
     MACHINEFLAG flag;
     void* metadata;
 
   public:
-    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), heap(false) {}
+    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l) {}
 
-    IValue(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), heap(h) {}
+    IValue(KIND t, VALUE v, unsigned f, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), heap(false) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l) {}
 
-    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), heap(false) {}
+    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), heap(false) {}
+    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false) {}
 
     void setType(KIND t);
 
@@ -66,8 +65,6 @@ class IValue {
     string toString();
 
     void copy(IValue* dest);
-
-    bool isInHeap();
 
     /**
      * Read a chunk of byte from a pointer value, given the offset to read from

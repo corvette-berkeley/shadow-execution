@@ -1481,7 +1481,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     for(int i = 0; i < numObjects; i++) {
       // creating object
       VALUE iValue;
-      IValue *var = new IValue(type, iValue, currOffset, false, true);
+      IValue *var = new IValue(type, iValue, currOffset, false);
       ((IValue*)addr)[i] = *var;
 
       // updating offset
