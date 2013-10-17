@@ -7,70 +7,97 @@ using namespace std;
 
 class IValue {
 
- private:
-  KIND type; // see Common.h for definitions
-  VALUE value; // union type (use extension later on)
-  unsigned size; // dataSize
-  int offset;
-  unsigned index; // index of this object
-  unsigned firstByte;
-  unsigned length; // number of elements (only for pointers)
-  bool local;
-  bool init;
-  bool heap;
-  MACHINEFLAG flag;
-  void* metadata;
+  private:
+    KIND type; // see Common.h for definitions
+    VALUE value; // union type (use extension later on)
+    unsigned size; // dataSize
+    int offset;
+    unsigned index; // index of this object
+    unsigned firstByte;
+    unsigned length; // number of elements (only for pointers)
+    bool local;
+    bool init;
+    bool heap;
+    MACHINEFLAG flag;
+    void* metadata;
 
- public:
- IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(true), heap(false) {}
+  public:
+    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(true), heap(false) {}
 
- IValue(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), init(true), heap(h) {}
+    IValue(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), init(true), heap(h) {}
 
- IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), init(true), heap(false) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), init(true), heap(false) {}
 
- IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(false), heap(false) {}
+    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(false), heap(false) {}
 
- IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), init(false), heap(false) {}
-  
-  void setType(KIND t);
+    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), init(false), heap(false) {}
 
-  void setValue(VALUE v);
+    void setType(KIND t);
 
-  void setLocal(bool l);
+    void setValue(VALUE v);
 
-  void setSize(unsigned int s);
+    void setLocal(bool l);
 
-  void setOffset(int o);
+    void setSize(unsigned int s);
 
-  void setIndex(unsigned i);
+    void setOffset(int o);
 
-  void setFirstByte(unsigned f);
+    void setIndex(unsigned i);
 
-  void setLength(unsigned l);
+    void setFirstByte(unsigned f);
 
-  KIND getType();
+    void setLength(unsigned l);
 
-  VALUE getValue();
+    KIND getType();
 
-  bool getLocal();
+    VALUE getValue();
 
-  unsigned getIndex();
+    bool getLocal();
 
-  unsigned getFirstByte();
+    unsigned getIndex();
 
-  unsigned getLength();
+    unsigned getFirstByte();
 
-  unsigned int getSize();
+    unsigned getLength();
 
-  int getOffset();
+    unsigned int getSize();
 
-  bool isInitialized();
+    int getOffset();
 
-  string toString();
+    bool isInitialized();
 
-  void copy(IValue* dest);
+    string toString();
 
-  bool isInHeap();
+    void copy(IValue* dest);
+
+    bool isInHeap();
+
+    /**
+     * Read a chunk of byte from a pointer value, given the offset to read from
+     * and the number of bytes to read.
+     *
+     * @note This function is specialized for pointer value. 
+     *
+     * @param offset the offset to start reading from.
+     * @param byte the number of bytes to read.
+     *
+     * @return a VALUE object that wrap all the bytes readed.
+     */
+    VALUE readValue(int offset, int byte);
+
+    /**
+     * Write a chunk of byte to a pointer value, given the offset to start
+     * writing to, the number of bytes to write, and the content to write.
+     *
+     * This function updates the current pointer value.
+     *
+     * @note This function is specialized for pointer value.
+     *
+     * @param offset the offset to start writing to.
+     * @param byte the number of bytes to write.
+     * @param value the value to write to.
+     */
+    void writeValue(int offset, int byte, uint8_t value);
 };
 
 #endif /* IVALUE_H_ */
