@@ -90,6 +90,7 @@ std::string IID_ToString(IID& iid);
 std::string PTR_ToString(PTR& ptr);
 std::string KVALUE_ToString(KVALUE& kv);
 std::string KIND_ToString(int kind);
+int KIND_GetSize(int kind);
 
 #define UNRECOVERABLE_ERROR 5
 

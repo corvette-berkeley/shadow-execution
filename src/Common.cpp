@@ -109,5 +109,29 @@ std::string KIND_ToString(int kind) {
 	return s.str();
 }
 
-
-
+int KIND_GetSize(int kind) {
+  switch(kind) {
+    case PTR_KIND:
+      return sizeof(void*);
+    case INT1_KIND:
+      return 1;
+    case INT16_KIND:
+      return 16;
+    case INT32_KIND:
+      return 32;
+    case INT64_KIND:
+      return 64;
+    case FLP32_KIND:
+      return 32;
+    case FLP64_KIND:
+      return 64;
+    case FLP128_KIND:
+      return 128;
+    case FLP80X86_KIND:
+      return 80;
+    default:
+      // shouldn't reach here
+      safe_assert(false);
+      return 0;
+  }
+}

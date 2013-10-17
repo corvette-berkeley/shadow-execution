@@ -65,10 +65,6 @@ unsigned IValue::getLength() {
   return length;
 }
 
-bool IValue::isInitialized() {
-  return init;
-}
-
 string IValue::toString() {
   std::stringstream s;
 
@@ -130,7 +126,6 @@ string IValue::toString() {
 
   return s.str();
 }
-
 
 void IValue::copy(IValue *dest) {
   dest->setType(type);

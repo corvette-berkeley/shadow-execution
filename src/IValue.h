@@ -16,21 +16,20 @@ class IValue {
     unsigned firstByte;
     unsigned length; // number of elements (only for pointers)
     bool local;
-    bool init;
     bool heap;
     MACHINEFLAG flag;
     void* metadata;
 
   public:
-    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(true), heap(false) {}
+    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l), heap(false) {}
 
-    IValue(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), init(true), heap(h) {}
+    IValue(KIND t, VALUE v, unsigned f, bool l, bool h): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(0), local(l), heap(h) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), init(true), heap(false) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), heap(false) {}
 
-    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), init(false), heap(false) {}
+    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(0), local(l), heap(false) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), init(false), heap(false) {}
+    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(0), local(false), heap(false) {}
 
     void setType(KIND t);
 
@@ -63,8 +62,6 @@ class IValue {
     unsigned int getSize();
 
     int getOffset();
-
-    bool isInitialized();
 
     string toString();
 
