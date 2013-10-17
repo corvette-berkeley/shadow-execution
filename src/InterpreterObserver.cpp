@@ -54,7 +54,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
       srcLocation = &values[valueIndex];  
     }
     else {
-      cout << "[LOAD] => Offset is not zero" << endl;
+      cout << "[LOAD] => We need to calculate an internal offset" << endl;
       abort();
     }
   }
@@ -664,7 +664,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
       destLocation = &values[objectIndex];
     }
     else {
-      cout << "[STORE] => Offset is not zero" << endl;
+      cout << "[STORE] => We need to calculate an internal offset." << endl;
       abort();
     }
   }
