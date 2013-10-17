@@ -41,7 +41,9 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   IValue *srcLocation = NULL;
   unsigned srcOffset = srcPtrLocation->getOffset();
 
-  if (srcOffset == 0) { // TODO: check for size
+  //unsigned origDataSize = srcPtrLocation->getSize();
+
+  if (srcOffset == 0) {
     srcLocation = static_cast<IValue*>(srcPtrLocation->getValue().as_ptr);
   }
   else {
@@ -51,23 +53,24 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
     cout << "valueIndex " << valueIndex << " " << srcOffset << " " << currOffset << endl;
 
     if (srcOffset == currOffset) {
-      srcLocation = &values[valueIndex];  
+      srcLocation = &values[valueIndex];
     }
     else {
       cout << "[LOAD] => We need to calculate an internal offset" << endl;
       abort();
     }
   }
-
-
-  // get size for this srcLocation
-  // calculate size of this bucket from the type?
+  
+  //VALUE value = srcLocation->read(internalOffset, srcPtrLocation->getSize());
+  //cout << "VALUE: " << value.as_int << endl;
+  // create new IValue
 
   IValue *destLocation = new IValue();
   srcLocation->copy(destLocation);
   
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
+
   return;
  }
 
@@ -516,12 +519,14 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     VALUE value;
     value.as_ptr = location;
     ptrLocation = new IValue(PTR_KIND, value, true);
+    ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
     executionStack.top()[inx] = ptrLocation;
   } else {
     IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
     ptrLocation = new IValue(PTR_KIND, value, true);
+    ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
