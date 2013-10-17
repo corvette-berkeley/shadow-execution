@@ -661,7 +661,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     cout << "objectIndex: " << objectIndex << " currOffset: " << currOffset << endl;
 
     if (destPtrOffset == currOffset) {
-      destLocation = &values[objectIndex];
+      destLocation = &values[objectIndex];      
     }
     else {
       cout << "[STORE] => We need to calculate an internal offset." << endl;
@@ -669,6 +669,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     }
   }
 
+  // check for size
+  unsigned destSize = destLocation->getSize();
+  unsigned srcSize = destSize;
   cout << "Dest: " << destLocation->toString() << endl;
 
   // the value to store is a constant
@@ -677,8 +680,16 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   }
   else {
     IValue* srcLocation = executionStack.top()[src->inx];
-    srcLocation->copy(destLocation);
-    cout << "Src: " << srcLocation->toString() << endl;
+    srcSize = srcLocation->getSize()/8;
+
+    if (srcSize == destSize) {
+      srcLocation->copy(destLocation);
+      cout << "Src: " << srcLocation->toString() << endl;
+    }
+    else {
+      cout << "[STORE] => Size of data to be stored is different" << endl;
+      abort();
+    }
   }
   cout << "Updated Dest: " << destLocation->toString() << endl;
   
