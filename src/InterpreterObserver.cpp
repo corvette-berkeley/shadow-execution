@@ -674,8 +674,8 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   }
 
   // check size in case of pointers
-  unsigned destPtrSize = destPtrLocation->getSize();
-  unsigned origSize = (static_cast<IValue*>(destPtrLocation->getValue().as_ptr))->getSize();
+  unsigned destDataSize = KIND_GetSize(destLocation->getType());
+  unsigned srcDataSize = destDataSize;
 
   cout << "Dest: " << destLocation->toString() << endl;
 
@@ -685,14 +685,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   }
   else {
     IValue* srcLocation = executionStack.top()[src->inx];
-    //srcSize = srcLocation->getSize()/8;
+    srcDataSize = KIND_GetSize(srcLocation->getType());
 
-    if (destPtrLocation->getType() == PTR_KIND || destPtrSize == origSize) {
+    if (destLocation->getType() == PTR_KIND || destDataSize == srcDataSize) {
       srcLocation->copy(destLocation);
       cout << "Src: " << srcLocation->toString() << endl;
     }
     else {
-      cout << destPtrSize << " " << origSize << endl;
+      cout << destDataSize << " " << srcDataSize << endl;
       cout << "[STORE] => Size of data to be stored is different" << endl;
       abort();
     }
