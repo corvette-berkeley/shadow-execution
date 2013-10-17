@@ -148,48 +148,56 @@ bool IValue::isInHeap() {
 }
 
 VALUE IValue::readValue(int offset, int byte) {
-  IValue** valueArray = static_cast<IValue**>(value.as_ptr);
-
-  unsigned nextIndex = index;
-  int totalByte = 0;
-
-  while (totalByte < offset + byte) {
-    IValue* value = valueArray[nextIndex];
-    totalByte += KIND_GetSize(value->getType());
-    nextIndex++;
-  }
-
-  // totalContent stores the accumulative content from IValue at index 
-  // to IValue at nextIndex-1
-  uint8_t* totalContent = (uint8_t*) malloc(totalByte*sizeof(uint8_t));
-  int tocInx = 0;
-
-  for (unsigned i = index; i < nextIndex; i++) {
-    IValue* value = valueArray[index];
-    KIND type = value->getType();
-    int size = KIND_GetSize(type);
-    VALUE valValue = value->getValue();
-    uint8_t* valueContent = (uint8_t*) &valValue;
-    for (int j = 0; j < size; j++) {
-      totalContent[tocInx] = valueContent[j];
-      tocInx++;
-    }
-  }
-
-  uint8_t* truncContent = (uint8_t*) malloc(byte*sizeof(uint8_t));
-  int trcInx = 0;
-
-  for (int i = 0; i < totalByte; i++) {
-    if (i >= offset && i < offset + byte) {
-      truncContent[trcInx] = totalContent[i];
-      trcInx++;
-    }
-  }
-
-  int64_t* truncValue = (int64_t*) truncContent;
-
+  IValue* valueArray = static_cast<IValue*>(value.as_ptr);
   VALUE value;
-  value.as_int = truncValue[0];
+
+  if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
+    // efficient code for common cases
+    value = valueArray[index].getValue();
+  } else {
+    // uncommon cases
+    unsigned nextIndex = index;
+    int totalByte = 0;
+
+    while (totalByte < offset + byte) {
+      IValue value = valueArray[nextIndex];
+      totalByte += KIND_GetSize(value.getType());
+      nextIndex++;
+    }
+
+    // totalContent stores the accumulative content from IValue at index 
+    // to IValue at nextIndex-1
+    uint8_t* totalContent = (uint8_t*) malloc(totalByte*sizeof(uint8_t));
+    int tocInx = 0;
+
+    for (unsigned i = index; i < nextIndex; i++) {
+      IValue value = valueArray[index];
+      KIND type = value.getType();
+      int size = KIND_GetSize(type);
+      VALUE valValue = value.getValue();
+      uint8_t* valueContent = (uint8_t*) &valValue;
+      for (int j = 0; j < size; j++) {
+        totalContent[tocInx] = valueContent[j];
+        tocInx++;
+      }
+    }
+
+    // truncate content from total content
+    uint8_t* truncContent = (uint8_t*) malloc(byte*sizeof(uint8_t));
+    int trcInx = 0;
+
+    for (int i = 0; i < totalByte; i++) {
+      if (i >= offset && i < offset + byte) {
+        truncContent[trcInx] = totalContent[i];
+        trcInx++;
+      }
+    }
+
+    // cast truncate content array to an actual value 
+    int64_t* truncValue = (int64_t*) truncContent;
+
+    value.as_int = truncValue[0];
+  }
 
   return value;
 }
