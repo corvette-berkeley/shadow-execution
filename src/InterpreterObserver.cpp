@@ -32,8 +32,9 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
   return high;
 }
 
-void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
-  printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
+  printf("<<<<< LOAD >>>>> %s, kind:%s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	 KIND_ToString(type).c_str(),
 	 KVALUE_ToString(*src).c_str(),
 	 inx);
 

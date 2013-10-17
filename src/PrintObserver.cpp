@@ -4,10 +4,11 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KVALUE* op, int inx) {
-  printf("<<<<< LOAD >>>>> %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void PrintObserver::load(IID iid, KIND type, KVALUE* op, int inx) {
+  printf("<<<<< LOAD >>>>> %s, kind:%s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), 
+	 KIND_ToString(type).c_str(),
 	 KVALUE_ToString(*op).c_str(),
-   inx);
+	 inx);
 }
 
 // ***** Binary Operations ***** //
@@ -18,7 +19,7 @@ void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, i
 	 (nsw ? "1" : "0"),
 	 KVALUE_ToString(*op1).c_str(),
 	 KVALUE_ToString(*op2).c_str(), 
-   inx);
+	 inx);
 }
 
 void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {

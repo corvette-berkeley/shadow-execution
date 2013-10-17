@@ -120,8 +120,8 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx) {
   DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx);
 }
 
-void llvm_load(IID iid, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, op, inx);
+void llvm_load(IID iid, KIND kind, KVALUE* op, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, kind, op, inx);
 }
 
 

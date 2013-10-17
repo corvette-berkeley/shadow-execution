@@ -45,7 +45,7 @@ extern "C" {
   void llvm_allocax(IID iid, KIND kind, uint64_t size, int x);
   void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x);
   void llvm_allocax_struct(IID iid, uint64_t size, int x);
-  void llvm_load(IID iid, KVALUE* op, int x);
+  void llvm_load(IID iid, KIND kind, KVALUE* op, int x);
   void llvm_store(IID iid, KVALUE* op, KVALUE* value, int x);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);

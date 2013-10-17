@@ -19,7 +19,7 @@ public:
   stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
-	virtual void load(IID iid, KVALUE* op, int inx);
+	virtual void load(IID iid, KIND kind, KVALUE* op, int inx);
 
 	// ***** Binary Operations ***** //
 
