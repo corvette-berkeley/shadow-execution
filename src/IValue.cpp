@@ -192,3 +192,47 @@ VALUE IValue::readValue(int offset, int byte) {
 
   return value;
 }
+
+int IValue::setValue(int offset, int byte, uint8_t* content) {
+  uint8_t* valueBytes = (uint8_t*)&value;
+  int maxOffset = KIND_GetSize(type)-1;
+  if (byte > maxOffset - offset +1) {
+    byte = maxOffset - offset + 1;
+  }
+
+  for (int i = 0; i < byte; i++) {
+    valueBytes[i+offset] = content[i];
+  }
+
+  return byte;
+} 
+
+void IValue::writeValue(int offset, int byte, IValue* src) {
+  IValue* valueArray = static_cast<IValue*>(value.as_ptr);
+
+  if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
+    // efficient code for common case
+    valueArray[index].copy(src);
+  } else {
+    VALUE srcValue = src->getValue();
+
+    // get content from source value
+    uint8_t* srcContent = (uint8_t*)(&srcValue);
+    uint8_t* content = (uint8_t*) malloc(byte*sizeof(uint8_t*));
+    for (int i = 0; i < byte; i++) {
+      content[i] = srcContent[i];
+    }
+
+    // write the content to this value array
+    int currentIndex = index;
+    int byteWrittens = 0;
+
+    while (byteWrittens < byte) {
+      IValue currentValue = valueArray[currentIndex];
+      byteWrittens += currentValue.setValue(offset, byte - byteWrittens, content);
+      content += byteWrittens;
+      currentIndex++;
+      offset = 0;
+    }
+  }
+}

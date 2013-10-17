@@ -19,6 +19,19 @@ class IValue {
     MACHINEFLAG flag;
     void* metadata;
 
+    /**
+     * Write a chunk of byte to value. This functions returns the actual number
+     * of byte written.
+     *
+     * @note the actual number of byte written is min(maxOffset-offset+1, byte)
+     * where maxOffset is size of this value in byte minus one.
+     *
+     * @param offset the offset to start writing to.
+     * @param byte the expected number of byte to write to.
+     * @param content the content to read from.
+     */
+    int setValue(int offset, int byte, uint8_t* content);
+
   public:
     IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(0), local(l) {}
 
@@ -89,9 +102,9 @@ class IValue {
      *
      * @param offset the offset to start writing to.
      * @param byte the number of bytes to write.
-     * @param value the value to write to.
+     * @param src the source to get value form.
      */
-    void writeValue(int offset, int byte, uint8_t value);
+    void writeValue(int offset, int byte, IValue* src);
 };
 
 #endif /* IVALUE_H_ */

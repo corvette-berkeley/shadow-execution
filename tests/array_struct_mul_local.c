@@ -9,7 +9,7 @@ int main() {
   for (c = 0; c < 2; c++)
   {
     for (d = 0; d < 3; d++) {
-      a[c+723][d+456].a = c*c + d;
+      a[c][d].a = c*c + d;
       a[c][d].b = c+2+d;
     }
   }

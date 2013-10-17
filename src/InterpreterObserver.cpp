@@ -565,12 +565,15 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     VALUE locArrPtrVal;
     locArrPtrVal.as_ptr = (void*) locArr; 
     IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
+    // TODO: this is only an approximate
+    locArrPtr->setSize(size);
     executionStack.top()[inx] = locArrPtr;
   } else {
     IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+    ptrLocation->setSize(location->getSize());
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -596,6 +599,8 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     VALUE structPtrVal;
     structPtrVal.as_ptr = (void*) ptrToStructVar;
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
+    // TODO: this is only an approximate
+    structPtrVar->setSize(size);
 
     executionStack.top()[inx] = structPtrVar;
   } else {
@@ -603,6 +608,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     VALUE value;
     value.as_ptr = (void*) location;
     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+    ptrLocation->setSize(location->getSize());
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -789,6 +795,12 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   VALUE arrayElemAddrVal;
   arrayElemAddrVal.as_ptr = (void*) arrayElem;
   IValue* arrayElemPtr = new IValue(PTR_KIND, arrayElemAddrVal, false);
+  if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
+    // TODO: this is only an approximate
+    arrayElemPtr->setSize(size); 
+  } else {
+    arrayElemPtr->setSize(KIND_GetSize(kind));
+  }
   executionStack.top()[inx] = arrayElemPtr;
 
   cout << executionStack.top()[inx]->toString() << "\n";
@@ -814,6 +826,13 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     VALUE structElemPtrVal;
     structElemPtrVal.as_ptr = (void*) structElem;
     IValue* structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
+
+    if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
+      // TODO: this is only an approximate
+      structElemPtr->setSize(100);
+    } else {
+      structElemPtr->setSize(KIND_GetSize(kind));
+    }
 
     executionStack.top()[inx] = structElemPtr;
 
