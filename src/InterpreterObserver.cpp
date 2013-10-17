@@ -42,9 +42,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   IValue *srcLocation = NULL;
   unsigned srcOffset = srcPtrLocation->getOffset();
 
-  //unsigned origDataSize = srcPtrLocation->getSize();
   int internalOffset = 0;
 
+  
   if (srcOffset == 0) {
     srcLocation = static_cast<IValue*>(srcPtrLocation->getValue().as_ptr);
   }
@@ -71,8 +71,8 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   // creating new value
   IValue *destLocation = new IValue();
   srcLocation->copy(destLocation);
-  srcLocation->setValue(value);
-  srcLocation->setType(type);
+  destLocation->setValue(value);
+  destLocation->setType(type);
   
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
