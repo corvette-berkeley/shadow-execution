@@ -43,6 +43,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   unsigned srcOffset = srcPtrLocation->getOffset();
 
   //unsigned origDataSize = srcPtrLocation->getSize();
+  int internalOffset = 0;
 
   if (srcOffset == 0) {
     srcLocation = static_cast<IValue*>(srcPtrLocation->getValue().as_ptr);
@@ -62,12 +63,16 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     }
   }
   
-  //VALUE value = srcLocation->read(internalOffset, srcPtrLocation->getSize());
-  //cout << "VALUE: " << value.as_int << endl;
-  // create new IValue
+  cout << "srcPtrLocation: " << srcPtrLocation->toString() << endl;
+  cout << "Calling readValue: " << internalOffset << " " << srcPtrLocation->getSize() << endl; 
+  VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
+  cout << "VALUE: " << value.as_int << endl;
 
+  // creating new value
   IValue *destLocation = new IValue();
   srcLocation->copy(destLocation);
+  srcLocation->setValue(value);
+  srcLocation->setType(type);
   
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
