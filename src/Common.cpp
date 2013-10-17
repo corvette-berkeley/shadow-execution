@@ -112,7 +112,7 @@ std::string KIND_ToString(int kind) {
 int KIND_GetSize(int kind) {
   switch(kind) {
     case PTR_KIND:
-      return sizeof(void*)/8;
+      return sizeof(void*);
     case INT16_KIND:
     case FLP32_KIND:
       return 2;
