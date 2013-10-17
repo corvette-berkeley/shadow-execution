@@ -46,7 +46,7 @@ void InterpreterObserver::load(IID iid, KVALUE* src, int inx) {
   }
   else {
     IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
-    unsigned valueIndex = findIndex(values, srcOffset, srcPtrLocation->getLength());
+    unsigned valueIndex = srcPtrLocation->getIndex();
     unsigned currOffset = values[valueIndex].getFirstByte();
     cout << "valueIndex " << valueIndex << " " << srcOffset << " " << currOffset << endl;
 
@@ -660,12 +660,12 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   else {
     IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
     cout << "destPtrOffset: " << destPtrOffset << endl;
-    unsigned objectIndex = findIndex(values, destPtrOffset, destPtrLocation->getLength());
-    unsigned currOffset = values[objectIndex].getFirstByte();
-    cout << "objectIndex: " << objectIndex << " currOffset: " << currOffset << endl;
+    unsigned valueIndex = destPtrLocation->getIndex();
+    unsigned currOffset = values[valueIndex].getFirstByte();
+    cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset << endl;
 
     if (destPtrOffset == currOffset) {
-      destLocation = &values[objectIndex];      
+      destLocation = &values[valueIndex];      
     }
     else {
       cout << "[STORE] => We need to calculate an internal offset." << endl;
