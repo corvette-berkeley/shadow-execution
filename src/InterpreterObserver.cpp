@@ -549,16 +549,16 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   }
 
   if (callArgs.empty()) {
-    IValue** locArr = (IValue**) malloc(size*structSize*sizeof(IValue*));
+    IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       if (type == STRUCT_KIND) {
         for (uint64_t j = 0; j < structSize; j++) {
           IValue* var = new IValue(structKind[j], false);
-          locArr[i*structSize+j] = var;
+          locArr[i*structSize+j] = *var;
         }
       } else {
         IValue* var = new IValue(type, false); 
-        locArr[i] = var;
+        locArr[i] = *var;
       }
     }
 
@@ -584,11 +584,11 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
   if (callArgs.empty()) {
-    IValue** ptrToStructVar = (IValue**) malloc(size*sizeof(IValue*));
+    IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       KIND type = structType.front();
       IValue* var = new IValue(type, false);
-      ptrToStructVar[i] = var;
+      ptrToStructVar[i] = *var;
       structType.pop();
     }
     safe_assert(structType.empty());
@@ -770,7 +770,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  IValue** array = static_cast<IValue**>(executionStack.top()[op->inx]->getValue().as_ptr);
+  IValue* array = static_cast<IValue*>(executionStack.top()[op->inx]->getValue().as_ptr);
   getElementPtrIndexList.pop();
 
   int size = 1;
@@ -783,19 +783,11 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   getElementPtrIndexList.pop();
 
   cout << "Getting element at index : " << size << "\n";
-  if (kind == ARRAY_KIND || kind == STRUCT_KIND ) {
-    IValue** subArray = array + size;
-    VALUE subArrVal;
-    subArrVal.as_ptr = (void*) subArray;
-    IValue* subArrPtrVar = new IValue(PTR_KIND, subArrVal, false);
-    executionStack.top()[inx] = subArrPtrVar;
-  } else {
-    IValue* arrayElem = array[size];
-    VALUE arrayElemAddrVal;
-    arrayElemAddrVal.as_ptr = (void*) arrayElem;
-    IValue* arrayElemPtr = new IValue(PTR_KIND, arrayElemAddrVal, false);
-    executionStack.top()[inx] = arrayElemPtr;
-  }
+  IValue* arrayElem = array + size;
+  VALUE arrayElemAddrVal;
+  arrayElemAddrVal.as_ptr = (void*) arrayElem;
+  IValue* arrayElemPtr = new IValue(PTR_KIND, arrayElemAddrVal, false);
+  executionStack.top()[inx] = arrayElemPtr;
 
   cout << executionStack.top()[inx]->toString() << "\n";
 }
@@ -809,26 +801,17 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       KIND_ToString(arrayKind).c_str(),
       inx);
 
-    IValue** structVar = static_cast<IValue**>(executionStack.top()[op->inx]->getValue().as_ptr);
+    IValue* structVar = static_cast<IValue*>(executionStack.top()[op->inx]->getValue().as_ptr);
 
     int index;
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
 
-    IValue* structElemPtr;
-
-    if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
-      IValue** subElem = structVar + index;
-      VALUE structElemPtrVal;
-      structElemPtrVal.as_ptr = (void*) subElem;
-      structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
-    } else {
-      IValue* structElem = structVar[index];
-      VALUE structElemPtrVal;
-      structElemPtrVal.as_ptr = (void*) structElem;
-      structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
-    }
+    IValue* structElem = structVar + index;
+    VALUE structElemPtrVal;
+    structElemPtrVal.as_ptr = (void*) structElem;
+    IValue* structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
 
     executionStack.top()[inx] = structElemPtr;
 
