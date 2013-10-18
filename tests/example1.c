@@ -24,6 +24,8 @@ int main() {
   short e = *(d+2);
   short f = *(d+3);
 
+  //d[5] = 4; // a short written in the middle of the third value
+
   printf("e: %d, f: %d", e, f);
   
   return 0;
