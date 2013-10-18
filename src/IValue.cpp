@@ -174,7 +174,7 @@ VALUE IValue::readValue(int offset, int byte) {
     }
 
     // truncate content from total content
-    uint8_t* truncContent = (uint8_t*) malloc(byte*sizeof(uint8_t));
+    uint8_t* truncContent = (uint8_t*) calloc(byte, sizeof(uint8_t));
     int trcInx = 0;
 
     for (int i = 0; i < totalByte; i++) {
