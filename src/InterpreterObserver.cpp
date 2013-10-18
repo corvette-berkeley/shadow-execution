@@ -39,14 +39,14 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
 	 inx);
 
   IValue *srcPtrLocation = executionStack.top()[src->inx];
-  IValue *srcLocation = NULL;
-  unsigned srcOffset = srcPtrLocation->getOffset();
   cout << "srcPtrLocation: " << srcPtrLocation->toString() << endl;
 
+  IValue *srcLocation = NULL;
+  unsigned srcOffset = srcPtrLocation->getOffset();
   int internalOffset = 0;
 
   // retrieving source
-  if (type == PTR_KIND) {
+  if (type == PTR_KIND) { // TODO: does this break when pointers to pointers? perhaps check whether it is a real var?
     srcLocation = srcPtrLocation;
   }
   else if (srcOffset == 0) {
@@ -60,7 +60,6 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
 
     srcLocation = &values[valueIndex];
     if (srcOffset != currOffset) {
-      //internalOffset = values[valueIndex].getOffset() - values[valueIndex].getFirstByte(); // changed it?!
       internalOffset = srcOffset - currOffset;
       cout << "Internal offset: " << internalOffset << endl;
     }
@@ -76,12 +75,11 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   else {
     cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << srcPtrLocation->getSize() << endl; 
     VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
-    cout << "VALUE: " << value.as_int << endl;
+    cout << "VALUE returned: " << value.as_int << endl;
     
     srcLocation->copy(destLocation);
     destLocation->setValue(value);
     destLocation->setType(type);
-    
   }
 
   executionStack.top()[inx] = destLocation;
@@ -673,16 +671,16 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 	 KVALUE_ToString(*dest).c_str(), //op
 	 KVALUE_ToString(*src).c_str(), inx); // kv
 
-  // retrieve IValue to store in
+  // retrieve ptr destination
   IValue *destPtrLocation = executionStack.top()[dest->inx];
-  unsigned destPtrOffset = destPtrLocation->getOffset();
   cout << "DestPtr: " << destPtrLocation->toString() << endl;
 
+  unsigned destPtrOffset = destPtrLocation->getOffset();
   IValue *destLocation = NULL;
   IValue *srcLocation = NULL;
   int internalOffset = 0;
 
-  // get source
+  // retrieve source
   if (src->iid == 0) {
     srcLocation = new IValue(src->kind, src->value, false);
   }
@@ -691,21 +689,20 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   }
   cout << "Src: " << srcLocation->toString() << endl;
 
-  // retrieve destination
+  // retrieve actual destination
   if (destPtrOffset == 0) {
     destLocation = static_cast<IValue*>(destPtrLocation->getValue().as_ptr);
   }
   else {
     IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
-    cout << "destPtrOffset: " << destPtrOffset << endl;
     unsigned valueIndex = destPtrLocation->getIndex();
     unsigned currOffset = values[valueIndex].getFirstByte();
-    cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrLocation->getOffset() << endl;
+    cout << "destPtrOffset: " << destPtrOffset << endl;
+    cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
     destLocation = &values[valueIndex];
-    internalOffset = destPtrLocation->getOffset() - currOffset;
+    internalOffset = destPtrOffset - currOffset;
     cout << "internalOffset: " << internalOffset <<  " Size: " << KIND_GetSize(destLocation->getType()) << endl;
   }
-
 
   cout << "Dest: " << destLocation->toString() << endl;
 
