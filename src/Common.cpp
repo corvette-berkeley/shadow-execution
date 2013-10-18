@@ -116,9 +116,9 @@ int KIND_GetSize(int kind) {
     case INT8_KIND:
       return 1;
     case INT16_KIND:
-    case FLP32_KIND:
       return 2;
     case INT32_KIND:
+    case FLP32_KIND:
       return 4;
     case INT64_KIND:
     case FLP64_KIND:
