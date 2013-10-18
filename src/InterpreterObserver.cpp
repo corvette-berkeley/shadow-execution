@@ -50,23 +50,15 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   int internalOffset = 0;
 
   // retrieving source
-  if (type == PTR_KIND) { // TODO: does this break when pointers to pointers? perhaps check whether it is a real var?
-    srcLocation = srcPtrLocation;
-  }
-  else if (srcOffset == 0) {
-    srcLocation = static_cast<IValue*>(srcPtrLocation->getValue().as_ptr);
-  }
-  else {
-    IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
-    unsigned valueIndex = srcPtrLocation->getIndex();
-    unsigned currOffset = values[valueIndex].getFirstByte();
-    cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
-
-    srcLocation = &values[valueIndex];
-    if (srcOffset != currOffset) {
-      internalOffset = srcOffset - currOffset;
-      cout << "Internal offset: " << internalOffset << endl;
-    }
+  IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
+  unsigned valueIndex = srcPtrLocation->getIndex();
+  unsigned currOffset = values[valueIndex].getFirstByte();
+  cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
+  
+  srcLocation = &values[valueIndex];
+  if (srcOffset != currOffset) {
+    internalOffset = srcOffset - currOffset;
+    cout << "Internal offset: " << internalOffset << endl;
   }
   cout << "srcLocation: " << srcLocation->toString() << endl;
 
@@ -530,17 +522,18 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
-
+  
   IValue* ptrLocation;
+  IValue* location;
   if (callArgs.empty()) {
-    IValue *location = new IValue(type, false);
+    location = new IValue(type, false);
     VALUE value;
     value.as_ptr = location;
     ptrLocation = new IValue(PTR_KIND, value, true);
     ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
     executionStack.top()[inx] = ptrLocation;
   } else {
-    IValue *location = callArgs.top();
+    location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
     ptrLocation = new IValue(PTR_KIND, value, true);
@@ -548,8 +541,8 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
-
-  cout << ptrLocation->toString() << "\n";
+  cout << "Location: " << location->toString() << endl;
+  cout << ptrLocation->toString() << endl;
 
   return;
 }
@@ -694,41 +687,30 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   cout << "Src: " << srcLocation->toString() << endl;
 
   // retrieve actual destination
-  if (destPtrOffset == 0) {
-    destLocation = static_cast<IValue*>(destPtrLocation->getValue().as_ptr);
-  }
-  else {
-    IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
-    unsigned valueIndex = destPtrLocation->getIndex();
-    unsigned currOffset = values[valueIndex].getFirstByte();
-    cout << "destPtrOffset: " << destPtrOffset << endl;
-    cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
-    destLocation = &values[valueIndex];
-    internalOffset = destPtrOffset - currOffset;
-    cout << "internalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
-  }
+  IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
+  unsigned valueIndex = destPtrLocation->getIndex();
+  unsigned currOffset = values[valueIndex].getFirstByte();
+  cout << "destPtrOffset: " << destPtrOffset << endl;
+  cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
+  destLocation = &values[valueIndex];
+  internalOffset = destPtrOffset - currOffset;
+  cout << "internalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
 
   cout << "Dest: " << destLocation->toString() << endl;
 
   // writing src into dest
-  if (srcLocation->getType() == PTR_KIND) {
-    srcLocation->copy(destPtrLocation);
-    cout << "Updated PtrDest: " << destPtrLocation->toString() << endl;
-  }
-  else {
-    cout << "Calling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
-    destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
-    cout << "Updated Dest: " << destLocation->toString() << endl;
-
-    // just read again to check store
-    cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
-    IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destPtrLocation->getSize()), false);
-    cout << "writtenValue: " << writtenValue->toString() << endl;
-    if (!checkStore(writtenValue, src)) { // destLocation
-      cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
-      cerr << "Mismatched values found in Store" << endl;
-      abort();
-    }
+  cout << "Calling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
+  destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
+  cout << "Updated Dest: " << destLocation->toString() << endl;
+  
+  // just read again to check store
+  cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
+  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destPtrLocation->getSize()), false);
+  cout << "writtenValue: " << writtenValue->toString() << endl;
+  if (!checkStore(writtenValue, src)) { // destLocation
+    cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
+    cerr << "Mismatched values found in Store" << endl;
+    abort();
   }
   
   return;
