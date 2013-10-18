@@ -230,8 +230,12 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     int byteWrittens = 0;
 
     while (byteWrittens < byte) {
-      IValue currentValue = valueArray[currentIndex];
-      byteWrittens += currentValue.setValue(offset, byte - byteWrittens, content);
+      IValue *currentValue = &valueArray[currentIndex];
+      cout << "=== Ivalue: " << currentValue->toString() << endl;
+      cout << "=== current value: " << currentValue->getValue().as_int << endl;
+      byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
+      cout << "=== current value after: " << currentValue->getValue().as_int << endl;
+      cout << "=== Ivalue after: " << currentValue->toString() << endl;
       content += byteWrittens;
       currentIndex++;
       offset = 0;

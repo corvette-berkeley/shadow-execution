@@ -10,16 +10,20 @@
 unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigned length) {
   int low = 0;
   int high = length - 1;
-  //cout << "Offset: " << offset << " Length: " << length << endl;
+  cout << "Offset: " << offset << " Length: " << length << endl;
 
   while(low < high){
-    int mid = (low + high) / 2;
+    unsigned mid = (low + high) / 2;
     cout << "mid: " << mid;
     
     unsigned firstByte = values[mid].getFirstByte();
     cout << " FirstByte: " << firstByte << endl;
     if (offset == firstByte) {
-      //cout << "Returning mid: " << mid << endl;
+      cout << "Returning mid: " << mid << endl;
+      return mid;
+    }
+    else if ((mid + 1 <= length -1) && (firstByte < offset) && (offset < values[mid+1].getFirstByte())) {
+      cout << "Case 2, returning mid: " << mid << endl;
       return mid;
     }
     else if (offset < firstByte) {
@@ -28,8 +32,8 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
       low = mid + 1;
     }
   }
-  //cout << "Returning high: " << high << endl;
-  return high;
+  cout << "Returning high: " << high << " " << values[high].getFirstByte() << endl;
+  return high; // high
 }
 
 void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
@@ -701,7 +705,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
     destLocation = &values[valueIndex];
     internalOffset = destPtrOffset - currOffset;
-    cout << "internalOffset: " << internalOffset <<  " Size: " << KIND_GetSize(destLocation->getType()) << endl;
+    cout << "internalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
   }
 
   cout << "Dest: " << destLocation->toString() << endl;
@@ -712,11 +716,15 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
     cout << "Updated PtrDest: " << destPtrLocation->toString() << endl;
   }
   else {
-    cout << "Calling writeValue with offset: " << internalOffset << ", size: " << KIND_GetSize(destLocation->getType()) << endl;
-    destPtrLocation->writeValue(internalOffset, KIND_GetSize(destLocation->getType()), srcLocation);
+    cout << "Calling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
+    destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
     cout << "Updated Dest: " << destLocation->toString() << endl;
 
-    if (!checkStore(destLocation, src)) {
+    // just read again to check store
+    cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
+    IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destPtrLocation->getSize()), false);
+    cout << "writtenValue: " << writtenValue->toString() << endl;
+    if (!checkStore(writtenValue, src)) { // destLocation
       cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
       cerr << "Mismatched values found in Store" << endl;
       abort();
@@ -774,6 +782,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
   // offset in bytes from base ptr
   unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
+  cout << "newOffset: " << newOffset << endl;
   unsigned index = findIndex((IValue*)basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
   IValue* ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
   
