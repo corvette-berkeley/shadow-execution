@@ -56,28 +56,21 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
   
   srcLocation = &values[valueIndex];
-  if (srcOffset != currOffset) {
-    internalOffset = srcOffset - currOffset;
-    cout << "Internal offset: " << internalOffset << endl;
-  }
+  internalOffset = srcOffset - currOffset;
+  cout << "Internal offset: " << internalOffset << endl;
   cout << "srcLocation: " << srcLocation->toString() << endl;
 
   // creating new value
   IValue *destLocation = new IValue();
   
-  if (type == PTR_KIND) {
-    srcLocation->copy(destLocation);
-  }
-  else {
-    cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << srcPtrLocation->getSize() << endl; 
-    VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
-    cout << "VALUE returned: " << value.as_int << endl;
-    
-    srcLocation->copy(destLocation);
-    destLocation->setValue(value);
-    destLocation->setType(type);
-  }
-
+  cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << srcPtrLocation->getSize() << endl; 
+  VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
+  cout << "VALUE returned: " << value.as_int << endl;
+  
+  srcLocation->copy(destLocation);
+  destLocation->setValue(value);
+  destLocation->setType(type);
+ 
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
 
