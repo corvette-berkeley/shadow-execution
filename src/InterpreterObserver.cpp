@@ -736,7 +736,7 @@ void InterpreterObserver::atomicrmw() {
 }
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, [INX: %d]\n", 
+  printf("<<<<< GETELEMENTPTR= >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
       (inbound ? "1" : "0"),
       KVALUE_ToString(*base).c_str(),
