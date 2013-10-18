@@ -211,9 +211,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
-    cout << "here" << endl;
     // efficient code for common case
-    //valueArray[index].copy(src);
     src->copy(&valueArray[index]);
   } else {
     VALUE srcValue = src->getValue();
