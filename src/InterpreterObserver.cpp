@@ -54,12 +54,10 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     unsigned currOffset = values[valueIndex].getFirstByte();
     cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << endl;
 
-    if (srcOffset == currOffset) {
-      srcLocation = &values[valueIndex];
-    }
-    else {
-      cout << "[LOAD] => We need to calculate an internal offset" << endl;
-      abort();
+    srcLocation = &values[valueIndex];
+    if (srcOffset != currOffset) {
+      internalOffset = srcPtrLocation->getOffset() - values[valueIndex].getFirstByte();
+      cout << "Internal offset: " << internalOffset << endl;
     }
   }
   
