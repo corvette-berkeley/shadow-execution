@@ -113,6 +113,8 @@ int KIND_GetSize(int kind) {
   switch(kind) {
     case PTR_KIND:
       return sizeof(void*);
+    case INT8_KIND:
+      return 1;
     case INT16_KIND:
     case FLP32_KIND:
       return 2;

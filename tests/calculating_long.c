@@ -14,5 +14,6 @@ int main() {
   a[1] = 2;
   long result2 = *b;
   printf("result2: %ld\n", result2);
-  return0;
+
+  return 0;
 }
