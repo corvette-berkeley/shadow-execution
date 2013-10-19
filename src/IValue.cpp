@@ -116,7 +116,7 @@ string IValue::toString() {
     s << "[VOID]";
     break;
   default: 
-    cout << "Here?\n";
+    cout << "[IValue::toString] => Unhandled type" << endl;
     safe_assert(false);
     break;
   }
