@@ -26,6 +26,10 @@ int main() {
 
   d[5] = 4; // a short written in the middle of the third value
 
+  int **g = &a;
+  int h = (*g)[7];
+  (*g)[5] = 77;
+
   printf("e: %d, f: %d", e, f);
   
   return 0;
