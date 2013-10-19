@@ -65,7 +65,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   
   safe_assert(KIND_GetSize(type) == (int) srcPtrLocation->getSize());
   cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
-  VALUE value = srcPtrLocation->readValue(internalOffset, KIND_GetSize(type));
+  VALUE value = srcPtrLocation->readValue(internalOffset, type);
   cout << "VALUE returned: " << (float) value.as_flp << endl;
   
   srcLocation->copy(destLocation);
@@ -699,7 +699,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   
   // just read again to check store
   cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
-  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destPtrLocation->getSize()), false);
+  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destLocation->getType()), false);
   cout << "writtenValue: " << writtenValue->toString() << endl;
   if (!checkStore(writtenValue, src)) { // destLocation
     cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
