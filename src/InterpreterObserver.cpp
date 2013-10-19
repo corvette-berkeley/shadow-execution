@@ -63,14 +63,15 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   // creating new value
   IValue *destLocation = new IValue();
   
-  cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << srcPtrLocation->getSize() << endl; 
-  VALUE value = srcPtrLocation->readValue(internalOffset, srcPtrLocation->getSize());
-  cout << "VALUE returned: " << value.as_int << endl;
+  safe_assert(KIND_GetSize(type) == (int) srcPtrLocation->getSize());
+  cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+  VALUE value = srcPtrLocation->readValue(internalOffset, KIND_GetSize(type));
+  cout << "VALUE returned: " << (float) value.as_flp << endl;
   
   srcLocation->copy(destLocation);
   destLocation->setValue(value);
   destLocation->setType(type);
- 
+
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
 

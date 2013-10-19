@@ -163,6 +163,9 @@ VALUE IValue::readValue(int offset, int byte) {
 
     for (unsigned i = index; i < nextIndex; i++) {
       IValue value = valueArray[i];
+
+      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
+
       KIND type = value.getType();
       int size = KIND_GetSize(type);
       VALUE valValue = value.getValue();
@@ -173,12 +176,15 @@ VALUE IValue::readValue(int offset, int byte) {
       }
     }
 
+    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
+
     // truncate content from total content
     uint8_t* truncContent = (uint8_t*) calloc(byte, sizeof(uint8_t));
     int trcInx = 0;
 
     for (int i = 0; i < totalByte; i++) {
       if (i >= offset && i < offset + byte) {
+        cout << "\t [IValue::readvalue] i: " << i << endl;
         truncContent[trcInx] = totalContent[i];
         trcInx++;
       }
@@ -188,6 +194,8 @@ VALUE IValue::readValue(int offset, int byte) {
     int64_t* truncValue = (int64_t*) truncContent;
 
     value.as_int = truncValue[0];
+
+    cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
   }
 
   return value;
