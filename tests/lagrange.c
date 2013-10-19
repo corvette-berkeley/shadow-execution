@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 
-void polymul(int np, double p[np], double q[1], double r[np+1]);
+int polymul(int np, double p[np], double q[1], double r[np+1]);
 
-void matmulx(int n1, int n2, double a[n1][n2], double b[n2], double c[n1]);
+int matmulx(int n1, int n2, double a[n1][n2], double b[n2], double c[n1]);
 
 double factorial(int n);
 
@@ -89,7 +89,7 @@ int main() {
 	// cov_spec_arr_log(&d[0], 9, threshold, "spec.cov");
 }
 
-void polymul(int np, double p[np], double q[1], double r[np+1]) {
+int polymul(int np, double p[np], double q[1], double r[np+1]) {
 	// This multiplies the np-degree polynomial P by the unit-degree polynomial Q,
 	// yielding the (np+1)-degree polynomial R.
 	
@@ -104,9 +104,11 @@ void polymul(int np, double p[np], double q[1], double r[np+1]) {
 	for (k = 0; k <= np; k++) {
 		r[k+1] = r[k+1] + p[k] * q[1];
 	}
+
+  return 0;
 }
 
-void matmulx(int n1, int n2, double a[n1+1][n2+1], double b[n2], double c[n1]) {
+int matmulx(int n1, int n2, double a[n1+1][n2+1], double b[n2], double c[n1]) {
 	int i, k;
 	double t1;
 
@@ -117,6 +119,8 @@ void matmulx(int n1, int n2, double a[n1+1][n2+1], double b[n2], double c[n1]) {
 		}
 		c[i] = t1;
 	}
+
+  return 0;
 }
 
 double factorial(int n) {

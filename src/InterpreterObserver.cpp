@@ -811,6 +811,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
     // TODO: this is only an approximate
     arrayElemPtr->setSize(size); 
+    arrayElemPtr->setLength(array->getLength()-size);
   } else {
     arrayElemPtr->setSize(KIND_GetSize(kind));
   }
@@ -843,6 +844,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
       // TODO: this is only an approximate
       structElemPtr->setSize(100);
+      structElemPtr->setLength(structVar->getLength() - index);
     } else {
       structElemPtr->setSize(KIND_GetSize(kind));
     }
