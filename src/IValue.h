@@ -90,7 +90,7 @@ class IValue {
      *
      * @return a VALUE object that wrap all the bytes readed.
      */
-    VALUE readValue(int offset, int byte);
+    VALUE readValue(int offset, KIND type);
 
     /**
      * Write a chunk of byte to a pointer value, given the offset to start

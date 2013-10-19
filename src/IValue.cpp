@@ -138,8 +138,10 @@ void IValue::copy(IValue *dest) {
   // note: we do never overwrite the field firstByte
 }
 
-VALUE IValue::readValue(int offset, int byte) {
+VALUE IValue::readValue(int offset, KIND type) {
+  cout << "KIND: " << KIND_ToString(type) << endl;
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
+  int byte = KIND_GetSize(type);
   VALUE value;
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
@@ -179,23 +181,38 @@ VALUE IValue::readValue(int offset, int byte) {
     cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
 
     // truncate content from total content
-    uint8_t* truncContent = (uint8_t*) calloc(byte, sizeof(uint8_t));
+    uint8_t* truncContent = (uint8_t*) calloc(8, sizeof(uint8_t)); // TODO: magic number 8
     int trcInx = 0;
 
-    for (int i = 0; i < totalByte; i++) {
-      if (i >= offset && i < offset + byte) {
-        cout << "\t [IValue::readvalue] i: " << i << endl;
-        truncContent[trcInx] = totalContent[i];
-        trcInx++;
-      }
+    for (int i = offset; i < offset + byte; i++) {
+      cout << "\t [IValue::readvalue] i: " << i << endl;
+      truncContent[trcInx] = totalContent[i];
+      trcInx++;
     }
 
     // cast truncate content array to an actual value 
-    int64_t* truncValue = (int64_t*) truncContent;
+    switch(type) {
+      case FLP32_KIND:
+        {
+          float* truncValue = (float*) truncContent;
+          value.as_flp = *truncValue;
+          break;
+        }
+      case FLP64_KIND:
+        {
+          double* truncValue = (double*) truncContent;
+          value.as_flp = *truncValue;
+          break;
+        }
+      default:
+        {
+          int64_t* truncValue = (int64_t*) truncContent;
+          value.as_int = *truncValue;
+          break;
+        }
+    }
 
-    value.as_int = truncValue[0];
-
-    cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+    // cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
   }
 
   return value;

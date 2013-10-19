@@ -699,7 +699,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   
   // just read again to check store
   cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
-  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, destLocation->getType()), false);
+  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind), false);
   cout << "writtenValue: " << writtenValue->toString() << endl;
   if (!checkStore(writtenValue, src)) { // destLocation
     cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
