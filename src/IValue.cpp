@@ -112,6 +112,9 @@ string IValue::toString() {
     // TODO: this is incorrect because value.as_flp returns a double
     s << "[FLP80X86: " << (long double) value.as_flp << "]";
     break;
+  case VOID_KIND:
+    s << "[VOID]";
+    break;
   default: 
     cout << "Here?\n";
     safe_assert(false);
@@ -192,24 +195,21 @@ VALUE IValue::readValue(int offset, KIND type) {
 
     // cast truncate content array to an actual value 
     switch(type) {
-      case FLP32_KIND:
-        {
-          float* truncValue = (float*) truncContent;
-          value.as_flp = *truncValue;
-          break;
-        }
-      case FLP64_KIND:
-        {
-          double* truncValue = (double*) truncContent;
-          value.as_flp = *truncValue;
-          break;
-        }
-      default:
-        {
-          int64_t* truncValue = (int64_t*) truncContent;
-          value.as_int = *truncValue;
-          break;
-        }
+    case FLP32_KIND: {
+      float* truncValue = (float*) truncContent;
+      value.as_flp = *truncValue;
+      break;
+    }
+    case FLP64_KIND: {
+      double* truncValue = (double*) truncContent;
+      value.as_flp = *truncValue;
+      break;
+    }
+    default: {
+      int64_t* truncValue = (int64_t*) truncContent;
+      value.as_int = *truncValue;
+      break;
+    }
     }
 
     // cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;

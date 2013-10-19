@@ -69,44 +69,45 @@ std::string KVALUE_ToString(KVALUE& kv) {
 }
 
 std::string KIND_ToString(int kind) {
-	std::stringstream s;
-	switch(kind) {
-		case PTR_KIND:
-			s << "[PTR]";
-			break;
-    case ARRAY_KIND:
-      s << "[ARRAY]";
-      break;
-		case INT1_KIND:
-			s << "[INT1]";
-			break;
-		case INT8_KIND:
-			s << "[INT8]";
-			break;
-		case INT16_KIND:
-			s << "[INT16]";
-			break;
-		case INT32_KIND:
-			s << "[INT32]";
-			break;
-		case INT64_KIND:
-			s << "[INT64]";
-			break;
-		case FLP32_KIND:
-			s << "[FLP32]";
-			break;
-		case FLP64_KIND:
-			s << "[FLP64]";
-			break;
-    case FLP80X86_KIND:
-      s << "[FLP80X86]";
-    case STRUCT_KIND:
-      s << "[STRUCT]";
-
-		default: //safe_assert(false);
-			break;
-	}
-	return s.str();
+  std::stringstream s;
+  switch(kind) {
+  case PTR_KIND:
+    s << "[PTR]";
+    break;
+  case ARRAY_KIND:
+    s << "[ARRAY]";
+    break;
+  case INT1_KIND:
+    s << "[INT1]";
+    break;
+  case INT8_KIND:
+    s << "[INT8]";
+    break;
+  case INT16_KIND:
+    s << "[INT16]";
+    break;
+  case INT32_KIND:
+    s << "[INT32]";
+    break;
+  case INT64_KIND:
+    s << "[INT64]";
+    break;
+  case FLP32_KIND:
+    s << "[FLP32]";
+    break;
+  case FLP64_KIND:
+    s << "[FLP64]";
+    break;
+  case FLP80X86_KIND:
+    s << "[FLP80X86]";
+  case STRUCT_KIND:
+    s << "[STRUCT]";
+  case VOID_KIND:
+    s << "[VOID]";
+  default: //safe_assert(false);
+    break;
+  }
+  return s.str();
 }
 
 int KIND_GetSize(int kind) {

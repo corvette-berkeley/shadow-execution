@@ -44,9 +44,9 @@ typedef double	 	FLP;
 typedef void*	 	PTR;
 
 union value_t {
-	INT as_int;
+  INT as_int;
   FLP as_flp;
-	PTR as_ptr;
+  PTR as_ptr;
 };
 #define VALUE value_t
 
@@ -70,7 +70,9 @@ const KIND	INV_KIND	= 0U,
   FLP128PPC_KIND = 11U,
   ARRAY_KIND = 12U,
   STRUCT_KIND = 13U,
-  INTPTR_KIND = 14U;
+  INTPTR_KIND = 14U,
+  VOID_KIND = 15U;
+
 
 const IID INV_IID = 0U;
 

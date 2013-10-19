@@ -134,45 +134,47 @@ protected:
 	/*******************************************************************************************/
 
 	KIND TypeToKind(Type* T) {
-		if(T->isIntegerTy()) {
-			switch(T->getScalarSizeInBits()) {
-			case 1U:  return INT1_KIND;
-			case 8U:  return INT8_KIND;
-			case 16U: return INT16_KIND;
-			case 32U: return INT32_KIND;
-			case 64U: return INT64_KIND;
-			}
-		} else if(T->isFloatingPointTy()) {
-			if(T->isFloatTy()) {
-				return FLP32_KIND;
-			} else if(T->isDoubleTy()) {
-				return FLP64_KIND;
-			} else if(T->isFP128Ty()) {
-				return FLP128_KIND;
-			} else if(T->isX86_FP80Ty()) {
-				return FLP80X86_KIND;
-			} else if(T->isPPC_FP128Ty()) {
-				return FLP128PPC_KIND;;
-			}
-		} else if(T->isPointerTy()) {
-		  /*
-		  if ((dyn_cast<PointerType>(T))->getElementType()->isIntegerTy()) {
-		    return INTPTR_KIND;
-		  }
-		  else {
-		    return PTR_KIND;
-		  }
-		  */
-		  return PTR_KIND;
-		} else if (T->isArrayTy()) {
-      return ARRAY_KIND;
-    } else if (T->isStructTy()) {
-      return STRUCT_KIND;
-    }
-
-		return INV_KIND;
+	  if(T->isIntegerTy()) {
+	    switch(T->getScalarSizeInBits()) {
+	    case 1U:  return INT1_KIND;
+	    case 8U:  return INT8_KIND;
+	    case 16U: return INT16_KIND;
+	    case 32U: return INT32_KIND;
+	    case 64U: return INT64_KIND;
+	    }
+	  } else if(T->isFloatingPointTy()) {
+	    if(T->isFloatTy()) {
+	      return FLP32_KIND;
+	    } else if(T->isDoubleTy()) {
+	      return FLP64_KIND;
+	    } else if(T->isFP128Ty()) {
+	      return FLP128_KIND;
+	    } else if(T->isX86_FP80Ty()) {
+	      return FLP80X86_KIND;
+	    } else if(T->isPPC_FP128Ty()) {
+	      return FLP128PPC_KIND;;
+	    }
+	  } else if(T->isPointerTy()) {
+	    /*
+	      if ((dyn_cast<PointerType>(T))->getElementType()->isIntegerTy()) {
+	      return INTPTR_KIND;
+	      }
+	      else {
+	      return PTR_KIND;
+	      }
+	    */
+	    return PTR_KIND;
+	  } else if (T->isArrayTy()) {
+	    return ARRAY_KIND;
+	  } else if (T->isStructTy()) {
+	    return STRUCT_KIND;
+	  } else if (T->isVoidTy()) {
+	    return VOID_KIND;
+	  }
+	  
+	  return INV_KIND;
 	}
-
+	
 	/*******************************************************************************************/
 
   Constant* computeIndex(Value* value) {

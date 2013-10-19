@@ -36,7 +36,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   Type* returnType = callInst->getType();
   KIND returnKind = TypeToKind(returnType);
   if(returnKind == INV_KIND) {
-   return false; 
+    cout << "[CallInstrumenter] => Return type == INV_KIND" << endl;
+    safe_assert(false);
   }
   Constant* kind = KIND_CONSTANT(returnKind);
 
