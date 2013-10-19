@@ -544,6 +544,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
 void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
 
+  unsigned firstByte = 0;
   size = 1;
   while (!arraySize.empty()) {
     size = size * arraySize.front();
@@ -564,10 +565,14 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       if (type == STRUCT_KIND) {
         for (uint64_t j = 0; j < structSize; j++) {
           IValue* var = new IValue(structKind[j], false);
+          var->setFirstByte(firstByte);
+          firstByte += KIND_GetSize(structKind[j]);
           locArr[i*structSize+j] = *var;
         }
       } else {
         IValue* var = new IValue(type, false); 
+        var->setFirstByte(firstByte);
+        firstByte += KIND_GetSize(type);
         locArr[i] = *var;
       }
     }
@@ -597,10 +602,13 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
   if (callArgs.empty()) {
+    unsigned firstByte = 0;
     IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       KIND type = structType.front();
       IValue* var = new IValue(type, false);
+      var->setFirstByte(firstByte);
+      firstByte += KIND_GetSize(type);
       ptrToStructVar[i] = *var;
       structType.pop();
     }
