@@ -570,7 +570,6 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
           var->setFirstByte(firstByte);
           firstByte += KIND_GetSize(structKind[j]);
           locArr[i*structSize+j] = *var;
-	  cout << "\t" << var->toString() << endl;
         }
       } else {
         IValue* var = new IValue(type, false); 
@@ -578,15 +577,13 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
         var->setFirstByte(firstByte);
         firstByte += KIND_GetSize(type);
         locArr[i] = *var;
-	cout << "\t--" << var->toString() << endl;
       }
     }
 
     VALUE locArrPtrVal;
     locArrPtrVal.as_ptr = (void*) locArr; 
     IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
-    // TODO: this is only an approximate
-    locArrPtr->setSize(KIND_GetSize(type)); // NOTE: it was size before
+    locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
     locArrPtr->setLength(length);
     executionStack.top()[inx] = locArrPtr;
   } else {
@@ -795,8 +792,8 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       inx);
 
   IValue* ptrArray = executionStack.top()[op->inx];
+  IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);
 
-  // not sure what this does:
   getElementPtrIndexList.pop();
 
   int index = 1;
@@ -808,28 +805,17 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   index = getElementPtrIndexList.front()*index;
   getElementPtrIndexList.pop();
 
+  index = ptrArray->getIndex() + index;
+
   cout << "Getting element at index : " << index << endl;
 
-  /*
   IValue* arrayElem = array + index;
-  VALUE arrayElemAddrVal;
-  arrayElemAddrVal.as_ptr = (void*) arrayElem;
-  */
+  IValue* arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), false);
+  arrayElemPtr->setIndex(index);
+  arrayElemPtr->setLength(ptrArray->getLength());
+  arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
+  arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
 
-  //IValue* ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
-  unsigned newOffset = (index * KIND_GetSize(kind)) + ptrArray->getOffset();
-  IValue* arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), KIND_GetSize(kind), newOffset, index, ptrArray->getLength(), false);
-
-  /*
-  if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
-    // TODO: this is only an approximate
-    arrayElemPtr->setSize(size);
-    arrayElemPtr->setLength(array->getLength()-size);
-  } else {
-    arrayElemPtr->setSize(KIND_GetSize(kind));
-  }
-  executionStack.top()[inx] = arrayElemPtr;
-  */
   executionStack.top()[inx] = arrayElemPtr;
   cout << executionStack.top()[inx]->toString() << endl;
 }
