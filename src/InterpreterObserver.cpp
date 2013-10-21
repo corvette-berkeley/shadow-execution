@@ -794,33 +794,44 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       KIND_ToString(kind).c_str(),
       inx);
 
-  IValue* array = static_cast<IValue*>(executionStack.top()[op->inx]->getValue().as_ptr);
+  IValue* ptrArray = executionStack.top()[op->inx];
+
+  // not sure what this does:
   getElementPtrIndexList.pop();
 
-  int size = 1;
+  int index = 1;
   arraySize.pop();
   while (!arraySize.empty()) {
-    size = size * arraySize.front();
+    index = index * arraySize.front();
     arraySize.pop();
   }
-  size = getElementPtrIndexList.front()*size;
+  index = getElementPtrIndexList.front()*index;
   getElementPtrIndexList.pop();
 
-  cout << "Getting element at index : " << size << "\n";
-  IValue* arrayElem = array + size;
+  cout << "Getting element at index : " << index << endl;
+
+  /*
+  IValue* arrayElem = array + index;
   VALUE arrayElemAddrVal;
   arrayElemAddrVal.as_ptr = (void*) arrayElem;
-  IValue* arrayElemPtr = new IValue(PTR_KIND, arrayElemAddrVal, false);
+  */
+
+  //IValue* ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
+  unsigned newOffset = (index * KIND_GetSize(kind)) + ptrArray->getOffset();
+  IValue* arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), KIND_GetSize(kind), newOffset, index, ptrArray->getLength(), false);
+
+  /*
   if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
     // TODO: this is only an approximate
-    arrayElemPtr->setSize(size); 
+    arrayElemPtr->setSize(size);
     arrayElemPtr->setLength(array->getLength()-size);
   } else {
     arrayElemPtr->setSize(KIND_GetSize(kind));
   }
   executionStack.top()[inx] = arrayElemPtr;
-
-  cout << executionStack.top()[inx]->toString() << "\n";
+  */
+  executionStack.top()[inx] = arrayElemPtr;
+  cout << executionStack.top()[inx]->toString() << endl;
 }
 
 void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx) {
