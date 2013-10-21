@@ -622,8 +622,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     VALUE structPtrVal;
     structPtrVal.as_ptr = (void*) ptrToStructVar;
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
-    // TODO: this is only an approximate
-    structPtrVar->setSize(size);
+    structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
 
     executionStack.top()[inx] = structPtrVar;
@@ -829,25 +828,20 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       KIND_ToString(arrayKind).c_str(),
       inx);
 
-    IValue* structVar = static_cast<IValue*>(executionStack.top()[op->inx]->getValue().as_ptr);
+    IValue* structPtr = executionStack.top()[op->inx];
+    IValue* structBase = static_cast<IValue*>(structPtr->getValue().as_ptr);
 
     int index;
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
+    index = structPtr->getIndex() + index;
 
-    IValue* structElem = structVar + index;
-    VALUE structElemPtrVal;
-    structElemPtrVal.as_ptr = (void*) structElem;
-    IValue* structElemPtr = new IValue(PTR_KIND, structElemPtrVal, false);
-
-    if (kind == ARRAY_KIND || kind == STRUCT_KIND) {
-      // TODO: this is only an approximate
-      structElemPtr->setSize(100);
-      structElemPtr->setLength(structVar->getLength() - index);
-    } else {
-      structElemPtr->setSize(KIND_GetSize(kind));
-    }
+    IValue* structElem = structBase + index;
+    IValue* structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), false);
+    structElemPtr->setLength(structPtr->getLength());
+    structElemPtr->setSize(KIND_GetSize(structElem[0].getType()));
+    structElemPtr->setOffset(structElem[0].getFirstByte());
 
     executionStack.top()[inx] = structElemPtr;
 
