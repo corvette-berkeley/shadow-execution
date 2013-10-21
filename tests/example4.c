@@ -15,13 +15,13 @@ int main() {
   float* b = (float*)(a + 2);
   
   float c = *b;
-  /*
+  
   float* d = (float*)a;
   
   float e = *(d+2);
   float f = *(d+3);
 
   printf("c: %f, e: %f, f: %f", c, e, f);
-  */
+  
   return 0;
 }
