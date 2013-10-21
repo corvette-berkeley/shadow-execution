@@ -18,11 +18,12 @@ int main() {
   long result = *(d+1);
 
   printf("e: %ld\n", result);
-
+  
   *(d+1) = 555;
 
+  /*
   a[3] += 1;
   a[4] += 1;
-
+  */
   return 0;
 }
