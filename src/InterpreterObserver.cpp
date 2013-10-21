@@ -570,6 +570,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
           var->setFirstByte(firstByte);
           firstByte += KIND_GetSize(structKind[j]);
           locArr[i*structSize+j] = *var;
+	  cout << "\t" << var->toString() << endl;
         }
       } else {
         IValue* var = new IValue(type, false); 
@@ -577,6 +578,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
         var->setFirstByte(firstByte);
         firstByte += KIND_GetSize(type);
         locArr[i] = *var;
+	cout << "\t--" << var->toString() << endl;
       }
     }
 
@@ -584,7 +586,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     locArrPtrVal.as_ptr = (void*) locArr; 
     IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
     // TODO: this is only an approximate
-    locArrPtr->setSize(size);
+    locArrPtr->setSize(KIND_GetSize(type)); // NOTE: it was size before
     locArrPtr->setLength(length);
     executionStack.top()[inx] = locArrPtr;
   } else {
@@ -699,10 +701,11 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
   unsigned valueIndex = destPtrLocation->getIndex();
   unsigned currOffset = values[valueIndex].getFirstByte();
-  cout << "destPtrOffset: " << destPtrOffset << endl;
-  cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
   destLocation = &values[valueIndex];
   internalOffset = destPtrOffset - currOffset;
+
+  cout << "destPtrOffset: " << destPtrOffset << endl;
+  cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
   cout << "internalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
 
   cout << "Dest: " << destLocation->toString() << endl;
@@ -714,7 +717,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   
   // just read again to check store
   cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
-  IValue* writtenValue = new IValue(destLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind), false);
+  IValue* writtenValue = new IValue(srcLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind), false); // NOTE: destLocation->getType() before
   cout << "writtenValue: " << writtenValue->toString() << endl;
   if (!checkStore(writtenValue, src)) { // destLocation
     cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
