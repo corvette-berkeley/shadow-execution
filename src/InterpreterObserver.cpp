@@ -1472,10 +1472,9 @@ void InterpreterObserver::create_stack_frame(int size) {
   executionStack.push(frame);
 }
 
-void InterpreterObserver::call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx) {
+void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   // debugging
   printf("<<<<< CALL >>>>> %s, ", IID_ToString(iid).c_str());
-  printf(" call_value %s,", KVALUE_ToString(*call_value).c_str());
   printf(" return type %s,", KIND_ToString(type).c_str());
   printf(" nounwind %d,", (nounwind ? 1 : 0));
   printf(" [INX: %d]\n", inx);

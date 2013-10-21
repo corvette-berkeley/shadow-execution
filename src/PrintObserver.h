@@ -150,7 +150,7 @@ public:
 
 	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
 
-	virtual void call(IID iid, bool nounwind, KIND type, KVALUE* call_value, int inx);
+	virtual void call(IID iid, bool nounwind, KIND type, int inx);
 
 	virtual void vaarg();
 

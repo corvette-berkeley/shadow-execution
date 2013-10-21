@@ -295,8 +295,8 @@ void llvm_create_stack_frame(int size) {
   DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
-void llvm_call(IID iid, bool nounwind, KIND type, KVALUE* value, int inx) {
-  DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, value, inx)
+void llvm_call(IID iid, bool nounwind, KIND type, int inx) {
+  DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, inx)
 }
 
 void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx) {
