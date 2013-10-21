@@ -604,7 +604,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
 void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
-  if (callArgs.empty()) {
+//  if (callArgs.empty()) {
     unsigned firstByte = 0;
     unsigned length = 0;
     IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
@@ -626,15 +626,15 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     structPtrVar->setLength(length);
 
     executionStack.top()[inx] = structPtrVar;
-  } else {
-    IValue *location = callArgs.top();
-    VALUE value;
-    value.as_ptr = (void*) location;
-    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
-    ptrLocation->setSize(location->getSize());
-    executionStack.top()[inx] = ptrLocation;
-    callArgs.pop();
-  }
+//  } else {
+//    IValue *location = callArgs.top();
+//    VALUE value;
+//    value.as_ptr = (void*) location;
+//    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+//    ptrLocation->setSize(location->getSize());
+//    executionStack.top()[inx] = ptrLocation;
+//    callArgs.pop();
+//  }
 
   cout << executionStack.top()[inx]->toString() << "\n";
 }

@@ -11,8 +11,10 @@ struct X {
 
 struct X foo(int a, double b) {
   struct X x; // = {1, 2.5};
-  x.a = a;
-  x.b = b;
+  int a1 = a;
+  int b1 = b;
+  x.a = a1;
+  x.b = b1;
 
   return x;
 }
