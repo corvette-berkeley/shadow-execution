@@ -79,6 +79,7 @@ public:
 	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
 	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
 	virtual void return2_(IID iid UNUSED, int inx UNUSED) {};
+	virtual void return_struct_(IID iid UNUSED, int inx UNUSED) {};
 	virtual void switch_(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void unreachable() {};
 
@@ -88,6 +89,7 @@ public:
 	virtual void phinode() {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
+	virtual void push_return_struct(KVALUE* value UNUSED) {};
   virtual void push_struct_type(KIND kind UNUSED) {};
   virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
   virtual void push_array_size(uint64_t i UNUSED) {};

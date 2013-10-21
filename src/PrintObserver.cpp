@@ -360,6 +360,10 @@ void PrintObserver::return2_(IID iid, int inx) {
   printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 }
 
+void PrintObserver::return_struct_(IID iid, int inx) {
+  printf("<<<<< RETURN STRUCT >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+}
+
 void PrintObserver::switch_(IID iid, KVALUE* op, int inx) {
   printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str(), inx);
@@ -390,6 +394,10 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
 
 void PrintObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH VALUE >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::push_return_struct(KVALUE* value) {
+  printf("<<<<< PUSH RETURN STRUCT >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
 }
 
 void PrintObserver::push_struct_type(KIND kind) {

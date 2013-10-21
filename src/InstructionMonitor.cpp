@@ -229,6 +229,10 @@ void llvm_return_(IID iid, KVALUE* op1, int inx) {
 	DISPATCH_TO_OBSERVERS(return_, iid, op1, inx)
 }
 
+void llvm_return_struct_(IID iid, int inx) {
+  DISPATCH_TO_OBSERVERS(return_struct_, iid, inx);
+}
+
 void llvm_return2_(IID iid, int inx) {
 	DISPATCH_TO_OBSERVERS(return2_, iid, inx)
 }
@@ -261,6 +265,10 @@ void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx)
 
 void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
+}
+
+void llvm_push_return_struct(KVALUE* value) {
+	DISPATCH_TO_OBSERVERS(push_return_struct, value)
 }
 
 void llvm_push_getelementptr_inx(KVALUE* value) {

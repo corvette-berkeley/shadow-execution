@@ -8,5 +8,5 @@ export CC=$LPATH"clang -use-gold-plugin"
 $LPATH/opt -load ../MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.bc
 
 # create executable 
-llc tmppass.bc
-$CC tmppass.s -o $1.out -L/home/eecs/nacuong/projects/corvette-instrumentor/src -lmonitor -lpthread -lm -lrt
+#llc tmppass.bc
+#$CC tmppass.s -o $1.out -L/home/eecs/nacuong/projects/corvette-instrumentor/src -lmonitor -lpthread -lm -lrt

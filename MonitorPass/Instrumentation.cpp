@@ -94,8 +94,11 @@ void Instrumentation::createIndex(uint64_t iid)
 int Instrumentation::getIndex(Instruction* inst)
 {
   IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
-  safe_assert(indices.find(iid) != indices.end());
-  return indices[iid];
+  if (indices.find(iid) != indices.end()) {
+    return indices[iid];
+  } else {
+    return -1; // this instruction is not in stack
+  }
 }
 
 int Instrumentation::getFrameSize()

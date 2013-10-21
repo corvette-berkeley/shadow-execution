@@ -252,17 +252,27 @@ protected:
    * @param value struct value to be passed
    * @param instrs accumulation of instructions to be instrumented
    */
-  /*
   void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     safe_assert(value->getType()->isStructTy());
-    StructType* type = (StructType*) value->getType();
+    StructType* structType = (StructType*) value->getType();
     uint64_t size = structType->getNumElements();
     for (uint64_t i = 0 ; i < size; i++) {
       // TODO: use extract value
+      std::vector<unsigned> idxList;
+      idxList.push_back(i);
+      ExtractValueInst* extValInst = ExtractValueInst::Create(value, ArrayRef<unsigned>(idxList));
+      instrs.push_back(extValInst);
       Type* elemType = structType->getElementType(i);
+      if (elemType->isStructTy()) {
+        KVALUE_STRUCTVALUE(extValInst, instrs);
+      } else {
+        Value* elem = KVALUE_VALUE(extValInst, instrs, NOSIGN);
+        if (elem == NULL) safe_assert(false);
+        Instruction* call = CALL_KVALUE("llvm_push_return_struct", elem);
+        instrs.push_back(call);
+      }
     }
   }
-  */
 
   /*******************************************************************************************/
 

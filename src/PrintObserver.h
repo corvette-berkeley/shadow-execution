@@ -134,6 +134,8 @@ public:
 	virtual void return_(IID iid, KVALUE* op1, int inx);
 
 	virtual void return2_(IID iid, int inx);
+  
+	virtual void return_struct_(IID iid, int inx);
 
 	virtual void switch_(IID iid, KVALUE* op, int inx);
 
@@ -155,6 +157,8 @@ public:
 	virtual void landingpad();
 
 	void push_stack(KVALUE* value);
+
+	void push_return_struct(KVALUE* value);
 
   void push_struct_type(KIND kind);
 

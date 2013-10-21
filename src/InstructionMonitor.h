@@ -76,6 +76,7 @@ extern "C" {
   void llvm_resume(IID iid, KVALUE* op1, int x);
   void llvm_return_(IID iid, KVALUE* op1, int x);
   void llvm_return2_(IID iid, int x);
+  void llvm_return_struct_(IID iid, int x);
   void llvm_switch_(IID iid, KVALUE* op, int x);
   void llvm_unreachable();
 
@@ -85,6 +86,7 @@ extern "C" {
   void llvm_phinode();
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
+  void llvm_push_return_struct(KVALUE* value);
   void llvm_push_struct_type(KIND kind);
   void llvm_push_getelementptr_inx(KVALUE* value);
   void llvm_push_array_size(uint64_t i);

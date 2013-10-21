@@ -1206,14 +1206,13 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
 
   if (!executionStack.empty()) {
     cout << "New stack size: " << executionStack.size() << "\n";
-    if (!callerVarIndex.empty()) {
-      executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
-      executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
-      cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
+    safe_assert(!callerVarIndex.empty());
 
-      safe_assert(!callerVarIndex.empty());
-      callerVarIndex.pop();
-    }
+    executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
+    executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
+    cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
+
+    callerVarIndex.pop();
   } else {
     cout << "The execution stack is empty.\n";
   }
@@ -1229,6 +1228,39 @@ void InterpreterObserver::return2_(IID iid, int inx) {
 
   if (!executionStack.empty()) {
     cout << "New stack size: " << executionStack.size() << "\n";
+  } else {
+    cout << "The execution stack is empty.\n";
+  }
+
+  safe_assert(!callerVarIndex.empty());
+  callerVarIndex.pop();
+
+  return;
+}
+
+void InterpreterObserver::return_struct_(IID iid, int inx) {
+  printf("<<<<< RETURN STRUCT >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+
+  safe_assert(!executionStack.empty());
+  executionStack.pop();
+
+  if (!executionStack.empty()) {
+    cout << "New stack size: " << executionStack.size() << "\n";
+    safe_assert(!callerVarIndex.empty());
+    safe_assert(!returnStruct.empty());
+
+    // reconstruct struct value
+    IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
+    for (unsigned i = 0; i < returnStruct.size(); i++) {
+      KVALUE* value = returnStruct.front();
+      IValue* iValue = new IValue(value->kind, false);
+      iValue->setValue(value->value);
+      structValue[i] = *iValue; 
+      returnStruct.pop();
+    }
+
+    executionStack.top()[callerVarIndex.top()] = structValue;
+    cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
   } else {
     cout << "The execution stack is empty.\n";
   }
@@ -1405,6 +1437,12 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH ARGS TO STACK >>>>>");
   printf(" value %s\n", KVALUE_ToString(*value).c_str());
   myStack.push(value);
+}
+
+void InterpreterObserver::push_return_struct(KVALUE* value) {
+  printf("<<<<< PUSH RETURN STRUCT >>>>>");
+  printf(" value %s\n", KVALUE_ToString(*value).c_str());
+  returnStruct.push(value);
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {

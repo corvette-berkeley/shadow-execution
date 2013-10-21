@@ -29,7 +29,7 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     } else if (retVal->getType()->isStructTy()) {
 
-//      KVALUE_STRUCTVALUE(retVal, instrs);
+      KVALUE_STRUCTVALUE(retVal, instrs);
 
       Instruction* call = CALL_IID_INT("llvm_return_struct_", iidC, inxC);
       instrs.push_back(call);

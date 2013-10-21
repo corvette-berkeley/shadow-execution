@@ -156,6 +156,8 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void return2_(IID iid, int inx);
   
+  virtual void return_struct_(IID iid, int inx);
+
   virtual void switch_(IID iid, KVALUE* op, int inx);
   
   virtual void unreachable();
@@ -178,6 +180,8 @@ class InterpreterObserver : public InstructionObserver {
   virtual void landingpad();
   
   void push_stack(KVALUE* value);
+
+  void push_return_struct(KVALUE* value);
 
   void push_struct_type(KIND kind);
 
