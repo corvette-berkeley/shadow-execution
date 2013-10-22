@@ -31,6 +31,9 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   Constant* inx = computeIndex(callInst);
 
   // whether this call unwinds the stack
+  if (callInst->getCalledFunction()->getName() == "malloc") {
+    noUnwind = false;
+  }
   Constant* noUnwindC = BOOL_CONSTANT(noUnwind);
 
   // get return type
