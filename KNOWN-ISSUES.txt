@@ -1,0 +1,5 @@
+
+Strings.
+Function pointers.
+Structs in the heap.
+Void intrinsic functions with side effects (e.g., llvm.copy).
