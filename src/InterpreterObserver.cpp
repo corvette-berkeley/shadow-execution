@@ -1556,8 +1556,33 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     cout << endl << executionStack.top()[inx]->toString() << endl;
   }
   else {
-    cerr << "[Interpreter::call_malloc] => Unimplemented Structs" << endl;
-    abort();
+
+    unsigned size = structType.size();
+    cout << "\nNumber of fields: " << size << endl;
+    unsigned firstByte = 0;
+    unsigned length = 0;
+    IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
+    for (unsigned i = 0; i < size; i++) {
+      KIND type = structType.front();
+      IValue* var = new IValue(type, false);
+      var->setFirstByte(firstByte);
+      firstByte += KIND_GetSize(type);
+      length++;
+      ptrToStructVar[i] = *var;
+      structType.pop();
+    }
+    safe_assert(structType.empty());
+
+    VALUE structPtrVal;
+    structPtrVal.as_ptr = (void*) ptrToStructVar;
+    IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
+    structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
+    structPtrVar->setLength(length);
+
+    executionStack.top()[inx] = structPtrVar;
+    cout << structPtrVar->toString() << endl;
+    //cerr << "[Interpreter::call_malloc=] => Unimplemented Structs" << endl;
+    //abort();
   }
   return;
 }
