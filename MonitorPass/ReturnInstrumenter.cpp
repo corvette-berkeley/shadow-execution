@@ -22,7 +22,7 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Value* retVal = returnInst->getReturnValue();
 
-    if (retVal == NULL) {
+    if (retVal == NULL || retVal->getType()->isVoidTy()) {
 
       Instruction* call = CALL_IID_INT("llvm_return2_", iidC, inxC);
       instrs.push_back(call);

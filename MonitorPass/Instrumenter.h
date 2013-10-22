@@ -226,7 +226,10 @@ protected:
       I_cast = FLPMAX_CAST_INSTR(v);
     } else if(T->isPointerTy()) {
       I_cast = PTRTOINT_CAST_INSTR(v);
-    } 
+    } else {
+      printf("Unsupported KVALUE type\n");
+      T->dump();
+    }
 
     safe_assert(I_cast != NULL);
     Instrs.push_back(I_cast);

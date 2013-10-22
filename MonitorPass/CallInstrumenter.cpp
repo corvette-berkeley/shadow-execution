@@ -14,9 +14,9 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   } 
 
   bool isIntrinsic = dyn_cast<IntrinsicInst>(callInst) != NULL;
+  bool noUnwind = callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind) || isIntrinsic;
 
-  // TODO: add support for instrinsic.
-  if (dyn_cast<IntrinsicInst>(callInst) != NULL && callInst->getType()->isVoidTy()) {
+  if (noUnwind && callInst->getType()->isVoidTy()) {
     return false;
   }
   
@@ -31,7 +31,6 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   Constant* inx = computeIndex(callInst);
 
   // whether this call unwinds the stack
-  bool noUnwind = callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind) || isIntrinsic;
   Constant* noUnwindC = BOOL_CONSTANT(noUnwind);
 
   // get return type
@@ -42,10 +41,6 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     safe_assert(false);
   }
   Constant* kind = KIND_CONSTANT(returnKind);
-
-  // get pointer to the function
-  // Value* callValue = noUnwind ? KVALUE_VALUE(callInst, instrs, NOSIGN) :
-  //  KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN);
 
   // get call arguments
   unsigned numArgs = noUnwind ? 0 : callInst->getNumArgOperands();
