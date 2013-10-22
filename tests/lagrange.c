@@ -71,7 +71,8 @@ int main() {
 
 		f1 = factorial(k);
 		f2 = factorial(n-k);
-		is = pow(-1,n-k);
+    int temp = n-k;
+		is = pow(-1,temp);
 
 		for (j = 0; j <= n; j++) {
 			a[j][k] = ((double) is) * p[j] / (f1 * f2);
