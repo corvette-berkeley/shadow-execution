@@ -3,7 +3,7 @@
 #include <stdio.h> 
 
 
-void foo(long b[5], int value) {
+void foo(int b[5], int value) {
   int result = b[2];
   b[2] = value;
   return;
