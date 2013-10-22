@@ -16,7 +16,12 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
 
-    Value* op = KVALUE_VALUE(castInst->getOperand(0U), instrs, NOSIGN);
+    Value* op; 
+    if (getCastOp(castInst) == FPTOSI) {
+      op = KVALUE_VALUE(castInst->getOperand(0U), instrs, SIGNED);
+    } else {
+      op = KVALUE_VALUE(castInst->getOperand(0U), instrs, NOSIGN);
+    }
     if(op == NULL) return false;
 
     //castInst->getDestTy()->dump();

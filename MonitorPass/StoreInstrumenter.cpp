@@ -18,7 +18,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
     Value* valueOp = KVALUE_VALUE(storeInst->getValueOperand(),
-        instrs, NOSIGN);
+        instrs, SIGNED);
     if(valueOp == NULL) return false; 
 
     Value* pointerOp = KVALUE_VALUE(storeInst->getPointerOperand(),
