@@ -228,8 +228,6 @@ protected:
       I_cast = PTRTOINT_CAST_INSTR(v);
     } 
 
-    T->dump();
-
     safe_assert(I_cast != NULL);
     Instrs.push_back(I_cast);
 
