@@ -100,6 +100,15 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doInitialization(Module &M) {
+    cout << "=======Iterating through globals" << endl;
+
+    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
+      if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
+	i->dump();
+      }
+    }
+
+
     return Instrumentation::GetInstance()->Initialize(M);
   }
 
