@@ -1,6 +1,6 @@
 
-Strings.
 Function pointers.
-Void intrinsic functions with side effects (e.g., llvm.copy).
+Intrinsic functions with side effects (e.g., llvm.copy).
+Global variables.
 
 Upgrade to LLVM 3.3.
