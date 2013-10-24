@@ -1,4 +1,4 @@
-#include <math.h>
+#include <stdio.h>
 
 double x;
 
