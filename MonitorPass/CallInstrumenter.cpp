@@ -31,7 +31,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   Constant* inx = computeIndex(callInst);
 
   // whether this call unwinds the stack
-  if (callInst->getCalledFunction()->getName() == "malloc") {
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "malloc") {
     noUnwind = false;
   }
   Constant* noUnwindC = BOOL_CONSTANT(noUnwind);
@@ -58,7 +59,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   Instruction* call = NULL;
 
-  if (callInst->getCalledFunction()->getName() == "malloc") {
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "malloc") {
     Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
 
     safe_assert(callInst->getNumUses() == 1);

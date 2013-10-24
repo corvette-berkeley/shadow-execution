@@ -75,7 +75,8 @@ struct MonitorPass : public FunctionPass {
               // skip instrumentation of the next 11 instructions in case of a LoadInstr
               // skip = 24;
             } else if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
-              if (callInst->getCalledFunction()->getName() != "malloc") {
+              if (callInst->getCalledFunction() != NULL &&
+                  callInst->getCalledFunction()->getName() != "malloc") {
                 bool noUnwind =
                   callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind)
                   || (dyn_cast<IntrinsicInst>(callInst) != NULL &&
