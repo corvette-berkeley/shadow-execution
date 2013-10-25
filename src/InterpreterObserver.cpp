@@ -43,7 +43,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
 	 inx);
 
   IValue *srcPtrLocation = executionStack.top()[src->inx];
-  cout << "srcPtrLocation: " << srcPtrLocation->toString() << endl;
+  cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
 
   IValue *srcLocation = NULL;
   unsigned srcOffset = srcPtrLocation->getOffset();
@@ -53,24 +53,26 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
   unsigned valueIndex = srcPtrLocation->getIndex();
   unsigned currOffset = values[valueIndex].getFirstByte();
-  cout << "valueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
+  cout << "\tvalueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
   
   srcLocation = &values[valueIndex];
   internalOffset = srcOffset - currOffset;
-  cout << "Internal offset: " << internalOffset << endl;
-  cout << "srcLocation: " << srcLocation->toString() << endl;
+  cout << "\tInternal offset: " << internalOffset << endl;
+  cout << "\tsrcLocation: " << srcLocation->toString() << endl;
 
   // creating new value
   IValue *destLocation = new IValue();
   
   //safe_assert(KIND_GetSize(type) == (int) srcPtrLocation->getSize());
-  cout << "Calling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+  cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
   VALUE value = srcPtrLocation->readValue(internalOffset, type);
-  cout << "VALUE returned: " << (float) value.as_flp << endl;
+  cout << "\tVALUE returned: " << (float) value.as_flp << endl;
   
   srcLocation->copy(destLocation);
   destLocation->setValue(value);
   destLocation->setType(type);
+
+  syncLoad(destLocation, src, type);
 
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
@@ -677,7 +679,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 
   // retrieve ptr destination
   IValue *destPtrLocation = executionStack.top()[dest->inx];
-  cout << "DestPtr: " << destPtrLocation->toString() << endl;
+  cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
 
   unsigned destPtrOffset = destPtrLocation->getOffset();
   IValue *destLocation = NULL;
@@ -691,7 +693,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   else {
     srcLocation = executionStack.top()[src->inx];
   }
-  cout << "Src: " << srcLocation->toString() << endl;
+  cout << "\tSrc: " << srcLocation->toString() << endl;
 
   // retrieve actual destination
   IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
@@ -700,30 +702,29 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   destLocation = &values[valueIndex];
   internalOffset = destPtrOffset - currOffset;
 
-  cout << "destPtrOffset: " << destPtrOffset << endl;
-  cout << "valueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
-  cout << "internalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
+  cout << "\tdestPtrOffset: " << destPtrOffset << endl;
+  cout << "\tvalueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
+  cout << "\tinternalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
 
-  cout << "Dest: " << destLocation->toString() << endl;
+  cout << "\tDest: " << destLocation->toString() << endl;
 
   // writing src into dest
-  cout << "Calling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
+  cout << "\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
   destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
-  cout << "Updated Dest: " << destLocation->toString() << endl;
+  cout << "\tUpdated Dest: " << destLocation->toString() << endl;
   
   // just read again to check store
-  cout << "Calling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
+  cout << "\tCalling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
   IValue* writtenValue = new IValue(srcLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind), false); // NOTE: destLocation->getType() before
-  cout << "writtenValue: " << writtenValue->toString() << endl;
+  cout << "\twrittenValue: " << writtenValue->toString() << endl;
   if (!checkStore(writtenValue, src)) { // destLocation
-    cerr << "KVALUE: " << KVALUE_ToString(*src) << endl;
-    cerr << "Mismatched values found in Store" << endl;
+    cerr << "\tKVALUE: " << KVALUE_ToString(*src) << endl;
+    cerr << "\tMismatched values found in Store" << endl;
     abort();
   }
   
   return;
 }
-
 
 void InterpreterObserver::fence() {
   printf("<<<<< FENCE >>>>>\n");
@@ -1607,4 +1608,62 @@ void InterpreterObserver::landingpad() {
 
 void InterpreterObserver::printCurrentFrame() {
   printf("Print current frame\n");
+}
+
+void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
+  bool sync = false;
+  VALUE syncValue;
+  int cValueInt;
+  float cValueFloat;
+  double cValueDouble;
+  long double cValueLD;
+
+  switch (type) {
+    case PTR_KIND:
+      break;
+    case INT1_KIND: 
+    case INT8_KIND: 
+    case INT16_KIND: 
+    case INT32_KIND: 
+    case INT64_KIND:
+      cValueInt = *((int*) concrete->value.as_ptr);
+      sync = (iValue->getValue().as_int != cValueInt);
+      if (sync) {
+        syncValue.as_int = cValueInt;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case FLP32_KIND:
+      cValueFloat = *((float*) concrete->value.as_ptr);
+      sync = ((float)iValue->getValue().as_flp != cValueFloat);
+      if (sync) {
+        syncValue.as_flp = cValueFloat;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case FLP64_KIND:
+      cValueDouble = *((double*) concrete->value.as_ptr);
+      sync = ((double)iValue->getValue().as_flp != cValueDouble);
+      if (sync) {
+        syncValue.as_flp = cValueDouble;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case FLP80X86_KIND:
+      cValueLD = *((long double*) concrete->value.as_ptr);
+      sync = ((long double)iValue->getValue().as_flp != cValueLD);
+      if (sync) {
+        syncValue.as_flp = cValueLD;
+        iValue->setValue(syncValue);
+      }
+      break;
+    default: 
+      cout << "Should not reach here!" << endl;
+      safe_assert(false);
+      break;
+  }
+
+  if (sync) {
+    cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
+  }
 }
