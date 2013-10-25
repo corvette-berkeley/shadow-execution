@@ -1,6 +1,7 @@
 
-Function pointers.
+Function pointers. - DONE
 Intrinsic functions with side effects (e.g., llvm.copy).
 Global variables.
+Modelling phi instruction.
 
 Upgrade to LLVM 3.3.

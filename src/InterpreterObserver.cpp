@@ -1277,6 +1277,7 @@ void InterpreterObserver::return_struct_(IID iid, int inx) {
 void InterpreterObserver::switch_(IID iid, KVALUE* op, int inx) {
   printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
       KVALUE_ToString(*op).c_str(), inx);
+  abort();
 }
 
 void InterpreterObserver::unreachable() {
