@@ -75,8 +75,8 @@ bool Instrumentation::Finalize(Module &M __attribute__((__unused__))) {
 
 void Instrumentation::BeginBasicBlock(BasicBlock* BB, Function* F, Module* M) {
   safe_assert(BB != NULL);	BB_ = BB;
-  safe_assert(F != NULL);		F_ = F;
-  safe_assert(M != NULL);		M_ = M;
+  safe_assert(F != NULL);	F_ = F;
+  safe_assert(M != NULL);	M_ = M;
   AS_ = 0U;
 }
 
@@ -87,7 +87,12 @@ void Instrumentation::BeginFunction() {
   blockIndices.clear();
 }
 
-void Instrumentation::createIndex(uint64_t iid) {
+void Instrumentation::BeginModule(Module* M) {
+  safe_assert(M != NULL);      M_ = M;
+}
+
+void Instrumentation::createIndex(uint64_t iid)
+{
   indices[iid] = varCount;
   varCount++;
 }

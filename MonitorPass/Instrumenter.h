@@ -38,8 +38,6 @@ public:
 	: InstrumenterBase(name, instrumentation) {}
 	virtual ~Instrumenter() {}
 
-protected:
-
 	inline Type* VOID_TYPE()	{ return Type::getVoidTy(parent_->M_->getContext()); }
 	inline Type* INT1_TYPE() 	{ return Type::getInt1Ty(parent_->M_->getContext()); }
 	inline Type* INT32_TYPE() 	{ return Type::getInt32Ty(parent_->M_->getContext()); }

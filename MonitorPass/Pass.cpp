@@ -140,11 +140,23 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doInitialization(Module &M) {
+
+    Instrumentation* instrumentation = Instrumentation::GetInstance();
+    instrumentation->BeginModule(&M);
+    Instrumenter* instrumenter = new Instrumenter("", instrumentation);
+
+
+    InstrPtrVector instrs;
+    cout << instrs.size() << endl;
+
     cout << "=======Iterating through globals" << endl;
 
     for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
       if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
 	i->dump();
+	Value* var = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
+	//cout << "----" << endl;
+	var->dump();
       }
     }
 

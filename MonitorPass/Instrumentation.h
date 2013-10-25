@@ -91,6 +91,11 @@ public:
   void BeginFunction(); 
 
   /**
+   * Set the module field when entering the module.
+   */
+  void BeginModule(Module* M);
+
+  /**
    * Iterate through all registered instrumenter and instrument the given
    * instruction.
    *
