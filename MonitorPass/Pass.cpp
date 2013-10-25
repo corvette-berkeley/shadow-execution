@@ -29,6 +29,9 @@ struct MonitorPass : public FunctionPass {
 
     // create index for all instructions
     for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
+      BasicBlock* block = (BasicBlock*) BB;
+      IID blockIID = static_cast<IID>(reinterpret_cast<ADDRINT>(block));
+      instrumentation->createBlockIndex(blockIID);
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
         Instruction* inst = (Instruction*) itr;
         IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
@@ -45,36 +48,70 @@ struct MonitorPass : public FunctionPass {
 
     unsigned int skip = 0;
     bool isFirstInstruction = true; 
+    bool isFirstBlockInstruction = true;
 
     for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
       // set up pointers to BB, F, and M
       instrumentation->BeginBasicBlock(BB, &F, M);
+      isFirstBlockInstruction = true;
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+        BasicBlock* block = (BasicBlock*) BB;
 
-        // insert a call to create stack frame
-        if (isFirstInstruction)
-        {
-          Constant* frameSize = ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()), instrumentation->getFrameSize(), SIGNED);
+        if (isFirstInstruction) {
+          // insert a call to create stack frame
+          Constant* frameSize =
+            ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
+                instrumentation->getFrameSize(), SIGNED);
           TypePtrVector argTypes;
           argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
 
           ValuePtrVector args;
           args.push_back(frameSize);
 
-          FunctionType* funType = FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()), ArrayRef<Type*>(argTypes), false);
-          Instruction* call = CallInst::Create(instrumentation->M_->getOrInsertFunction(StringRef("llvm_create_stack_frame"), funType), ArrayRef<Value*>(args)); 
+          FunctionType* funType =
+            FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+                ArrayRef<Type*>(argTypes), false);
+          Instruction* call =
+            CallInst::Create(instrumentation->M_->getOrInsertFunction(
+                  StringRef("llvm_create_stack_frame"), funType),
+                ArrayRef<Value*>(args)); 
           call->insertBefore(itr);
           isFirstInstruction = false;
         } 
 
-        //try {
+        if (isFirstBlockInstruction) {
+          // insert a call to record block id 
+          Constant* blockId =
+            ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
+                instrumentation->getBlockIndex(block), SIGNED);
+          TypePtrVector argTypes;
+          argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
+
+          ValuePtrVector args;
+          args.push_back(blockId);
+
+          FunctionType* funType =
+            FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+                ArrayRef<Type*>(argTypes), false);
+          Instruction* call =
+            CallInst::Create(instrumentation->M_->getOrInsertFunction(
+                  StringRef("llvm_record_block_id"), funType),
+                ArrayRef<Value*>(args)); 
+
+          if (dyn_cast<PHINode>(itr)) {
+            call->insertAfter(itr);
+          } else {
+            call->insertBefore(itr);
+          }
+
+          isFirstBlockInstruction = false;
+        }
 
         if (skip == 0) {
+
           if (instrumentation->CheckAndInstrument(itr)) {
-            if (dyn_cast<LoadInst>(itr)) {
-              // skip instrumentation of the next 11 instructions in case of a LoadInstr
-              // skip = 24;
-            } else if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
+
+            if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
               if (callInst->getCalledFunction() != NULL &&
                   callInst->getCalledFunction()->getName() != "malloc") {
                 bool noUnwind =
@@ -85,15 +122,18 @@ struct MonitorPass : public FunctionPass {
                   skip = 12;
                 }
               }
+
+            } else if (dyn_cast<PHINode>(itr)) {
+              skip = 2;
             }
+
           }
+
         }
         else {
           skip--;
         }
-        //	} catch(...) {
-        //return false; // exception!
-        //}
+
       }
     }
     return true;

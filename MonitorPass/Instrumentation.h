@@ -120,6 +120,24 @@ public:
   int getIndex(Instruction* inst);
 
   /**
+   * Create a unique index for block with id iid.
+   *
+   * @note This function also keep the counter of blocks updated.
+   *
+   * @param iid the unique id of a block
+   */
+  void createBlockIndex(uint64_t iid); 
+
+  /**
+   * Get the index of a block.
+   *
+   * @param block the LLVM basic block.
+   *
+   * @return the index of the basic block.
+   */
+  int getBlockIndex(BasicBlock* block);
+
+  /**
    * Get the number of variables/registers in the current function.
    *
    * @return number of variables/registers in the current function.
@@ -129,9 +147,9 @@ public:
   inline static Instrumentation* GetInstance() {
     if(instance_ == NULL) {
       instance_ = new Instrumentation();
-		}
-		return instance_;
-	}
+    }
+    return instance_;
+  }
 
   /**
    * Register an instrumenter.
@@ -143,18 +161,20 @@ public:
 
 public:
   BasicBlock* BB_;
-	Function* F_;
-	Module* M_;
-	unsigned AS_;
+  Function* F_;
+  Module* M_;
+  unsigned AS_;
   int varCount;
   std::map<uint64_t, int> indices;
+  int blockCount;
+  std::map<uint64_t, int> blockIndices;
 
 private:
-	InstrumenterPtrList instrumenters_;
+  InstrumenterPtrList instrumenters_;
 
-	// singleton!!!
-	Instrumentation() : BB_(NULL), F_(NULL), M_(NULL), AS_(0U) {}
-	static Instrumentation* instance_;
+  // singleton!!!
+  Instrumentation() : BB_(NULL), F_(NULL), M_(NULL), AS_(0U) {}
+  static Instrumentation* instance_;
 };
 
 #endif /* INSTRUMENTATION_H_ */

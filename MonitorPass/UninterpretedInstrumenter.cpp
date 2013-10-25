@@ -66,7 +66,8 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     CallInst::Create(parent_->M_->getOrInsertFunction(StringRef(callback.str().c_str()),
           FunctionType::get(VOID_TYPE(), false)));
   if (unInst == PHINODE) {
-    // TODO: what to do for PHINode?
+    // PHINode must be the first instruction in the block
+    call->insertAfter(inst);
   } else {
     call->insertBefore(inst);
   }

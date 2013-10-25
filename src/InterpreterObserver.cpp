@@ -541,6 +541,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     value.as_ptr = (void*) location;
     ptrLocation = new IValue(PTR_KIND, value, true);
     ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
+    ptrLocation->setInitialized(true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -594,6 +595,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
     locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
     locArrPtr->setLength(length);
+    locArrPtr->setInitialized(true);
     executionStack.top()[inx] = locArrPtr;
   } else {
     IValue *location = callArgs.top();
@@ -601,6 +603,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     value.as_ptr = (void*) location;
     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
     ptrLocation->setSize(location->getSize());
+    ptrLocation->setInitialized(true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -633,6 +636,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
+    structPtrVar->setInitialized(true);
 
     executionStack.top()[inx] = structPtrVar;
 //  } else {
@@ -1659,6 +1663,8 @@ void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       cValueInt = *((int32_t*) concrete->value.as_ptr);
       sync = (iValue->getValue().as_int != cValueInt);
       if (sync) {
+        cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
+        cout << "\t CONCRETE: " << cValueInt << endl; 
         syncValue.as_int = cValueInt;
         iValue->setValue(syncValue);
       }

@@ -82,17 +82,17 @@ void Instrumentation::BeginBasicBlock(BasicBlock* BB, Function* F, Module* M) {
 
 void Instrumentation::BeginFunction() {
   varCount = 0;
+  blockCount = 0;
   indices.clear();
+  blockIndices.clear();
 }
 
-void Instrumentation::createIndex(uint64_t iid)
-{
+void Instrumentation::createIndex(uint64_t iid) {
   indices[iid] = varCount;
   varCount++;
 }
 
-int Instrumentation::getIndex(Instruction* inst)
-{
+int Instrumentation::getIndex(Instruction* inst) {
   IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
   if (indices.find(iid) != indices.end()) {
     return indices[iid];
@@ -101,8 +101,22 @@ int Instrumentation::getIndex(Instruction* inst)
   }
 }
 
-int Instrumentation::getFrameSize()
-{
+void Instrumentation::createBlockIndex(uint64_t iid) {
+  blockIndices[iid] = blockCount;
+  blockCount++;
+}
+
+int Instrumentation::getBlockIndex(BasicBlock* block) {
+  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(block));
+  if (blockIndices.find(iid) != blockIndices.end()) {
+    return blockIndices[iid];
+  } else {
+    safe_assert(false);
+    return -1; 
+  }
+}
+
+int Instrumentation::getFrameSize() {
   return varCount;
 }
 

@@ -126,6 +126,7 @@ string IValue::toString() {
   s << ", Index: " << index;
   s << ", FirstByte: " << firstByte;
   s << ", Length: " << length;
+  s << ", Initialized: " << initialized;
 
   return s.str();
 }
