@@ -193,6 +193,8 @@ class InterpreterObserver : public InstructionObserver {
 
   void create_stack_frame(int size);
 
+  void create_global(KVALUE* value);
+
   void printCurrentFrame();
 
   unsigned findIndex(IValue* values, unsigned offset, unsigned length);

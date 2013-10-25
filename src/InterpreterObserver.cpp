@@ -1472,6 +1472,10 @@ void InterpreterObserver::create_stack_frame(int size) {
   executionStack.push(frame);
 }
 
+void InterpreterObserver::create_global(KVALUE* kvalue) {
+  printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+}
+
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   // debugging
   printf("<<<<< CALL >>>>> %s, ", IID_ToString(iid).c_str());

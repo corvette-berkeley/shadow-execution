@@ -160,17 +160,20 @@ public:
 
 	void push_return_struct(KVALUE* value);
 
-  void push_struct_type(KIND kind);
+	void push_struct_type(KIND kind);
+	
+	void push_getelementptr_inx(KVALUE* value);
 
-  void push_getelementptr_inx(KVALUE* value);
+	void push_array_size(uint64_t size);
 
-  void push_array_size(uint64_t size);
+	void construct_array_type(uint64_t i);
+	
+	void call_nounwind(KVALUE* value);
 
-  void construct_array_type(uint64_t i);
+	void create_stack_frame(int size);
 
-  void call_nounwind(KVALUE* value);
+	void create_global(KVALUE* value);
 
-  void create_stack_frame(int size);
 };
 
 

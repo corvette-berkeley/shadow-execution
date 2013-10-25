@@ -90,12 +90,13 @@ public:
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
-  virtual void push_struct_type(KIND kind UNUSED) {};
-  virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
-  virtual void push_array_size(uint64_t i UNUSED) {};
+	virtual void push_struct_type(KIND kind UNUSED) {};
+	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
+	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void call_nounwind(KVALUE* value UNUSED) {};
 	virtual void create_stack_frame(int size UNUSED) {};
+	virtual void create_global(KVALUE* value UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 
 				 int size UNUSED, int inx UNUSED) {};

@@ -426,6 +426,10 @@ void PrintObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
 
+void PrintObserver::create_global(KVALUE* kvalue) {
+  printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+}
+
 void PrintObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   printf("<<<<< CALL >>>>> %s, nounwind: %d, return type: %s", 
       IID_ToString(iid).c_str(), 

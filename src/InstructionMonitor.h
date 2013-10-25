@@ -93,6 +93,7 @@ extern "C" {
   void llvm_construct_array_type(uint64_t i);
   void llvm_call_nounwind(KVALUE* value);
   void llvm_create_stack_frame(int size);
+  void llvm_create_global(KVALUE* value);
   void llvm_call(IID iid, bool nounwind, KIND type, int x);
   void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int x);
   void llvm_vaarg();
