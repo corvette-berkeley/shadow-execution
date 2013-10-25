@@ -22,3 +22,5 @@ add_double
 add_float
 add_fptrunc
 add_longdouble
+memcpy
+mainargs

@@ -265,3 +265,11 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     }
   }
 }
+
+bool IValue::isInitialized() {
+  return initialized;
+}
+
+void IValue::setInitialized(bool i) {
+  initialized = i;
+}
