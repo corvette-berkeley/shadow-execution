@@ -30,6 +30,8 @@ class InterpreterObserver : public InstructionObserver {
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<IValue*> callArgs; // copy value from callers to callee arguments
 
+  int recentBlock; // record the most recent block visited
+
   long double getValueFromConstant(KVALUE* op); 
 
   long double getValueFromIValue(IValue* loc); 
@@ -192,6 +194,8 @@ class InterpreterObserver : public InstructionObserver {
   void call_nounwind(KVALUE* value);
 
   void create_stack_frame(int size);
+  
+  void record_block_id(int id);
 
   void create_global(KVALUE* value);
 

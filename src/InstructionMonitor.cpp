@@ -295,6 +295,10 @@ void llvm_create_stack_frame(int size) {
   DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
+void llvm_record_block_id(int id) {
+  DISPATCH_TO_OBSERVERS(record_block_id, id)
+}
+
 void llvm_create_global(KVALUE* value) {
   DISPATCH_TO_OBSERVERS(create_global, value)
 }

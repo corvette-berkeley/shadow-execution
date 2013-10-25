@@ -172,6 +172,8 @@ public:
 
 	void create_stack_frame(int size);
 
+	void record_block_id(int id);
+
 	void create_global(KVALUE* value);
 
 };

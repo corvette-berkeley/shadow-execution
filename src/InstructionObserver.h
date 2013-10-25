@@ -96,6 +96,7 @@ public:
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void call_nounwind(KVALUE* value UNUSED) {};
 	virtual void create_stack_frame(int size UNUSED) {};
+	virtual void record_block_id(int id UNUSED) {};
 	virtual void create_global(KVALUE* value UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 

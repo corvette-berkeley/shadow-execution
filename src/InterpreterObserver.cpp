@@ -1426,7 +1426,8 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 }
 
 void InterpreterObserver::phinode() {
-  printf("<<<<< PHINODE >>>>>\n");
+  printf("<<<<< PHINODE >>>>>: Should be implemented!\n");
+  abort();
 }
 
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
@@ -1480,6 +1481,11 @@ void InterpreterObserver::create_stack_frame(int size) {
     frame[i] = new IValue();
   }
   executionStack.push(frame);
+}
+
+void InterpreterObserver::record_block_id(int id) {
+  printf("<<<<< RECORD BLOCK ID >>>>> %d\n", id);
+  recentBlock = id;
 }
 
 void InterpreterObserver::create_global(KVALUE* kvalue) {
