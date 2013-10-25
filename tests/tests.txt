@@ -24,3 +24,4 @@ add_fptrunc
 add_longdouble
 memcpy
 mainargs
+phinode
