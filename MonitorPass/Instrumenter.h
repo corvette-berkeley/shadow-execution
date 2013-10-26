@@ -86,12 +86,7 @@ public:
 	inline Constant* INDEX_CONSTANT(unsigned c)		{ return INT32_CONSTANT(c, UNSIGNED); }
 
 	// inst is a pointer to an instruction, we cast it to first uintptr_t and then to IID
-	inline Constant* IID_CONSTANT(Instruction* inst) { return ConstantInt::get(IID_TYPE(), static_cast<IID>(reinterpret_cast<ADDRINT>(inst)), UNSIGNED); }
-
-	inline Constant* IID_CONSTANT_VALUE(Value* value) { 
-	  return ConstantInt::get(IID_TYPE(), static_cast<IID>(reinterpret_cast<ADDRINT>(value)), UNSIGNED); 
-	}
-
+	inline Constant* IID_CONSTANT(Value* value) { return ConstantInt::get(IID_TYPE(), static_cast<IID>(reinterpret_cast<ADDRINT>(value)), UNSIGNED); }
 	inline Constant* INV_IID_CONSTANT()				 { return ConstantInt::get(IID_TYPE(), INV_IID); }
 
 	inline Instruction* IID_CAST_INSTR(Value* v)				{ return CastInst::CreateIntegerCast(v, IID_TYPE(), UNSIGNED); }
@@ -222,13 +217,13 @@ public:
     Instruction* I_cast = NULL;
 
     if (isa<GlobalVariable>(v)) {
-      C_iid = IID_CONSTANT_VALUE(v);
+      C_iid = IID_CONSTANT(v);
     }
     else if (isa<Constant>(v)) {
       C_iid = INV_IID_CONSTANT();
     } else { // not constant, but an instruction
       safe_assert(isa<Instruction>(v));
-      C_iid = IID_CONSTANT(cast<Instruction>(v));
+      C_iid = IID_CONSTANT(v);
     }
 
     C_inx = computeIndex(v);
