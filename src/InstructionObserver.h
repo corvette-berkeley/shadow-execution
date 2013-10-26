@@ -89,8 +89,8 @@ public:
 	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
-  virtual void push_phinode_value(int valId UNUSED, int blockId UNUSED) {};
-  virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};
+	virtual void push_phinode_value(int valId UNUSED, int blockId UNUSED) {};
+	virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
 	virtual void push_struct_type(KIND kind UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
@@ -99,6 +99,7 @@ public:
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void call_nounwind(KVALUE* value UNUSED) {};
 	virtual void create_stack_frame(int size UNUSED) {};
+	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};
 	virtual void create_global(KVALUE* value UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};

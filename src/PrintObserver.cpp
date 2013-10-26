@@ -437,6 +437,10 @@ void PrintObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
 
+void PrintObserver::create_global_symbol_table(int size) {
+  printf("<<<<< CREATE SYMBOL TABLE >>>>> size: %d\n", size);
+}
+
 void PrintObserver::record_block_id(int id) {
   printf("<<<<< RECORD BLOCK ID >>>> id: %d\n", id);
 }

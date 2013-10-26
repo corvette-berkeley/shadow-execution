@@ -1607,6 +1607,17 @@ void InterpreterObserver::create_stack_frame(int size) {
   executionStack.push(frame);
 }
 
+void InterpreterObserver::create_global_symbol_table(int size) {
+  printf("<<<<< CREATE GLOBAL SYMBOL TABLE OF SIZE %d >>>>>\n", size);
+  /*
+  std::vector<IValue*> frame (size);
+  for (int i = 0; i < size; i++) {
+    frame[i] = new IValue();
+  }
+  executionStack.push(frame);
+  */
+}
+
 void InterpreterObserver::record_block_id(int id) {
   printf("<<<<< RECORD BLOCK ID >>>>> %d\n", id);
   recentBlock = id;

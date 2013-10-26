@@ -307,6 +307,10 @@ void llvm_create_stack_frame(int size) {
   DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
+void llvm_create_global_symbol_table(int size) {
+  DISPATCH_TO_OBSERVERS(create_global_symbol_table, size)
+}
+
 void llvm_record_block_id(int id) {
   DISPATCH_TO_OBSERVERS(record_block_id, id)
 }

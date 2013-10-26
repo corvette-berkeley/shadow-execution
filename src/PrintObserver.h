@@ -158,9 +158,9 @@ public:
 
 	void push_stack(KVALUE* value);
 
-  void push_phinode_value(int valId, int blockId);
+	void push_phinode_value(int valId, int blockId);
 
-  void push_phinode_constant_value(KVALUE* value, int blockId);
+	void push_phinode_constant_value(KVALUE* value, int blockId);
 
 	void push_return_struct(KVALUE* value);
 
@@ -177,6 +177,8 @@ public:
 	void call_nounwind(KVALUE* value);
 
 	void create_stack_frame(int size);
+
+	void create_global_symbol_table(int size);
 
 	void record_block_id(int id);
 
