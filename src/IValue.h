@@ -15,7 +15,7 @@ class IValue {
     unsigned index; // index of this object
     unsigned firstByte;
     unsigned length; // number of elements (only for pointers)
-    bool local;
+    SCOPE scope; // defined in Constants.h
     MACHINEFLAG flag;
     void* shadow;
 
@@ -33,21 +33,21 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
-    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), local(l) {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), scope(s) {}
 
-    IValue(KIND t, VALUE v, unsigned f, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), local(l) {}
+    IValue(KIND t, VALUE v, unsigned f, SCOPE s): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), scope(s) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, SCOPE l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), scope(l) {}
 
-    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(1), local(l) {}
+    IValue(KIND t, SCOPE s): type(t), size(0), offset(0), index(0), firstByte(0), length(1), scope(s) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), local(false) {}
+    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
     void setType(KIND t);
 
     void setValue(VALUE v);
 
-    void setLocal(bool l);
+    void setScope(SCOPE s);
 
     void setSize(unsigned int s);
 
@@ -65,7 +65,7 @@ class IValue {
 
     VALUE getValue();
 
-    bool getLocal();
+    SCOPE getScope();
 
     bool isInitialized();
 

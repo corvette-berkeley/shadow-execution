@@ -31,4 +31,10 @@ typedef enum {
   // not implemented yet
 } MACHINEFLAG;
 
+typedef enum {
+  REGISTER,
+  LOCAL,
+  GLOBAL
+} SCOPE;
+
 #endif /* CONSTANTS_DEFS_H_ */

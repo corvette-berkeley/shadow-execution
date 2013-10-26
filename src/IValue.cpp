@@ -9,8 +9,8 @@ void IValue::setValue(VALUE v) {
   value = v;
 }
 
-void IValue::setLocal(bool l) {
-  local = l;
+void IValue::setScope(SCOPE s) {
+  scope = s;
 }
 
 void IValue::setSize(unsigned int s) {
@@ -41,8 +41,8 @@ VALUE IValue::getValue() {
   return value;
 }
 
-bool IValue::getLocal() {
-  return local;
+SCOPE IValue::getScope() {
+  return scope;
 }
 
 unsigned int IValue::getSize() {
@@ -68,11 +68,18 @@ unsigned IValue::getLength() {
 string IValue::toString() {
   std::stringstream s;
 
-  if (local) {
+  switch(scope) {
+  case GLOBAL:
+    s << "GLOBAL   => ";
+    break;
+  case LOCAL:
     s << "LOCAL    => ";
-  }
-  else {
+    break;
+  case REGISTER:
     s << "REGISTER => ";
+    break;
+  default:
+    safe_assert(false);
   }
 
   switch(type) {
@@ -138,7 +145,7 @@ void IValue::copy(IValue *dest) {
   dest->setOffset(offset);
   dest->setIndex(index);
   dest->setLength(length);
-  dest->setLocal(local);
+  // dest->setScope(scope); // I don't think the scope should be propagated
   // note: we do never overwrite the field firstByte
 }
 
