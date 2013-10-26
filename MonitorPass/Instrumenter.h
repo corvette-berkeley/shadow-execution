@@ -209,7 +209,11 @@ public:
     Constant* C_inx = NULL;
     Instruction* I_cast = NULL;
 
-    if(isa<Constant>(v)) {
+    if (isa<GlobalVariable>(v)) {
+      Instruction* inst = IID_CAST_INSTR(v);
+      C_iid = IID_CONSTANT(inst);
+    }
+    else if (isa<Constant>(v)) {
       C_iid = INV_IID_CONSTANT();
     } else { // not constant, but an instruction
       safe_assert(isa<Instruction>(v));

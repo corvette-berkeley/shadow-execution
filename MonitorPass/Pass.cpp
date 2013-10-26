@@ -166,18 +166,18 @@ struct MonitorPass : public FunctionPass {
        ValuePtrVector args;
        Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
        args.push_back(global);
-       
+  
        TypePtrVector argTypes;
-	argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
+       argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
 	
-	Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args); // firstBlock
-	instrs.push_back(call);
+       Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args);
+       instrs.push_back(call);
 	
-	instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
+       instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
      }
-    }
+   }
    
-   mainFunction->dump();
+   //mainFunction->dump();
    
    return Instrumentation::GetInstance()->Initialize(M);
   }
