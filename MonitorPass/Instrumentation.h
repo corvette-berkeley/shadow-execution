@@ -143,6 +143,31 @@ public:
   int getBlockIndex(BasicBlock* block);
 
   /**
+   * Create a unique index for global variable with id iid.
+   *
+   * @note This function also keep the counter of global variables updated.
+   *
+   * @param iid the unique id of a global variable
+   */
+  void createGlobalIndex(uint64_t iid); 
+
+  /**
+   * Get the index of a global variable.
+   *
+   * @param global variable.
+   *
+   * @return the index of the global variable.
+   */
+  int getGlobalIndex(GlobalVariable* var);
+
+  /**
+   * Get the number of global variables in the program.
+   *
+   * @return number of global variables in the program.
+   */
+  int getNumGlobalVar();
+
+  /**
    * Get the number of variables/registers in the current function.
    *
    * @return number of variables/registers in the current function.
@@ -173,6 +198,8 @@ public:
   std::map<uint64_t, int> indices;
   int blockCount;
   std::map<uint64_t, int> blockIndices;
+  int globalVarCount;
+  std::map<uint64_t, int> globalIndices;
 
 private:
   InstrumenterPtrList instrumenters_;

@@ -89,10 +89,11 @@ void Instrumentation::BeginFunction() {
 
 void Instrumentation::BeginModule(Module* M) {
   safe_assert(M != NULL);      M_ = M;
+  globalVarCount = 0;
+  globalIndices.clear();
 }
 
-void Instrumentation::createIndex(uint64_t iid)
-{
+void Instrumentation::createIndex(uint64_t iid) {
   indices[iid] = varCount;
   varCount++;
 }
@@ -119,6 +120,29 @@ int Instrumentation::getBlockIndex(BasicBlock* block) {
     safe_assert(false);
     return -1; 
   }
+}
+
+
+void Instrumentation::createGlobalIndex(uint64_t iid) {
+  globalIndices[iid] = globalVarCount;
+  globalVarCount++;
+}
+
+
+int Instrumentation::getGlobalIndex(GlobalVariable* var) {
+  Instruction* inst = CastInst::CreateIntegerCast(var, Type::getInt64Ty(M_->getContext()), false);
+  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
+  if (globalIndices.find(iid) != globalIndices.end()) {
+    return globalIndices[iid];
+  } else {
+    // error, the global should be found
+    safe_assert(false);
+    return -1;
+  }
+}
+
+int Instrumentation::getNumGlobalVar() {
+  return globalVarCount;
 }
 
 int Instrumentation::getFrameSize() {
