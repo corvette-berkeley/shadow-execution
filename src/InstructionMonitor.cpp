@@ -267,6 +267,14 @@ void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
 }
 
+void llvm_push_phinode_constant_value(KVALUE* value, int blockId) {
+  DISPATCH_TO_OBSERVERS(push_phinode_constant_value, value, blockId);
+}
+
+void llvm_push_phinode_value(int valId, int blockId) {
+  DISPATCH_TO_OBSERVERS(push_phinode_value, valId, blockId);
+}
+
 void llvm_push_return_struct(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_return_struct, value)
 }

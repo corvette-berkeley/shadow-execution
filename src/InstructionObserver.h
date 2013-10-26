@@ -89,6 +89,8 @@ public:
 	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
+  virtual void push_phinode_value(int valId UNUSED, int blockId UNUSED) {};
+  virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
 	virtual void push_struct_type(KIND kind UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};

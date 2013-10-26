@@ -396,6 +396,14 @@ void PrintObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH VALUE >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
 }
 
+void PrintObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
+  printf("<<<<< PUSH PHINODE CONSTANT VALUE >>>>> kvalue: %s, blockid: %d\n", KVALUE_ToString(*value).c_str(), blockId);
+}
+
+void PrintObserver::push_phinode_value(int valId, int blockId) {
+  printf("<<<<< PUSH PHINODE VALUE >>>>> valId: %d, blockid: %d\n", valId, blockId);
+}
+
 void PrintObserver::push_return_struct(KVALUE* value) {
   printf("<<<<< PUSH RETURN STRUCT >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
 }

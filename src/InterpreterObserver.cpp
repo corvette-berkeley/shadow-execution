@@ -1498,7 +1498,6 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
 void InterpreterObserver::phinode(IID iid, int inx) {
   printf("<<<<< PHINODE >>>>>: id %s [INX: %d], Should be implemented!\n", IID_ToString(iid).c_str(), inx);
-  abort();
 }
 
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
@@ -1513,6 +1512,16 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   printf("<<<<< PUSH ARGS TO STACK >>>>>");
   printf(" value %s\n", KVALUE_ToString(*value).c_str());
   myStack.push(value);
+}
+
+void InterpreterObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
+  printf("<<<<< PUSH PHINODE CONSTANT VALUE >>>>> kvalue: %s, blockid: %d\n", KVALUE_ToString(*value).c_str(), blockId);
+  phinodeValues[blockId] = value->value;
+}
+
+void InterpreterObserver::push_phinode_value(int valId, int blockId) {
+  printf("<<<<< PUSH PHINODE VALUE >>>>> valId: %d, blockid: %d\n", valId, blockId);
+  phinodeValues[blockId] = executionStack.top()[valId]->getValue();
 }
 
 void InterpreterObserver::push_return_struct(KVALUE* value) {

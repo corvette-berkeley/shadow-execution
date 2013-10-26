@@ -6,6 +6,7 @@
 #include <stack>
 #include <queue>
 #include <vector>
+#include <map>
 
 namespace llvm {
   class CmpInst;
@@ -29,6 +30,7 @@ class InterpreterObserver : public InstructionObserver {
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<IValue*> callArgs; // copy value from callers to callee arguments
+  map<int, VALUE> phinodeValues; // store phinode value pairs
 
   int recentBlock; // record the most recent block visited
 
@@ -184,6 +186,10 @@ class InterpreterObserver : public InstructionObserver {
   void push_stack(KVALUE* value);
 
   void push_return_struct(KVALUE* value);
+
+  void push_phinode_constant_value(KVALUE* value, int blockId);
+
+  void push_phinode_value(int valId, int blockId);
 
   void push_struct_type(KIND kind);
 

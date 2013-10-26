@@ -46,7 +46,7 @@ struct MonitorPass : public FunctionPass {
      * ii) instrument each instruction using instrumentation->CheckAndInstrument 
      */
 
-    unsigned int skip = 0;
+    // unsigned int skip = 0;
     bool isFirstInstruction = true; 
     bool isFirstBlockInstruction = true;
 
@@ -114,33 +114,9 @@ struct MonitorPass : public FunctionPass {
           isFirstBlockInstruction = false;	   
         }
 
-        if (skip == 0) {
-
-          if (instrumentation->CheckAndInstrument(itr)) {
-
-            if (CallInst* callInst = dyn_cast<CallInst>(itr)) {
-              if (callInst->getCalledFunction() != NULL &&
-                  callInst->getCalledFunction()->getName() != "malloc") {
-                bool noUnwind =
-                  callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind)
-                  || (dyn_cast<IntrinsicInst>(callInst) != NULL &&
-                      !callInst->getType()->isVoidTy());
-                if (noUnwind) {
-                  skip = 14;
-                }
-              }
-
-            } else if (PHINode* phiNode = dyn_cast<PHINode>(itr)) {
-              unsigned valuePairs = phiNode->getNumIncomingValues();
-              skip = 2 + valuePairs*14;
-            }
-
-          }
-
-        }
-        else {
-	  cout << "Skipping" << endl;
-          skip--;
+        // instrumentation
+        if (instrumentation->getIndex(itr) != -1) {
+          instrumentation->CheckAndInstrument(itr);
         }
 
       }

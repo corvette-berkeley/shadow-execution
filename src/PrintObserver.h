@@ -158,6 +158,10 @@ public:
 
 	void push_stack(KVALUE* value);
 
+  void push_phinode_value(int valId, int blockId);
+
+  void push_phinode_constant_value(KVALUE* value, int blockId);
+
 	void push_return_struct(KVALUE* value);
 
 	void push_struct_type(KIND kind);
