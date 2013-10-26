@@ -124,14 +124,18 @@ int Instrumentation::getBlockIndex(BasicBlock* block) {
 
 
 void Instrumentation::createGlobalIndex(uint64_t iid) {
+  cout << "added iid: " << iid << endl;
   globalIndices[iid] = globalVarCount;
   globalVarCount++;
 }
 
 
 int Instrumentation::getGlobalIndex(GlobalVariable* var) {
-  Instruction* inst = CastInst::CreateIntegerCast(var, Type::getInt64Ty(M_->getContext()), false);
-  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
+
+  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(&*var));
+
+  cout << "[getGlobalIndex] => " << iid << " " << &*var << endl;
+
   if (globalIndices.find(iid) != globalIndices.end()) {
     return globalIndices[iid];
   } else {

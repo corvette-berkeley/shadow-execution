@@ -177,7 +177,9 @@ public:
 
   Constant* computeIndex(Value* value) {
     int inx;
-    if (isa<Constant>(value)) {
+    if (isa<GlobalVariable>(value)) {
+      inx = parent_->getGlobalIndex(dyn_cast<GlobalVariable>(value));
+    } else if (isa<Constant>(value)) {
       inx = -1;
     } else { // not constant, but an instruction
       Instruction* inst = (Instruction*) value;
@@ -211,7 +213,7 @@ public:
 
     if (isa<GlobalVariable>(v)) {
       Instruction* inst = IID_CAST_INSTR(v);
-      C_iid = IID_CONSTANT(inst);
+      C_iid = IID_CONSTANT(inst); // ???
     }
     else if (isa<Constant>(v)) {
       C_iid = INV_IID_CONSTANT();

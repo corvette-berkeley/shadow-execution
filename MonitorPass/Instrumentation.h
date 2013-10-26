@@ -42,6 +42,9 @@
 #include "Common.h"
 #include "InstrumenterBase.h"
 #include <map>
+#include <stdio.h>
+
+using namespace std;
 
 class InstrumenterBase;
 

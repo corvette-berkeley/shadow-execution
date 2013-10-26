@@ -161,6 +161,11 @@ struct MonitorPass : public FunctionPass {
    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
      if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
        i->dump();
+
+       // create index for global
+       IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(&*i));
+       instrumentation->createGlobalIndex(iid);
+       cout << "[Pass]" << &*i << " iid: " << iid << endl;
        
        InstrPtrVector instrs;
        ValuePtrVector args;
