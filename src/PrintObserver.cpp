@@ -360,8 +360,8 @@ void PrintObserver::return2_(IID iid, int inx) {
   printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 }
 
-void PrintObserver::return_struct_(IID iid, int inx) {
-  printf("<<<<< RETURN STRUCT >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+void PrintObserver::return_struct_(IID iid, int inx, int valInx) {
+  printf("<<<<< RETURN STRUCT >>>>> %s, valInx: %d, [INX: %d]\n", IID_ToString(iid).c_str(), valInx, inx);
 }
 
 void PrintObserver::switch_(IID iid, KVALUE* op, int inx) {

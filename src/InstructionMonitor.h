@@ -76,7 +76,7 @@ extern "C" {
   void llvm_resume(IID iid, KVALUE* op1, int x);
   void llvm_return_(IID iid, KVALUE* op1, int x);
   void llvm_return2_(IID iid, int x);
-  void llvm_return_struct_(IID iid, int x);
+  void llvm_return_struct_(IID iid, int x, int valInx);
   void llvm_switch_(IID iid, KVALUE* op, int x);
   void llvm_unreachable();
 

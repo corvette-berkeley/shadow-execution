@@ -580,6 +580,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
           IValue* var = new IValue(structKind[j], false);
           length++;
           var->setFirstByte(firstByte);
+          var->setLength(0);
           firstByte += KIND_GetSize(structKind[j]);
           locArr[i*structSize+j] = *var;
         }
@@ -587,6 +588,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
         IValue* var = new IValue(type, false); 
         length++;
         var->setFirstByte(firstByte);
+        var->setLength(0);
         firstByte += KIND_GetSize(type);
         locArr[i] = *var;
       }
@@ -624,6 +626,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
       KIND type = structType.front();
       IValue* var = new IValue(type, false);
       var->setFirstByte(firstByte);
+      var->setLength(0);
       firstByte += KIND_GetSize(type);
       length++;
       ptrToStructVar[i] = *var;
@@ -855,12 +858,14 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
     index = structPtr->getIndex() + index;
 
+    cout << "Getting element at index: " << index << endl;
+
     IValue* structElem = structBase + index;
     IValue* structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), false);
     structElemPtr->setIndex(index);
     structElemPtr->setLength(structPtr->getLength());
-    structElemPtr->setSize(KIND_GetSize(structElem[0].getType()));
-    structElemPtr->setOffset(structElem[0].getFirstByte());
+    structElemPtr->setSize(KIND_GetSize(structElem->getType()));
+    structElemPtr->setOffset(structElem->getFirstByte());
 
     executionStack.top()[inx] = structElemPtr;
 
@@ -1215,14 +1220,22 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
       KVALUE_ToString(*op1).c_str(), inx);
 
   safe_assert(!executionStack.empty());
+
+  IValue* returnValue = op1->inx == -1 ? NULL : executionStack.top()[op1->inx];
+
   executionStack.pop();
 
   if (!executionStack.empty()) {
     cout << "New stack size: " << executionStack.size() << "\n";
     safe_assert(!callerVarIndex.empty());
 
-    executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
-    executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
+    if (returnValue == NULL) {
+      executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
+      executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
+    } else {
+      executionStack.top()[callerVarIndex.top()]->setValue(returnValue->getValue()); 
+      executionStack.top()[callerVarIndex.top()]->setType(returnValue->getType()); 
+    }
     cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
 
     callerVarIndex.pop();
@@ -1251,10 +1264,13 @@ void InterpreterObserver::return2_(IID iid, int inx) {
   return;
 }
 
-void InterpreterObserver::return_struct_(IID iid, int inx) {
-  printf("<<<<< RETURN STRUCT >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
+  printf("<<<<< RETURN STRUCT >>>>> %s, val_inx: %d, [INX: %d]\n", IID_ToString(iid).c_str(), valInx, inx);
 
   safe_assert(!executionStack.empty());
+
+  IValue* returnValue = valInx == -1 ? NULL : executionStack.top()[valInx];
+
   executionStack.pop();
 
   if (!executionStack.empty()) {
@@ -1266,8 +1282,18 @@ void InterpreterObserver::return_struct_(IID iid, int inx) {
     IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
     for (unsigned i = 0; i < returnStruct.size(); i++) {
       KVALUE* value = returnStruct.front();
-      IValue* iValue = new IValue(value->kind, false);
-      iValue->setValue(value->value);
+      IValue* iValue;
+
+      if (returnValue == NULL) {
+        iValue = new IValue(value->kind, false);
+        iValue->setValue(value->value);
+        iValue->setLength(0);
+      } else {
+        iValue = new IValue();
+        returnValue->copy(iValue);
+        returnValue++;
+      }
+
       structValue[i] = *iValue; 
       returnStruct.pop();
     }

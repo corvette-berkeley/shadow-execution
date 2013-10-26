@@ -135,7 +135,7 @@ public:
 
 	virtual void return2_(IID iid, int inx);
   
-	virtual void return_struct_(IID iid, int inx);
+	virtual void return_struct_(IID iid, int inx, int valInx);
 
 	virtual void switch_(IID iid, KVALUE* op, int inx);
 

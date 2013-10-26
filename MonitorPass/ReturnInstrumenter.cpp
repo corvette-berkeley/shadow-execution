@@ -31,7 +31,9 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       KVALUE_STRUCTVALUE(retVal, instrs);
 
-      Instruction* call = CALL_IID_INT("llvm_return_struct_", iidC, inxC);
+      Constant* valInxC = computeIndex(retVal);
+
+      Instruction* call = CALL_IID_INT_INT("llvm_return_struct_", iidC, inxC, valInxC);
       instrs.push_back(call);
       
     } else {

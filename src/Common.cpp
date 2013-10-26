@@ -100,10 +100,13 @@ std::string KIND_ToString(int kind) {
     break;
   case FLP80X86_KIND:
     s << "[FLP80X86]";
+    break;
   case STRUCT_KIND:
     s << "[STRUCT]";
+    break;
   case VOID_KIND:
     s << "[VOID]";
+    break;
   default: //safe_assert(false);
     break;
   }

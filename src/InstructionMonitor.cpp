@@ -229,8 +229,8 @@ void llvm_return_(IID iid, KVALUE* op1, int inx) {
 	DISPATCH_TO_OBSERVERS(return_, iid, op1, inx)
 }
 
-void llvm_return_struct_(IID iid, int inx) {
-  DISPATCH_TO_OBSERVERS(return_struct_, iid, inx);
+void llvm_return_struct_(IID iid, int inx, int valInx) {
+  DISPATCH_TO_OBSERVERS(return_struct_, iid, inx, valInx);
 }
 
 void llvm_return2_(IID iid, int inx) {

@@ -15,6 +15,10 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     Type *type = loadInst->getType();
     if (!type) return false;
+    while (type->isStructTy()) {
+      StructType* structType = (StructType*) type;
+      type = structType->getElementType(0);
+    }
     
     KIND kind = TypeToKind(type);
     if (kind == INV_KIND) return false;
