@@ -211,7 +211,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void printCurrentFrame();
 
-  void syncLoad(IValue* iValue, KVALUE* concrete, KIND type);
+  bool syncLoad(IValue* iValue, KVALUE* concrete, KIND type);
 
   unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 

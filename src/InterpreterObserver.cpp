@@ -74,14 +74,31 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     destLocation->setSize(KIND_GetSize(type));
     destLocation->setValue(value);
     destLocation->setType(type);
+
+    // sync load
+    bool sync = syncLoad(destLocation, src, type);
+
+    // sync heap if sync value
+    if (sync) {
+      srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
+    }
   } else {
     destLocation->setSize(KIND_GetSize(type));
     destLocation->setType(type);
     destLocation->setLength(0);
-  }
 
-  // sync load
-  syncLoad(destLocation, src, type);
+    // sync load
+    bool sync = syncLoad(destLocation, src, type);
+
+    // sync heap if sync value
+    if (sync) {
+      VALUE value;
+      value.as_ptr = (void*) destLocation;
+      srcPtrLocation->setLength(1);
+      srcPtrLocation->setValue(value);
+      srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
+    }
+  }
 
   executionStack.top()[inx] = destLocation;
   cout << destLocation->toString() << endl;
@@ -1497,7 +1514,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 }
 
 void InterpreterObserver::phinode(IID iid, int inx) {
-  printf("<<<<< PHINODE >>>>>: id %s [INX: %d], Should be implemented!\n", IID_ToString(iid).c_str(), inx);
+  printf("<<<<< PHINODE >>>>>: id %s [INX: %d] \n", IID_ToString(iid).c_str(), inx);
 
   IValue* phiNode;
 
@@ -1744,7 +1761,7 @@ void InterpreterObserver::printCurrentFrame() {
   printf("Print current frame\n");
 }
 
-void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
+bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
   bool sync = false;
   VALUE syncValue;
   long cValueInt;
@@ -1826,4 +1843,6 @@ void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
     cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
     cout << "\t " << iValue->toString() << endl;
   }
+
+  return sync;
 }
