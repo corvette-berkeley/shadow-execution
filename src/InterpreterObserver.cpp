@@ -1609,13 +1609,11 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::create_global_symbol_table(int size) {
   printf("<<<<< CREATE GLOBAL SYMBOL TABLE OF SIZE %d >>>>>\n", size);
-  /*
-  std::vector<IValue*> frame (size);
+  
   for (int i = 0; i < size; i++) {
-    frame[i] = new IValue();
+    IValue* value = new IValue();
+    globalSymbolTable.push_back(value);
   }
-  executionStack.push(frame);
-  */
 }
 
 void InterpreterObserver::record_block_id(int id) {
@@ -1636,7 +1634,7 @@ void InterpreterObserver::create_global(KVALUE* kvalue) {
   ptrLocation->setSize(KIND_GetSize(kvalue->kind)); // put in constructor
 
   // store it in globalSymbolTable
-  //globalSymbolTable[kvalue->inx] = ptrLocation;
+  globalSymbolTable[kvalue->inx] = ptrLocation;
 }
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {

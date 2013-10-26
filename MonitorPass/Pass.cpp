@@ -134,16 +134,33 @@ struct MonitorPass : public FunctionPass {
    Function* mainFunction = M.getFunction("main");
    BasicBlock* firstBlock = &mainFunction->getEntryBlock();
    firstBlock->splitBasicBlock(firstBlock->begin(), "");
+
+   // creating global indices
+   for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
+     if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
+       IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(&*i));
+       instrumentation->createGlobalIndex(iid);
+     }
+   }
+
+   // call back to create global symbol table
+   InstrPtrVector instrs;
+   ValuePtrVector args;
+   Constant* size = instrumenter->INT32_CONSTANT(instrumentation->getNumGlobalVar(), NOSIGN);
+   args.push_back(size);
    
-   cout << "=======Iterating through globals" << endl;
+   TypePtrVector argTypes;
+   argTypes.push_back(instrumenter->INT32_TYPE());
+   
+   Instruction* call = instrumenter->CALL_INSTR("llvm_create_global_symbol_table", instrumenter->VOID_FUNC_TYPE(argTypes), args);
+   instrs.push_back(call);
+   
+   instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
+
+   // call back to create each global
    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
      if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
        i->dump();
-
-       // create index for global
-       IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(&*i));
-       instrumentation->createGlobalIndex(iid);
-       cout << "[Pass]" << &*i << " iid: " << iid << endl;
        
        InstrPtrVector instrs;
        ValuePtrVector args;
@@ -159,8 +176,6 @@ struct MonitorPass : public FunctionPass {
        instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
      }
    }
-   
-   //mainFunction->dump();
    
    return Instrumentation::GetInstance()->Initialize(M);
   }
