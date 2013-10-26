@@ -21,6 +21,7 @@ class InterpreterObserver : public InstructionObserver {
 
  private:
   stack< vector< IValue* > > executionStack;
+  vector< IValue* > globalSymbolTable;
 
   stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction

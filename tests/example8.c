@@ -1,11 +1,12 @@
 #include <stdio.h>
 
-double x;
+double a;
+double b;
 
 int main() {
-  x = 5.5;
-  double y = x;
-  double z = x * y;
+  b = 5.5;
+  double y = b;
+  double z = b * y;
 
   printf("Value of a is %f\n", y); 
   return 0;

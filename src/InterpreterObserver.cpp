@@ -1597,6 +1597,18 @@ void InterpreterObserver::record_block_id(int id) {
 
 void InterpreterObserver::create_global(KVALUE* kvalue) {
   printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+  
+  // allocate object
+  IValue* location = new IValue(kvalue->kind, false);
+  location->setLength(0);
+
+  VALUE value;
+  value.as_ptr = location;
+  IValue* ptrLocation = new IValue(PTR_KIND, value, true);
+  ptrLocation->setSize(KIND_GetSize(kvalue->kind)); // put in constructor
+
+  // store it in globalSymbolTable
+  //globalSymbolTable[kvalue->inx] = ptrLocation;
 }
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
