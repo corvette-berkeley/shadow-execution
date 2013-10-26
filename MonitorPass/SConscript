@@ -76,7 +76,8 @@ plugin = env.SharedLibrary(
     'SwitchInstrumenter.cpp',
     'IndirectBrInstrumenter.cpp',
     'AtomicCmpXchgInstrumenter.cpp',
-    'AllocaInstrumenter.cpp'
+    'AllocaInstrumenter.cpp',
+    'PHINodeInstrumenter.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,

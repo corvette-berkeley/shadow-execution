@@ -83,7 +83,7 @@ extern "C" {
   // ***** Other Operations ***** //
   void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int x);
   void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int x);
-  void llvm_phinode();
+  void llvm_phinode(IID iid, int inx);
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);
   void llvm_push_return_struct(KVALUE* value);

@@ -383,8 +383,8 @@ void PrintObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) 
   printf("<<<<< FCMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(*op1).c_str(), KVALUE_ToString(*op2).c_str(), pred, inx);
 }
 
-void PrintObserver::phinode() {
-  printf("<<<<< PHINODE >>>>>\n");
+void PrintObserver::phinode(IID iid, int inx) {
+  printf("<<<<< PHINODE >>>>> iid: %s [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 }
 
 void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {

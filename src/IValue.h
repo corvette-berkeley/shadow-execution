@@ -16,7 +16,6 @@ class IValue {
     unsigned firstByte;
     unsigned length; // number of elements (only for pointers)
     bool local;
-    bool initialized;
     MACHINEFLAG flag;
     void* shadow;
 
@@ -34,15 +33,15 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
-    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), local(l), initialized(false) {}
+    IValue(KIND t, VALUE v, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), local(l) {}
 
-    IValue(KIND t, VALUE v, unsigned f, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), local(l), initialized(false) {}
+    IValue(KIND t, VALUE v, unsigned f, bool l): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), local(l) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l), initialized(false) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, bool l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), local(l) {}
 
-    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(1), local(l), initialized(false) {}
+    IValue(KIND t, bool l): type(t), size(0), offset(0), index(0), firstByte(0), length(1), local(l) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), local(false), initialized(false) {}
+    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), local(false) {}
 
     void setType(KIND t);
 
@@ -60,7 +59,7 @@ class IValue {
 
     void setLength(unsigned l);
 
-    void setInitialized(bool i);
+    void setInitialized();
 
     KIND getType();
 
@@ -110,6 +109,16 @@ class IValue {
      * @param src the source to get value form.
      */
     void writeValue(int offset, int byte, IValue* src);
+
+    /**
+     * Check whether this is an IValue by comparing its type with its expected
+     * type.
+     *
+     * @param t the expected type of this iValue.
+     *
+     * @return true if this is an IValue; false otherwise.
+     */
+    bool isIValue(KIND t);
 };
 
 #endif /* IVALUE_H_ */

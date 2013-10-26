@@ -255,8 +255,8 @@ void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
   DISPATCH_TO_OBSERVERS(fcmp, iid, op1, op2, pred, inx)
 }
 
-void llvm_phinode() {
-	DISPATCH_TO_OBSERVERS(phinode)
+void llvm_phinode(IID iid, int inx) {
+	DISPATCH_TO_OBSERVERS(phinode, iid, inx)
 }
 
 void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {

@@ -130,8 +130,9 @@ struct MonitorPass : public FunctionPass {
                 }
               }
 
-            } else if (dyn_cast<PHINode>(itr)) {
-              skip = 2;
+            } else if (PHINode* phiNode = dyn_cast<PHINode>(itr)) {
+              unsigned valuePairs = phiNode->getNumIncomingValues();
+              skip = 2 + valuePairs*12;
             }
 
           }

@@ -34,9 +34,6 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case UNREACHABLE:
       callback << "unreachable";
       break;
-    case PHINODE:
-      callback << "phinode";
-      break;
     case SELECT:
       callback << "select";
       break;
@@ -65,12 +62,7 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
   Instruction *call =
     CallInst::Create(parent_->M_->getOrInsertFunction(StringRef(callback.str().c_str()),
           FunctionType::get(VOID_TYPE(), false)));
-  if (unInst == PHINODE) {
-    // PHINode must be the first instruction in the block
-    call->insertAfter(inst);
-  } else {
-    call->insertBefore(inst);
-  }
+  call->insertBefore(inst);
 
   return true;
 }
@@ -88,8 +80,6 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return INSERTVALUE;
   } else if (dyn_cast<UnreachableInst>(inst) != NULL) {
     return UNREACHABLE;
-  } else if (dyn_cast<PHINode>(inst) != NULL) {
-    return PHINODE;
   } else if (dyn_cast<SelectInst>(inst) != NULL) {
     return SELECT;
   } else if (dyn_cast<LandingPadInst>(inst) != NULL) {

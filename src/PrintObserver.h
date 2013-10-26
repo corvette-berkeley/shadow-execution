@@ -146,7 +146,7 @@ public:
 
 	virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
 	
-	virtual void phinode();
+	virtual void phinode(IID iid, int inx);
 
 	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
 

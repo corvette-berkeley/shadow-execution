@@ -176,14 +176,17 @@ public:
 	/*******************************************************************************************/
 
   Constant* computeIndex(Value* value) {
-    int inx;
+    int inx = -1;
     if (isa<GlobalVariable>(value)) {
       inx = parent_->getGlobalIndex(dyn_cast<GlobalVariable>(value));
     } else if (isa<Constant>(value)) {
       inx = -1;
-    } else { // not constant, but an instruction
+    } else if (isa<Instruction>(value)) { // not constant, but an instruction
       Instruction* inst = (Instruction*) value;
       inx = parent_->getIndex(inst);
+    } else if (isa<BasicBlock>(value)) { // no an instruction, but a basic block
+      BasicBlock* block = (BasicBlock*) value;
+      inx = parent_->getBlockIndex(block);
     }
 
     return INT32_CONSTANT(inx, SIGNED);

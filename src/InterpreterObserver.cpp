@@ -60,10 +60,10 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     cout << "\tvalueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
 
     srcLocation = &values[valueIndex];
+
     internalOffset = srcOffset - currOffset;
     cout << "\tInternal offset: " << internalOffset << endl;
     cout << "\tsrcLocation: " << srcLocation->toString() << endl;
-
 
     //safe_assert(KIND_GetSize(type) == (int) srcPtrLocation->getSize());
     cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
@@ -71,11 +71,13 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     cout << "\tVALUE returned: " << (float) value.as_flp << endl;
 
     srcLocation->copy(destLocation);
+    destLocation->setSize(KIND_GetSize(type));
     destLocation->setValue(value);
     destLocation->setType(type);
   } else {
-    destLocation->setType(type);
     destLocation->setSize(KIND_GetSize(type));
+    destLocation->setType(type);
+    destLocation->setLength(0);
   }
 
   // sync load
@@ -85,13 +87,13 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
   cout << destLocation->toString() << endl;
 
   return;
- }
+}
 
 // ***** Binary Operations ***** //
 
 std::string InterpreterObserver::BINOP_ToString(int binop) {
-	std::stringstream s;
-	switch(binop) {
+  std::stringstream s;
+  switch(binop) {
     case ADD:
       s << "ADD";
       break;
@@ -128,30 +130,30 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
     case FREM:
       s << "FREM";
       break;
-		default: 
+    default: 
       safe_assert(false);
-			break;
-	}
-	return s.str();
+      break;
+  }
+  return s.str();
 }
 
-  long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
-    KIND kind = op->kind;
-    if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
-      return op->value.as_int;
-    } else {
-      return op->value.as_flp;
-    }
+long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
+  KIND kind = op->kind;
+  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
+    return op->value.as_int;
+  } else {
+    return op->value.as_flp;
   }
+}
 
-  long double InterpreterObserver::getValueFromIValue(IValue* loc) {
-    KIND kind = loc->getType();
-    if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
-      return loc->getValue().as_int;
-    } else {
-      return loc->getValue().as_flp;
-    }
+long double InterpreterObserver::getValueFromIValue(IValue* loc) {
+  KIND kind = loc->getType();
+  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
+    return loc->getValue().as_int;
+  } else {
+    return loc->getValue().as_flp;
   }
+}
 
 void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
   printf("<<<<< %s >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", 
@@ -530,6 +532,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   IValue* location;
   if (callArgs.empty()) {
     location = new IValue(type, false);
+    location->setLength(0);
     VALUE value;
     value.as_ptr = location;
     ptrLocation = new IValue(PTR_KIND, value, true);
@@ -541,7 +544,6 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     value.as_ptr = (void*) location;
     ptrLocation = new IValue(PTR_KIND, value, true);
     ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
-    ptrLocation->setInitialized(true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -595,7 +597,6 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, true);
     locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
     locArrPtr->setLength(length);
-    locArrPtr->setInitialized(true);
     executionStack.top()[inx] = locArrPtr;
   } else {
     IValue *location = callArgs.top();
@@ -603,7 +604,6 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     value.as_ptr = (void*) location;
     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
     ptrLocation->setSize(location->getSize());
-    ptrLocation->setInitialized(true);
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
@@ -636,7 +636,6 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal, false);
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
-    structPtrVar->setInitialized(true);
 
     executionStack.top()[inx] = structPtrVar;
 //  } else {
@@ -722,7 +721,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
   // writing src into dest
   cout << "\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
   destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
-  destPtrLocation->setInitialized(true);
+  destPtrLocation->setInitialized();
   cout << "\tUpdated Dest: " << destLocation->toString() << endl;
   
   // just read again to check store
@@ -774,20 +773,26 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
       inx);
   
   IValue* basePtrLocation = executionStack.top()[base->inx];
+  IValue* ptrLocation;
 
-  int offsetValue;
-  if (offset->inx != -1) {
-    offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
-  }
-  else {
-    offsetValue = offset->value.as_int;
-  }
+  if (basePtrLocation->isInitialized()) {
+    int offsetValue;
+    if (offset->inx != -1) {
+      offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
+    }
+    else {
+      offsetValue = offset->value.as_int;
+    }
 
-  // offset in bytes from base ptr
-  unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
-  cout << "newOffset: " << newOffset << endl;
-  unsigned index = findIndex((IValue*)basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
-  IValue* ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
+    // offset in bytes from base ptr
+    unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
+    cout << "newOffset: " << newOffset << endl;
+
+    unsigned index = findIndex((IValue*) basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
+    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(), false);
+  } else {
+    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, 0, 0, 0, false);
+  }
   
   executionStack.top()[inx] = ptrLocation;
   cout << executionStack.top()[inx]->toString() << endl;
@@ -852,6 +857,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
     IValue* structElem = structBase + index;
     IValue* structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), false);
+    structElemPtr->setIndex(index);
     structElemPtr->setLength(structPtr->getLength());
     structElemPtr->setSize(KIND_GetSize(structElem[0].getType()));
     structElemPtr->setOffset(structElem[0].getFirstByte());
@@ -1429,8 +1435,8 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   return;
 }
 
-void InterpreterObserver::phinode() {
-  printf("<<<<< PHINODE >>>>>: Should be implemented!\n");
+void InterpreterObserver::phinode(IID iid, int inx) {
+  printf("<<<<< PHINODE >>>>>: id %s [INX: %d], Should be implemented!\n", IID_ToString(iid).c_str(), inx);
   abort();
 }
 
@@ -1632,7 +1638,7 @@ void InterpreterObserver::printCurrentFrame() {
 void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
   bool sync = false;
   VALUE syncValue;
-  int cValueInt;
+  long cValueInt;
   float cValueFloat;
   double cValueDouble;
   long double cValueLD;
@@ -1708,7 +1714,6 @@ void InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
   }
 
   if (sync) {
-    iValue->setInitialized(true);
     cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
     cout << "\t " << iValue->toString() << endl;
   }

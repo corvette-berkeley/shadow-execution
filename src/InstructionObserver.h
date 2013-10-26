@@ -86,7 +86,7 @@ public:
 	// ***** Other Operations ***** //
 	virtual void icmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED, int inx UNUSED) {};
 	virtual void fcmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED, int inx UNUSED) {};
-	virtual void phinode() {};
+	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_stack(KVALUE* value UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};

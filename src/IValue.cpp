@@ -126,7 +126,7 @@ string IValue::toString() {
   s << ", Index: " << index;
   s << ", FirstByte: " << firstByte;
   s << ", Length: " << length;
-  s << ", Initialized: " << initialized;
+  s << ", Initialized: " << isInitialized();
 
   return s.str();
 }
@@ -268,9 +268,15 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
 }
 
 bool IValue::isInitialized() {
-  return initialized;
+  return type != PTR_KIND || length > 0;
 }
 
-void IValue::setInitialized(bool i) {
-  initialized = i;
+void IValue::setInitialized() {
+  if (type == PTR_KIND && length == 0) {
+    length = 1;
+  }
+}
+
+bool IValue::isIValue(KIND t) {
+  return type == t;
 }
