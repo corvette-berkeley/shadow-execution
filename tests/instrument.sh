@@ -12,6 +12,7 @@ llvm-dis $1.bc
 
 $LPATH/opt -load ../MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.bc
 
+llvm-dis tmppass.bc
 llc tmppass.bc
 
 $CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt
