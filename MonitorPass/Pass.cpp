@@ -147,7 +147,7 @@ struct MonitorPass : public FunctionPass {
        
        InstrPtrVector instrs;
        ValuePtrVector args;
-       Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN, true);
+       Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
        args.push_back(global);
   
        TypePtrVector argTypes;

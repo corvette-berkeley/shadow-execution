@@ -195,7 +195,7 @@ public:
 
   /*******************************************************************************************/
 
-  Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned, bool isGlobal = false) {
+  Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
     safe_assert(v != NULL);
 
     // TODO(elmas): what else is OK?
@@ -229,6 +229,10 @@ public:
 
     C_inx = computeIndex(v);
 
+    bool isGlobal = false;
+    if (isa<GlobalVariable>(v)) {
+      isGlobal = true;
+    }
     C_global = BOOL_CONSTANT(isGlobal);
 
     if(T->isIntegerTy()) {
