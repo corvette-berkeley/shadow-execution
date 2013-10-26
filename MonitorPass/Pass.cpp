@@ -55,6 +55,7 @@ struct MonitorPass : public FunctionPass {
       instrumentation->BeginBasicBlock(BB, &F, M);
       isFirstBlockInstruction = true;
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+
         BasicBlock* block = (BasicBlock*) BB;
 
         if (isFirstInstruction) {
@@ -77,6 +78,14 @@ struct MonitorPass : public FunctionPass {
                 ArrayRef<Value*>(args)); 
           call->insertBefore(itr);
           isFirstInstruction = false;
+
+	  // if this is the first block of main, skip it all
+	  /*
+	  if (F.getName() == "main") {
+	    skip = block->size() - 1;
+	    cout << "Setting skip to: " << skip << endl;
+	  }
+	  */
         } 
 
         if (isFirstBlockInstruction) {
@@ -104,7 +113,7 @@ struct MonitorPass : public FunctionPass {
             call->insertBefore(itr);
           }
 
-          isFirstBlockInstruction = false;
+          isFirstBlockInstruction = false;	   
         }
 
         if (skip == 0) {
@@ -140,41 +149,39 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doInitialization(Module &M) {
- 
     /*
    Instrumentation* instrumentation = Instrumentation::GetInstance();
-    instrumentation->BeginModule(&M);
-    Instrumenter* instrumenter = new Instrumenter("", instrumentation);
-    
-    // split first block
-    Function* mainFunction = M.getFunction("main");
-    BasicBlock* firstBlock = &mainFunction->getEntryBlock();
-    firstBlock->splitBasicBlock(firstBlock->begin(), "");
-
-    cout << "=======Iterating through globals" << endl;
-    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
-      if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
-	i->dump();
-
-	InstrPtrVector instrs;
-	ValuePtrVector args;
-	Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
-	args.push_back(global);
-
-	TypePtrVector argTypes;
+   instrumentation->BeginModule(&M);
+   Instrumenter* instrumenter = new Instrumenter("", instrumentation);
+   
+   // split first block
+   Function* mainFunction = M.getFunction("main");
+   BasicBlock* firstBlock = &mainFunction->getEntryBlock();
+   firstBlock->splitBasicBlock(firstBlock->begin(), "");
+   
+   cout << "=======Iterating through globals" << endl;
+   for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
+     if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
+       i->dump();
+       
+       InstrPtrVector instrs;
+       ValuePtrVector args;
+       Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
+       args.push_back(global);
+       
+       TypePtrVector argTypes;
 	argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
-
+	
 	Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args); // firstBlock
 	instrs.push_back(call);
-
+	
 	instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
-      }
+     }
     }
-
-    mainFunction->dump();
-    */
-
-    return Instrumentation::GetInstance()->Initialize(M);
+   
+   mainFunction->dump();
+   */
+   return Instrumentation::GetInstance()->Initialize(M);
   }
 
   bool doFinalization(Module &M) {
