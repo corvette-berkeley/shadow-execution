@@ -50,7 +50,13 @@ struct MonitorPass : public FunctionPass {
     bool isFirstInstruction = true; 
     bool isFirstBlockInstruction = true;
 
-    for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
+    Function::iterator BB = F.begin();
+    if (F.getName() == "main") {
+      // completely skip first block
+      BB++;
+    }
+
+    for (Function::iterator e = F.end(); BB != e; ++BB) {
       // set up pointers to BB, F, and M
       instrumentation->BeginBasicBlock(BB, &F, M);
       isFirstBlockInstruction = true;
@@ -78,14 +84,6 @@ struct MonitorPass : public FunctionPass {
                 ArrayRef<Value*>(args)); 
           call->insertBefore(itr);
           isFirstInstruction = false;
-
-	  // if this is the first block of main, skip it all
-	  /*
-	  if (F.getName() == "main") {
-	    skip = block->size() - 1;
-	    cout << "Setting skip to: " << skip << endl;
-	  }
-	  */
         } 
 
         if (isFirstBlockInstruction) {
@@ -149,7 +147,7 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doInitialization(Module &M) {
-    /*
+    
    Instrumentation* instrumentation = Instrumentation::GetInstance();
    instrumentation->BeginModule(&M);
    Instrumenter* instrumenter = new Instrumenter("", instrumentation);
@@ -180,7 +178,7 @@ struct MonitorPass : public FunctionPass {
     }
    
    mainFunction->dump();
-   */
+   
    return Instrumentation::GetInstance()->Initialize(M);
   }
 
