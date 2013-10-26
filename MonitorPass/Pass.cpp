@@ -126,19 +126,20 @@ struct MonitorPass : public FunctionPass {
                   || (dyn_cast<IntrinsicInst>(callInst) != NULL &&
                       !callInst->getType()->isVoidTy());
                 if (noUnwind) {
-                  skip = 12;
+                  skip = 14;
                 }
               }
 
             } else if (PHINode* phiNode = dyn_cast<PHINode>(itr)) {
               unsigned valuePairs = phiNode->getNumIncomingValues();
-              skip = 2 + valuePairs*12;
+              skip = 2 + valuePairs*14;
             }
 
           }
 
         }
         else {
+	  cout << "Skipping" << endl;
           skip--;
         }
 

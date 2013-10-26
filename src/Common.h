@@ -39,9 +39,10 @@
 typedef uintptr_t	ADDRINT;
 typedef uint64_t 	IID;
 typedef int64_t	 	INT;
-typedef int32_t INT32;
+typedef int32_t         INT32; 
 typedef double	 	FLP;
 typedef void*	 	PTR;
+typedef bool            BOOL;
 
 union value_t {
   INT as_int;
@@ -79,8 +80,9 @@ const IID INV_IID = 0U;
 #define KVALUE_ALIGNMENT	4
 
 struct kvalue_t {
-  IID		iid;
+  IID	iid;
   INT32 inx;
+  BOOL  isGlobal;
   KIND	kind;
   VALUE	value;
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));

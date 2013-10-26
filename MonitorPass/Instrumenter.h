@@ -62,7 +62,8 @@ public:
 	inline StructType* KVALUE_TYPE()	{
 		TypePtrVector typeList;
 		typeList.push_back(IID_TYPE());
-    typeList.push_back(INT32_TYPE()); // index type
+		typeList.push_back(INT32_TYPE()); // index type
+		typeList.push_back(BOOL_TYPE()); // isGlobal
 		typeList.push_back(KIND_TYPE());
 		typeList.push_back(VALUE_TYPE());
 
@@ -194,7 +195,7 @@ public:
 
   /*******************************************************************************************/
 
-  Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
+  Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned, bool isGlobal = false) {
     safe_assert(v != NULL);
 
     // TODO(elmas): what else is OK?
@@ -212,6 +213,7 @@ public:
 
     Constant* C_iid = NULL;
     Constant* C_inx = NULL;
+    Constant* C_global = NULL;
     Instruction* I_cast = NULL;
 
     if (isa<GlobalVariable>(v)) {
@@ -226,6 +228,8 @@ public:
     }
 
     C_inx = computeIndex(v);
+
+    C_global = BOOL_CONSTANT(isGlobal);
 
     if(T->isIntegerTy()) {
       I_cast = INTMAX_CAST_INSTR(v, isSigned);
@@ -248,6 +252,7 @@ public:
     ValuePtrVector fields;
     fields.push_back(C_iid);
     fields.push_back(C_inx);
+    fields.push_back(C_global);
     fields.push_back(KIND_CONSTANT(kind));
     fields.push_back(I_cast);
 
