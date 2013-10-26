@@ -30,7 +30,8 @@ class InterpreterObserver : public InstructionObserver {
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<IValue*> callArgs; // copy value from callers to callee arguments
-  map<int, VALUE> phinodeValues; // store phinode value pairs
+  map<int, KVALUE*> phinodeConstantValues; // store phinode value pairs for constants
+  map<int, int> phinodeValues; // store phinode value pairs for values
 
   int recentBlock; // record the most recent block visited
 

@@ -1498,6 +1498,27 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
 void InterpreterObserver::phinode(IID iid, int inx) {
   printf("<<<<< PHINODE >>>>>: id %s [INX: %d], Should be implemented!\n", IID_ToString(iid).c_str(), inx);
+
+  IValue* phiNode;
+
+  if (phinodeConstantValues.find(recentBlock) != phinodeConstantValues.end()) {
+    KVALUE* constant = phinodeConstantValues[recentBlock];
+    phiNode = new IValue(constant->kind, constant->value, false);
+    phiNode->setLength(0);
+  } else {
+    safe_assert(phinodeValues.find(recentBlock) != phinodeValues.end());
+    IValue* inValue = executionStack.top()[phinodeValues[recentBlock]];
+    phiNode = new IValue();
+    inValue->copy(phiNode);
+  }
+
+  phinodeConstantValues.clear();
+  phinodeValues.clear();
+
+  executionStack.top()[inx] = phiNode;
+  cout << phiNode->toString() << "\n";
+
+  return;
 }
 
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
@@ -1516,12 +1537,12 @@ void InterpreterObserver::push_stack(KVALUE* value) {
 
 void InterpreterObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
   printf("<<<<< PUSH PHINODE CONSTANT VALUE >>>>> kvalue: %s, blockid: %d\n", KVALUE_ToString(*value).c_str(), blockId);
-  phinodeValues[blockId] = value->value;
+  phinodeConstantValues[blockId] = value;
 }
 
 void InterpreterObserver::push_phinode_value(int valId, int blockId) {
   printf("<<<<< PUSH PHINODE VALUE >>>>> valId: %d, blockid: %d\n", valId, blockId);
-  phinodeValues[blockId] = executionStack.top()[valId]->getValue();
+  phinodeValues[blockId] = valId;
 }
 
 void InterpreterObserver::push_return_struct(KVALUE* value) {
