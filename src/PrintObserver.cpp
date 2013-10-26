@@ -179,9 +179,9 @@ void PrintObserver::shufflevector() {
 
 // ***** AGGREGATE OPERATIONS ***** //
 
-void PrintObserver::extractvalue(IID iid, KVALUE* op, int inx) {
-  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	 KVALUE_ToString(*op).c_str(), inx);
+void PrintObserver::extractvalue(IID iid, int inx, int opinx) {
+  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_inx:%d, [INX: %d]\n",
+      IID_ToString(iid).c_str(), opinx, inx);
 }
 
 void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
@@ -406,6 +406,10 @@ void PrintObserver::push_struct_type(KIND kind) {
 
 void PrintObserver::push_getelementptr_inx(KVALUE* value) {
   printf("<<<<< PUSH GETELEMENTPTR INX >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str());
+}
+
+void PrintObserver::push_getelementptr_inx2(int value) {
+  printf("<<<<< PUSH GETELEMENTPTR INX >>>>> int: %d\n", value);
 }
 
 void PrintObserver::push_array_size(uint64_t i) {

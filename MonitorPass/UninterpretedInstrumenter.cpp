@@ -25,9 +25,6 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case SHUFFLEVECTOR:
       callback << "shufflevector";
       break;
-    case EXTRACTVALUE:
-      callback << "extractvalue";
-      break;
     case INSERTVALUE:
       callback << "insertvalue";
       break;
@@ -74,8 +71,6 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return INSERTELEMENT;
   } else if (dyn_cast<ShuffleVectorInst>(inst) != NULL) {
     return SHUFFLEVECTOR;
-  } else if (dyn_cast<ExtractValueInst>(inst) != NULL) {
-    return EXTRACTVALUE;
   } else if (dyn_cast<InsertValueInst>(inst) != NULL) {
     return INSERTVALUE;
   } else if (dyn_cast<UnreachableInst>(inst) != NULL) {

@@ -38,7 +38,7 @@ extern "C" {
   void llvm_shufflevector();
 
   // ***** Aggregate Operations ***** //
-  void llvm_extractvalue(IID iid, KVALUE* op, int x);
+  void llvm_extractvalue(IID iid, int inx, int opinx);
   void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int x);
 
   // ***** Memory Access and Addressing Operations ***** //
@@ -89,6 +89,7 @@ extern "C" {
   void llvm_push_return_struct(KVALUE* value);
   void llvm_push_struct_type(KIND kind);
   void llvm_push_getelementptr_inx(KVALUE* value);
+  void llvm_push_getelementptr_inx2(int value);
   void llvm_push_array_size(uint64_t i);
   void llvm_construct_array_type(uint64_t i);
   void llvm_call_nounwind(KVALUE* value);

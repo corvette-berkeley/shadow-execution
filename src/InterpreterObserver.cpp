@@ -333,7 +333,7 @@ void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
       KVALUE_ToString(*op1).c_str(),
       KVALUE_ToString(*op2).c_str(), inx);
 
-  cerr << "[InterpreterObserver::extractvalue] => Unsupported in C???\n";
+  cerr << "[InterpreterObserver::frem] => Unsupported in C???\n";
   abort();
 }
 
@@ -505,13 +505,42 @@ void InterpreterObserver::shufflevector() {
 
 // ***** AGGREGATE OPERATIONS ***** //
 
-void InterpreterObserver::extractvalue(IID iid, KVALUE* op, int inx) {
-  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_val:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KVALUE_ToString(*op).c_str(), 
-      inx);
+void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
+  printf("<<<<< EXTRACTVALUE >>>>> %s, agg_inx:%d, [INX: %d]\n",
+      IID_ToString(iid).c_str(), opinx, inx);
 
-  cerr << "[InterpreterObserver::extractvalue] => Unimplemented\n";
-  abort();
+  int index = getElementPtrIndexList.front();
+  getElementPtrIndexList.pop();
+  safe_assert(getElementPtrIndexList.empty());
+
+  IValue* aggIValue = (opinx == -1) ? NULL : executionStack.top()[opinx];
+
+  KVALUE* aggKValue = returnStruct.front();
+  int count = 0;
+  while (!returnStruct.empty()) {
+    count++;
+    returnStruct.pop();
+    if (count == index) {
+      aggKValue = returnStruct.front();
+    }
+  }
+
+  cout << "KVALUE: " << KVALUE_ToString(*aggKValue) << endl;
+
+  IValue* evValue = new IValue();
+  if (aggIValue != NULL) {
+    aggIValue += index;
+    aggIValue->copy(evValue);
+  } else {
+    evValue->setType(aggKValue->kind);
+    evValue->setValue(aggKValue->value);
+    evValue->setLength(0);
+  }
+
+  executionStack.top()[inx] = evValue;
+  cout << evValue->toString() << "\n";
+
+  return;
 }
 
 void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
@@ -527,7 +556,7 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
-  
+
   IValue* ptrLocation;
   IValue* location;
   if (callArgs.empty()) {
@@ -824,6 +853,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
   }
   index = getElementPtrIndexList.front()*index;
   getElementPtrIndexList.pop();
+  safe_assert(getElementPtrIndexList.empty());
 
   index = ptrArray->getIndex() + index;
 
@@ -856,6 +886,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
+    safe_assert(getElementPtrIndexList.empty());
     index = structPtr->getIndex() + index;
 
     cout << "Getting element at index: " << index << endl;
@@ -1269,7 +1300,7 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
 
   safe_assert(!executionStack.empty());
 
-  IValue* returnValue = valInx == -1 ? NULL : executionStack.top()[valInx];
+  IValue* returnValue = (valInx == -1) ? NULL : executionStack.top()[valInx];
 
   executionStack.pop();
 
@@ -1280,7 +1311,8 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
 
     // reconstruct struct value
     IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
-    for (unsigned i = 0; i < returnStruct.size(); i++) {
+    unsigned i = 0;
+    while (!returnStruct.empty()) {
       KVALUE* value = returnStruct.front();
       IValue* iValue;
 
@@ -1295,8 +1327,11 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
       }
 
       structValue[i] = *iValue; 
+      i++;
       returnStruct.pop();
     }
+
+    safe_assert(returnStruct.empty());
 
     executionStack.top()[callerVarIndex.top()] = structValue;
     cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
@@ -1493,6 +1528,12 @@ void InterpreterObserver::push_struct_type(KIND kind) {
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
   int idx = int_value->value.as_int;
+  printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
+  getElementPtrIndexList.push(idx);
+}
+
+void InterpreterObserver::push_getelementptr_inx2(int int_value) {
+  int idx = int_value;
   printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
   getElementPtrIndexList.push(idx);
 }

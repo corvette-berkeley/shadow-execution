@@ -69,7 +69,7 @@ public:
 
 
 	// ***** AGGREGATE OPERATIONS ***** //
-	virtual void extractvalue(IID iid, KVALUE* op, int inx);
+	virtual void extractvalue(IID iid, int inx, int opinx);
 
 	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
 
@@ -163,6 +163,8 @@ public:
 	void push_struct_type(KIND kind);
 	
 	void push_getelementptr_inx(KVALUE* value);
+
+	void push_getelementptr_inx2(int value);
 
 	void push_array_size(uint64_t size);
 

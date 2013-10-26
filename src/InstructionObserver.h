@@ -40,7 +40,7 @@ public:
 	virtual void shufflevector() {};
 
 	// ***** Aggregate Operations ***** //
-	virtual void extractvalue(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
+	virtual void extractvalue(IID iid UNUSED, int inx UNUSED, int opinx UNUSED) {};
 	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
@@ -92,6 +92,7 @@ public:
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
 	virtual void push_struct_type(KIND kind UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
+	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void call_nounwind(KVALUE* value UNUSED) {};

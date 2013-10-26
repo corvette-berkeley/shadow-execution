@@ -93,7 +93,7 @@ class InterpreterObserver : public InstructionObserver {
   virtual void shufflevector();
   
   // ***** AGGREGATE OPERATIONS ***** //
-  virtual void extractvalue(IID iid, KVALUE* op, int inx);
+  virtual void extractvalue(IID iid, int inx, int opinx);
   
   virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
   
@@ -188,6 +188,8 @@ class InterpreterObserver : public InstructionObserver {
   void push_struct_type(KIND kind);
 
   void push_getelementptr_inx(KVALUE* int_value);
+
+  void push_getelementptr_inx2(int int_value);
 
   void push_array_size(uint64_t size);
 

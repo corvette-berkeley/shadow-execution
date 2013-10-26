@@ -97,8 +97,8 @@ void llvm_shufflevector() {
 }
 
 // ***** Aggregate Operations ***** //
-void llvm_extractvalue(IID iid, KVALUE* op, int inx) {
-	DISPATCH_TO_OBSERVERS(extractvalue, iid, op, inx)
+void llvm_extractvalue(IID iid, int inx, int opinx) {
+	DISPATCH_TO_OBSERVERS(extractvalue, iid, inx, opinx)
 }
 
 void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
@@ -273,6 +273,10 @@ void llvm_push_return_struct(KVALUE* value) {
 
 void llvm_push_getelementptr_inx(KVALUE* value) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
+}
+
+void llvm_push_getelementptr_inx2(int value) {
+  DISPATCH_TO_OBSERVERS(push_getelementptr_inx2, value)
 }
 
 void llvm_push_array_size(uint64_t i) {

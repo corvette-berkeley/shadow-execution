@@ -574,6 +574,17 @@ public:
 	}
 
 	/*******************************************************************************************/
+	Instruction* CALL_INT(const char* func, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
 	Instruction* CALL_IID_INT(const char* func, Value* iid, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
