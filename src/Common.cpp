@@ -18,54 +18,60 @@ std::string PTR_ToString(PTR& ptr) {
 }
 
 std::string KVALUE_ToString(KVALUE& kv) {
-	std::stringstream s;
-	s << "[IID: " << kv.iid << " ";
-	s << "[INX: " << kv.inx << " ";
-	switch(kv.kind) {
-		case PTR_KIND:
-			s << "PTR: " << kv.value.as_ptr << "]";
-			break;
-		case INTPTR_KIND:
-		        s << "INTPTR: " <<  (int*)kv.value.as_ptr << " "<< kv.value.as_ptr << "]";
-			break;
-		case INT1_KIND:
-			s << "INT1: " << kv.value.as_int << "]";
-			break;
-		case INT8_KIND:
-			s << "INT8: " << kv.value.as_int << "]";
-			break;
-		case INT16_KIND:
-			s << "INT16: " << kv.value.as_int << "]";
-			break;
-		case INT32_KIND:
-			s << "INT32: " << kv.value.as_int << "]";
-			break;
-		case INT64_KIND:
-			s << "INT64: " << kv.value.as_int << "]";
-			break;
-		case FLP32_KIND:
-      // TODO: this assumes value.as_flp returns a long double value 
-			s << "FLP32: " << (float) kv.value.as_flp << "]";
-			break;
-		case FLP64_KIND:
-      // TODO: this assumes value.as_flp returns a long double value 
-			s << "FLP64: " << (double) kv.value.as_flp << "]";
-			break;
-    case FLP80X86_KIND:
-      // TODO: this assumes value.as_flp returns a long double value 
-			s << "FLP80X86: " << kv.value.as_flp << "]";
-			break;
+  std::stringstream s;
+  s << "[IID: " << kv.iid << " ";  
+  s << "[INX: " << kv.inx << " ";
+  
+  switch(kv.kind) {
+  case PTR_KIND:
+    s << "PTR: " << kv.value.as_ptr << "]";
+    break;
+  case INTPTR_KIND:
+    s << "INTPTR: " <<  (int*)kv.value.as_ptr << " "<< kv.value.as_ptr << "]";
+    break;
+  case INT1_KIND:
+    s << "INT1: " << kv.value.as_int << "]";
+    break;
+  case INT8_KIND:
+    s << "INT8: " << kv.value.as_int << "]";
+    break;
+  case INT16_KIND:
+    s << "INT16: " << kv.value.as_int << "]";
+    break;
+  case INT32_KIND:
+    s << "INT32: " << kv.value.as_int << "]";
+    break;
+  case INT64_KIND:
+    s << "INT64: " << kv.value.as_int << "]";
+    break;
+  case FLP32_KIND:
+    // TODO: this assumes value.as_flp returns a long double value 
+    s << "FLP32: " << (float) kv.value.as_flp << "]";
+    break;
+  case FLP64_KIND:
+    // TODO: this assumes value.as_flp returns a long double value 
+    s << "FLP64: " << (double) kv.value.as_flp << "]";
+    break;
+  case FLP80X86_KIND:
+    // TODO: this assumes value.as_flp returns a long double value 
+    s << "FLP80X86: " << kv.value.as_flp << "]";
+    break;
     case ARRAY_KIND:
       s << "ARRAY: " << kv.value.as_flp << "]";
       break;
-    case STRUCT_KIND:
-      s << "STRUCT: " << kv.value.as_flp << "]";
-      break;
-		default: //safe_assert(false);
-			break;
-	}
-	s << "]";
-	return s.str();
+  case STRUCT_KIND:
+    s << "STRUCT: " << kv.value.as_flp << "]";
+    break;
+  default: //safe_assert(false);
+    break;
+  }
+
+  if (kv.isGlobal) {
+    s << " GLOBAL";
+  }
+  
+  s << "]";
+  return s.str();
 }
 
 std::string KIND_ToString(int kind) {
