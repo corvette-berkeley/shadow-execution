@@ -35,11 +35,13 @@ class IValue {
   public:
     IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), scope(s) {}
 
-    IValue(KIND t, VALUE v, unsigned f, SCOPE s): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), scope(s) {}
+    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e, SCOPE l): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), scope(l) {}
+    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), scope(REGISTER) {}
 
-    IValue(KIND t, SCOPE s): type(t), size(0), offset(0), index(0), firstByte(0), length(1), scope(s) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), scope(REGISTER) {}
+
+    IValue(KIND t): type(t), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
     IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
