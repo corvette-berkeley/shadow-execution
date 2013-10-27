@@ -121,7 +121,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   InstrPtrVector instrsAfter;
   if (noUnwind) {
-    Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, NOSIGN); 
+    Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
     Instruction* call = CALL_KVALUE("llvm_call_nounwind", callReturnValue);
     instrsAfter.push_back(call);
 

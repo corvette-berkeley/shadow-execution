@@ -1604,11 +1604,13 @@ void InterpreterObserver::push_array_size(uint64_t size) {
 }
 
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
-  printf("<<<<< CALL NOUNWIND >>>>>\n");
+  printf("<<<<< CALL NOUNWIND >>>>> kvalue: %s\n", KVALUE_ToString(*kvalue).c_str());
   safe_assert(!callerVarIndex.empty());
   IValue* reg = executionStack.top()[callerVarIndex.top()];
   reg->setValue(kvalue->value);
   callerVarIndex.pop();
+
+  cout << reg->toString() << endl;
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
@@ -1688,7 +1690,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   printf("\n");
 
   callerVarIndex.push(inx);
-  executionStack.top()[inx] = new IValue(type);
+  IValue* callValue = new IValue(type);
+  callValue->setLength(0);
+  executionStack.top()[inx] = callValue;
 
   cout << executionStack.top()[inx]->toString() << "\n";
 }
