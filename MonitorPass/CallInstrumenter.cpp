@@ -125,7 +125,6 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     Instruction* call = CALL_KVALUE("llvm_call_nounwind", callReturnValue);
     instrsAfter.push_back(call);
 
-    cout << endl << "[Call] => Instructions after: " << instrsAfter.size() << endl;
     InsertAllAfter(instrsAfter, callInst);
   }
 

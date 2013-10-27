@@ -41,7 +41,6 @@ bool PHINodeInstrumenter::CheckAndInstrument(Instruction* inst) {
     Instruction* call = CALL_IID_INT("llvm_phinode", iidC, inxC);
     instrs.push_back(call);
 
-    cout << endl << "[PHINode] => Instructions after: " << instrs.size() << endl;
     InsertAllAfter(instrs, phiNode);
 
     return true;
