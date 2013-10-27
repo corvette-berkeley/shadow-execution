@@ -737,7 +737,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int inx) {
 	 KVALUE_ToString(*src).c_str(), inx); // kv
 
   // retrieve ptr destination
-  IValue *destPtrLocation = executionStack.top()[dest->inx];
+  IValue* destPtrLocation;
+  if (dest->isGlobal) {
+    destPtrLocation = globalSymbolTable[dest->inx];
+  }
+  else {
+    destPtrLocation = executionStack.top()[dest->inx];
+  }
+
   cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
 
   unsigned destPtrOffset = destPtrLocation->getOffset();
