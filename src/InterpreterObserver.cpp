@@ -939,8 +939,40 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
   printf("<<<<< TRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
       KIND_ToString(type).c_str(), KVALUE_ToString(*op).c_str(), size, inx);
 
-  cerr << "[InterpreterObserver::trunc] => Unimplemented\n";
-  abort();
+  IValue* src = executionStack.top()[op->inx];
+  VALUE value = src->getValue();
+  int64_t intValue = value.as_int;
+  int64_t* int64Ptr = &intValue;
+  bool* int1Ptr = (bool*) int64Ptr;
+  int8_t* int8Ptr = (int8_t*) int64Ptr;
+  int16_t* int16Ptr = (int16_t*) int64Ptr;
+  int32_t* int32Ptr = (int32_t*) int64Ptr;
+  VALUE truncValue;
+
+  switch (type) {
+    case INT1_KIND:
+      truncValue.as_int = *int1Ptr;
+      break;
+    case INT8_KIND:
+      truncValue.as_int = *int8Ptr; 
+      break;
+    case INT16_KIND:
+      truncValue.as_int = *int16Ptr;
+      break;
+    case INT32_KIND:
+      truncValue.as_int = *int32Ptr;
+      break;
+    case INT64_KIND:
+      truncValue.as_int = *int64Ptr;
+      break;
+    default:
+      cerr << "[InterpreterObserver::zext] => Unsupport integer type " << type << "\n";
+      safe_assert(false);
+  }
+
+  IValue* truncVar = new IValue(type, truncValue);
+  executionStack.top()[inx] = truncVar;
+  cout << executionStack.top()[inx]->toString() << endl;
 }
 
 void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
