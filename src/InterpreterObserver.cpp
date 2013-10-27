@@ -42,7 +42,13 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
 	 KVALUE_ToString(*src).c_str(),
 	 inx);
 
-  IValue *srcPtrLocation = executionStack.top()[src->inx];
+  IValue* srcPtrLocation;
+  if (src->isGlobal) {
+    srcPtrLocation = globalSymbolTable[src->inx];
+  }
+  else {
+    srcPtrLocation = executionStack.top()[src->inx];
+  }
   cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
 
   // creating new value
