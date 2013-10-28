@@ -168,12 +168,19 @@ struct MonitorPass : public FunctionPass {
        args.push_back(global);
 
        if (i->hasInitializer()) {
-	 Value* initializer = instrumenter->KVALUE_VALUE(i->getInitializer(), instrs, NOSIGN);
-	 args.push_back(initializer);
+	 KIND initKind = instrumenter->TypeToKind(i->getInitializer()->getType());
+	 if (initKind != ARRAY_KIND && initKind != STRUCT_KIND) {
+	   Value* initializer = instrumenter->KVALUE_VALUE(i->getInitializer(), instrs, NOSIGN);
+	   args.push_back(initializer);
+	 }
+	 else {
+	   // for now
+	   args.push_back(global);
+	 }
        }
        else {
-	 cout << "Uninitialized global variable" << endl;
-	 safe_assert(false);
+	 // for now
+	 args.push_back(global);
        }
   
        TypePtrVector argTypes;

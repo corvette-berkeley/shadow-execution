@@ -1673,7 +1673,8 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   printf("<<<<< CREATE GLOBAL >>>>> %s %s\n", KVALUE_ToString(*kvalue).c_str(), KVALUE_ToString(*initializer).c_str());
   
   // allocate object
-  IValue* location = new IValue(initializer->kind, initializer->value, GLOBAL); // GLOBAL?
+  IValue* location;
+  location = new IValue(initializer->kind, initializer->value, GLOBAL); // GLOBAL?
   location->setLength(0);
 
   VALUE value;

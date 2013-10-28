@@ -2,10 +2,13 @@
 
 double a = 8;
 double b;
-//double c[5];
+double c[5];
 double* d;
 
 int main() {
+
+  c[4] = 3.3;
+
   b = a;
   b = 5.5;
   double y = b;
