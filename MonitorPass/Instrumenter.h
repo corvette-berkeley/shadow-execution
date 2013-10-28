@@ -218,8 +218,7 @@ public:
 
     if (isa<GlobalVariable>(v)) {
       C_iid = IID_CONSTANT(v);
-    }
-    else if (isa<Constant>(v)) {
+    } else if (isa<Constant>(v)) {
       C_iid = INV_IID_CONSTANT();
     } else { // not constant, but an instruction
       safe_assert(isa<Instruction>(v));
