@@ -101,7 +101,7 @@ public:
 	virtual void create_stack_frame(int size UNUSED) {};
 	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};
-	virtual void create_global(KVALUE* value UNUSED) {};
+	virtual void create_global(KVALUE* value UNUSED, KVALUE* initializer UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 
 				 int size UNUSED, int inx UNUSED) {};

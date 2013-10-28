@@ -445,8 +445,8 @@ void PrintObserver::record_block_id(int id) {
   printf("<<<<< RECORD BLOCK ID >>>> id: %d\n", id);
 }
 
-void PrintObserver::create_global(KVALUE* kvalue) {
-  printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+void PrintObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
+  printf("<<<<< CREATE GLOBAL >>>>> %s %s\n", KVALUE_ToString(*kvalue).c_str(), KVALUE_ToString(*initializer).c_str());
 }
 
 void PrintObserver::call(IID iid, bool nounwind, KIND type, int inx) {

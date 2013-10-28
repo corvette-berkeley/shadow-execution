@@ -315,8 +315,8 @@ void llvm_record_block_id(int id) {
   DISPATCH_TO_OBSERVERS(record_block_id, id)
 }
 
-void llvm_create_global(KVALUE* value) {
-  DISPATCH_TO_OBSERVERS(create_global, value)
+void llvm_create_global(KVALUE* value, KVALUE* initializer) {
+  DISPATCH_TO_OBSERVERS(create_global, value, initializer)
 }
 
 void llvm_call(IID iid, bool nounwind, KIND type, int inx) {

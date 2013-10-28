@@ -166,10 +166,20 @@ struct MonitorPass : public FunctionPass {
        ValuePtrVector args;
        Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
        args.push_back(global);
+
+       if (i->hasInitializer()) {
+	 Value* initializer = instrumenter->KVALUE_VALUE(i->getInitializer(), instrs, NOSIGN);
+	 args.push_back(initializer);
+       }
+       else {
+	 cout << "Uninitialized global variable" << endl;
+	 safe_assert(false);
+       }
   
        TypePtrVector argTypes;
        argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
-	
+       argTypes.push_back(instrumenter->KVALUEPTR_TYPE());	
+
        Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args);
        instrs.push_back(call);
 	

@@ -82,6 +82,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int inx) {
     destLocation->setType(type);
 
     // sync load
+    //bool sync = false;
     bool sync = syncLoad(destLocation, src, type);
 
     // sync heap if sync value
@@ -1668,20 +1669,22 @@ void InterpreterObserver::record_block_id(int id) {
   recentBlock = id;
 }
 
-void InterpreterObserver::create_global(KVALUE* kvalue) {
-  printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
+  printf("<<<<< CREATE GLOBAL >>>>> %s %s\n", KVALUE_ToString(*kvalue).c_str(), KVALUE_ToString(*initializer).c_str());
   
   // allocate object
-  IValue* location = new IValue(kvalue->kind);
+  IValue* location = new IValue(initializer->kind, initializer->value, GLOBAL); // GLOBAL?
   location->setLength(0);
 
   VALUE value;
   value.as_ptr = location;
   IValue* ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
-  ptrLocation->setSize(KIND_GetSize(kvalue->kind)); // put in constructor
+  ptrLocation->setSize(KIND_GetSize(initializer->kind)); // put in constructor
 
   // store it in globalSymbolTable
   globalSymbolTable[kvalue->inx] = ptrLocation;
+  cout << "\tloc: " << location->toString() << endl;
+  cout << "\tptr: " << ptrLocation->toString() << endl;
 }
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {

@@ -2,7 +2,7 @@
 
 double a = 8;
 double b;
-double c[5];
+//double c[5];
 double* d;
 
 int main() {
@@ -11,6 +11,6 @@ int main() {
   double y = b;
   double z = b * y;
 
-  printf("Value of a is %f\n", y); 
+  printf("Value of a is %f\n", z); 
   return 0;
 }

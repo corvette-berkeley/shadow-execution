@@ -209,7 +209,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void record_block_id(int id);
 
-  void create_global(KVALUE* value);
+  void create_global(KVALUE* value, KVALUE* initializer);
 
   void printCurrentFrame();
 
