@@ -193,6 +193,17 @@ public:
     return INT32_CONSTANT(inx, SIGNED);
   }
 
+	/*******************************************************************************************/
+
+  int getLineNumber(Instruction* inst) {
+    if (MDNode* node = inst->getMetadata("dbg")) {
+      DILocation loc(node);
+      return loc.getLineNumber();
+    } else {
+      return 0;
+    }
+  }
+
   /*******************************************************************************************/
 
   Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
@@ -473,6 +484,31 @@ public:
 	}
 
 	/*******************************************************************************************/
+	Instruction* CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* index,
+								Value* kind, Value* size, Value* line, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(BOOL_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(KIND_TYPE());
+		ArgTypes.push_back(INT64_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(b1);
+		Args.push_back(kvalue);
+		Args.push_back(index);
+		Args.push_back(kind);
+		Args.push_back(size);
+		Args.push_back(line);
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+	/*******************************************************************************************/
 	Instruction* CALL_IID_KVALUE_INT(const char* func, Value* iid, Value* kvalue, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -560,6 +596,26 @@ public:
 		Args.push_back(iid);
 		Args.push_back(kvalue1);
 		Args.push_back(kvalue2);
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+
+	/*******************************************************************************************/
+	Instruction* CALL_IID_KVALUE_KVALUE_INT_INT(const char* func, Value* iid, Value* kvalue1, Value* kvalue2, Value* line, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(kvalue1);
+		Args.push_back(kvalue2);
+		Args.push_back(line);
 		Args.push_back(inx);
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);

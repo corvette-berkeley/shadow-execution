@@ -19,7 +19,7 @@ public:
   stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
-	virtual void load(IID iid, KIND kind, KVALUE* op, int inx);
+	virtual void load(IID iid, KIND kind, KVALUE* op, int line, int inx);
 
 	// ***** Binary Operations ***** //
 
@@ -80,7 +80,7 @@ public:
 
 	virtual void allocax_struct(IID iid, uint64_t size, int inx);
 
-	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
+	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx);
 
 	virtual void fence();
 
@@ -88,7 +88,7 @@ public:
 
 	virtual void atomicrmw();
 
-	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx);
+	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int line, int inx);
 
 	virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx); 
 

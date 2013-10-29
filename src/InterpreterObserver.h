@@ -17,9 +17,9 @@ using namespace llvm;
 
 class InterpreterObserver : public InstructionObserver {
 
+ protected:
   typedef uint64_t IID;
 
- private:
   stack< vector< IValue* > > executionStack;
   vector< IValue* > globalSymbolTable;
 
@@ -36,6 +36,10 @@ class InterpreterObserver : public InstructionObserver {
 
   int recentBlock; // record the most recent block visited
 
+  bool isReturn; // whether return instruction is just executed
+
+  bool debug; // whether to print debugging information
+
   long double getValueFromConstant(KVALUE* op); 
 
   long double getValueFromIValue(IValue* loc); 
@@ -46,9 +50,12 @@ class InterpreterObserver : public InstructionObserver {
 
  public:
   
-  InterpreterObserver(std::string name) : InstructionObserver(name) {}
+  InterpreterObserver(std::string name) : InstructionObserver(name) {
+    debug = false;
+    isReturn = false;
+  }
   
-  virtual void load(IID iid, KIND kind, KVALUE* op, int inx);
+  virtual void load(IID iid, KIND kind, KVALUE* op, int line, int inx);
   
   // ***** Binary Operations ***** //
   
@@ -108,7 +115,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void allocax_struct(IID iid, uint64_t size, int inx);
   
-  virtual void store(IID iid, KVALUE* op, KVALUE* kv, int inx);
+  virtual void store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx);
   
   virtual void fence();
   
@@ -116,7 +123,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void atomicrmw();
 
-  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx);
+  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size,int line, int inx);
 
   virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx);
 
@@ -214,6 +221,8 @@ class InterpreterObserver : public InstructionObserver {
   void printCurrentFrame();
 
   bool syncLoad(IValue* iValue, KVALUE* concrete, KIND type);
+
+  bool checkStore(IValue *dest, KVALUE *kv);
 
   unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 

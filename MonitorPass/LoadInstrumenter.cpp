@@ -28,7 +28,9 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
     Value* op = KVALUE_VALUE(loadInst->getPointerOperand(), instrs, NOSIGN);
     if(op == NULL) return false;
 
-    Instruction* call = CALL_IID_KIND_KVALUE_INT("llvm_load", iid, kindC, op, inx);
+    Constant* CLine = INT32_CONSTANT(getLineNumber(loadInst), SIGNED);
+
+    Instruction* call = CALL_IID_KIND_KVALUE_INT_INT("llvm_load", iid, kindC, op, CLine, inx);
     instrs.push_back(call);
 
     InsertAllBefore(instrs, loadInst);

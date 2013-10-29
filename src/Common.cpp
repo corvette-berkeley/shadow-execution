@@ -144,7 +144,6 @@ int KIND_GetSize(int kind) {
       safe_assert(false);
     default:
       // shouldn't reach here
-      printf("Shouldn't reach here!\n");
       safe_assert(false);
       return 0;
   }

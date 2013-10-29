@@ -63,6 +63,8 @@ class IValue {
 
     void setInitialized();
 
+    void setShadow(void* addr);
+
     KIND getType();
 
     VALUE getValue();
@@ -80,6 +82,8 @@ class IValue {
     unsigned int getSize();
 
     int getOffset();
+
+    void* getShadow();
 
     string toString();
 

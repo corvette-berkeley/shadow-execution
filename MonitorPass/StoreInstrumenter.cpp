@@ -29,7 +29,9 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* inxC = computeIndex(storeInst);
 
-    Instruction* call = CALL_IID_KVALUE_KVALUE_INT("llvm_store", iidC, pointerOp, valueOp, inxC);
+    Constant* lineC = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
+
+    Instruction* call = CALL_IID_KVALUE_KVALUE_INT_INT("llvm_store", iidC, pointerOp, valueOp, lineC, inxC);
     instrs.push_back(call);
 
     // instrument

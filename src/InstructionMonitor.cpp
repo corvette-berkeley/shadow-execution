@@ -1,6 +1,8 @@
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
 #include "InterpreterObserver.h"
+#include "OutOfBoundAnalysis.h"
+#include "PrintObserver.h"
 
 /*******************************************************************************************/
 #define DISPATCH_TO_OBSERVERS(func, ...) \
@@ -120,13 +122,13 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx) {
   DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx);
 }
 
-void llvm_load(IID iid, KIND kind, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, kind, op, inx);
+void llvm_load(IID iid, KIND kind, KVALUE* op, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, kind, op, line, inx);
 }
 
 
-void llvm_store(IID iid, KVALUE* op, KVALUE* value, int inx) {
-  DISPATCH_TO_OBSERVERS(store, iid, op, value, inx)
+void llvm_store(IID iid, KVALUE* op, KVALUE* value, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(store, iid, op, value, line, inx)
 }
 
 void llvm_fence() {
@@ -141,8 +143,8 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, inx)
+void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, line, inx)
 }
 
 void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int inx) {
@@ -342,15 +344,15 @@ ObserverPtrList observers_;
 
 /*******************************************************************************************/
 
-#include "PrintObserver.h"
 
 // macro for adding observers
 #define REGISTER_OBSERVER(T, N) \
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-//REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(PrintObserver, "print")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 
 /*******************************************************************************************/
 

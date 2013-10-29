@@ -1,5 +1,8 @@
 #include "IValue.h"
 
+void IValue::setShadow(void* addr) {
+  shadow = addr;
+}
 
 void IValue::setType(KIND t) {
   type = t;
@@ -31,6 +34,10 @@ void IValue::setFirstByte(unsigned f) {
 
 void IValue::setLength(unsigned l) {
   length = l;
+}
+
+void* IValue::getShadow() {
+  return shadow;
 }
 
 KIND IValue::getType() {
@@ -150,7 +157,7 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-  cout << "KIND: " << KIND_ToString(type) << endl;
+//  cout << "KIND: " << KIND_ToString(type) << endl;
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
   int byte = KIND_GetSize(type);
   VALUE value;
@@ -177,7 +184,7 @@ VALUE IValue::readValue(int offset, KIND type) {
     for (unsigned i = index; i < nextIndex; i++) {
       IValue value = valueArray[i];
 
-      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
+//      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
 
       KIND type = value.getType();
       int size = KIND_GetSize(type);
@@ -189,14 +196,14 @@ VALUE IValue::readValue(int offset, KIND type) {
       }
     }
 
-    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
+//    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
 
     // truncate content from total content
     uint8_t* truncContent = (uint8_t*) calloc(8, sizeof(uint8_t)); // TODO: magic number 8
     int trcInx = 0;
 
     for (int i = offset; i < offset + byte; i++) {
-      cout << "\t [IValue::readvalue] i: " << i << endl;
+//      cout << "\t [IValue::readvalue] i: " << i << endl;
       truncContent[trcInx] = totalContent[i];
       trcInx++;
     }
@@ -262,11 +269,11 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
 
     while (byteWrittens < byte) {
       IValue *currentValue = &valueArray[currentIndex];
-      cout << "=== Ivalue: " << currentValue->toString() << endl;
-      cout << "=== current value: " << currentValue->getValue().as_int << endl;
+//      cout << "=== Ivalue: " << currentValue->toString() << endl;
+//      cout << "=== current value: " << currentValue->getValue().as_int << endl;
       byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
-      cout << "=== current value after: " << currentValue->getValue().as_int << endl;
-      cout << "=== Ivalue after: " << currentValue->toString() << endl;
+//      cout << "=== current value after: " << currentValue->getValue().as_int << endl;
+//      cout << "=== Ivalue after: " << currentValue->toString() << endl;
       content += byteWrittens;
       currentIndex++;
       offset = 0;

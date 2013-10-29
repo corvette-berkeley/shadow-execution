@@ -120,7 +120,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   InsertAllBefore(instrs, callInst);
 
   InstrPtrVector instrsAfter;
-  if (noUnwind) {
+  if (!returnType->isVoidTy() && (callInst->getCalledFunction() == NULL || 
+      callInst->getCalledFunction()->getName() != "malloc")) {
     Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
     Instruction* call = CALL_KVALUE("llvm_call_nounwind", callReturnValue);
     instrsAfter.push_back(call);

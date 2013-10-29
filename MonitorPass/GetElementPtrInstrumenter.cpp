@@ -127,7 +127,9 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* size = INT64_CONSTANT(elemT->getPrimitiveSizeInBits(), false);
 
-    Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, inxC);
+    Constant* line = INT32_CONSTANT(getLineNumber(gepInst), SIGNED);
+
+    Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, line, inxC);
     instrs.push_back(call);
 
   }

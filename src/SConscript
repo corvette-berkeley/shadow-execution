@@ -65,6 +65,7 @@ plugin = env.SharedLibrary(
     'InterpreterObserver.cpp',
     'IValue.cpp',
     'PrintObserver.cpp',
+    'OutOfBoundAnalysis.cpp',
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,

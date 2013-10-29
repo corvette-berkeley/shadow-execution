@@ -2,3 +2,5 @@
 i_*.bc
 i_*.s
 *.out
+.gitignore
+.git

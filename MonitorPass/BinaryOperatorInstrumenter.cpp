@@ -14,10 +14,10 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     count_++;
 
     InstrPtrVector instrs;
-    Value* lop = KVALUE_VALUE(binInst->getOperand(0), instrs, NOSIGN);
+    Value* lop = KVALUE_VALUE(binInst->getOperand(0), instrs, SIGNED);
     if (lop == NULL) return false;
 
-    Value *rop = KVALUE_VALUE(binInst->getOperand(1), instrs, NOSIGN);
+    Value *rop = KVALUE_VALUE(binInst->getOperand(1), instrs, SIGNED);
     if (rop == NULL) return false;
 
     Constant* iid = IID_CONSTANT(binInst);

@@ -4,10 +4,11 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KIND type, KVALUE* op, int inx) {
-  printf("<<<<< LOAD >>>>> %s, kind:%s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), 
+void PrintObserver::load(IID iid, KIND type, KVALUE* op, int line, int inx) {
+  printf("<<<<< LOAD >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(), 
 	 KIND_ToString(type).c_str(),
 	 KVALUE_ToString(*op).c_str(),
+   line,
 	 inx);
 }
 
@@ -204,10 +205,10 @@ void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, inx: %d\n", IID_ToString(iid).c_str(), size, inx);
 }
 
-void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int inx) {
-  printf("<<<<< STORE >>>>> %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx) {
+  printf("<<<<< STORE >>>>> %s, %s, %s, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
 	 KVALUE_ToString(*op).c_str(),
-	 KVALUE_ToString(*kv).c_str(), inx);
+	 KVALUE_ToString(*kv).c_str(), line, inx);
 }
 
 void PrintObserver::fence() {
@@ -225,14 +226,15 @@ void PrintObserver::atomicrmw() {
   printf("<<<<< ATOMICRMW >>>>>\n");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int inx) {
-  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size %ld, [INX: %d]\n", 
+void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int line, int inx) {
+  printf("<<<<< GETELEMENTPTR >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size %ld, line %d, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
 	 KVALUE_ToString(*op).c_str(),
 	 KVALUE_ToString(*index).c_str(), 
 	 KIND_ToString(kind).c_str(),
 	 size,
+   line,
 	 inx);
 }
 
