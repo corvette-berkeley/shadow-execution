@@ -1,5 +1,6 @@
 
 Global variables: arrays and structs.
+String constants (see string.c).
 Loading struct pointer (struct-return, ls).
 Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
