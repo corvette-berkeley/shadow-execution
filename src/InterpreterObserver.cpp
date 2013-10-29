@@ -1809,9 +1809,10 @@ void InterpreterObserver::record_block_id(int id) {
   recentBlock = id;
 }
 
-void InterpreterObserver::create_global(KVALUE* kvalue) {
-  if (debug)
-    printf("<<<<< CREATE GLOBAL >>>>> %s\n", KVALUE_ToString(*kvalue).c_str());
+void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
+  if (debug) {
+    printf("<<<<< CREATE GLOBAL >>>>> %s %s\n", KVALUE_ToString(*kvalue).c_str(), KVALUE_ToString(*initializer).c_str());
+  }
 
   // allocate object
   IValue* location;
