@@ -70,7 +70,7 @@ def main():
 
       
       ############################################
-      # instrumented executable file
+      # creating instrumented executable file
       iexecutablefile = executable + '.out' 
       iexecutable = open(iexecutablefile, 'w')
 
@@ -80,8 +80,20 @@ def main():
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
-        log.write("[FAILED EXECUTABLE]: " + executable + ".out\n")
+        log.write("[FAILED CREATING EXECUTABLE]: " + executable + ".out\n")
+
+      iexecutable.close()
          
+
+      ############################################
+      # running executable file        
+      command = ['./' + executable + '.out']
+      retval = call(command, stdin=None, stdout=None, stderr=None)
+
+      # return -1 if running LLVM passes fails
+      if retval <> 0:
+        log.write("[FAILED RUNNING EXECUTABLE]: " + iexecutablefile + "\n")
+
 
 
 
