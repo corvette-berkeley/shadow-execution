@@ -51,7 +51,7 @@ class InterpreterObserver : public InstructionObserver {
  public:
   
   InterpreterObserver(std::string name) : InstructionObserver(name) {
-    debug = false;
+    debug = true;
     isReturn = false;
   }
   
