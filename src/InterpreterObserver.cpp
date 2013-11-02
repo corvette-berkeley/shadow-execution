@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <stack>
 #include <vector>
-#include <llvm/InstrTypes.h>
+#include <llvm/IR/InstrTypes.h>
 
 
 unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigned length) {
