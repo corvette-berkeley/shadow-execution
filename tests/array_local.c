@@ -8,5 +8,5 @@ int main() {
 
   int d = a[1];
 
-  return d;
+  return 0;
 }

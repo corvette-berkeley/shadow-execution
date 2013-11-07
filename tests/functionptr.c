@@ -6,5 +6,7 @@ int main() {
   int (*bar)(int, int);
   bar = &foo;
 
-  return bar(1, 2);
+  bar(1, 2);
+
+  return 0;
 }

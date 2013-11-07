@@ -5,5 +5,6 @@ int main() {
   a = pow(-1, 7);
 
   printf("Value of a is %d\n", a); 
-  return a;
+
+  return 0;
 }

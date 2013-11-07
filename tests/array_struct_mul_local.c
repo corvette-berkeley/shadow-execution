@@ -16,5 +16,5 @@ int main() {
 
   int e = a[1][2].b;
 
-  return e;
+  return 0;
 }

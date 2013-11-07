@@ -14,5 +14,5 @@ int main() {
 
   int d = a[1].b;
 
-  return d;
+  return 0;
 }

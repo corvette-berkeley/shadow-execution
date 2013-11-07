@@ -14,5 +14,5 @@ int main()
   mul = add * a;
   div = mul / sub;
 
-  return div;
+  return 0;
 }

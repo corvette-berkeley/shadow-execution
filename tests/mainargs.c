@@ -5,5 +5,5 @@ int main(int argc, char** argv) {
 
   printf("value of a is %d", (int) a);
 
-  return (int) a;
+  return 0;
 }

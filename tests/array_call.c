@@ -17,5 +17,5 @@ int main() {
 
   int sum = sum_array(3, 4, arr);
 
-  return sum;
+  return 0;
 }
