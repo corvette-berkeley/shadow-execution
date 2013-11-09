@@ -6,6 +6,81 @@ Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
 Upgrade to LLVM 3.3.
 
+Core utilities:
+
+During interpretation:
+==============
+Strings
+	cat
+
+Don't support bit right now:
+      ln -s list.txt list.txt.2
+
+Seg fault
+    printenv
+    rm list.txt
+    uname
+    unexpand list.txt
+    tty
+    tr abc ABC
+    truncate -s 5 list.txt
+    tee (usage: ls | ./tee.out out)
+
+Failed assertion at call_nounwind:
+    wc
+
+Failed assertion at KIND_GetSize:
+   false --version
+   sum list.txt
+   split -b 22 list.txt list
+   sync
+   tac list.txt
+   true --version
+   users
+   uptime
+   uniq list.txt
+   whoami
+
+Mismatch at store:
+   unlink list.txt
+   tsort list.txt
+
+During instrumentation:
+===============
+Unsupported KVALUE type.
+    date
+    ls
+    mv
+    sleep
+    stat
+    tail
+    timeout
+    touch
+    vdir
+
+Unknown error:
+    md5sum
+
+Broken module:
+   mkidr
+   rmdir
+   stdbuf
+   stty
+   who
+
+Failed assertion at CallInstrumenter:
+   sort
+
+
+Next to check: shuf
+
+
+
+Passing:
+=====
+   pwd
+   echo
+
 
 Function pointers. - DONE
 Intrinsic functions with side effects (e.g., llvm.copy) - DONE
