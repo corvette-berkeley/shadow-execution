@@ -19,6 +19,11 @@ Don't support bit right now:
 Seg fault
     printenv
     rm list.txt
+    sha1sum list.txt
+    sha224sum list.txt
+    sha256sum list.txt
+    sha384sum list.txt
+    sha512sum list.txt
     uname
     unexpand list.txt
     tty
@@ -32,6 +37,7 @@ Failed assertion at call_nounwind:
 
 Failed assertion at KIND_GetSize:
    false --version
+   runcon
    sum list.txt
    split -b 22 list.txt list
    tac list.txt
@@ -41,6 +47,8 @@ Failed assertion at KIND_GetSize:
    FIXED: whoami
 
 Mismatch at store:
+   readlink
+   realpath
    sync
    tsort list.txt
    unlink list.txt
@@ -63,17 +71,23 @@ Unknown error:
     md5sum
 
 Broken module:
+   df 
    mkidr
    rmdir
+   seq
    stdbuf
    stty
    who
 
 Failed assertion at CallInstrumenter:
    sort
+   shuf
+
+Failed assertion at getelementptr_array:
+   shred list.txt
 
 
-Next to check: shuf
+Next to check: ptx
 
 
 
