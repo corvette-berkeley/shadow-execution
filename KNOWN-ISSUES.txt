@@ -27,23 +27,24 @@ Seg fault
     tee (usage: ls | ./tee.out out)
 
 Failed assertion at call_nounwind:
+   uptime
     wc
 
 Failed assertion at KIND_GetSize:
    false --version
    sum list.txt
    split -b 22 list.txt list
-   sync
    tac list.txt
    true --version
-   users
-   uptime
+   FIXED: users
    uniq list.txt
-   whoami
+   FIXED: whoami
 
 Mismatch at store:
-   unlink list.txt
+   sync
    tsort list.txt
+   unlink list.txt
+
 
 During instrumentation:
 ===============
@@ -78,9 +79,10 @@ Next to check: shuf
 
 Passing:
 =====
-   pwd
    echo
-
+   pwd
+   users
+   whoami
 
 Function pointers. - DONE
 Intrinsic functions with side effects (e.g., llvm.copy) - DONE
