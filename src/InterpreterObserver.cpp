@@ -801,18 +801,23 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   if (debug)
     cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
 
+  // TODO: Review this
+  if (!destPtrLocation->isInitialized()) {
+    IValue* iValue = new IValue(src->kind);
+    iValue->setLength(0);
+    VALUE value;
+    value.as_ptr = (void*) iValue;
+    destPtrLocation->setValue(value);
+    destPtrLocation->setInitialized();
+  }
+
   unsigned destPtrOffset = destPtrLocation->getOffset();
   IValue *destLocation = NULL;
   IValue *srcLocation = NULL;
   int internalOffset = 0;
 
   // retrieve source
-  if (src->iid == 0) {
-    srcLocation = new IValue(src->kind, src->value);
-  }
-  else {
-    srcLocation = executionStack.top()[src->inx];
-  }
+  srcLocation = (src->iid == 0) ? new IValue(src->kind, src->value) : executionStack.top()[src->inx];
 
   if (debug)
     cout << "\tSrc: " << srcLocation->toString() << endl;
@@ -835,7 +840,8 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   }
 
   // writing src into dest
-  destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
+  // destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
+  destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation);
   destPtrLocation->setInitialized();
 
   if (debug)
@@ -973,23 +979,31 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
         inx);
 
   IValue* structPtr = executionStack.top()[op->inx];
-  IValue* structBase = static_cast<IValue*>(structPtr->getValue().as_ptr);
+  IValue* structElemPtr;
 
-  int index;
-  getElementPtrIndexList.pop();
-  index = getElementPtrIndexList.front();
-  getElementPtrIndexList.pop();
-  // safe_assert(getElementPtrIndexList.empty());
-  index = structPtr->getIndex() + index;
+  cout << structPtr->toString() << endl;
 
-  cout << "Getting element at index: " << index << endl;
+  if (structPtr->isInitialized()) {
+    IValue* structBase = static_cast<IValue*>(structPtr->getValue().as_ptr);
 
-  IValue* structElem = structBase + index;
-  IValue* structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
-  structElemPtr->setIndex(index);
-  structElemPtr->setLength(structPtr->getLength());
-  structElemPtr->setSize(KIND_GetSize(structElem->getType()));
-  structElemPtr->setOffset(structElem->getFirstByte());
+    int index;
+    getElementPtrIndexList.pop();
+    index = getElementPtrIndexList.front();
+    getElementPtrIndexList.pop();
+    // safe_assert(getElementPtrIndexList.empty());
+    index = structPtr->getIndex() + index;
+
+    cout << "Getting element at index: " << index << endl;
+
+    IValue* structElem = structBase + index;
+    structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
+    structElemPtr->setIndex(index);
+    structElemPtr->setLength(structPtr->getLength());
+    structElemPtr->setSize(KIND_GetSize(structElem->getType()));
+    structElemPtr->setOffset(structElem->getFirstByte());
+  } else {
+    structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
+  }
 
   executionStack.top()[inx] = structElemPtr;
 
@@ -1406,7 +1420,7 @@ void InterpreterObserver::resume(IID iid, KVALUE* op1, int inx) {
 
 void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
   if (debug)
-    printf("<<<<< RETURN >>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+    printf("<<<<< RETURN 1>>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(*op1).c_str(), inx);
 
   safe_assert(!executionStack.empty());
@@ -1442,7 +1456,7 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
 
 void InterpreterObserver::return2_(IID iid, int inx) {
   if (debug)
-    printf("<<<<< RETURN >>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+    printf("<<<<< RETURN 2>>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
 
   safe_assert(!executionStack.empty());
   executionStack.pop();
