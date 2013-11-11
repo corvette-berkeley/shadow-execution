@@ -6,26 +6,31 @@ Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
 Upgrade to LLVM 3.3.
 
-Core utilities:
+CORE UTILITIES (9/100).
 
 During interpretation:
 ==============
-Strings
+Strings (6)
+   basename list.txt
    cat
    id
    mktemp testingXXX
    nl list.txt
    paste list.txt list.txt	
 
-Don't support bit right now:
+Don't support bit right now (1)
     ln -s list.txt list.txt.2
 
-Seg fault
+Seg fault (23)
+    chmod +x temp.txt
+    comm list.txt list.txt
+    cut -c2 list.txt
     dircolors
     dirname /usr/local
     env
     expand list.txt
     join list.txt list.txt
+    ./mknod.out temp.txt b 12 5
     nohup time (or nohup)
     printenv
     rm list.txt
@@ -41,17 +46,20 @@ Seg fault
     truncate -s 5 list.txt
     tee (usage: ls | ./tee.out out)
 
-Failed assertion at call_nounwind:
+Failed assertion at call_nounwind (4)
+   base64 list.txt
    fmt list.txt 
    uptime
    wc
 
-Failed assertion at KIND_GetSize:
+Failed assertion at KIND_GetSize (14)
+   csplit -f xyz list.txt 11 72 98
    false --version
    fold -5 list.txt
    groups
    head list.txt
    nproc
+   pathchk /usr/local
    pinky
    runcon
    sum list.txt
@@ -62,20 +70,27 @@ Failed assertion at KIND_GetSize:
    uniq list.txt
    FIXED: whoami
 
-Mismatch at store:
+Mismatch at store (8)
+   chown root temp.txt
+   chroot
+   cksum list.txt
    readlink
    realpath
    sync
    tsort list.txt
    unlink list.txt
 
-Failed assertion at phinode:
+Failed assertion at phinode (1)
    kill pid (it did get to the point at which it killed the process).
 
+Others (haven't tested)
+   chgrp
+   chcon
 
 During instrumentation:
-===============
-Unsupported KVALUE type.
+===================
+Unsupported KVALUE type (15)
+    cp
     date
     dir
     du
@@ -91,10 +106,10 @@ Unsupported KVALUE type.
     touch
     vdir
 
-Unknown error:
+Unknown error (1)
     md5sum
 
-Broken module:
+Broken module (9)
    df 
    numfmt
    mkdir
@@ -105,24 +120,22 @@ Broken module:
    stty
    who
 
-Failed assertion at CallInstrumenter:
+Failed assertion at CallInstrumenter (3)
    ptx
    sort
    shuf
 
-Failed assertion at getelementptr_array:
+Failed assertion at getelementptr_array (1)
    shred list.txt
 
-Failed assertion at getGlobalIndex:
+Failed assertion at getGlobalIndex (1)
    od
 
-Unknown error:
+Unknown error (1)
    expr
-   mknode
-   pathchk
 
-Passing:
-=====
+Passing (9)
+=======
    echo
    hostid
    link list.txt link.txt
@@ -133,8 +146,6 @@ Passing:
    users
    whoami
 
-
-Next: dd
 
 ISSUES resolved:
 
