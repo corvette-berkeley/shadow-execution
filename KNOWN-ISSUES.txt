@@ -11,12 +11,22 @@ Core utilities:
 During interpretation:
 ==============
 Strings
-	cat
+   cat
+   id
+   mktemp testingXXX
+   nl list.txt
+   paste list.txt list.txt	
 
 Don't support bit right now:
-      ln -s list.txt list.txt.2
+    ln -s list.txt list.txt.2
 
 Seg fault
+    dircolors
+    dirname /usr/local
+    env
+    expand list.txt
+    join list.txt list.txt
+    nohup time (or nohup)
     printenv
     rm list.txt
     sha1sum list.txt
@@ -32,11 +42,17 @@ Seg fault
     tee (usage: ls | ./tee.out out)
 
 Failed assertion at call_nounwind:
+   fmt list.txt 
    uptime
-    wc
+   wc
 
 Failed assertion at KIND_GetSize:
    false --version
+   fold -5 list.txt
+   groups
+   head list.txt
+   nproc
+   pinky
    runcon
    sum list.txt
    split -b 22 list.txt list
@@ -53,13 +69,21 @@ Mismatch at store:
    tsort list.txt
    unlink list.txt
 
+Failed assertion at phinode:
+   kill pid (it did get to the point at which it killed the process).
+
 
 During instrumentation:
 ===============
 Unsupported KVALUE type.
     date
+    dir
+    du
+    factor
+    install
     ls
     mv
+    pr
     sleep
     stat
     tail
@@ -72,7 +96,9 @@ Unknown error:
 
 Broken module:
    df 
-   mkidr
+   numfmt
+   mkdir
+   printf
    rmdir
    seq
    stdbuf
@@ -80,23 +106,37 @@ Broken module:
    who
 
 Failed assertion at CallInstrumenter:
+   ptx
    sort
    shuf
 
 Failed assertion at getelementptr_array:
    shred list.txt
 
+Failed assertion at getGlobalIndex:
+   od
 
-Next to check: ptx
-
-
+Unknown error:
+   expr
+   mknode
+   pathchk
 
 Passing:
 =====
    echo
+   hostid
+   link list.txt link.txt
+   logname
+   mkfifo temp (it creates a file...)
+   nice
    pwd
    users
    whoami
+
+
+Next: dd
+
+ISSUES resolved:
 
 Function pointers. - DONE
 Intrinsic functions with side effects (e.g., llvm.copy) - DONE
