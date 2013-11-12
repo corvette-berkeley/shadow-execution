@@ -1648,16 +1648,14 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
       break;
   }
 
-  // put result back to VALUE
-  // TODO: incomplete?!
   VALUE vresult;
   vresult.as_int = result;
 
-  IValue *nloc = new IValue(INT1_KIND, vresult);
+  IValue *nloc = new IValue(op1->kind, vresult);
   executionStack.top()[inx] = nloc;
-  if (debug)
-    cout << nloc->toString() << "\n";
-
+  if (debug) {
+    cout << nloc->toString() << endl;
+  }
   return;
 }
 
