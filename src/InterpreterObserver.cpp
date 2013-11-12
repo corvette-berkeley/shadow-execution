@@ -516,19 +516,36 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(*op1).c_str(),
         KVALUE_ToString(*op2).c_str(), inx);
 
-  IValue *loc1 = executionStack.top()[op1->inx];
-  IValue *loc2 = executionStack.top()[op2->inx];
-  int result = loc1->getValue().as_int ^ loc2->getValue().as_int;
+  int value1, value2;
+  if (op1->inx == -1) {
+    value1 = op1->value.as_int;
+  }
+  else {
+    IValue *loc1 = executionStack.top()[op1->inx];
+    value1 = loc1->getValue().as_int;
+  }
+
+  if (op2->inx == -1) {
+    value2 = op2->value.as_int;
+  }
+  else {
+    IValue *loc2 = executionStack.top()[op2->inx];
+    value2 = loc2->getValue().as_int;
+  }
+
+  int result = value1 ^ value2;
+  cout << result << endl;
 
   // put result back to VALUE
   // TODO: incomplete?!
   VALUE vresult;
   vresult.as_int = result;
 
-  IValue *nloc = new IValue(loc1->getType(), vresult);
+  IValue *nloc = new IValue(op1->kind, vresult);
+
   executionStack.top()[inx] = nloc;
   if (debug)
-    cout << nloc->toString() << "\n";
+    cout << nloc->toString() << endl;
 
   return;
 }
@@ -841,8 +858,10 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 
   // writing src into dest
   // destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
+
   destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation);
   destPtrLocation->setInitialized();
+
 
   if (debug)
     cout << "\tUpdated Dest: " << destLocation->toString() << endl;
