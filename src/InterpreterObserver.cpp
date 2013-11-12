@@ -1654,6 +1654,8 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
+
   executionStack.top()[inx] = nloc;
   if (debug) {
     cout << nloc->toString() << endl;

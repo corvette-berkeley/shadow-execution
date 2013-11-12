@@ -11,17 +11,22 @@ CORE UTILITIES (9/100).
 
 During interpretation:
 ==============
-Unhandled type for IValue (6)
+Unhandled type for IValue (8)
    basename list.txt
    cat list.txt
+   ./csplit.out -f xyz list.txt 11 72 98
    id
    mktemp testingXXX
    nl list.txt
+   nproc
    paste list.txt list.txt	
 
-Don't support bit right now (3)
+Don't support bit right now (14)
+    groups
+    head list.txt
     ln -s list.txt list.txt.2
     md5sum list.txt
+    pathchk /usr/local
     pinky
     ./sha1sum.out list.txt
     ./sha224sum.out list.txt
@@ -29,34 +34,28 @@ Don't support bit right now (3)
     ./sha384sum.out list.txt
     ./sha512sum.out list.txt
     sum list.txt
-    head list.txt
-    groups
-    pathchk /usr/local
     tac list.txt
+   users
 
-   ./ptx.out list.txt (result of trunc is int1 with size 0 because of
-   the division by 8 we do during instrumentation).
+Seg fault because of size of int being 0 (make sure xor, or set size): (4)
+    ./dirname.out /usr/local
+    ./env.out
+   ./ptx.out list.txt
+    tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
 
 Negative internal offset (1)
     ./dircolors.out
 
-Seg fault (9)
+Seg fault (7)
     ./comm.out list.txt list.txt (pointer constant)
-  
-  ./dirname.out /usr/local (fails after icmp seems fine).
-    env: after (fails after trunc seems fine).
-
+   ./fold -5 list.txt
     ./join.out list.txt list.txt (pointer constant)
     ./mknod.out temp.txt b 12 5
-    ./nohup.out time (or nohup)
-
-    ./printenv.out : (fails after trunc seems fine).
+    ./nohup.out time (or nohup) (null pointer)
     ./tty.out (fails after icmp seems fine).
-    tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
     ./rm.out list.txt (store of global variable)
 
-
-Failed assertion at call_nounwind (4)
+Failed assertion at call_nounwind (7)
    base64 list.txt
     ./expand.out list.txt
    fmt list.txt 
@@ -65,25 +64,21 @@ Failed assertion at call_nounwind (4)
    uptime
    wc
 
-Failed assertion at KIND_GetSize (6)
-   csplit -f xyz list.txt 11 72 98
-   fold -5 list.txt
-   nproc
-   split -b 22 list.txt list
-   true --version
+Failed assertion at KIND_GetSize (2)
+   ./split.out -b 22 list.txt list (in alloca struct)
     ./truncate.out -s 5 list.txt (negative internal offset)
 
-Mismatch at store (11)
-   false --version
+Mismatch at store (14)
     ./chmod.out +x temp.txt
    chown root temp.txt
    chroot
    cksum list.txt
     ./cut.out -c2 list.txt
+   false --version
    readlink
    realpath
   ./shuf.out list.txt
-   sync
+   ./true.out --version
    tsort list.txt
     ./tr.out abc ABC
    unlink list.txt
@@ -146,7 +141,7 @@ Passing (10)
    nice
    pwd
    runcon
-   users
+   sync
    whoami
 
 
