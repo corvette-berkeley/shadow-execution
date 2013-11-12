@@ -63,10 +63,20 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       callInst->getCalledFunction()->getName() == "malloc") {
     Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
 
-    safe_assert(callInst->getNumUses() == 1);
+
+    // there can be more than 1 use
+    // e.g., checking for NULL
+    // assume bitcast to same type if more than one
+    BitCastInst *bitcast = NULL;
+    Value::use_iterator it = callInst->use_begin();
+    for(; it != callInst->use_end(); it++) {
+      if ((bitcast = dyn_cast<BitCastInst>(*it)) != NULL) {
+	break;
+      }
+    }
 
     Constant* size = NULL;
-    if (BitCastInst *bitcast = dyn_cast<BitCastInst>(*callInst->use_begin())) {
+    if (bitcast != NULL) {
       bitcast->dump();
 
       PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
