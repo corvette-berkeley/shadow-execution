@@ -62,7 +62,6 @@ Failed assertion at KIND_GetSize (11)
    nproc
    pathchk /usr/local
     ./rm.out list.txt
-   runcon
    split -b 22 list.txt list
    tac list.txt
    true --version
@@ -105,6 +104,7 @@ Unsupported KVALUE type (15)
     mv
     pr
     sleep
+    sort
     stat
     tail
     timeout
@@ -124,7 +124,6 @@ Broken module (9)
 
 Failed assertion at CallInstrumenter (3)
    ptx
-   sort
    shuf
 
 Failed assertion at getelementptr_array (1)
@@ -136,7 +135,7 @@ Failed assertion at getGlobalIndex (1)
 Unknown error (1)
    expr
 
-Passing (9)
+Passing (10)
 =======
    echo
    hostid
@@ -145,6 +144,7 @@ Passing (9)
    mkfifo temp (it creates a file...)
    nice
    pwd
+   runcon
    users
    whoami
 
