@@ -1036,17 +1036,21 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
-    // safe_assert(getElementPtrIndexList.empty());
     index = structPtr->getIndex() + index;
 
     cout << "Getting element at index: " << index << endl;
 
-    IValue* structElem = structBase + index;
-    structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
-    structElemPtr->setIndex(index);
-    structElemPtr->setLength(structPtr->getLength());
-    structElemPtr->setSize(KIND_GetSize(structElem->getType()));
-    structElemPtr->setOffset(structElem->getFirstByte());
+    // TODO: revisit this
+    if (index < (int) structPtr->getLength()) {
+      IValue* structElem = structBase + index;
+      structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
+      structElemPtr->setIndex(index);
+      structElemPtr->setLength(structPtr->getLength());
+      structElemPtr->setSize(KIND_GetSize(structElem->getType()));
+      structElemPtr->setOffset(structElem->getFirstByte());
+    } else {
+      structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
+    }
   } else {
     structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
   }
