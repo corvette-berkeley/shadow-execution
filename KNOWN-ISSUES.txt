@@ -34,16 +34,22 @@ Don't support bit right now (3)
     pathchk /usr/local
     tac list.txt
 
+   ./ptx.out list.txt (result of trunc is int1 with size 0 because of
+   the division by 8 we do during instrumentation).
+
 Negative internal offset (1)
     ./dircolors.out
 
 Seg fault (9)
     ./comm.out list.txt list.txt (pointer constant)
-    ./dirname.out /usr/local (fails after icmp seems fine).
+  
+  ./dirname.out /usr/local (fails after icmp seems fine).
     env: after (fails after trunc seems fine).
+
     ./join.out list.txt list.txt (pointer constant)
     ./mknod.out temp.txt b 12 5
     ./nohup.out time (or nohup)
+
     ./printenv.out : (fails after trunc seems fine).
     ./tty.out (fails after icmp seems fine).
     tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
@@ -76,6 +82,7 @@ Mismatch at store (11)
     ./cut.out -c2 list.txt
    readlink
    realpath
+  ./shuf.out list.txt
    sync
    tsort list.txt
     ./tr.out abc ABC
@@ -119,10 +126,6 @@ Broken module (9)
    stdbuf
    stty
    who
-
-Failed assertion at CallInstrumenter (3)
-   ptx
-   shuf
 
 Failed assertion at getelementptr_array (1)
    shred list.txt
