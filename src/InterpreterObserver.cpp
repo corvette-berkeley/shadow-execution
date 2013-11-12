@@ -759,6 +759,8 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   if (debug)
     printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
+  cout << structType.size() << endl;
+
   //  if (callArgs.empty()) {
   unsigned firstByte = 0;
   unsigned length = 0;
@@ -766,34 +768,34 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   for (uint64_t i = 0; i < size; i++) {
     KIND type = structType.front();
     IValue* var = new IValue(type);
-      var->setFirstByte(firstByte);
-      var->setLength(0);
-      firstByte += KIND_GetSize(type);
-      length++;
-      ptrToStructVar[i] = *var;
-      structType.pop();
-    }
-    safe_assert(structType.empty());
+    var->setFirstByte(firstByte);
+    var->setLength(0);
+    firstByte += KIND_GetSize(type);
+    length++;
+    ptrToStructVar[i] = *var;
+    structType.pop();
+  }
+  safe_assert(structType.empty());
 
-    VALUE structPtrVal;
-    structPtrVal.as_ptr = (void*) ptrToStructVar;
-    IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
-    structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
-    structPtrVar->setLength(length);
+  VALUE structPtrVal;
+  structPtrVal.as_ptr = (void*) ptrToStructVar;
+  IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
+  structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
+  structPtrVar->setLength(length);
 
-    executionStack.top()[inx] = structPtrVar;
-//  } else {
-//    IValue *location = callArgs.top();
-//    VALUE value;
-//    value.as_ptr = (void*) location;
-//    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
-//    ptrLocation->setSize(location->getSize());
-//    executionStack.top()[inx] = ptrLocation;
-//    callArgs.pop();
-//  }
+  executionStack.top()[inx] = structPtrVar;
+  //  } else {
+  //    IValue *location = callArgs.top();
+  //    VALUE value;
+  //    value.as_ptr = (void*) location;
+  //    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+  //    ptrLocation->setSize(location->getSize());
+  //    executionStack.top()[inx] = ptrLocation;
+  //    callArgs.pop();
+  //  }
 
-    if (debug)
-      cout << executionStack.top()[inx]->toString() << "\n";
+  if (debug)
+    cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
@@ -1795,6 +1797,11 @@ void InterpreterObserver::push_struct_type(KIND kind) {
   if (debug)
     printf("<<<<< PUSH STRUCT TYPE >>>>>: %s\n", KIND_ToString(kind).c_str()); 
   structType.push(kind);
+  // TODO: this seems to be a bug in C++ queue
+  // that requires us to do this
+  if (structType.size() == 0) {
+    structType.push(kind);
+  }
 }
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {

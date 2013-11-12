@@ -29,6 +29,10 @@ Don't support bit right now (3)
     ./sha384sum.out list.txt
     ./sha512sum.out list.txt
     sum list.txt
+    head list.txt
+    groups
+    pathchk /usr/local
+    tac list.txt
 
 Negative internal offset (1)
     ./dircolors.out
@@ -43,6 +47,7 @@ Seg fault (9)
     ./printenv.out : (fails after trunc seems fine).
     ./tty.out (fails after icmp seems fine).
     tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
+    ./rm.out list.txt (store of global variable)
 
 
 Failed assertion at call_nounwind (4)
@@ -54,21 +59,13 @@ Failed assertion at call_nounwind (4)
    uptime
    wc
 
-Failed assertion at KIND_GetSize (11)
+Failed assertion at KIND_GetSize (6)
    csplit -f xyz list.txt 11 72 98
    fold -5 list.txt
-   groups
-   head list.txt
    nproc
-   pathchk /usr/local
-    ./rm.out list.txt
    split -b 22 list.txt list
-   tac list.txt
    true --version
-    ./truncate.out -s 5 list.txt
-   FIXED: users
-   uniq list.txt
-   FIXED: whoami
+    ./truncate.out -s 5 list.txt (negative internal offset)
 
 Mismatch at store (11)
    false --version
@@ -83,6 +80,7 @@ Mismatch at store (11)
    tsort list.txt
     ./tr.out abc ABC
    unlink list.txt
+   uniq list.txt
 
 Failed assertion at phinode (1)
    kill pid (it did get to the point at which it killed the process).
