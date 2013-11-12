@@ -54,9 +54,8 @@ Failed assertion at call_nounwind (4)
    uptime
    wc
 
-Failed assertion at KIND_GetSize (12)
+Failed assertion at KIND_GetSize (11)
    csplit -f xyz list.txt 11 72 98
-   false --version
    fold -5 list.txt
    groups
    head list.txt
@@ -72,7 +71,8 @@ Failed assertion at KIND_GetSize (12)
    uniq list.txt
    FIXED: whoami
 
-Mismatch at store (10)
+Mismatch at store (11)
+   false --version
     ./chmod.out +x temp.txt
    chown root temp.txt
    chroot
