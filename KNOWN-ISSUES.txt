@@ -4,38 +4,42 @@ String constants (see string.c).
 Loading struct pointer (struct-return, ls).
 Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
-Upgrade to LLVM 3.3.
+DONE: Upgrade to LLVM 3.3.
+DONE: New bitcode utilities with clang 3.3.
 
 CORE UTILITIES (9/100).
 
 During interpretation:
 ==============
-Strings (6)
+Unhandled type for IValue (6)
    basename list.txt
-   cat
+   cat list.txt
    id
    mktemp testingXXX
    nl list.txt
    paste list.txt list.txt	
 
-Don't support bit right now (1)
+Don't support bit right now (3)
     ln -s list.txt list.txt.2
+    md5sum list.txt (xor)
+    pinky
+    sum list.txt
 
-Seg fault (23)
-    chmod +x temp.txt
-    comm list.txt list.txt
-    cut -c2 list.txt
-    dircolors
-    dirname /usr/local
-    env
+Negative internal offset (1)
+    ./dircolors.out
+
+Seg fault (20)
+    ./comm.out list.txt list.txt
+    ./dirname.out /usr/local
+    env: after trunc, trunc seems fine.
     expand list.txt
     join list.txt list.txt
     ./mknod.out temp.txt b 12 5
     nohup time (or nohup)
-    printenv
+    printenv: after trunc, trunc seems fine.
     rm list.txt
     sha1sum list.txt
-    sha224sum list.txt
+    sha224sum.out list.txt
     sha256sum list.txt
     sha384sum list.txt
     sha512sum list.txt
@@ -52,7 +56,7 @@ Failed assertion at call_nounwind (4)
    uptime
    wc
 
-Failed assertion at KIND_GetSize (14)
+Failed assertion at KIND_GetSize (12)
    csplit -f xyz list.txt 11 72 98
    false --version
    fold -5 list.txt
@@ -60,9 +64,7 @@ Failed assertion at KIND_GetSize (14)
    head list.txt
    nproc
    pathchk /usr/local
-   pinky
    runcon
-   sum list.txt
    split -b 22 list.txt list
    tac list.txt
    true --version
@@ -70,10 +72,12 @@ Failed assertion at KIND_GetSize (14)
    uniq list.txt
    FIXED: whoami
 
-Mismatch at store (8)
+Mismatch at store (10)
+    ./chmod.out +x temp.txt
    chown root temp.txt
    chroot
    cksum list.txt
+    ./cut.out -c2 list.txt
    readlink
    realpath
    sync
@@ -105,9 +109,6 @@ Unsupported KVALUE type (15)
     timeout
     touch
     vdir
-
-Unknown error (1)
-    md5sum
 
 Broken module (9)
    df 
