@@ -440,20 +440,36 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(*op1).c_str(),
         KVALUE_ToString(*op2).c_str(), inx);
 
-  IValue *loc1 = executionStack.top()[op1->inx];
-  IValue *loc2 = executionStack.top()[op2->inx];
-  int result = loc1->getValue().as_int >> loc2->getValue().as_int;
 
-  // put result back to VALUE
-  // TODO: incomplete?!
+  int value1, value2;
+  if (op1->inx == -1) {
+    value1 = op1->value.as_int;
+  }
+  else {
+    IValue *loc1 = executionStack.top()[op1->inx];
+    value1 = loc1->getValue().as_int;
+  }
+
+  if (op2->inx == -1) {
+    value2 = op2->value.as_int;
+  }
+  else {
+    IValue *loc2 = executionStack.top()[op2->inx];
+    value2 = loc2->getValue().as_int;
+  }
+
+  int result = value1 >> value2;
+
   VALUE vresult;
   vresult.as_int = result;
 
-  IValue *nloc = new IValue(loc1->getType(), vresult);
+  IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
-  if (debug)
-    cout << nloc->toString() << "\n";
 
+  if (debug) {
+    cout << nloc->toString() << endl;
+  }
   return;
 }
 
@@ -561,10 +577,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
   int result = value1 ^ value2;
-  cout << result << endl;
 
-  // put result back to VALUE
-  // TODO: incomplete?!
   VALUE vresult;
   vresult.as_int = result;
 
@@ -1827,8 +1840,10 @@ void InterpreterObserver::push_array_size(uint64_t size) {
 }
 
 void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
-  if (debug)
+  if (debug) {
     printf("<<<<< CALL NOUNWIND >>>>> kvalue: %s\n", KVALUE_ToString(*kvalue).c_str());
+  }
+
   if (!isReturn) {
     // call is not interpreted
     safe_assert(!callerVarIndex.empty());
@@ -1845,8 +1860,9 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
     reg->setValue(kvalue->value);
     callerVarIndex.pop();
 
-    if (debug)
+    if (debug) {
       cout << reg->toString() << endl;
+    }
   } else {
     safe_assert(myStack.empty());
     safe_assert(callArgs.empty());
@@ -1855,8 +1871,10 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
-  if (debug)
+  if (debug) {
     printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);
+  }
+  //isReturn = false; //cindy
   std::vector<IValue*> frame (size);
   for (int i = 0; i < size; i++) {
     frame[i] = new IValue();
