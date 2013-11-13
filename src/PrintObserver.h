@@ -174,7 +174,9 @@ public:
 
 	void construct_array_type(uint64_t i);
 	
-	void call_nounwind(KVALUE* value);
+	void after_call(KVALUE* value);
+
+  void after_void_call();
 
 	void create_stack_frame(int size);
 

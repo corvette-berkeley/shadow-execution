@@ -1839,9 +1839,9 @@ void InterpreterObserver::push_array_size(uint64_t size) {
   arraySize.push(size);
 }
 
-void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
+void InterpreterObserver::after_call(KVALUE* kvalue) {
   if (debug) {
-    printf("<<<<< CALL NOUNWIND >>>>> kvalue: %s\n", KVALUE_ToString(*kvalue).c_str());
+    printf("<<<<< AFTER CALL >>>>> kvalue: %s\n", KVALUE_ToString(*kvalue).c_str());
   }
 
   if (!isReturn) {
@@ -1866,8 +1866,17 @@ void InterpreterObserver::call_nounwind(KVALUE* kvalue) {
   } else {
     safe_assert(myStack.empty());
     safe_assert(callArgs.empty());
-    isReturn = false;
   }
+
+  isReturn = false;
+}
+
+void InterpreterObserver::after_void_call() {
+  if (debug) {
+    printf("<<<<< AFTER VOID CALL >>>>>");
+  }
+
+  isReturn = false;
 }
 
 void InterpreterObserver::create_stack_frame(int size) {

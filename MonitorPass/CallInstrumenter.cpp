@@ -130,13 +130,19 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   InsertAllBefore(instrs, callInst);
 
   InstrPtrVector instrsAfter;
-  if (!returnType->isVoidTy() && (callInst->getCalledFunction() == NULL || 
-      callInst->getCalledFunction()->getName() != "malloc")) {
-    Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
-    Instruction* call = CALL_KVALUE("llvm_call_nounwind", callReturnValue);
-    instrsAfter.push_back(call);
+  if (callInst->getCalledFunction() == NULL || callInst->getCalledFunction()->getName() != "malloc") {
+    if (returnType->isVoidTy()) {
+      Instruction* call = CALL("llvm_after_void_call");
+      instrsAfter.push_back(call);
 
-    InsertAllAfter(instrsAfter, callInst);
+      InsertAllAfter(instrsAfter, callInst);
+    } else {
+      Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
+      Instruction* call = CALL_KVALUE("llvm_after_call", callReturnValue);
+      instrsAfter.push_back(call);
+
+      InsertAllAfter(instrsAfter, callInst);
+    }
   }
 
   return true;

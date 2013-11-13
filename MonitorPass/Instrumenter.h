@@ -524,6 +524,15 @@ public:
 	}
 
 	/*******************************************************************************************/
+	Instruction* CALL(const char* func) {
+		TypePtrVector ArgTypes;
+
+		ValuePtrVector Args;
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
 	Instruction* CALL_KVALUE(const char* func, Value* kvalue) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(KVALUEPTR_TYPE());

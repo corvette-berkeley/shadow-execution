@@ -430,8 +430,12 @@ void PrintObserver::construct_array_type(uint64_t i) {
   printf("<<<<< CONSTRUCT ARRAY TYPE >>>>> size: %ld", i);
 }
 
-void PrintObserver::call_nounwind(KVALUE* value) {
-  printf("<<<<< CALL NOUNWIND >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str()); 
+void PrintObserver::after_call(KVALUE* value) {
+  printf("<<<<< AFTER CALL >>>>> kvalue: %s\n", KVALUE_ToString(*value).c_str()); 
+}
+
+void PrintObserver::after_void_call() {
+  printf("<<<<< AFTER VOID CALL >>>>>");
 }
 
 void PrintObserver::create_stack_frame(int size) {

@@ -7,7 +7,7 @@ Unimplemented interpretation for instructions such as landingpad. It does not ha
 DONE: Upgrade to LLVM 3.3.
 DONE: New bitcode utilities with clang 3.3.
 
-CORE UTILITIES (9/100).
+CORE UTILITIES (10/100).
 
 During interpretation:
 ==============

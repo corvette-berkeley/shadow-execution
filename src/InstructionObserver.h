@@ -97,7 +97,8 @@ public:
 	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void construct_array_type(uint64_t i UNUSED) {};
-	virtual void call_nounwind(KVALUE* value UNUSED) {};
+	virtual void after_call(KVALUE* value UNUSED) {};
+	virtual void after_void_call() {};
 	virtual void create_stack_frame(int size UNUSED) {};
 	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};

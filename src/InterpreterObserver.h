@@ -208,7 +208,9 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_array_size(uint64_t size);
 
-  void call_nounwind(KVALUE* value);
+  void after_call(KVALUE* value);
+
+  void after_void_call();
 
   void create_stack_frame(int size);
   

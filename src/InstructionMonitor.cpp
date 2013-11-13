@@ -301,8 +301,12 @@ void llvm_construct_array_type(uint64_t i) {
   DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
-void llvm_call_nounwind(KVALUE* value) {
-  DISPATCH_TO_OBSERVERS(call_nounwind, value)
+void llvm_after_call(KVALUE* value) {
+  DISPATCH_TO_OBSERVERS(after_call, value)
+}
+
+void llvm_after_void_call() {
+  DISPATCH_TO_OBSERVERS(after_void_call)
 }
 
 void llvm_create_stack_frame(int size) {
