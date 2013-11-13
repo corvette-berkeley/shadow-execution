@@ -22,6 +22,8 @@ Unhandled type for IValue (8)
    paste list.txt list.txt	
 
 Don't support bit right now (14)
+   fmt list.txt 
+   uptime
     groups
     head list.txt
     ln -s list.txt list.txt.2
@@ -46,7 +48,8 @@ Seg fault because of size of int being 0 (make sure xor, or set size): (4)
 Negative internal offset (1)
     ./dircolors.out
 
-Seg fault (7)
+Seg fault (8)
+   base64 list.txt
     ./comm.out list.txt list.txt (pointer constant)
    ./fold -5 list.txt
     ./join.out list.txt list.txt (pointer constant)
@@ -56,12 +59,6 @@ Seg fault (7)
     ./rm.out list.txt (store of global variable)
 
 Failed assertion at call_nounwind (7)
-   base64 list.txt
-    ./expand.out list.txt
-   fmt list.txt 
-    ./uname.out
-   ./unexpand.out list.txt
-   uptime
    wc
 
 Failed assertion at KIND_GetSize (2)
@@ -84,7 +81,9 @@ Mismatch at store (14)
    unlink list.txt
    uniq list.txt
 
-Failed assertion at phinode (1)
+Failed assertion at phinode (3)
+    ./expand.out list.txt
+   ./unexpand.out list.txt
    kill pid (it did get to the point at which it killed the process).
 
 Others (haven't tested)
@@ -131,7 +130,7 @@ Failed assertion at getGlobalIndex (1)
 Unknown error (1)
    expr
 
-Passing (10)
+Passing (11)
 =======
    echo
    hostid
@@ -143,6 +142,7 @@ Passing (10)
    runcon
    sync
    whoami
+    ./uname.out
 
 
 ISSUES resolved:
