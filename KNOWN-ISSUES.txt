@@ -21,15 +21,15 @@ Unhandled type for IValue (8)
    nproc
    paste list.txt list.txt	
 
-Don't support bit right now (14)
+Don't support bit right now (15)
    fmt list.txt 
    uptime
     groups
     head list.txt
-    ln -s list.txt list.txt.2
     md5sum list.txt
     pathchk /usr/local
     pinky
+   ./realpath.out -L list.txt
     ./sha1sum.out list.txt
     ./sha224sum.out list.txt
     ./sha256sum.out list.txt
@@ -37,13 +37,17 @@ Don't support bit right now (14)
     ./sha512sum.out list.txt
     sum list.txt
     tac list.txt
+    ./tr.out abc ABC (writing a bit!!!)
    users
 
-Seg fault because of size of int being 0 (make sure xor, or set size): (4)
-    ./dirname.out /usr/local
-    ./env.out
-   ./ptx.out list.txt
-    tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
+   Truncation due to bit:
+   	  ln -s list.txt list.txt.2
+
+    Seg fault because of size of int being 0 (make sure xor, or set size): (4)
+    	./dirname.out /usr/local
+    	./env.out
+   	./ptx.out list.txt
+    	tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
 
 Negative internal offset (1)
     ./dircolors.out
@@ -58,26 +62,20 @@ Seg fault (8)
     ./tty.out (fails after icmp seems fine).
     ./rm.out list.txt (store of global variable)
 
-Failed assertion at call_nounwind (7)
+Failed assertion at call_nounwind (1)
    wc
 
 Failed assertion at KIND_GetSize (2)
    ./split.out -b 22 list.txt list (in alloca struct)
     ./truncate.out -s 5 list.txt (negative internal offset)
 
-Mismatch at store (14)
+Mismatch at store (11)
     ./chmod.out +x temp.txt
    chown root temp.txt
-   chroot
    cksum list.txt
     ./cut.out -c2 list.txt
-   false --version
-   readlink
-   realpath
   ./shuf.out list.txt
-   ./true.out --version
    tsort list.txt
-    ./tr.out abc ABC
    unlink list.txt
    uniq list.txt
 
@@ -130,17 +128,21 @@ Failed assertion at getGlobalIndex (1)
 Unknown error (1)
    expr
 
-Passing (11)
+Passing (15)
 =======
+   chroot
    echo
+   false --version
    hostid
    link list.txt link.txt
    logname
    mkfifo temp (it creates a file...)
    nice
    pwd
+   readlink
    runcon
    sync
+   ./true.out --version
    whoami
     ./uname.out
 
