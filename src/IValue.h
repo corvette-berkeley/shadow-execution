@@ -10,10 +10,11 @@ class IValue {
   private:
     KIND type; // see Common.h for definitions
     VALUE value; // union type (use extension later on)
-    unsigned size; // dataSize
+    unsigned size; // size of data the pointer points to
     int offset;
+    int bitOffset; // to represent data smaller than a byte; value ranges from 0 to 7
     unsigned index; // index of this object
-    unsigned firstByte;
+    unsigned firstByte; // the length in byte to the base pointer
     unsigned length; // number of elements (only for pointers)
     SCOPE scope; // defined in Constants.h
     MACHINEFLAG flag;
@@ -33,17 +34,17 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), scope(s) {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s) {}
 
-    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), index(0), firstByte(f), length(1), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), index(i), firstByte(0), length(e), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER) {}
 
-    IValue(KIND t): type(t), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(KIND t): type(t), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(): type(INV_KIND), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
 
     void setType(KIND t);
 
@@ -54,6 +55,8 @@ class IValue {
     void setSize(unsigned int s);
 
     void setOffset(int o);
+
+    void setBitOffset(int bo);
 
     void setIndex(unsigned i);
 
@@ -82,6 +85,8 @@ class IValue {
     unsigned int getSize();
 
     int getOffset();
+
+    int getBitOffset();
 
     void* getShadow();
 

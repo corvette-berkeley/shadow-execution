@@ -24,6 +24,10 @@ void IValue::setOffset(int o) {
   offset = o;
 }
 
+void IValue::setBitOffset(int bo) {
+  bitOffset = bo;
+}
+
 void IValue::setIndex(unsigned i) {
   index = i;
 }
@@ -58,6 +62,10 @@ unsigned int IValue::getSize() {
 
 int IValue::getOffset() {
   return offset;
+}
+
+int IValue::getBitOffset() {
+  return bitOffset;
 }
 
 unsigned IValue::getIndex() {

@@ -140,9 +140,10 @@ int KIND_GetSize(int kind) {
     case FLP128PPC_KIND:
       return 16;
     case INT1_KIND:
+      return 0;
 //      return 1;
-      printf("Don't support bit right now!\n");
-      safe_assert(false);
+//      printf("Don't support bit right now!\n");
+//      safe_assert(false);
     default:
       // shouldn't reach here
       safe_assert(false);
