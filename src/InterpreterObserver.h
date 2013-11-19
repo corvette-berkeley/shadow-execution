@@ -34,7 +34,7 @@ class InterpreterObserver : public InstructionObserver {
   map<int, KVALUE*> phinodeConstantValues; // store phinode value pairs for constants
   map<int, int> phinodeValues; // store phinode value pairs for values
 
-  int recentBlock; // record the most recent block visited
+  stack<int> recentBlock; // record the most recent block visited
 
   bool isReturn; // whether return instruction is just executed
 

@@ -1804,15 +1804,17 @@ void InterpreterObserver::phinode(IID iid, int inx) {
   if (debug)
     printf("<<<<< PHINODE >>>>>: id %s [INX: %d] \n", IID_ToString(iid).c_str(), inx);
 
+  cout << recentBlock.top() << endl;
+
   IValue* phiNode;
 
-  if (phinodeConstantValues.find(recentBlock) != phinodeConstantValues.end()) {
-    KVALUE* constant = phinodeConstantValues[recentBlock];
+  if (phinodeConstantValues.find(recentBlock.top()) != phinodeConstantValues.end()) {
+    KVALUE* constant = phinodeConstantValues[recentBlock.top()];
     phiNode = new IValue(constant->kind, constant->value);
     phiNode->setLength(0);
   } else {
-    safe_assert(phinodeValues.find(recentBlock) != phinodeValues.end());
-    IValue* inValue = executionStack.top()[phinodeValues[recentBlock]];
+    safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
+    IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
     phiNode = new IValue();
     inValue->copy(phiNode);
   }
@@ -1921,6 +1923,9 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
   }
 
   isReturn = false;
+
+  safe_assert(!recentBlock.empty());
+  recentBlock.pop();
 }
 
 void InterpreterObserver::after_void_call() {
@@ -1935,7 +1940,6 @@ void InterpreterObserver::create_stack_frame(int size) {
   if (debug) {
     printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);
   }
-  //isReturn = false; //cindy
   std::vector<IValue*> frame (size);
   for (int i = 0; i < size; i++) {
     frame[i] = new IValue();
@@ -1956,7 +1960,12 @@ void InterpreterObserver::create_global_symbol_table(int size) {
 void InterpreterObserver::record_block_id(int id) {
   if (debug)
     printf("<<<<< RECORD BLOCK ID >>>>> %d\n", id);
-  recentBlock = id;
+  if (recentBlock.empty()) {
+    recentBlock.push(id);
+  } else {
+    recentBlock.pop();
+    recentBlock.push(id);
+  }
 }
 
 void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
@@ -2021,6 +2030,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << "\n";
+
+  // new recentBLock stack frame for the new call
+  recentBlock.push(0);
 }
 
 

@@ -80,8 +80,6 @@ Mismatch at store (11)
    uniq list.txt
 
 Failed assertion at phinode (3)
-    ./expand.out list.txt
-   ./unexpand.out list.txt
    kill pid (it did get to the point at which it killed the process).
 
 Others (haven't tested)
@@ -128,7 +126,7 @@ Failed assertion at getGlobalIndex (1)
 Unknown error (1)
    expr
 
-Passing (15)
+Passing (17)
 =======
    chroot
    echo
@@ -145,6 +143,8 @@ Passing (15)
    ./true.out --version
    whoami
     ./uname.out
+    ./expand.out list.txt
+   ./unexpand.out list.txt
 
 
 ISSUES resolved:
