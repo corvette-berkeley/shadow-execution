@@ -78,7 +78,8 @@ plugin = env.SharedLibrary(
     'AtomicCmpXchgInstrumenter.cpp',
     'AllocaInstrumenter.cpp',
     'PHINodeInstrumenter.cpp',
-    'ExtractValueInstrumenter.cpp'
+    'ExtractValueInstrumenter.cpp',
+    'SelectInstrumenter.cpp',
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,

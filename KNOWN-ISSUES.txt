@@ -51,8 +51,11 @@ Negative internal offset (1)
 Seg fault (8)
    ./base64.out list.txt (getelementptr_array)
    ./chmod.out +x temp.txt
+   ./chown.out root temp.tx
     ./comm.out list.txt list.txt (pointer constant)
    ./fold.out -5 list.txt
+    ./mknod.out temp.txt b 12 5
+   	./ptx.out list.txt (pointer constant)
    ./tsort.out list.txt (getelementptr)
     ./join.out list.txt list.txt (pointer constant)
     ./nohup.out time (or nohup) (null pointer)
@@ -70,6 +73,7 @@ Failed assertion at KIND_GetSize (2)
 
 Mismatch at store (2)
     ./cut.out -c2 list.txt
+    ./dirname.out /usr/local
    kill pid (it did get to the point at which it killed the
     process). (mismatch when storing int8)
 
@@ -97,16 +101,6 @@ Unsupported KVALUE type (15)
     touch
     vdir
 
-Unimplemented Select instruction:
-   ./chown.out root temp.tx
-    ./dirname.out /usr/local
-    	./env.out
-    ./mknod.out temp.txt b 12 5
-   	./ptx.out list.txt
-    	tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
-    ./tty.out
-
-
 Broken module (9)
    df 
    numfmt
@@ -127,10 +121,11 @@ Failed assertion at getGlobalIndex (1)
 Unknown error (1)
    expr
 
-Passing (19)
+Passing (22)
 =======
    chroot
    echo
+   ./env.out
    false --version
    hostid
    link list.txt link.txt
@@ -141,7 +136,9 @@ Passing (19)
    readlink
    runcon
    sync
+   tee (usage: ls | ./tee.out out)
    ./true.out --version
+    ./tty.out
    whoami
     ./uname.out
     ./expand.out list.txt

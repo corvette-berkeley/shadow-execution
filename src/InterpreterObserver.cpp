@@ -1494,16 +1494,18 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
 
 // ***** TerminatorInst ***** //
 void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< BRANCH >>>>> %s, cond: %s, cond_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (conditional ? "1" : "0"),
         KVALUE_ToString(op1).c_str(), inx);
+  }
 }
 
 void InterpreterObserver::branch2(IID iid, bool conditional, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< BRANCH >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (conditional ? "1" : "0"), inx);
+  }
 }
 
 void InterpreterObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
@@ -1832,13 +1834,32 @@ void InterpreterObserver::phinode(IID iid, int inx) {
 
 void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
 
-  cerr << "[InterpreterObserver::select] => Unimplemented\n";
-  safe_assert(false);
-
   if (debug) {
     printf("<<<<< SELECT >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(cond).c_str(), KVALUE_ToString(tvalue).c_str(), 
         KVALUE_ToString(fvalue).c_str(), inx);
   }
+
+  IValue* result = NULL;
+  if (cond->value.as_int) {
+    if (tvalue->inx == -1) {
+      result = new IValue(tvalue->kind, tvalue->value);
+    }
+    else {
+      safe_assert(false);
+    }
+  }
+  else {
+    if (fvalue->inx == -1) {
+      result = new IValue(fvalue->kind, fvalue->value);
+    }
+    else {
+      safe_assert(false);
+    }
+  }
+
+  executionStack.top()[inx] = result;
+  cout << result->toString() << endl;
+  return;
 }
 
 void InterpreterObserver::push_stack(KVALUE* value) {

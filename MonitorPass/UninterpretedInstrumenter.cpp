@@ -31,9 +31,6 @@ bool UninterpretedInstrumenter::CheckAndInstrument(Instruction* inst) {
     case UNREACHABLE:
       callback << "unreachable";
       break;
-    case SELECT:
-      callback << "select";
-      break;
     case LANDINGPAD:
       callback << "landingpad";
       break;
@@ -75,8 +72,6 @@ UNINTERPRETEDINST UninterpretedInstrumenter::getUninterpretedInst(Instruction* i
     return INSERTVALUE;
   } else if (dyn_cast<UnreachableInst>(inst) != NULL) {
     return UNREACHABLE;
-  } else if (dyn_cast<SelectInst>(inst) != NULL) {
-    return SELECT;
   } else if (dyn_cast<LandingPadInst>(inst) != NULL) {
     return LANDINGPAD;
   } else if (dyn_cast<FenceInst>(inst) != NULL) {
