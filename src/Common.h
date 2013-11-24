@@ -92,7 +92,7 @@ struct kvalue_t {
 
 std::string IID_ToString(IID& iid);
 std::string PTR_ToString(PTR& ptr);
-std::string KVALUE_ToString(KVALUE& kv);
+std::string KVALUE_ToString(KVALUE* kv);
 std::string KIND_ToString(int kind);
 int KIND_GetSize(int kind);
 

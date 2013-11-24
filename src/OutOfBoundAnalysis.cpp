@@ -215,7 +215,7 @@ void OutOfBoundAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int li
         destPtrLocation->readValue(internalOffset, src->kind)); 
 
     if (!checkStore(writtenValue, src)) { // destLocation
-      cerr << "\tKVALUE: " << KVALUE_ToString(*src) << endl;
+      cerr << "\tKVALUE: " << KVALUE_ToString(src) << endl;
       cerr << "\tMismatched values found in Store" << endl;
       abort();
     }

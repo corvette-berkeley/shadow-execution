@@ -7,7 +7,7 @@ Unimplemented interpretation for instructions such as landingpad. It does not ha
 DONE: Upgrade to LLVM 3.3.
 DONE: New bitcode utilities with clang 3.3.
 
-CORE UTILITIES (10/100).
+CORE UTILITIES (17/100).
 
 During interpretation:
 ==============
@@ -44,7 +44,6 @@ Don't support bit right now (15)
    	  ln -s list.txt list.txt.2
 
     Seg fault because of size of int being 0 (make sure xor, or set size): (4)
-    	./dirname.out /usr/local
     	./env.out
    	./ptx.out list.txt
     	tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
@@ -53,9 +52,10 @@ Negative internal offset (1)
     ./dircolors.out
 
 Seg fault (8)
-   base64 list.txt
+   ./base64.out list.txt (getelementptr_array)
     ./comm.out list.txt list.txt (pointer constant)
-   ./fold -5 list.txt
+    ./dirname.out /usr/local (fails after icmp seems fine)
+   ./fold.out -5 list.txt (pointer constant)
     ./join.out list.txt list.txt (pointer constant)
     ./mknod.out temp.txt b 12 5
     ./nohup.out time (or nohup) (null pointer)
@@ -78,7 +78,8 @@ Mismatch at store (11)
    tsort list.txt
    unlink list.txt
    uniq list.txt
-   kill pid (it did get to the point at which it killed the process).
+   kill pid (it did get to the point at which it killed the
+    process). (mismatch when storing int8)
 
 Others (haven't tested)
    chgrp
