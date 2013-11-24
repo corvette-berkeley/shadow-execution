@@ -43,11 +43,6 @@ Don't support bit right now (15)
    Truncation due to bit:
    	  ln -s list.txt list.txt.2
 
-    Seg fault because of size of int being 0 (make sure xor, or set size): (4)
-    	./env.out
-   	./ptx.out list.txt
-    	tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
-
 Negative internal offset (1)
     ./dircolors.out
 
@@ -104,6 +99,11 @@ Unsupported KVALUE type (15)
     timeout
     touch
     vdir
+
+Unimplemented Select instruction:
+    	./env.out
+   	./ptx.out list.txt
+    	tee (usage: ls | ./tee.out out) (fails after trunc seems fine).
 
 Broken module (9)
    df 
