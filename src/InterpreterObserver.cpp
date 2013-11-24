@@ -44,12 +44,13 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
 }
 
 void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< LOAD >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(),
         KVALUE_ToString(src).c_str(),
         line,
         inx);
+  }
 
   IValue* srcPtrLocation;
   if (src->isGlobal) {
@@ -59,9 +60,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
     srcPtrLocation = executionStack.top()[src->inx];
   }
 
-  if (debug)
+  if (debug) {
     cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
-
+  }
   // creating new value
   IValue *destLocation = new IValue();
 
@@ -74,9 +75,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
     IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
     unsigned valueIndex = srcPtrLocation->getIndex();
     unsigned currOffset = values[valueIndex].getFirstByte();
-    if (debug)
+    if (debug) {
       cout << "\tvalueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
-
+    }
     srcLocation = &values[valueIndex];
 
     internalOffset = srcOffset - currOffset;
@@ -2004,12 +2005,14 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
     myStack.pop();
 
     // debugging
-    if (debug)
-      printf(", arg: %s", KVALUE_ToString(value).c_str()); 
+    if (debug) {
+      cout << ", arg: " << KVALUE_ToString(value).c_str();
+    }
 
     IValue* argCopy;
     if (value->inx != -1) {
-      IValue* arg = executionStack.top()[value->inx];
+      IValue* arg = (IValue*)executionStack.top()[value->inx];
+      safe_assert(arg);
       argCopy = new IValue();
       arg->copy(argCopy);
     } else {
@@ -2019,8 +2022,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   }
 
   // debugging
-  if (debug)
-    printf("\n");
+  if (debug) {
+    cout << endl;
+  }
 
   if (type != VOID_KIND) {
     callerVarIndex.push(inx); 
@@ -2030,8 +2034,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   callValue->setLength(0);
   executionStack.top()[inx] = callValue;
 
-  if (debug)
+  if (debug) {
     cout << executionStack.top()[inx]->toString() << "\n";
+  }
 
   // new recentBLock stack frame for the new call
   recentBlock.push(0);
