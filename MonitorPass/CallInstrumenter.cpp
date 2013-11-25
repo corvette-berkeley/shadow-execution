@@ -131,26 +131,24 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   InstrPtrVector instrsAfter;
   if (callInst->getCalledFunction() == NULL || callInst->getCalledFunction()->getName() != "malloc") {
+    Instruction* call = NULL;
+
     if (returnType->isVoidTy()) {
-      Instruction* call = CALL("llvm_after_void_call");
-      instrsAfter.push_back(call);
-      InsertAllAfter(instrsAfter, callInst);
+      call = CALL("llvm_after_void_call");
 
     } else if (returnType->isStructTy()){
       KVALUE_STRUCTVALUE(callInst, instrsAfter);
-      Instruction* call = CALL("llvm_after_struct_call");
-      instrsAfter.push_back(call);
-      InsertAllAfter(instrsAfter, callInst);
+      call = CALL("llvm_after_struct_call");
 
     } else {
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
-      Instruction* call = CALL_KVALUE("llvm_after_call", callReturnValue);
-      instrsAfter.push_back(call);
-      InsertAllAfter(instrsAfter, callInst);
+      call = CALL_KVALUE("llvm_after_call", callReturnValue);
 
     }
-  }
+    instrsAfter.push_back(call);
+    InsertAllAfter(instrsAfter, callInst);
 
+  }
   return true;
 }
 
