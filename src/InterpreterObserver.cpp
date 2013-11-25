@@ -1594,8 +1594,9 @@ void InterpreterObserver::return2_(IID iid, int inx) {
 }
 
 void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< RETURN STRUCT >>>>> %s, val_inx: %d, [INX: %d]\n", IID_ToString(iid).c_str(), valInx, inx);
+  }
 
   safe_assert(!executionStack.empty());
 
@@ -1633,8 +1634,9 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
     safe_assert(returnStruct.empty());
 
     executionStack.top()[callerVarIndex.top()] = structValue;
-    if (debug)
-      cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
+    if (debug) {
+      cout << executionStack.top()[callerVarIndex.top()]->toString() << endl;
+    }
   } else {
     cout << "The execution stack is empty.\n";
   }

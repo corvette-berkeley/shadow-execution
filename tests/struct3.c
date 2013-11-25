@@ -16,7 +16,7 @@ int main() {
   struct point p;
   p.a = 1;
   p.b = 2;
-  p = foo(p);
+  p = foo();
   int sum = p.a + p.b;
   return 0;
 }

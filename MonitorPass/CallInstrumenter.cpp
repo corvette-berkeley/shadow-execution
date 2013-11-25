@@ -134,16 +134,17 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     if (returnType->isVoidTy()) {
       Instruction* call = CALL("llvm_after_void_call");
       instrsAfter.push_back(call);
-
       InsertAllAfter(instrsAfter, callInst);
-    } else {
 
-      safe_assert(returnKind != STRUCT_KIND);
+    } else if (returnType->isStructTy()){
+      safe_assert(false);
+
+    } else {
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
       Instruction* call = CALL_KVALUE("llvm_after_call", callReturnValue);
       instrsAfter.push_back(call);
-
       InsertAllAfter(instrsAfter, callInst);
+
     }
   }
 
