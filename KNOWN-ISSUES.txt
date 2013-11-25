@@ -88,7 +88,7 @@ Mismatch at store (9)
     ./mv.out list.txt out.txt
     ./pr.out list.txt
     ./sleep.out 2 (store, writing INT1)
-    ./timeout.out 1 sleep 10; date
+    ./timeout.out 1 sleep 10; date (store, writing INT1)
     ./touch.out out.txt (store, writing INT1)
 
 Others (haven't tested)

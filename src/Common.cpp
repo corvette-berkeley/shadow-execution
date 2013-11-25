@@ -33,7 +33,7 @@ std::string KVALUE_ToString(KVALUE* kv) {
       s << "INTPTR: " <<  (int*)kv->value.as_ptr << " "<< kv->value.as_ptr << "]";
       break;
     case INT1_KIND:
-      s << "INT1: " << (bool)kv->value.as_int << "]";
+      s << "INT1: " << kv->value.as_int << "]";
       break;
     case INT8_KIND:
       s << "INT8: " << kv->value.as_int << "]";

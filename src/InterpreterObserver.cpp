@@ -384,12 +384,13 @@ void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
 // ***** Bitwise Binary Operations ***** //
 void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
@@ -414,6 +415,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
 
   if (debug) {
@@ -424,13 +426,13 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 }
 
 void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
-
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
@@ -455,7 +457,9 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
+
   if (debug) {
     cout << nloc->toString() << endl;
   }
@@ -464,13 +468,13 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 }
 
 void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
-
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
@@ -505,12 +509,13 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 }
 
 void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
@@ -535,6 +540,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
 
   if (debug) {
@@ -544,12 +550,13 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 }
 
 void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
@@ -574,6 +581,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
 
   if (debug) {
@@ -583,28 +591,29 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 }
 
 void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   int value1, value2;
   if (op1->inx == -1) {
-    value1 = (bool)op1->value.as_int;
+    value1 = op1->value.as_int;
   }
   else {
     IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = (bool)loc1->getValue().as_int;
+    value1 = loc1->getValue().as_int;
   }
 
   if (op2->inx == -1) {
-    value2 = (bool)op2->value.as_int;
+    value2 = op2->value.as_int;
   }
   else {
     IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = (bool)loc2->getValue().as_int;
+    value2 = loc2->getValue().as_int;
   }
 
   cout << value1 << " " << value2 << endl;
@@ -614,11 +623,12 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   vresult.as_int = result;
 
   IValue *nloc = new IValue(op1->kind, vresult);
-
+  nloc->setSize(KIND_GetSize(op1->kind));
   executionStack.top()[inx] = nloc;
-  if (debug)
-    cout << nloc->toString() << endl;
 
+  if (debug) {
+    cout << nloc->toString() << endl;
+  }
   return;
 }
 
@@ -1223,9 +1233,10 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 }
 
 void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -1246,13 +1257,11 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       ext_value.as_int = (int32_t) value.as_int;
       break;
     case INT64_KIND:
-      cout << "here???? =====" << endl;
-      cout << value.as_int << endl;
       ext_value.as_int = (int64_t) value.as_int;
       break;
     default:
       cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
-      abort();
+      safe_assert(false);
   }
 
   IValue *ext_loc = new IValue(type, ext_value);
