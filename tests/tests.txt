@@ -25,3 +25,5 @@ add_longdouble
 memcpy
 mainargs
 phinode
+struct
+struct2
