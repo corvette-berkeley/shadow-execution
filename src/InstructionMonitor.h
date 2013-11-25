@@ -96,6 +96,7 @@ extern "C" {
   void llvm_construct_array_type(uint64_t i);
   void llvm_after_call(KVALUE* value);
   void llvm_after_void_call();
+  void llvm_after_struct_call();
   void llvm_create_stack_frame(int size);
   void llvm_create_global_symbol_table(int size);
   void llvm_record_block_id(int id);

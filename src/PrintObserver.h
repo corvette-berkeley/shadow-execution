@@ -176,7 +176,9 @@ public:
 	
 	void after_call(KVALUE* value);
 
-  void after_void_call();
+	void after_void_call();
+
+	void after_struct_call();
 
 	void create_stack_frame(int size);
 

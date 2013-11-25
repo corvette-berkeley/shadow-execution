@@ -137,7 +137,10 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       InsertAllAfter(instrsAfter, callInst);
 
     } else if (returnType->isStructTy()){
-      safe_assert(false);
+      KVALUE_STRUCTVALUE(callInst, instrsAfter);
+      Instruction* call = CALL("llvm_after_struct_call");
+      instrsAfter.push_back(call);
+      InsertAllAfter(instrsAfter, callInst);
 
     } else {
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 

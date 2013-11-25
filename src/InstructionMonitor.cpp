@@ -309,6 +309,10 @@ void llvm_after_void_call() {
   DISPATCH_TO_OBSERVERS(after_void_call)
 }
 
+void llvm_after_struct_call() {
+  DISPATCH_TO_OBSERVERS(after_struct_call)
+}
+
 void llvm_create_stack_frame(int size) {
   DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }

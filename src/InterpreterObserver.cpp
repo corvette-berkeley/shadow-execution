@@ -1962,6 +1962,12 @@ void InterpreterObserver::after_void_call() {
   isReturn = false;
 }
 
+void InterpreterObserver::after_struct_call() {
+  if (debug) {
+    printf("<<<<< AFTER STRUCT CALL >>>>>");
+  }
+}
+
 void InterpreterObserver::create_stack_frame(int size) {
   if (debug) {
     printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);

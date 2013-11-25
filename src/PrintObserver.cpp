@@ -438,6 +438,10 @@ void PrintObserver::after_void_call() {
   printf("<<<<< AFTER VOID CALL >>>>>");
 }
 
+void PrintObserver::after_struct_call() {
+  printf("<<<<< AFTER STRUCT CALL >>>>>");
+}
+
 void PrintObserver::create_stack_frame(int size) {
   printf("<<<<< CREATE STACK >>>>> size: %d\n", size);
 }
