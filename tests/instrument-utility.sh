@@ -10,3 +10,4 @@ $LPATH/opt -load ../MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.
 # create executable 
 llc tmppass.bc
 $CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt
+#$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -L/home/eecs/rubio/build-gmp-5.1.3/lib -lgmp
