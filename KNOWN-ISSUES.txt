@@ -17,6 +17,7 @@ Unhandled type for IValue (8)
 ./cksum.out list.txt
    ./csplit.out -f xyz list.txt 11 72 98
    ./du.out -h
+   ./expr.out  5 6
    id
    mktemp testingXXX
    nl list.txt
@@ -41,7 +42,6 @@ Don't support bit right now (15)
     tac list.txt
     ./tr.out abc ABC (writing a bit!!!)
    users
-
 
 Failed assert at call.
    	 ./ln.out -s list.txt list.txt.2
@@ -72,6 +72,7 @@ Failed assertion at after_call.
 
 Failed assertion at getelementptr_array.
     ./sort.out list.txt
+   ./shred.out list.txt
   ./shuf.out list.txt
 
 Failed assertion at KIND_GetSize (2)
@@ -99,7 +100,7 @@ Others (haven't tested)
 During instrumentation:
 ===================
 
-Broken module (9)
+Broken module (12)
    df 
     factor
     install
@@ -113,14 +114,9 @@ Broken module (9)
    stty
    who
 
-Failed assertion at getelementptr_array (1)
-   shred list.txt
-
 Failed assertion at getGlobalIndex (1)
    od
 
-Unknown error (1)
-   expr
 
 Passing (22)
 =======
