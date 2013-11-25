@@ -13,11 +13,16 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     count_++;
 
+    bool isSigned = true;    
+    if (binInst->getOperand(0)->getType()->isIntegerTy(1)) {
+      isSigned = false;
+    }
+
     InstrPtrVector instrs;
-    Value* lop = KVALUE_VALUE(binInst->getOperand(0), instrs, SIGNED);
+    Value* lop = KVALUE_VALUE(binInst->getOperand(0), instrs, isSigned);
     if (lop == NULL) return false;
 
-    Value *rop = KVALUE_VALUE(binInst->getOperand(1), instrs, SIGNED);
+    Value *rop = KVALUE_VALUE(binInst->getOperand(1), instrs, isSigned);
     if (rop == NULL) return false;
 
     Constant* iid = IID_CONSTANT(binInst);
