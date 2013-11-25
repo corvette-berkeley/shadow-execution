@@ -592,21 +592,22 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
   int value1, value2;
   if (op1->inx == -1) {
-    value1 = op1->value.as_int;
+    value1 = (bool)op1->value.as_int;
   }
   else {
     IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
+    value1 = (bool)loc1->getValue().as_int;
   }
 
   if (op2->inx == -1) {
-    value2 = op2->value.as_int;
+    value2 = (bool)op2->value.as_int;
   }
   else {
     IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
+    value2 = (bool)loc2->getValue().as_int;
   }
 
+  cout << value1 << " " << value2 << endl;
   int result = value1 ^ value2;
 
   VALUE vresult;
@@ -864,7 +865,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       result = true; // don't compare pointer
       // result = (dest->getValue().as_ptr == kv->value.as_ptr);
       break;
-    case INT1_KIND: 
+    case INT1_KIND:
       result = ((bool)dest->getValue().as_int == (bool)kv->value.as_int);
       break;
     case INT8_KIND: 
@@ -877,6 +878,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       result = ((int32_t)dest->getValue().as_int == (int32_t)kv->value.as_int);
       break;
     case INT64_KIND:
+      cout << dest->getValue().as_int << " " << kv->value.as_int << endl;
       result = (dest->getValue().as_int == kv->value.as_int);
       break;
     case FLP32_KIND:
@@ -910,8 +912,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     destPtrLocation = executionStack.top()[dest->inx];
   }
 
-  if (debug)
+  if (debug) {
     cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
+  }
 
   // TODO: Review this
   if (!destPtrLocation->isInitialized()) {
@@ -931,8 +934,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   // retrieve source
   srcLocation = (src->iid == 0) ? new IValue(src->kind, src->value) : executionStack.top()[src->inx];
 
-  if (debug)
+  if (debug) {
     cout << "\tSrc: " << srcLocation->toString() << endl;
+  }
 
   // retrieve actual destination
   IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
@@ -957,20 +961,25 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation);
   destPtrLocation->setInitialized();
 
-
-  if (debug)
+  if (debug) {
     cout << "\tUpdated Dest: " << destLocation->toString() << endl;
+  }
 
   // just read again to check store
-  if (debug)
+  if (debug) {
     cout << "\tCalling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
+  }
+
   IValue* writtenValue = new IValue(srcLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind)); // NOTE: destLocation->getType() before
-  if (debug)
+
+  if (debug) {
     cout << "\twrittenValue: " << writtenValue->toString() << endl;
+  }
+
   if (!checkStore(writtenValue, src)) { // destLocation
     cerr << "\tKVALUE: " << KVALUE_ToString(src) << endl;
     cerr << "\tMismatched values found in Store" << endl;
-    abort();
+    safe_assert(false);
   }
 
   return;
@@ -1218,10 +1227,6 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
     printf("<<<<< SEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
 
-  /*
-     cerr << "[InterpreterObserver::sext] => Unimplemented.\n";
-     abort();
-     */
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
@@ -1241,6 +1246,8 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       ext_value.as_int = (int32_t) value.as_int;
       break;
     case INT64_KIND:
+      cout << "here???? =====" << endl;
+      cout << value.as_int << endl;
       ext_value.as_int = (int64_t) value.as_int;
       break;
     default:
@@ -1663,13 +1670,14 @@ void InterpreterObserver::unreachable() {
 // ***** Other Operations ***** //
 
 void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< ICMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(op1).c_str(), KVALUE_ToString(op2).c_str(), pred, inx);
+  }
 
   int v1, v2;
 
   // get value of v1
-  if (op1->iid == 0) { // constant
+  if (op1->inx == -1) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
@@ -1677,7 +1685,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   }
 
   // get value of v2
-  if (op2->iid == 0) { // constant
+  if (op2->inx == -1) { // constant
     v2 = getValueFromConstant(op2);
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
@@ -1685,6 +1693,7 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   }
 
   int result = 0;
+  cout << v1 << " " << v2 << endl;
   switch(pred) {
     case CmpInst::ICMP_EQ:
       result = v1 == v2;
@@ -1717,14 +1726,15 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
       result = v1 <= v2;
       break;
     default:
+      safe_assert(false);
       break;
   }
 
   VALUE vresult;
   vresult.as_int = result;
 
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
+  IValue *nloc = new IValue(INT1_KIND, vresult);
+  nloc->setSize(KIND_GetSize(INT1_KIND));
 
   executionStack.top()[inx] = nloc;
   if (debug) {

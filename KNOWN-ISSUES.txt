@@ -69,6 +69,7 @@ Seg fault (8)
 
 Failed assertion at after_call.
    wc
+    ./cut.out -c2 list.txt
 
 Failed assertion at getelementptr_array.
     ./sort.out list.txt
@@ -80,17 +81,15 @@ Failed assertion at KIND_GetSize (2)
    ./split.out -b 22 list.txt list (in alloca struct)
     ./truncate.out -s 5 list.txt (negative internal offset)
 
-Mismatch at store (2)
-    ./cp.out list.txt temp.txt
-    ./cut.out -c2 list.txt
+Mismatch at store (9)
+    ./cp.out list.txt temp.txt (store, writing INT1)
     ./dirname.out /usr/local
-   kill pid (it did get to the point at which it killed the
-    process). (mismatch when storing int8)
+   kill pid (mismatch when storing int8)
     ./mv.out list.txt out.txt
     ./pr.out list.txt
-    ./sleep.out 2
+    ./sleep.out 2 (store, writing INT1)
     ./timeout.out 1 sleep 10; date
-    ./touch.out out.txt
+    ./touch.out out.txt (store, writing INT1)
 
 Others (haven't tested)
    chcon

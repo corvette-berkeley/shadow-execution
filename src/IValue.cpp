@@ -108,7 +108,8 @@ string IValue::toString() {
     s << "[STRUCT: " << value.as_ptr << "]";
     break;
   case INT1_KIND:
-    s << "[INT1: " << value.as_int << "]";
+    s << "[INT1: " << (bool)value.as_int << "] ";
+    s << ", bitOffset: " << bitOffset;
     break;
   case INT8_KIND:
     s << "[INT8: " << value.as_int << "]";
