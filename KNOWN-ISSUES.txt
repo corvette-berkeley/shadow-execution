@@ -7,7 +7,7 @@ Unimplemented interpretation for instructions such as landingpad. It does not ha
 DONE: Upgrade to LLVM 3.3.
 DONE: New bitcode utilities with clang 3.3.
 
-CORE UTILITIES (17/100).
+CORE UTILITIES (22/100).
 
 During interpretation:
 ==============
@@ -53,6 +53,7 @@ Seg fault (8)
    ./chmod.out +x temp.txt
    ./chown.out root temp.tx
     ./comm.out list.txt list.txt (pointer constant)
+   ./chgrp.out staff /usr/local
    ./fold.out -5 list.txt
     ./mknod.out temp.txt b 12 5
    	./ptx.out list.txt (pointer constant)
@@ -78,7 +79,6 @@ Mismatch at store (2)
     process). (mismatch when storing int8)
 
 Others (haven't tested)
-   chgrp
    chcon
 
 During instrumentation:

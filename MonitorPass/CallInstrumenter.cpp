@@ -137,6 +137,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
       InsertAllAfter(instrsAfter, callInst);
     } else {
+
+      safe_assert(returnKind != STRUCT_KIND);
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
       Instruction* call = CALL_KVALUE("llvm_after_call", callReturnValue);
       instrsAfter.push_back(call);
