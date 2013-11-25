@@ -209,6 +209,11 @@ public:
   Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
     safe_assert(v != NULL);
 
+    // easier to fix here
+    if (v->getType()->isIntegerTy(1)) {
+      isSigned = false;
+    }
+
     // TODO(elmas): what else is OK?
     if(!isa<Instruction>(v) && !isa<Constant>(v)) {
       return NULL;
