@@ -1966,6 +1966,7 @@ void InterpreterObserver::after_struct_call() {
   if (debug) {
     printf("<<<<< AFTER STRUCT CALL >>>>>");
   }
+  safe_assert(false);
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
