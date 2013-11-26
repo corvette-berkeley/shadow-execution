@@ -1123,6 +1123,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
+    safe_assert(getElementPtrIndexList.empty());
+
     index = structPtr->getIndex() + index;
 
     cout << "Getting element at index: " << index << endl;
@@ -1139,6 +1141,9 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
     }
   } else {
+    getElementPtrIndexList.pop();
+    getElementPtrIndexList.pop();
+    safe_assert(getElementPtrIndexList.empty());
     structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
   }
 
@@ -1963,8 +1968,8 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
       cout << reg->toString() << endl;
     }
   } else {
-    safe_assert(myStack.empty());
     safe_assert(callArgs.empty());
+    safe_assert(myStack.empty());
   }
 
   isReturn = false;

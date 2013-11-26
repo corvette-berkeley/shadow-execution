@@ -52,17 +52,11 @@ Seg fault (8)
     ./vdir.out (seg fault global?)
     uptime (in getelementptr_array)
    ./realpath.out -L list.txt (in store)
+    ./sort.out list.txt (getelementptr_array)
 
 Failed assertion at after_call.
    wc
     ./cut.out -c2 list.txt
-
-Failed assertion at getelementptr_array.
-    ./sort.out list.txt
-   ./shred.out list.txt
-  ./shuf.out list.txt
-    md5sum list.txt
-    sum list.txt
 
 Failed assertion at KIND_GetSize (2)
     ./date.out (in alloca struct)
@@ -74,6 +68,7 @@ Failed assertion at KIND_GetSize (2)
     ./sha256sum.out list.txt (in alloca)
     ./sha384sum.out list.txt (in alloca)
     ./sha512sum.out list.txt (in alloca)
+    md5sum list.txt (in getelementptr array)
 
 Mismatch at store (9)
     ./cp.out list.txt temp.txt (store, writing INT1)
@@ -84,6 +79,9 @@ Mismatch at store (9)
     ./sleep.out 2 (store, writing INT1)
     ./timeout.out 1 sleep 10; date (store, writing INT1)
     ./touch.out out.txt (store, writing INT1)
+   ./shred.out list.txt
+  ./shuf.out list.txt
+    sum list.txt
 
 Others (haven't tested)
    chcon

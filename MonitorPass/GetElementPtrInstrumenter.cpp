@@ -63,7 +63,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     } 
 
-
     Type* gepInstType = ((PointerType*) gepInst->getType())->getElementType();
     KIND kind = TypeToKind(gepInstType);
     Constant* kindC = KIND_CONSTANT(kind);
