@@ -1985,6 +1985,7 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
       cout << reg->toString() << endl;
     }
   } else {
+    cout << myStack.size() << endl;
     safe_assert(callArgs.empty());
     safe_assert(myStack.empty());
   }
@@ -2157,8 +2158,10 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     }
     if (debug)
       cout << endl << executionStack.top()[inx]->toString() << endl;
-  }
-  else {
+  } else {
+    // cuong: should empty stack too
+    myStack.pop();
+    assert(myStack.size() == 0);
 
     unsigned size = structType.size();
     cout << "\nNumber of fields: " << size << endl;
@@ -2188,6 +2191,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     //cerr << "[Interpreter::call_malloc=] => Unimplemented Structs" << endl;
     //abort();
   }
+
   return;
 }
 
