@@ -33,7 +33,6 @@ Negative internal offset (1)
    paste list.txt list.txt	
 
 Seg fault (19)
-   ./base64.out list.txt (getelementptr_array of global variable)
    ./chmod.out +x temp.txt
    ./chown.out root temp.tx
     ./comm.out list.txt list.txt (pointer constant)
@@ -78,6 +77,7 @@ Mismatch at store (11)
     ./sha384sum.out list.txt 
     ./sha512sum.out list.txt (in alloca)
    nl list.txt
+   ./base64.out list.txt (getelementptr_array of global variable)
 
 Others (haven't tested)
    chcon
