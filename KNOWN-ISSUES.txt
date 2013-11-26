@@ -77,7 +77,6 @@ Mismatch at store (11)
     ./sha384sum.out list.txt 
     ./sha512sum.out list.txt (in alloca)
    nl list.txt
-   ./base64.out list.txt (getelementptr_array of global variable)
 
 Others (haven't tested)
    chcon
@@ -107,8 +106,9 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (23)
+Passing (24)
 =======
+   ./base64.out list.txt (getelementptr_array of global variable)
    chroot
    echo
    ./env.out

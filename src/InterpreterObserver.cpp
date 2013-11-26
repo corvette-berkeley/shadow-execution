@@ -86,11 +86,14 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       cout << "\tsrcLocation: " << srcLocation->toString() << endl;
     }
 
-    if (debug)
+    if (debug) {
       cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+    }
     VALUE value = srcPtrLocation->readValue(internalOffset, type);
-    if (debug)
+    
+    if (debug) {
       cout << "\tVALUE returned: " << (float) value.as_flp << endl;
+    }
 
     srcLocation->copy(destLocation);
     destLocation->setSize(KIND_GetSize(type));
@@ -124,9 +127,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
   }
 
   executionStack.top()[inx] = destLocation;
-  if (debug)
+  if (debug) {
     cout << destLocation->toString() << endl;
-
+  }
   return;
 }
 
