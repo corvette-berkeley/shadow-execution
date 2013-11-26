@@ -1097,43 +1097,54 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
         KIND_ToString(kind).c_str(),
         inx);
 
-  IValue* ptrArray;
-  if (op->isGlobal) {
-    ptrArray = globalSymbolTable[op->inx];
-  } else {
-    ptrArray = executionStack.top()[op->inx];
-  }
-  IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);
-
-  getElementPtrIndexList.pop();
-
-  int index = 1;
-  arraySize.pop();
-  while (!arraySize.empty()) {
-    index = index * arraySize.front();
-    arraySize.pop();
-  }
-  index = getElementPtrIndexList.front()*index;
-  getElementPtrIndexList.pop();
-  safe_assert(getElementPtrIndexList.empty());
-
-  index = ptrArray->getIndex() + index;
-
-  cout << "Getting element at index : " << index << endl;
-
   IValue* arrayElemPtr;
-  // TODO: revisit this
-  if (index < (int) ptrArray->getLength()) {
-    IValue* arrayElem = array + index;
-    arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue());
-    arrayElemPtr->setIndex(index);
-    arrayElemPtr->setLength(ptrArray->getLength());
-    arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
-    arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
+
+  if (op->iid == 0) {
+    // TODO: review this
+    // constant pointer
+    // return a dummy object
+    arrayElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
+    getElementPtrIndexList.pop();
+    getElementPtrIndexList.pop();
   } else {
-    arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), ptrArray->getSize(), 0, 0, 0);
+    IValue* ptrArray;
+    if (op->isGlobal) {
+      ptrArray = globalSymbolTable[op->inx];
+    } else {
+      ptrArray = executionStack.top()[op->inx];
+    }
+    IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);
+
+    getElementPtrIndexList.pop();
+
+    int index = 1;
+    arraySize.pop();
+    while (!arraySize.empty()) {
+      index = index * arraySize.front();
+      arraySize.pop();
+    }
+    index = getElementPtrIndexList.front()*index;
+    getElementPtrIndexList.pop();
+    safe_assert(getElementPtrIndexList.empty());
+
+    index = ptrArray->getIndex() + index;
+
+    cout << "Getting element at index : " << index << endl;
+
+    // TODO: revisit this
+    if (index < (int) ptrArray->getLength()) {
+      IValue* arrayElem = array + index;
+      arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue());
+      arrayElemPtr->setIndex(index);
+      arrayElemPtr->setLength(ptrArray->getLength());
+      arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
+      arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
+    } else {
+      arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), ptrArray->getSize(), 0, 0, 0);
+    }
   }
 
+  safe_assert(getElementPtrIndexList.empty());
   executionStack.top()[inx] = arrayElemPtr;
   if (debug)
     cout << executionStack.top()[inx]->toString() << endl;
