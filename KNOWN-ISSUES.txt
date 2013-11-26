@@ -27,8 +27,8 @@ Unhandled type for IValue (8)
    nproc
    paste list.txt list.txt	
 
-Failed assert at call.
-   	 ./ln.out -s list.txt list.txt.2
+Failed assert at getelementptr_struct
+   	 ./ln.out -s list.txt list.txt.2 
 
 Negative internal offset (1)
     ./dircolors.out

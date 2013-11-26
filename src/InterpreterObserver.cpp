@@ -942,7 +942,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   int internalOffset = 0;
 
   // retrieve source
-  srcLocation = (src->iid == 0) ? new IValue(src->kind, src->value) : executionStack.top()[src->inx];
+  if (src->iid == 0) {
+    srcLocation = new IValue(src->kind, src->value);
+    if (src->kind == INT1_KIND) {
+      srcLocation->setBitOffset(1);
+    }
+  } else {
+    srcLocation = executionStack.top()[src->inx];
+  }
 
   if (debug) {
     cout << "\tSrc: " << srcLocation->toString() << endl;
@@ -2054,6 +2061,8 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
     printf(" [INX: %d]\n", inx);
   }
 
+  printf("my stack size: %ld\n", myStack.size());
+
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
@@ -2065,7 +2074,8 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
 
     IValue* argCopy;
     if (value->inx != -1) {
-      IValue* arg = (IValue*)executionStack.top()[value->inx];
+      IValue* arg = value->isGlobal ? globalSymbolTable[value->inx] :
+        executionStack.top()[value->inx];
       safe_assert(arg);
       argCopy = new IValue();
       arg->copy(argCopy);
