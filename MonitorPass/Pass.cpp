@@ -57,68 +57,71 @@ struct MonitorPass : public FunctionPass {
     }
 
     for (Function::iterator e = F.end(); BB != e; ++BB) {
-      // set up pointers to BB, F, and M
-      instrumentation->BeginBasicBlock(BB, &F, M);
-      isFirstBlockInstruction = true;
-      for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
 
-        BasicBlock* block = (BasicBlock*) BB;
-
-        if (isFirstInstruction) {
-          // insert a call to create stack frame
-          Constant* frameSize =
-            ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
-                instrumentation->getFrameSize(), SIGNED);
-          TypePtrVector argTypes;
-          argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
-
-          ValuePtrVector args;
-          args.push_back(frameSize);
-
-          FunctionType* funType =
-            FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
-                ArrayRef<Type*>(argTypes), false);
-          Instruction* call =
-            CallInst::Create(instrumentation->M_->getOrInsertFunction(
-                  StringRef("llvm_create_stack_frame"), funType),
-                ArrayRef<Value*>(args)); 
-          call->insertBefore(itr);
-          isFirstInstruction = false;
-        } 
-
-        if (isFirstBlockInstruction) {
-          // insert a call to record block id 
-          Constant* blockId =
-            ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
-                instrumentation->getBlockIndex(block), SIGNED);
-          TypePtrVector argTypes;
-          argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
-
-          ValuePtrVector args;
-          args.push_back(blockId);
-
-          FunctionType* funType =
-            FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
-                ArrayRef<Type*>(argTypes), false);
-          Instruction* call =
-            CallInst::Create(instrumentation->M_->getOrInsertFunction(
-                  StringRef("llvm_record_block_id"), funType),
-                ArrayRef<Value*>(args)); 
-
-          if (dyn_cast<PHINode>(itr)) {
-            call->insertAfter(itr);
-          } else {
-            call->insertBefore(itr);
-          }
-
-          isFirstBlockInstruction = false;	   
-        }
-
-        // instrumentation
-        if (instrumentation->getIndex(itr) != -1) {
-          instrumentation->CheckAndInstrument(itr);
-        }
-
+      if (F.getName() != "vasnprintf") {
+	// set up pointers to BB, F, and M
+	instrumentation->BeginBasicBlock(BB, &F, M);
+	isFirstBlockInstruction = true;
+	for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
+	  
+	  BasicBlock* block = (BasicBlock*) BB;
+	  
+	  if (isFirstInstruction) {
+	    // insert a call to create stack frame
+	    Constant* frameSize =
+	      ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
+			       instrumentation->getFrameSize(), SIGNED);
+	    TypePtrVector argTypes;
+	    argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
+	    
+	    ValuePtrVector args;
+	    args.push_back(frameSize);
+	    
+	    FunctionType* funType =
+	      FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+				ArrayRef<Type*>(argTypes), false);
+	    Instruction* call =
+	      CallInst::Create(instrumentation->M_->getOrInsertFunction(
+									StringRef("llvm_create_stack_frame"), funType),
+			       ArrayRef<Value*>(args)); 
+	    call->insertBefore(itr);
+	    isFirstInstruction = false;
+	  } 
+	  
+	  if (isFirstBlockInstruction) {
+	    // insert a call to record block id 
+	    Constant* blockId =
+	      ConstantInt::get(Type::getInt32Ty(instrumentation->M_->getContext()),
+			       instrumentation->getBlockIndex(block), SIGNED);
+	    TypePtrVector argTypes;
+	    argTypes.push_back(Type::getInt32Ty(instrumentation->M_->getContext()));
+	    
+	    ValuePtrVector args;
+	    args.push_back(blockId);
+	    
+	    FunctionType* funType =
+	      FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+				ArrayRef<Type*>(argTypes), false);
+	    Instruction* call =
+	      CallInst::Create(instrumentation->M_->getOrInsertFunction(
+									StringRef("llvm_record_block_id"), funType),
+			       ArrayRef<Value*>(args)); 
+	    
+	    if (dyn_cast<PHINode>(itr)) {
+	      call->insertAfter(itr);
+	    } else {
+	      call->insertBefore(itr);
+	    }
+	    
+	    isFirstBlockInstruction = false;	   
+	  }
+	  
+	  // instrumentation
+	  if (instrumentation->getIndex(itr) != -1) {
+	    instrumentation->CheckAndInstrument(itr);
+	  }
+	  
+	}
       }
     }
     return true;

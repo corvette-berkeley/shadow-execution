@@ -10,11 +10,11 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
-CORE UTILITIES (22/100).
+CORE UTILITIES (23/100).
 
 During interpretation:
 ==============
-Unhandled type for IValue (8)
+Unhandled type for IValue (11)
    basename list.txt
    cat list.txt
 ./cksum.out list.txt
@@ -27,13 +27,13 @@ Unhandled type for IValue (8)
    nproc
    paste list.txt list.txt	
 
-Failed assert at getelementptr_struct
+Failed assert at getelementptr_struct (1)
    	 ./ln.out -s list.txt list.txt.2 
 
 Negative internal offset (1)
     ./dircolors.out
 
-Seg fault (8)
+Seg fault (19)
    ./base64.out list.txt (getelementptr_array)
    ./chmod.out +x temp.txt
    ./chown.out root temp.tx
@@ -54,11 +54,11 @@ Seg fault (8)
    ./realpath.out -L list.txt (in store)
     ./sort.out list.txt (getelementptr_array)
 
-Failed assertion at after_call.
+Failed assertion at after_call (2)
    wc
     ./cut.out -c2 list.txt
 
-Failed assertion at KIND_GetSize (2)
+Failed assertion at KIND_GetSize (10)
     ./date.out (in alloca struct)
    ./split.out -b 22 list.txt list (in alloca struct)
     ./truncate.out -s 5 list.txt (negative internal offset)
@@ -70,10 +70,10 @@ Failed assertion at KIND_GetSize (2)
     ./sha512sum.out list.txt (in alloca)
     md5sum list.txt (in getelementptr array)
 
-Mismatch at store (9)
+Mismatch at store (11)
     ./cp.out list.txt temp.txt (store, writing INT1)
     ./dirname.out /usr/local
-   kill pid (mismatch when storing int8)
+    ./kill.out pid (mismatch when storing int8)
     ./mv.out list.txt out.txt
     ./pr.out list.txt
     ./sleep.out 2 (store, writing INT1)
@@ -90,26 +90,28 @@ Others (haven't tested)
 
 During instrumentation:
 ===================
+All failing when verifying the same function: Running pass 'Module
+Verifier' on function '@vasnprintf
+coreutils/lib/vasnprintf.c
 
-Broken module (12)
-   df 
-    factor
-    install
-   numfmt
-   mkdir
-   printf
-   rmdir
-   seq
-   stat
-   stdbuf
-   stty
-   who
+Broken module (11)
+   ./df.out -h 
+   ./factor.out 8
+   ./install.out -b list.txt backup.txt
+   ./numfmt 2
+   ./mkdir.out hola
+   ./printf.out "%s" hello
+   ./seq.out 2
+   ./stat.out list.txt
+   stdbuf (haven't tested it yet)
+   ./stty.out
+   ./who.out
 
 Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (22)
+Passing (23)
 =======
    chroot
    echo
@@ -122,6 +124,7 @@ Passing (22)
    nice
    pwd
    readlink
+   ./rmdir.out hello (where hello is a directory)
    runcon
    sync
    tee (usage: ls | ./tee.out out)

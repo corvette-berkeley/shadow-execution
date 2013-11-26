@@ -722,6 +722,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   IValue* ptrLocation;
   IValue* location;
   if (callArgs.empty()) {
+    cout << "LOCAL alloca" << endl;
     // alloca for non-argument variables
     location = new IValue(type); // should we count it as LOCAL?
     location->setLength(0);
@@ -731,8 +732,16 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
     executionStack.top()[inx] = ptrLocation;
   } else {
+    cout << "ARG alloca" << endl;
     // alloca for function arguments
     location = callArgs.top();
+    ///
+    /*
+    cout << "Actual element pointing to" << endl;
+    IValue* actual = (IValue*)location->getValue().as_ptr;
+    cout << "\t" << actual->toString() << endl;
+    */
+    ///
     VALUE value;
     value.as_ptr = (void*) location;
     ptrLocation = new IValue(PTR_KIND, value, LOCAL);
