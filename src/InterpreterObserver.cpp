@@ -1163,7 +1163,10 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     }
   } else {
     getElementPtrIndexList.pop();
-    getElementPtrIndexList.pop();
+    // TODO: review this
+    // this getelementptr instruction has only one index
+    if (!getElementPtrIndexList.empty())
+      getElementPtrIndexList.pop();
     safe_assert(getElementPtrIndexList.empty());
     structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
   }

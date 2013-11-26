@@ -24,6 +24,7 @@ Unhandled type for IValue (11)
    mktemp testingXXX
    nproc
     ./date.out 
+   wc list.txt
 
 Failed assert at getelementptr_struct (1)
    	 ./ln.out -s list.txt list.txt.2 
@@ -55,10 +56,7 @@ Seg fault (19)
    ./realpath.out -L list.txt (in store)
     ./sort.out list.txt (getelementptr_array)
    ./split.out -b 22 list.txt list (in alloca struct)
-
-Failed assertion at after_call (2)
-   wc
-    ./cut.out -c2 list.txt
+    ./cut.out -c2 list.txt (in store)
 
 Failed assertion at KIND_GetSize (10)
    fmt list.txt (in getelementptr struct)
