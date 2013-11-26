@@ -770,13 +770,14 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     arraySize.pop();
   }
 
-  uint64_t structSize = 0;
+  uint64_t structSize = 1;
   if (type == STRUCT_KIND) structSize = structType.size();
   KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
-  for (uint64_t i = 0; i < structSize; i++) {
-    structKind[i] = structType.front();
-    structType.pop();
-  }
+  if (type == STRUCT_KIND)
+    for (uint64_t i = 0; i < structSize; i++) {
+      structKind[i] = structType.front();
+      structType.pop();
+    }
 
   if (callArgs.empty()) {
     IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
@@ -957,7 +958,11 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
       srcLocation->setBitOffset(1);
     }
   } else {
-    srcLocation = executionStack.top()[src->inx];
+    if (src->isGlobal) {
+      srcLocation = globalSymbolTable[src->inx];
+    } else {
+      srcLocation = executionStack.top()[src->inx];
+    }
   }
 
   if (debug) {

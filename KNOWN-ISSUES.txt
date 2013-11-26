@@ -17,21 +17,22 @@ During interpretation:
 Unhandled type for IValue (11)
    basename list.txt
    cat list.txt
-./cksum.out list.txt
-   ./csplit.out -f xyz list.txt 11 72 98
+   ./cksum.out list.txt
    ./du.out -h
    ./expr.out  5 6
    id
    mktemp testingXXX
-   nl list.txt
    nproc
-   paste list.txt list.txt	
+    ./date.out 
 
 Failed assert at getelementptr_struct (1)
    	 ./ln.out -s list.txt list.txt.2 
+   ./csplit.out -f xyz list.txt 11 72 98
 
 Negative internal offset (1)
     ./dircolors.out
+    ./truncate.out -s 5 list.txt (negative internal offset)
+   paste list.txt list.txt	
 
 Seg fault (19)
    ./base64.out list.txt (getelementptr_array)
@@ -53,21 +54,14 @@ Seg fault (19)
     uptime (in getelementptr_array)
    ./realpath.out -L list.txt (in store)
     ./sort.out list.txt (getelementptr_array)
+   ./split.out -b 22 list.txt list (in alloca struct)
 
 Failed assertion at after_call (2)
    wc
     ./cut.out -c2 list.txt
 
 Failed assertion at KIND_GetSize (10)
-    ./date.out (in alloca struct)
-   ./split.out -b 22 list.txt list (in alloca struct)
-    ./truncate.out -s 5 list.txt (negative internal offset)
    fmt list.txt (in getelementptr struct)
-    ./sha1sum.out list.txt (in alloca)
-    ./sha224sum.out list.txt (in alloca)
-    ./sha256sum.out list.txt (in alloca)
-    ./sha384sum.out list.txt (in alloca)
-    ./sha512sum.out list.txt (in alloca)
     md5sum list.txt (in getelementptr array)
 
 Mismatch at store (11)
@@ -82,6 +76,12 @@ Mismatch at store (11)
    ./shred.out list.txt
   ./shuf.out list.txt
     sum list.txt
+    ./sha1sum.out list.txt 
+    ./sha224sum.out list.txt 
+    ./sha256sum.out list.txt 
+    ./sha384sum.out list.txt 
+    ./sha512sum.out list.txt (in alloca)
+   nl list.txt
 
 Others (haven't tested)
    chcon
