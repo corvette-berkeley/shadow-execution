@@ -761,7 +761,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     arraySize.pop();
   }
 
-  uint64_t structSize = 1;
+  uint64_t structSize = 0;
   if (type == STRUCT_KIND) structSize = structType.size();
   KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
   for (uint64_t i = 0; i < structSize; i++) {
@@ -779,9 +779,9 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
           var->setFirstByte(firstByte + bitOffset/8);
           var->setBitOffset(bitOffset%8);
           var->setLength(0);
-          unsigned type = structKind[j];
-          firstByte += KIND_GetSize(type);
-          bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
+          unsigned structType = structKind[j];
+          firstByte += KIND_GetSize(structType);
+          bitOffset = (structType == INT1_KIND) ? bitOffset + 1 : bitOffset;
           locArr[i*structSize+j] = *var;
         }
       } else {
@@ -825,7 +825,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
   if (debug)
     printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
 
-  cout << structType.size() << endl;
+  safe_assert(structType.size() == size);
 
   //  if (callArgs.empty()) {
   unsigned firstByte = 0;
@@ -1922,6 +1922,7 @@ void InterpreterObserver::push_return_struct(KVALUE* value) {
 void InterpreterObserver::push_struct_type(KIND kind) {
   if (debug)
     printf("<<<<< PUSH STRUCT TYPE >>>>>: %s\n", KIND_ToString(kind).c_str()); 
+  cout << structType.size() << endl;
   structType.push(kind);
   // TODO: this seems to be a bug in C++ queue
   // that requires us to do this
