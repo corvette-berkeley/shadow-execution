@@ -6,6 +6,9 @@ Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
 DONE: Upgrade to LLVM 3.3.
 DONE: New bitcode utilities with clang 3.3.
+DONE: Function pointers. 
+DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
+DONE: Modelling phi instruction 
 
 CORE UTILITIES (22/100).
 
@@ -23,25 +26,6 @@ Unhandled type for IValue (8)
    nl list.txt
    nproc
    paste list.txt list.txt	
-
-Don't support bit right now (15)
-   fmt list.txt 
-   uptime
-    groups
-    head list.txt
-    md5sum list.txt
-    pathchk /usr/local
-    pinky
-   ./realpath.out -L list.txt
-    ./sha1sum.out list.txt
-    ./sha224sum.out list.txt
-    ./sha256sum.out list.txt
-    ./sha384sum.out list.txt
-    ./sha512sum.out list.txt
-    sum list.txt
-    tac list.txt
-    ./tr.out abc ABC (writing a bit!!!)
-   users
 
 Failed assert at call.
    	 ./ln.out -s list.txt list.txt.2
@@ -66,6 +50,8 @@ Seg fault (8)
     ./rm.out list.txt (store of global variable)
     ./tail -10 list.txt (getelementptr)
     ./vdir.out (seg fault global?)
+    uptime (in getelementptr_array)
+   ./realpath.out -L list.txt (in store)
 
 Failed assertion at after_call.
    wc
@@ -75,11 +61,19 @@ Failed assertion at getelementptr_array.
     ./sort.out list.txt
    ./shred.out list.txt
   ./shuf.out list.txt
+    md5sum list.txt
+    sum list.txt
 
 Failed assertion at KIND_GetSize (2)
     ./date.out (in alloca struct)
    ./split.out -b 22 list.txt list (in alloca struct)
     ./truncate.out -s 5 list.txt (negative internal offset)
+   fmt list.txt (in getelementptr struct)
+    ./sha1sum.out list.txt (in alloca)
+    ./sha224sum.out list.txt (in alloca)
+    ./sha256sum.out list.txt (in alloca)
+    ./sha384sum.out list.txt (in alloca)
+    ./sha512sum.out list.txt (in alloca)
 
 Mismatch at store (9)
     ./cp.out list.txt temp.txt (store, writing INT1)
@@ -141,13 +135,6 @@ Passing (22)
    ./unexpand.out list.txt
    ./uniq.out list.txt
   ./unlink.out list.txt
-
-
-ISSUES resolved:
-
-Function pointers. - DONE
-Intrinsic functions with side effects (e.g., llvm.copy) - DONE
-Modelling phi instruction - DONE
 
 
   
