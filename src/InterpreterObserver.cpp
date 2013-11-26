@@ -1924,11 +1924,6 @@ void InterpreterObserver::push_struct_type(KIND kind) {
     printf("<<<<< PUSH STRUCT TYPE >>>>>: %s\n", KIND_ToString(kind).c_str()); 
   cout << structType.size() << endl;
   structType.push(kind);
-  // TODO: this seems to be a bug in C++ queue
-  // that requires us to do this
-  if (structType.size() == 0) {
-    structType.push(kind);
-  }
 }
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
