@@ -1053,7 +1053,13 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
         line,
         inx);
 
-  IValue* basePtrLocation = executionStack.top()[base->inx];
+  IValue* basePtrLocation; 
+  
+  if (base->isGlobal) {
+    basePtrLocation = globalSymbolTable[base->inx];
+  } else {
+    basePtrLocation = executionStack.top()[base->inx];
+  }
   IValue* ptrLocation;
 
   if (basePtrLocation->isInitialized()) {
@@ -1091,7 +1097,12 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
         KIND_ToString(kind).c_str(),
         inx);
 
-  IValue* ptrArray = executionStack.top()[op->inx];
+  IValue* ptrArray;
+  if (op->isGlobal) {
+    ptrArray = globalSymbolTable[op->inx];
+  } else {
+    ptrArray = executionStack.top()[op->inx];
+  }
   IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);
 
   getElementPtrIndexList.pop();
@@ -1110,12 +1121,18 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
 
   cout << "Getting element at index : " << index << endl;
 
-  IValue* arrayElem = array + index;
-  IValue* arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue());
-  arrayElemPtr->setIndex(index);
-  arrayElemPtr->setLength(ptrArray->getLength());
-  arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
-  arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
+  IValue* arrayElemPtr;
+  // TODO: revisit this
+  if (index < (int) ptrArray->getLength()) {
+    IValue* arrayElem = array + index;
+    arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue());
+    arrayElemPtr->setIndex(index);
+    arrayElemPtr->setLength(ptrArray->getLength());
+    arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
+    arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
+  } else {
+    arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), ptrArray->getSize(), 0, 0, 0);
+  }
 
   executionStack.top()[inx] = arrayElemPtr;
   if (debug)

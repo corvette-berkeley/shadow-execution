@@ -33,7 +33,7 @@ Negative internal offset (1)
    paste list.txt list.txt	
 
 Seg fault (19)
-   ./base64.out list.txt (getelementptr_array)
+   ./base64.out list.txt (getelementptr_array of global variable)
    ./chmod.out +x temp.txt
    ./chown.out root temp.tx
     ./comm.out list.txt list.txt (pointer constant)
@@ -51,13 +51,13 @@ Seg fault (19)
     ./vdir.out (seg fault global?)
     uptime (in getelementptr_array)
    ./realpath.out -L list.txt (in store)
-    ./sort.out list.txt (getelementptr_array)
+    ./sort.out list.txt (getelementptr_array of global)
    ./split.out -b 22 list.txt list (in alloca struct)
     ./cut.out -c2 list.txt (in store)
    ./csplit.out -f xyz list.txt 11 72 98
 
-Failed assertion at KIND_GetSize (10)
-   fmt list.txt (in getelementptr struct)
+Failed assertion at KIND_GetSize (2)
+   fmt list.txt (in getelementptr struct/from a global value)
     md5sum list.txt (in getelementptr array)
 
 Mismatch at store (11)
