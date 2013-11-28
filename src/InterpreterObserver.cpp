@@ -52,84 +52,100 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
         inx);
   }
 
+
+  bool doLoad = true;
   IValue* srcPtrLocation;
+
   if (src->isGlobal) {
     srcPtrLocation = globalSymbolTable[src->inx];
   }
   else {
-    srcPtrLocation = executionStack.top()[src->inx];
+    if (src->inx != -1) {
+      srcPtrLocation = executionStack.top()[src->inx];
+    }
+    else {
+      // cannot load using constant address
+      doLoad = false;
+    }
   }
 
-  if (debug) {
-    cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
-  }
-  // creating new value
-  IValue *destLocation = new IValue();
 
-  if (srcPtrLocation->isInitialized()) {
-    IValue *srcLocation = NULL;
-    unsigned srcOffset = srcPtrLocation->getOffset();
-    int internalOffset = 0;
-
-    // retrieving source
-    IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
-    unsigned valueIndex = srcPtrLocation->getIndex();
-    unsigned currOffset = values[valueIndex].getFirstByte();
+  // do perform the load
+  if (doLoad) {
     if (debug) {
-      cout << "\tvalueIndex: " << valueIndex << " srcOffset: " << srcOffset << " currOffset: " << currOffset << " srcOffset" << srcOffset << endl;
-    }
-    srcLocation = &values[valueIndex];
-
-    internalOffset = srcOffset - currOffset;
-    if (debug) {
-      cout << "\tInternal offset: " << internalOffset << endl;
-      cout << "\tsrcLocation: " << srcLocation->toString() << endl;
+      cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
     }
 
-    if (debug) {
-      cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+    // creating new value
+    IValue *destLocation = new IValue();    
+    if (srcPtrLocation->isInitialized()) {
+      IValue *srcLocation = NULL;
+
+      // retrieving source
+      IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
+      unsigned valueIndex = srcPtrLocation->getIndex();
+      unsigned currOffset = values[valueIndex].getFirstByte();
+      srcLocation = &values[valueIndex];
+
+      // calculating internal offset
+      unsigned srcOffset = srcPtrLocation->getOffset();
+      int internalOffset = srcOffset - currOffset;
+      VALUE value = srcPtrLocation->readValue(internalOffset, type);
+
+      if (debug) {
+	cout << "\tIndex values:" << endl;
+	cout << "\t\tvalueIndex: " << valueIndex << endl;
+	cout << "\t\tsrcOffset: " << srcOffset << endl;
+	cout << "\t\tcurrOffset: " << currOffset << endl;
+	cout << "\t\tsrcOffset" << srcOffset << endl;
+	cout << "\t\tinternal offset: " << internalOffset << endl;
+	cout << "\tsrcLocation: " << srcLocation->toString() << endl;
+	cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+	cout << "\t\tVALUE returned: " << (float) value.as_flp << endl;
+      }
+      
+      // copying src into dest
+      srcLocation->copy(destLocation);
+      destLocation->setSize(KIND_GetSize(type));
+      destLocation->setValue(value);
+      destLocation->setType(type);
+      
+      // sync load
+      //bool sync = false;
+      bool sync = syncLoad(destLocation, src, type);
+      
+      // sync heap if sync value
+      if (sync) {
+	srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
+      }
+    } else {
+      destLocation->setSize(KIND_GetSize(type));
+      destLocation->setType(type);
+      destLocation->setLength(0);
+
+      // sync load
+      bool sync = syncLoad(destLocation, src, type);
+      
+      // sync heap if sync value
+      if (sync) {
+	VALUE value;
+	value.as_ptr = (void*) destLocation;
+	srcPtrLocation->setLength(1);
+	srcPtrLocation->setValue(value);
+	srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
+      }
     }
-    VALUE value = srcPtrLocation->readValue(internalOffset, type);
     
+    executionStack.top()[inx] = destLocation;
     if (debug) {
-      cout << "\tVALUE returned: " << (float) value.as_flp << endl;
-    }
-
-    srcLocation->copy(destLocation);
-    destLocation->setSize(KIND_GetSize(type));
-    destLocation->setValue(value);
-    destLocation->setType(type);
-
-    // sync load
-    //bool sync = false;
-    bool sync = syncLoad(destLocation, src, type);
-
-    // sync heap if sync value
-    if (sync) {
-      srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
-    }
-  } else {
-    destLocation->setSize(KIND_GetSize(type));
-    destLocation->setType(type);
-    destLocation->setLength(0);
-
-    // sync load
-    bool sync = syncLoad(destLocation, src, type);
-
-    // sync heap if sync value
-    if (sync) {
-      VALUE value;
-      value.as_ptr = (void*) destLocation;
-      srcPtrLocation->setLength(1);
-      srcPtrLocation->setValue(value);
-      srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
+      cout << destLocation->toString() << endl;
     }
   }
-
-  executionStack.top()[inx] = destLocation;
-  if (debug) {
-    cout << destLocation->toString() << endl;
+  else {
+    cout << "[Load] => pointer constant" << endl;
+    safe_assert(false);
   }
+
   return;
 }
 

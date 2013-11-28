@@ -27,12 +27,17 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   InstrPtrVector instrs;
 
   Constant* iid = IID_CONSTANT(callInst);
-
   Constant* inx = computeIndex(callInst);
 
+  // for later reference: iid and function name
+  Function *callee = callInst->getCalledFunction();
+  if (callee) {
+    cout << "called function: " << callee->getName().str() << endl;
+    iid->dump();
+  }
+
   // whether this call unwinds the stack
-  if (callInst->getCalledFunction() != NULL &&
-      callInst->getCalledFunction()->getName() == "malloc") {
+  if (callee != NULL && callee->getName() == "malloc") {
     noUnwind = false;
   }
   Constant* noUnwindC = BOOL_CONSTANT(noUnwind);
@@ -79,13 +84,13 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     if (bitcast != NULL) {
       bitcast->dump();
 
-      PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
+      //PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
       PointerType *dest = dyn_cast<PointerType>(bitcast->getDestTy());
 
-      cout << "Sizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
-        dest->getElementType()->getPrimitiveSizeInBits() << endl;
+      //cout << "Sizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " << 
+      //  dest->getElementType()->getPrimitiveSizeInBits() << endl;
 
-      cout << "Number of bytes requested: " << endl;
+      //cout << "Number of bytes requested: " << endl;
       callInst->getOperand(0)->dump();      
 
       returnKind = TypeToKind(dest->getElementType());
@@ -97,15 +102,16 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       if (TypeToKind(dest->getElementType()) == STRUCT_KIND) {
 	uint64_t allocation = pushStructType((StructType*) dest->getElementType(), instrs);
 	cout << "After allocation: " << allocation << endl;
+	/*
         if (StructType *st = dyn_cast<StructType>(dest->getElementType())) {
           unsigned numElems = st->getNumElements();
           unsigned sum = 0;
           for(unsigned i = 0; i < numElems; i++) {
             Type* type = st->getElementType(i);
             sum =+ type->getPrimitiveSizeInBits();
-            cout << "YES!!!!" << sum << endl;
           }
         }
+	*/
       }
       size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
     }

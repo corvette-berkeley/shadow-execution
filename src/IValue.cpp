@@ -166,8 +166,9 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-  cout << "KIND: " << KIND_ToString(type) << endl;
-  cout << toString() << endl;
+  //cout << "KIND: " << KIND_ToString(type) << endl;
+  //cout << toString() << endl;
+
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
   int byte = KIND_GetSize(type);
   VALUE value;
