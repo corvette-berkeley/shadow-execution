@@ -52,26 +52,23 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
         inx);
   }
 
-
   bool doLoad = true;
   IValue* srcPtrLocation;
 
-  if (src->isGlobal) {
+  if (src->inx == -1) {
+    // cannot load using constant address
+    doLoad = false;
+  }
+  else if (src->isGlobal) {
     srcPtrLocation = globalSymbolTable[src->inx];
   }
   else {
-    if (src->inx != -1) {
-      srcPtrLocation = executionStack.top()[src->inx];
-    }
-    else {
-      // cannot load using constant address
-      doLoad = false;
-    }
+    srcPtrLocation = executionStack.top()[src->inx];
   }
 
-
-  // do perform the load
+  // perform load
   if (doLoad) {
+
     if (debug) {
       cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
     }
@@ -142,8 +139,28 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
     }
   }
   else {
+    // NEW case for pointer constants
+    // TODO: revise again
     cout << "[Load] => pointer constant" << endl;
-    safe_assert(false);
+  
+    IValue* destLocation = new IValue();
+    destLocation->setSize(KIND_GetSize(type));
+    destLocation->setType(type);
+    destLocation->setLength(0);
+    
+    // sync load
+    bool sync = syncLoad(destLocation, src, type);
+    
+    // sync heap if sync value
+    if (sync) {
+      destLocation->setValue(src->value);
+      destLocation->setType(src->kind);
+    }
+    
+    executionStack.top()[inx] = destLocation;
+    if (debug) {
+      cout << destLocation->toString() << endl;
+    }
   }
 
   return;
@@ -937,14 +954,19 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 }
 
 void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< STORE >>>>> %s, %s, %s, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(dest).c_str(), //op
         KVALUE_ToString(src).c_str(), line, inx); // kv
+  }
 
   // retrieve ptr destination
   IValue* destPtrLocation;
-  if (dest->isGlobal) {
+  if (dest->inx == -1) { // pointer constant
+    // do nothing
+    return;
+  }
+  else if (dest->isGlobal) {
     destPtrLocation = globalSymbolTable[dest->inx];
   }
   else {

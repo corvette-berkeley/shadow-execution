@@ -18,12 +18,17 @@ Unhandled type for IValue (11)
    basename list.txt
    cat list.txt
    ./cksum.out list.txt
+    ./dir.out
    ./du.out -h
    ./expr.out  5 6
    id
+    ./join.out list.txt list.txt (previously pointer constant)
+    ./ls.out
    mktemp testingXXX
    nproc
     ./date.out 
+   ./ptx.out list.txt
+    ./vdir.out (seg fault global?)
    wc list.txt
 
 Negative internal offset (1)
@@ -33,27 +38,19 @@ Negative internal offset (1)
    paste list.txt list.txt	
 
 Seg fault (19)
-   ./chmod.out +x temp.txt
-   ./chown.out root temp.tx
-    ./comm.out list.txt list.txt (pointer constant)
-   ./chgrp.out staff /usr/local
-    ./dir.out
-   ./fold.out -5 list.txt
-    ./ls.out
-    ./mknod.out temp.txt b 12 5
-   	./ptx.out list.txt (pointer constant)
+   ./chmod.out +x temp.txt (in load)
+   ./chown.out root temp.tx (in load)
+   ./chgrp.out staff /usr/local (in load)
+   ./fold.out -5 list.txt (in load)
+    ./mknod.out temp.txt b 12 5 (in load)
    ./tsort.out list.txt (getelementptr)
-    ./join.out list.txt list.txt (pointer constant)
-    ./nohup.out time (or nohup) (null pointer)
     ./rm.out list.txt (store of global variable)
     ./tail -10 list.txt (getelementptr)
-    ./vdir.out (seg fault global?)
     uptime (in getelementptr_array)
    ./realpath.out -L list.txt (in store)
-    ./sort.out list.txt (constant pointer)
    ./split.out -b 22 list.txt list (in alloca struct)
-    ./cut.out -c2 list.txt (in store)
-   ./csplit.out -f xyz list.txt 11 72 98
+    ./cut.out -c2 list.txt (after call)
+   ./csplit.out -f xyz list.txt 11 72 98 (in load)
 
 Failed assertion at KIND_GetSize (2)
    fmt list.txt (in getelementptr struct/from a global value)
@@ -61,6 +58,7 @@ Failed assertion at KIND_GetSize (2)
 
 Mismatch at store (11)
     ./cp.out list.txt temp.txt (store, writing INT1)
+    ./comm.out list.txt list.txt (previously pointer constant)
     ./dirname.out /usr/local
     ./kill.out pid (mismatch when storing int8)
     ./mv.out list.txt out.txt
@@ -76,6 +74,7 @@ Mismatch at store (11)
     ./sha256sum.out list.txt 
     ./sha384sum.out list.txt 
     ./sha512sum.out list.txt (in alloca)
+    ./sort.out list.txt (constant pointer)
 
 Others (haven't tested)
    chcon
@@ -105,7 +104,7 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (24)
+Passing (25)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
    chroot
@@ -117,6 +116,7 @@ Passing (24)
    logname
    mkfifo temp (it creates a file...)
    nice
+    ./nohup.out time (or nohup)
    pwd
    readlink
    ./rmdir.out hello (where hello is a directory)
