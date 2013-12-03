@@ -23,6 +23,10 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     Type *type = allocaInst->getAllocatedType();
     if (!type) return false;
 
+    cout << "Type at alloca: ";
+    type->dump();
+    cout << endl;
+
     KIND kind = TypeToKind(type);
     if (kind == INV_KIND) return false;
     Constant* kindC = KIND_CONSTANT(kind);
@@ -30,12 +34,22 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     // alloca for argument?
     bool isArgument = false;
     Value::use_iterator it = allocaInst->use_begin();
-    if (StoreInst *store = dyn_cast<StoreInst>(*it)) {
-      if (dyn_cast<Argument>(store->getValueOperand())) {
-	isArgument = true;
+    for(; it != allocaInst->use_end(); it++) {
+      if (StoreInst *store = dyn_cast<StoreInst>(*it)) {
+	if (Argument *argument = dyn_cast<Argument>(store->getValueOperand())) {
+	  cout << "\tArg at alloca";
+	  argument->dump();
+	  cout << endl;
+	  isArgument = true;
+	  break;
+	}
       }
     }
 	
+    if (!isArgument) {
+      cout << "\tIt was not an argument" << endl;
+    }
+
     Constant* isArgumentC = BOOL_CONSTANT(isArgument);
     
 
