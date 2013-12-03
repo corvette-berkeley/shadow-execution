@@ -2069,6 +2069,7 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
     }
   } else {
     cout << myStack.size() << endl;
+    cout << "callArgs size: " << callArgs.size() << endl;
     safe_assert(callArgs.empty());
     safe_assert(myStack.empty());
   }
@@ -2088,6 +2089,14 @@ void InterpreterObserver::after_void_call() {
 
   safe_assert(!recentBlock.empty());
   recentBlock.pop();
+
+    // empty myStack and callArgs
+    while (!myStack.empty()) {
+      myStack.pop();
+    }
+    while (!callArgs.empty()) {
+      callArgs.pop();
+    }
 }
 
 void InterpreterObserver::after_struct_call() {
@@ -2162,6 +2171,7 @@ void InterpreterObserver::create_stack_frame(int size) {
       frame[i] = new IValue();
     }
   }
+  safe_assert(callArgs.empty());
   executionStack.push(frame);
 }
 

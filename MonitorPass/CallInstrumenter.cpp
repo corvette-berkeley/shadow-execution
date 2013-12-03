@@ -14,7 +14,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   } 
 
   bool isIntrinsic = dyn_cast<IntrinsicInst>(callInst) != NULL;
-  bool noUnwind = callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind) || isIntrinsic;
+  //bool noUnwind = callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind) || isIntrinsic;
+  bool noUnwind = isIntrinsic;
 
   if (noUnwind && callInst->getType()->isVoidTy()) {
     return false;
