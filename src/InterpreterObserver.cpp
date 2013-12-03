@@ -1728,6 +1728,7 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
     safe_assert(!returnStruct.empty());
 
     // reconstruct struct value
+    unsigned size = returnStruct.size();
     IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
     unsigned i = 0;
     while (!returnStruct.empty()) {
@@ -1745,6 +1746,7 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
       }
 
       structValue[i] = *iValue; 
+      cout << structValue[i].toString() << endl;
       i++;
       returnStruct.pop();
     }
@@ -1753,7 +1755,8 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
 
     executionStack.top()[callerVarIndex.top()] = structValue;
     if (debug) {
-      cout << executionStack.top()[callerVarIndex.top()]->toString() << endl;
+      for (i = 0; i < size; i++)
+        cout << executionStack.top()[callerVarIndex.top()][i].toString() << endl;
     }
   } else {
     cout << "The execution stack is empty.\n";
@@ -2119,13 +2122,13 @@ void InterpreterObserver::after_struct_call() {
     safe_assert(returnStruct.empty());
 
 
-    IValue* reg = executionStack.top()[callerVarIndex.top()];
-    structValue[0].copy(reg);
-    callerVarIndex.pop();
+    executionStack.top()[callerVarIndex.top()] = structValue;
 
     if (debug) {
-      cout << reg->toString() << endl;
+      cout << executionStack.top()[callerVarIndex.top()]->toString() << endl;
     }
+
+    callerVarIndex.pop();
   } else {
     while (!returnStruct.empty()) {
       returnStruct.pop();
