@@ -14,57 +14,37 @@ CORE UTILITIES (25/100).
 
 During interpretation:
 ==============
-Unhandled type for IValue (11)
-   basename list.txt
-   cat list.txt
-    ./cp.out list.txt temp.txt
-   ./chown.out root temp.tx (unhandled type?)
-   ./chgrp.out staff /usr/local (unhandled type?)
-   ./cksum.out list.txt
-    ./dir.out
-   ./du.out -h
-   ./expr.out  5 6
-   id
-    ./join.out list.txt list.txt (previously pointer constant)
-    ./ls.out
-   mktemp testingXXX
-    ./mv.out list.txt out.txt
-   nproc
-    ./date.out 
-   ./ptx.out list.txt
-    ./vdir.out (seg fault global?)
-   wc list.txt
-
-Negative internal offset (1)
-   	 ./ln.out -s list.txt list.txt.2 
-    ./dircolors.out
-    ./truncate.out -s 5 list.txt (negative internal offset)
-   paste list.txt list.txt	
 
 Failed load assertion
+   ./chown.out root temp.txt
+./chgrp.out staff /usr/local
+    ./dircolors.out
+   	 ./ln.out -s list.txt list.txt.2 
     ./mknod.out temp.txt b 12 5 (failed assert in load)
+   ./paste.out list.txt list.txt	
    ./tsort.out list.txt (failed assert in load)
+    ./vdir.out
 
-Seg fault (19) (pending to check)
-    ./rm.out list.txt (store of global variable)
-    ./tail -10 list.txt (getelementptr)
-    uptime (in getelementptr_array)
-   ./realpath.out -L list.txt (in store)
-   ./split.out -b 22 list.txt list (in alloca struct)
-    ./cut.out -c2 list.txt (after call)
-   ./csplit.out -f xyz list.txt 11 72 98 (in load)
-
-Failed assertion at KIND_GetSize (2)
+Failed assertion at getelement_struct
    fmt list.txt (in getelementptr struct/from a global value)
-    md5sum list.txt (in getelementptr array)
+    ./sort.out list.txt (constant pointer)
 
 Mismatch at store (14)
-    ./comm.out list.txt list.txt (previously pointer constant)
+   ./cksum.out list.txt
+    ./cp.out list.txt temp.txt
+    ./comm.out list.txt list.txt
+   ./csplit.out -f xyz list.txt 11 72 98
+    ./date.out 
     ./dirname.out /usr/local
-    ./kill.out pid (mismatch when storing int8)
-    ./pr.out list.txt (AFTER STRUCT CALL missing interpretation)
-    ./sleep.out 2 (AFTER STRUCT CALL missing interpretation)
-    ./timeout.out 1 sleep 10; date (AFTER STRUCT CALL missing interpretation)
+   ./du.out -h
+   ./expr.out  linux : lin
+   id
+    ./join.out list.txt list.txt
+    ./ls.out
+    md5sum list.txt
+   mktemp testingXXX
+   ./ptx.out list.txt
+   ./realpath.out -L list.txt
    ./shred.out list.txt
   ./shuf.out list.txt
     ./sha1sum.out list.txt 
@@ -72,11 +52,16 @@ Mismatch at store (14)
     ./sha256sum.out list.txt 
     ./sha384sum.out list.txt 
     ./sha512sum.out list.txt (in alloca)
-    ./sort.out list.txt (constant pointer)
+        uptime
 
-Others (haven't tested)
-   chcon
+Failed assertion at return struct:
+    ./pr.out list.txt
+    ./sleep.out 2 (AFTER STRUCT CALL missing interpretation)
+    ./timeout.out 1 sleep 10; date (AFTER STRUCT CALL missing interpretation)
 
+Failed assertion after call
+    ./kill.out pid (args not empty!)
+    ./truncate.out -s 5 list.txt
 
 
 During instrumentation:
@@ -89,12 +74,12 @@ Broken module (11)
    ./df.out -h 
    ./factor.out 8
    ./install.out -b list.txt backup.txt
-   ./numfmt 2
+   ./numfmt 2 (*** PASSES)
    ./mkdir.out hola
    ./printf.out "%s" hello
    ./seq.out 2
    ./stat.out list.txt
-   stdbuf (haven't tested it yet)
+   ./stdbuf.out (*** PASSES)
    ./stty.out
    ./who.out
 
@@ -102,11 +87,16 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (29)
+Passing (42)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
+   basename list.txt   
+   cat list.txt
    ./chmod.out +x temp.txt (unhandled type?) 
    chroot
+   /.chcon.out -R --type=ssh_home_t
+    ./cut.out -c2 list.txt
+    ./dir.out
    echo
    ./env.out
    false --version
@@ -115,15 +105,22 @@ Passing (29)
    link list.txt link.txt
    logname
    mkfifo temp (it creates a file...)
+   ./mv.out list.txt out.txt
+   ./numfmt 2 (*** PASSES)
    nice
+   nproc
     ./nohup.out time (or nohup)
    pwd
    readlink
    ./rmdir.out hello (where hello is a directory)
+    ./rm.out list.txt 
    runcon
+   ./split.out -b 22 list.txt list
+   ./stdbuf.out (*** PASSES)
     sum list.txt
    sync
    tee (usage: ls | ./tee.out out)
+    ./tail -10 list.txt
     ./touch.out out.txt
    ./true.out --version
     ./tty.out
@@ -133,7 +130,7 @@ Passing (29)
    ./unexpand.out list.txt
    ./uniq.out list.txt
   ./unlink.out list.txt
-
+   wc list.txt
 
   
 

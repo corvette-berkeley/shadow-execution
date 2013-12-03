@@ -166,7 +166,7 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-  cout << "KIND: " << KIND_ToString(type) << endl;
+  cout << "readValue KIND: " << KIND_ToString(type) << endl;
   cout << toString() << endl;
 
 
