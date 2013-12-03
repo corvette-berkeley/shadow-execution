@@ -10,12 +10,12 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
-CORE UTILITIES (25/100).
+CORE UTILITIES (42/100).
 
 During interpretation:
 ==============
 
-Failed load assertion
+Failed assertion in Load (8)
    ./chown.out root temp.txt
 ./chgrp.out staff /usr/local
     ./dircolors.out
@@ -25,11 +25,11 @@ Failed load assertion
    ./tsort.out list.txt (failed assert in load)
     ./vdir.out
 
-Failed assertion at getelement_struct
+Failed assertion at getelement_struct (2)
    fmt list.txt (in getelementptr struct/from a global value)
     ./sort.out list.txt (constant pointer)
 
-Mismatch at store (14)
+Mismatch at store (23)
    ./cksum.out list.txt
     ./cp.out list.txt temp.txt
     ./comm.out list.txt list.txt
@@ -54,13 +54,13 @@ Mismatch at store (14)
     ./sha512sum.out list.txt (in alloca)
         uptime
 
-Failed assertion at return struct:
+Failed assertion at return struct (3)
     ./pr.out list.txt
-    ./sleep.out 2 (AFTER STRUCT CALL missing interpretation)
-    ./timeout.out 1 sleep 10; date (AFTER STRUCT CALL missing interpretation)
+    ./sleep.out 2
+    ./timeout.out 1 sleep 10; date
 
-Failed assertion after call
-    ./kill.out pid (args not empty!)
+Failed assertion after call (args not empty) (2)
+    ./kill.out pid
     ./truncate.out -s 5 list.txt
 
 
