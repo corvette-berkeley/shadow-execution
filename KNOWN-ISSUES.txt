@@ -17,6 +17,10 @@ During interpretation:
 Unhandled type for IValue (11)
    basename list.txt
    cat list.txt
+   ./chmod.out +x temp.txt (unhandled type?)
+    ./cp.out list.txt temp.txt
+   ./chown.out root temp.tx (unhandled type?)
+   ./chgrp.out staff /usr/local (unhandled type?)
    ./cksum.out list.txt
     ./dir.out
    ./du.out -h
@@ -25,6 +29,7 @@ Unhandled type for IValue (11)
     ./join.out list.txt list.txt (previously pointer constant)
     ./ls.out
    mktemp testingXXX
+    ./mv.out list.txt out.txt
    nproc
     ./date.out 
    ./ptx.out list.txt
@@ -37,13 +42,11 @@ Negative internal offset (1)
     ./truncate.out -s 5 list.txt (negative internal offset)
    paste list.txt list.txt	
 
-Seg fault (19)
-   ./chmod.out +x temp.txt (in load)
-   ./chown.out root temp.tx (in load)
-   ./chgrp.out staff /usr/local (in load)
-   ./fold.out -5 list.txt (in load)
-    ./mknod.out temp.txt b 12 5 (in load)
-   ./tsort.out list.txt (getelementptr)
+Failed load assertion
+    ./mknod.out temp.txt b 12 5 (failed assert in load)
+   ./tsort.out list.txt (failed assert in load)
+
+Seg fault (19) (pending to check)
     ./rm.out list.txt (store of global variable)
     ./tail -10 list.txt (getelementptr)
     uptime (in getelementptr_array)
@@ -56,19 +59,15 @@ Failed assertion at KIND_GetSize (2)
    fmt list.txt (in getelementptr struct/from a global value)
     md5sum list.txt (in getelementptr array)
 
-Mismatch at store (11)
-    ./cp.out list.txt temp.txt (store, writing INT1)
+Mismatch at store (14)
     ./comm.out list.txt list.txt (previously pointer constant)
     ./dirname.out /usr/local
     ./kill.out pid (mismatch when storing int8)
-    ./mv.out list.txt out.txt
-    ./pr.out list.txt
-    ./sleep.out 2 (store, writing INT1)
-    ./timeout.out 1 sleep 10; date (store, writing INT1)
-    ./touch.out out.txt (store, writing INT1)
+    ./pr.out list.txt (AFTER STRUCT CALL missing interpretation)
+    ./sleep.out 2 (AFTER STRUCT CALL missing interpretation)
+    ./timeout.out 1 sleep 10; date (AFTER STRUCT CALL missing interpretation)
    ./shred.out list.txt
   ./shuf.out list.txt
-    sum list.txt
     ./sha1sum.out list.txt 
     ./sha224sum.out list.txt 
     ./sha256sum.out list.txt 
@@ -104,13 +103,14 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (25)
+Passing (28)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
    chroot
    echo
    ./env.out
    false --version
+   ./fold.out -5 list.txt
    hostid
    link list.txt link.txt
    logname
@@ -121,8 +121,10 @@ Passing (25)
    readlink
    ./rmdir.out hello (where hello is a directory)
    runcon
+    sum list.txt
    sync
    tee (usage: ls | ./tee.out out)
+    ./touch.out out.txt
    ./true.out --version
     ./tty.out
    whoami
