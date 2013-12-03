@@ -27,8 +27,6 @@ struct MonitorPass : public FunctionPass {
     // set up varCount and indices map
     instrumentation->BeginFunction();
 
-    // create index for all instructions
-    for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
       // create index for each arguments
       for (Function::arg_iterator ARG = F.arg_begin(), ae = F.arg_end(); ARG != ae; ++ARG) {
         Argument* arg = (Argument*) ARG;
@@ -36,6 +34,8 @@ struct MonitorPass : public FunctionPass {
         instrumentation->createIndex(iid);
       }
 
+    // create index for all instructions
+    for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
       // creater index for each basic block
       BasicBlock* block = (BasicBlock*) BB;
       IID blockIID = static_cast<IID>(reinterpret_cast<ADDRINT>(block));
