@@ -193,16 +193,16 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, bool arg) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, inx);
 }
 
-void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, inx);
+void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, bool arg) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, inx);
 }
 
-void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx) {
-  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, inx: %d\n", IID_ToString(iid).c_str(), size, inx);
+void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, bool arg) {
+  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, inx: %d\n", IID_ToString(iid).c_str(), size, arg, inx);
 }
 
 void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx) {

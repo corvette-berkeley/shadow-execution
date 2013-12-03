@@ -751,13 +751,13 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
+void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, inx);
+    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, inx);
 
   IValue* ptrLocation;
   IValue* location;
-  if (callArgs.empty()) {
+  if (!arg) {
     cout << "LOCAL alloca" << endl;
     // alloca for non-argument variables
     location = new IValue(type); // should we count it as LOCAL?
@@ -768,6 +768,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
     ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
     executionStack.top()[inx] = ptrLocation;
   } else {
+    safe_assert(!callArgs.empty());
     cout << "ARG alloca" << endl;
     // alloca for function arguments
     location = callArgs.top();
@@ -793,9 +794,9 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx) {
   return;
 }
 
-void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx) {
+void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), inx);
+    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, inx);
 
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
@@ -815,7 +816,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       structType.pop();
     }
 
-  if (callArgs.empty()) {
+  if (!arg) {
     IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       if (type == STRUCT_KIND) {
@@ -852,6 +853,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     locArrPtr->setLength(length);
     executionStack.top()[inx] = locArrPtr;
   } else {
+    safe_assert(!callArgs.empty());
     IValue *location = callArgs.top();
     VALUE value;
     value.as_ptr = (void*) location;
@@ -867,47 +869,48 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   return;
 }
 
-void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx) {
+void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, [INX: %d]\n", IID_ToString(iid).c_str(), size, inx);
+    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, inx);
 
   safe_assert(structType.size() == size);
 
-  //  if (callArgs.empty()) {
-  unsigned firstByte = 0;
-  unsigned bitOffset = 0;
-  unsigned length = 0;
-  IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
-  for (uint64_t i = 0; i < size; i++) {
-    KIND type = structType.front();
-    IValue* var = new IValue(type);
-    var->setFirstByte(firstByte + bitOffset/8);
-    var->setBitOffset(bitOffset%8);
-    var->setLength(0);
-    firstByte += KIND_GetSize(type);
-    bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
-    length++;
-    ptrToStructVar[i] = *var;
-    structType.pop();
+  if (!arg) {
+    unsigned firstByte = 0;
+    unsigned bitOffset = 0;
+    unsigned length = 0;
+    IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
+    for (uint64_t i = 0; i < size; i++) {
+      KIND type = structType.front();
+      IValue* var = new IValue(type);
+      var->setFirstByte(firstByte + bitOffset/8);
+      var->setBitOffset(bitOffset%8);
+      var->setLength(0);
+      firstByte += KIND_GetSize(type);
+      bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
+      length++;
+      ptrToStructVar[i] = *var;
+      structType.pop();
+    }
+    safe_assert(structType.empty());
+
+    VALUE structPtrVal;
+    structPtrVal.as_ptr = (void*) ptrToStructVar;
+    IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
+    structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
+    structPtrVar->setLength(length);
+
+    executionStack.top()[inx] = structPtrVar;
+  } else {
+    safe_assert(!callArgs.empty());
+    IValue *location = callArgs.top();
+    VALUE value;
+    value.as_ptr = (void*) location;
+    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+    ptrLocation->setSize(location->getSize());
+    executionStack.top()[inx] = ptrLocation;
+    callArgs.pop();
   }
-  safe_assert(structType.empty());
-
-  VALUE structPtrVal;
-  structPtrVal.as_ptr = (void*) ptrToStructVar;
-  IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
-  structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
-  structPtrVar->setLength(length);
-
-  executionStack.top()[inx] = structPtrVar;
-  //  } else {
-  //    IValue *location = callArgs.top();
-  //    VALUE value;
-  //    value.as_ptr = (void*) location;
-  //    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
-  //    ptrLocation->setSize(location->getSize());
-  //    executionStack.top()[inx] = ptrLocation;
-  //    callArgs.pop();
-  //  }
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << "\n";
