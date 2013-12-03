@@ -758,27 +758,26 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bo
 
   IValue* ptrLocation;
   IValue* location;
-  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
-    cout << "LOCAL alloca" << endl;
+//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+  cout << "LOCAL alloca" << endl;
     // alloca for non-argument variables
-    location = new IValue(type); // should we count it as LOCAL?
-    location->setLength(0);
-    VALUE value;
-    value.as_ptr = location;
-    ptrLocation = new IValue(PTR_KIND, value, LOCAL);
-    ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
-    executionStack.top()[inx] = ptrLocation;
-  } else {
-    safe_assert(!callArgs.empty());
+  location = new IValue(type); // should we count it as LOCAL?
+  location->setLength(0);
+  VALUE value;
+  value.as_ptr = location;
+  ptrLocation = new IValue(PTR_KIND, value, LOCAL);
+  ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
+  executionStack.top()[inx] = ptrLocation;
+  /*
+     } else {
+     safe_assert(!callArgs.empty());
     cout << "ARG alloca" << endl;
     // alloca for function arguments
     location = callArgs.top();
     ///
-    /*
-    cout << "Actual element pointing to" << endl;
-    IValue* actual = (IValue*)location->getValue().as_ptr;
-    cout << "\t" << actual->toString() << endl;
-    */
+    /// cout << "Actual element pointing to" << endl;
+    /// IValue* actual = (IValue*)location->getValue().as_ptr;
+    /// cout << "\t" << actual->toString() << endl;
     ///
     VALUE value;
     value.as_ptr = (void*) location;
@@ -787,6 +786,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bo
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
+  */
   if (debug) {
     cout << "Location: " << location->toString() << endl;
     cout << ptrLocation->toString() << endl;
@@ -817,7 +817,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       structType.pop();
     }
 
-  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
     IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       if (type == STRUCT_KIND) {
@@ -853,6 +853,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
     locArrPtr->setLength(length);
     executionStack.top()[inx] = locArrPtr;
+    /*
   } else {
     safe_assert(!callArgs.empty());
     IValue *location = callArgs.top();
@@ -863,6 +864,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
+  */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << endl;
@@ -876,7 +878,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool a
 
   safe_assert(structType.size() == size);
 
-  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
     unsigned firstByte = 0;
     unsigned bitOffset = 0;
     unsigned length = 0;
@@ -902,6 +904,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool a
     structPtrVar->setLength(length);
 
     executionStack.top()[inx] = structPtrVar;
+    /*
   } else {
     safe_assert(!callArgs.empty());
     IValue *location = callArgs.top();
@@ -912,6 +915,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool a
     executionStack.top()[inx] = ptrLocation;
     callArgs.pop();
   }
+  */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << "\n";
@@ -2151,7 +2155,12 @@ void InterpreterObserver::create_stack_frame(int size) {
   }
   std::vector<IValue*> frame (size);
   for (int i = 0; i < size; i++) {
-    frame[i] = new IValue();
+    if (!callArgs.empty()) {
+      frame[i] = callArgs.top();
+      callArgs.pop();
+    } else {
+      frame[i] = new IValue();
+    }
   }
   executionStack.push(frame);
 }

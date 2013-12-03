@@ -125,7 +125,7 @@ public:
    *
    * @return the index of the instruction.
    */
-  int getIndex(Instruction* inst);
+  int getIndex(Value* val);
 
   /**
    * Create a unique index for block with id iid.

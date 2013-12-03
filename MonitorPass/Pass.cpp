@@ -29,9 +29,19 @@ struct MonitorPass : public FunctionPass {
 
     // create index for all instructions
     for (Function::iterator BB = F.begin(), e = F.end(); BB != e; ++BB) {
+      // create index for each arguments
+      for (Function::arg_iterator ARG = F.arg_begin(), ae = F.arg_end(); ARG != ae; ++ARG) {
+        Argument* arg = (Argument*) ARG;
+        IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(arg));
+        instrumentation->createIndex(iid);
+      }
+
+      // creater index for each basic block
       BasicBlock* block = (BasicBlock*) BB;
       IID blockIID = static_cast<IID>(reinterpret_cast<ADDRINT>(block));
       instrumentation->createBlockIndex(blockIID);
+
+      // create index for each instructions
       for (BasicBlock::iterator itr = BB->begin(), end = BB->end(); itr != end; ++itr) {
         Instruction* inst = (Instruction*) itr;
         IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));

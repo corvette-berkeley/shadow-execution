@@ -98,8 +98,8 @@ void Instrumentation::createIndex(uint64_t iid) {
   varCount++;
 }
 
-int Instrumentation::getIndex(Instruction* inst) {
-  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(inst));
+int Instrumentation::getIndex(Value* val) {
+  IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(val));
   if (indices.find(iid) != indices.end()) {
     return indices[iid];
   } else {

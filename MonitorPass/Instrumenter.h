@@ -64,6 +64,7 @@ public:
 		typeList.push_back(IID_TYPE());
 		typeList.push_back(INT32_TYPE()); // index type
 		typeList.push_back(BOOL_TYPE()); // isGlobal
+		typeList.push_back(BOOL_TYPE()); // isArgument
 		typeList.push_back(KIND_TYPE());
 		typeList.push_back(VALUE_TYPE());
 
@@ -185,6 +186,9 @@ public:
     } else if (isa<Instruction>(value)) { // not constant, but an instruction
       Instruction* inst = (Instruction*) value;
       inx = parent_->getIndex(inst);
+    } else if (isa<Argument>(value)) {
+      Argument* arg = (Argument*) value;
+      inx = parent_->getIndex(arg);
     } else if (isa<BasicBlock>(value)) { // no an instruction, but a basic block
       BasicBlock* block = (BasicBlock*) value;
       inx = parent_->getBlockIndex(block);
@@ -215,7 +219,7 @@ public:
     }
 
     // TODO(elmas): what else is OK?
-    if(!isa<Instruction>(v) && !isa<Constant>(v)) {
+    if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
       return NULL;
     }
 
@@ -237,17 +241,16 @@ public:
     } else if (isa<Constant>(v)) {
       C_iid = INV_IID_CONSTANT();
     } else { // not constant, but an instruction
-      safe_assert(isa<Instruction>(v));
+      safe_assert(isa<Instruction>(v) || isa<Argument>(v));
       C_iid = IID_CONSTANT(v);
     }
 
     C_inx = computeIndex(v);
 
-    bool isGlobal = false;
-    if (isa<GlobalVariable>(v)) {
-      isGlobal = true;
-    }
+    bool isGlobal = isa<GlobalVariable>(v);
     C_global = BOOL_CONSTANT(isGlobal);
+    bool isArgument = isa<Argument>(v);
+    Constant* C_argument = BOOL_CONSTANT(isArgument);
 
     if(T->isIntegerTy()) {
       I_cast = INTMAX_CAST_INSTR(v, isSigned);
@@ -271,6 +274,7 @@ public:
     fields.push_back(C_iid);
     fields.push_back(C_inx);
     fields.push_back(C_global);
+    fields.push_back(C_argument);
     fields.push_back(KIND_CONSTANT(kind));
     fields.push_back(I_cast);
 

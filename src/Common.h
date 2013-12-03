@@ -83,6 +83,7 @@ struct kvalue_t {
   IID	iid;
   INT32 inx;
   BOOL  isGlobal;
+  BOOL isArgument;
   KIND	kind;
   VALUE	value;
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
