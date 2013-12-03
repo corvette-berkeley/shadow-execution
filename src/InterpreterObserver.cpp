@@ -2078,13 +2078,68 @@ void InterpreterObserver::after_void_call() {
   }
 
   isReturn = false;
+
+  safe_assert(!recentBlock.empty());
+  recentBlock.pop();
 }
 
 void InterpreterObserver::after_struct_call() {
   if (debug) {
     printf("<<<<< AFTER STRUCT CALL >>>>>");
   }
-  safe_assert(false);
+
+  if (!isReturn) {
+    // call is not interpreted
+    safe_assert(!callerVarIndex.empty());
+
+    // empty myStack and callArgs
+    while (!myStack.empty()) {
+      myStack.pop();
+    }
+    while (!callArgs.empty()) {
+      callArgs.pop();
+    }
+
+    safe_assert(!returnStruct.empty());
+
+    // reconstruct struct value
+    IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
+    unsigned i = 0;
+    while (!returnStruct.empty()) {
+      KVALUE* value = returnStruct.front();
+      IValue* iValue = new IValue(value->kind);
+      iValue->setValue(value->value);
+      iValue->setLength(0);
+
+      structValue[i] = *iValue; 
+      i++;
+      returnStruct.pop();
+    }
+
+    safe_assert(returnStruct.empty());
+
+
+    IValue* reg = executionStack.top()[callerVarIndex.top()];
+    structValue[0].copy(reg);
+    callerVarIndex.pop();
+
+    if (debug) {
+      cout << reg->toString() << endl;
+    }
+  } else {
+    while (!returnStruct.empty()) {
+      returnStruct.pop();
+    }
+    safe_assert(callArgs.empty());
+    safe_assert(myStack.empty());
+    safe_assert(returnStruct.empty());
+  }
+
+  isReturn = false;
+
+  safe_assert(!recentBlock.empty());
+  recentBlock.pop();
+
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
