@@ -98,7 +98,8 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 	cout << "\t\tinternal offset: " << internalOffset << endl;
 	cout << "\tsrcLocation: " << srcLocation->toString() << endl;
 	cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
-	cout << "\t\tVALUE returned: " << (float) value.as_flp << endl;
+	cout << "\t\tVALUE returned (float): " << value.as_flp << endl;
+	cout << "\t\tVALUE returned (int): " << value.as_int << endl;
       }
       
       // copying src into dest
@@ -757,7 +758,7 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bo
 
   IValue* ptrLocation;
   IValue* location;
-  if (!arg) {
+  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
     cout << "LOCAL alloca" << endl;
     // alloca for non-argument variables
     location = new IValue(type); // should we count it as LOCAL?
@@ -816,7 +817,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       structType.pop();
     }
 
-  if (!arg) {
+  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
     IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
     for (uint64_t i = 0; i < size; i++) {
       if (type == STRUCT_KIND) {
@@ -875,7 +876,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool a
 
   safe_assert(structType.size() == size);
 
-  if (!arg) {
+  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
     unsigned firstByte = 0;
     unsigned bitOffset = 0;
     unsigned length = 0;
@@ -2300,8 +2301,6 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
     case PTR_KIND:
       break;
     case INT1_KIND: 
-      // TODO: we don't actually have this case, do we?
-      safe_assert(false);
     case INT8_KIND: 
       cValueInt = *((int8_t*) concrete->value.as_ptr);
       sync = (iValue->getValue().as_int != cValueInt);

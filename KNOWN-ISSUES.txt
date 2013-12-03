@@ -10,7 +10,7 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
-CORE UTILITIES (24/100).
+CORE UTILITIES (25/100).
 
 During interpretation:
 ==============

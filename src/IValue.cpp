@@ -166,16 +166,20 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-  //cout << "KIND: " << KIND_ToString(type) << endl;
-  //cout << toString() << endl;
+  cout << "KIND: " << KIND_ToString(type) << endl;
+  cout << toString() << endl;
+
 
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
+  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
+
   int byte = KIND_GetSize(type);
   VALUE value;
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
     // efficient code for common cases
     value = valueArray[index].getValue();
+    cout << "value: " << value.as_int << endl;
   } else {
     // uncommon cases
     unsigned nextIndex = index;
@@ -239,8 +243,9 @@ VALUE IValue::readValue(int offset, KIND type) {
     }
     }
 
-    // cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+    //cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
   }
+  cout << "value at the end: " << value.as_int << endl;
 
   return value;
 }
