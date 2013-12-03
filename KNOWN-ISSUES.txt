@@ -17,7 +17,9 @@ During interpretation:
 Unhandled type for IValue (11)
    basename list.txt
    cat list.txt
-   ./chmod.out +x temp.txt (unhandled type?)
+   ./chmod.out +x temp.txt (unhandled type?) argument i1 is not
+   allocated, instruction that uses it is skipped during
+   instrumentation, so a store that uses it fails to access IValue.
     ./cp.out list.txt temp.txt
    ./chown.out root temp.tx (unhandled type?)
    ./chgrp.out staff /usr/local (unhandled type?)
