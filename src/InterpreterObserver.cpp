@@ -2000,7 +2000,8 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   }
 
   executionStack.top()[inx] = result;
-  cout << result->toString() << endl;
+  if (debug)
+    cout << result->toString() << endl;
   return;
 }
 
@@ -2029,9 +2030,10 @@ void InterpreterObserver::push_return_struct(KVALUE* value) {
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH STRUCT TYPE >>>>>: %s\n", KIND_ToString(kind).c_str()); 
-  cout << structType.size() << endl;
+    cout << structType.size() << endl;
+  }
   structType.push(kind);
 }
 
@@ -2333,7 +2335,8 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     assert(myStack.size() == 0);
 
     unsigned size = structType.size();
-    cout << "\nNumber of fields: " << size << endl;
+    if (debug)
+      cout << "\nNumber of fields: " << size << endl;
     unsigned firstByte = 0;
     unsigned length = 0;
     IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
