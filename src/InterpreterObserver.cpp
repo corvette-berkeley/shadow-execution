@@ -653,7 +653,6 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  cout << value1 << " " << value2 << endl;
   int result = value1 ^ value2;
 
   VALUE vresult;
@@ -721,7 +720,8 @@ void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
     }
   }
 
-  cout << "KVALUE: " << KVALUE_ToString(aggKValue) << endl;
+  if (debug)
+    cout << "KVALUE: " << KVALUE_ToString(aggKValue) << endl;
 
   IValue* evValue = new IValue();
   if (aggIValue != NULL) {
@@ -759,7 +759,9 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bo
   IValue* ptrLocation;
   IValue* location;
 //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
-  cout << "LOCAL alloca" << endl;
+  if (debug) {
+    cout << "LOCAL alloca" << endl;
+  }
     // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
   location->setLength(0);
@@ -942,7 +944,9 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       result = ((int32_t)dest->getValue().as_int == (int32_t)kv->value.as_int);
       break;
     case INT64_KIND:
-      cout << dest->getValue().as_int << " " << kv->value.as_int << endl;
+      if (debug) {
+        cout << dest->getValue().as_int << " " << kv->value.as_int << endl;
+      }
       result = (dest->getValue().as_int == kv->value.as_int);
       break;
     case FLP32_KIND:
@@ -1122,7 +1126,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
     // offset in bytes from base ptr
     unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
-    cout << "newOffset: " << newOffset << endl;
+    if (debug) {
+      cout << "newOffset: " << newOffset << endl;
+    }
 
     unsigned index = findIndex((IValue*) basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
@@ -1178,7 +1184,8 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
 
     index = ptrArray->getIndex() + index;
 
-    cout << "Getting element at index : " << index << endl;
+    if (debug)
+      cout << "Getting element at index : " << index << endl;
 
     // TODO: revisit this
     if (index < (int) ptrArray->getLength()) {
@@ -1212,7 +1219,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
   IValue* structPtr = executionStack.top()[op->inx];
   IValue* structElemPtr;
 
-  cout << structPtr->toString() << endl;
+  if (debug)
+    cout << structPtr->toString() << endl;
 
   if (structPtr->isInitialized()) {
     IValue* structBase = static_cast<IValue*>(structPtr->getValue().as_ptr);
@@ -1225,7 +1233,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
     index = structPtr->getIndex() + index;
 
-    cout << "Getting element at index: " << index << endl;
+    if (debug)
+      cout << "Getting element at index: " << index << endl;
 
     // TODO: revisit this
     if (index < (int) structPtr->getLength()) {
@@ -1595,7 +1604,8 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size
   ptr_value.as_ptr = value.as_ptr;
   IValue *intToPtr = new IValue(type, ptr_value);
   executionStack.top()[inx] = intToPtr;
-  cout << executionStack.top()[inx]->toString() << "\n";
+  if (debug)
+    cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
@@ -1727,7 +1737,8 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    cout << "New stack size: " << executionStack.size() << "\n";
+    if (debug)
+      cout << "New stack size: " << executionStack.size() << "\n";
     safe_assert(!callerVarIndex.empty());
     safe_assert(!returnStruct.empty());
 
@@ -1750,7 +1761,8 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
       }
 
       structValue[i] = *iValue; 
-      cout << structValue[i].toString() << endl;
+      if (debug)
+        cout << structValue[i].toString() << endl;
       i++;
       returnStruct.pop();
     }
@@ -1811,7 +1823,6 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   }
 
   int result = 0;
-  cout << v1 << " " << v2 << endl;
   switch(pred) {
     case CmpInst::ICMP_EQ:
       result = v1 == v2;
@@ -1937,7 +1948,8 @@ void InterpreterObserver::phinode(IID iid, int inx) {
   if (debug)
     printf("<<<<< PHINODE >>>>>: id %s [INX: %d] \n", IID_ToString(iid).c_str(), inx);
 
-  cout << recentBlock.top() << endl;
+  if (debug)
+    cout << recentBlock.top() << endl;
 
   IValue* phiNode;
 
@@ -2068,8 +2080,10 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
       cout << reg->toString() << endl;
     }
   } else {
-    cout << myStack.size() << endl;
-    cout << "callArgs size: " << callArgs.size() << endl;
+    if (debug) {
+      cout << myStack.size() << endl;
+      cout << "callArgs size: " << callArgs.size() << endl;
+    }
     safe_assert(callArgs.empty());
     safe_assert(myStack.empty());
   }
@@ -2213,8 +2227,10 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
 
   // store it in globalSymbolTable
   globalSymbolTable[kvalue->inx] = ptrLocation;
-  cout << "\tloc: " << location->toString() << endl;
-  cout << "\tptr: " << ptrLocation->toString() << endl;
+  if (debug) {
+    cout << "\tloc: " << location->toString() << endl;
+    cout << "\tptr: " << ptrLocation->toString() << endl;
+  }
 }
 
 void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
@@ -2223,9 +2239,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
     printf(" return type %s,", KIND_ToString(type).c_str());
     printf(" nounwind %d,", (nounwind ? 1 : 0));
     printf(" [INX: %d]\n", inx);
+    printf("my stack size: %ld\n", myStack.size());
   }
 
-  printf("my stack size: %ld\n", myStack.size());
 
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
