@@ -1,0 +1,41 @@
+base64 list.txt
+basename list.txt   
+cat list.txt
+chmod +x temp.txt
+chroot
+chcon -R --type=ssh_home_t
+cut -c2 list.txt
+dir
+echo
+env
+false --version
+fold -5 list.txt
+hostid
+link list.txt link.txt
+logname
+mkfifo temp
+mv list.txt out.txt
+numfmt 2
+nice
+nproc
+nohup time
+pwd
+readlink
+rmdir hello
+runcon
+split -b 22 list.txt list
+stdbuf
+sum list.txt
+sync
+tail -10 list.txt
+touch out.txt
+true --version
+tty
+whoami
+uname
+expand list.txt
+unexpand list.txt
+uniq list.txt
+unlink list.txt
+wc list.txt
+rm list.txt 

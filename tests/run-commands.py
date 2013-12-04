@@ -33,7 +33,9 @@ def main():
 
     # return -1 if running LLVM passes fails
     if retval <> 0:
-      log.write("[FAILED RUNNING COMMAND]: " + command[0] + ".out\n")
+      log.write("[FAILED RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval) + "\n")
+    else:
+      log.write("[SUCCESSFULLY RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval) + "\n")
 
 if __name__ == "__main__":
   main()
