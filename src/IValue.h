@@ -17,6 +17,7 @@ class IValue {
     unsigned firstByte; // the length in byte to the base pointer
     unsigned length; // number of elements (only for pointers)
     SCOPE scope; // defined in Constants.h
+    int lineNumber; // source line number
     MACHINEFLAG flag;
     void* shadow;
 
@@ -34,17 +35,17 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s) {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s), lineNumber(0) {}
 
-    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t): type(t), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(KIND t): type(t), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER) {}
+    IValue(): type(INV_KIND), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
     void setType(KIND t);
 
@@ -68,6 +69,8 @@ class IValue {
 
     void setShadow(void* addr);
 
+    void setLineNumber(int l);
+
     KIND getType();
 
     VALUE getValue();
@@ -89,6 +92,8 @@ class IValue {
     int getBitOffset();
 
     void* getShadow();
+
+    int getLineNumber();
 
     string toString();
 

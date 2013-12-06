@@ -4,6 +4,10 @@ void IValue::setShadow(void* addr) {
   shadow = addr;
 }
 
+void IValue::setLineNumber(int l) {
+  lineNumber = l;
+}
+
 void IValue::setType(KIND t) {
   type = t;
 }
@@ -38,6 +42,10 @@ void IValue::setFirstByte(unsigned f) {
 
 void IValue::setLength(unsigned l) {
   length = l;
+}
+
+int IValue::getLineNumber() {
+  return lineNumber;
 }
 
 void* IValue::getShadow() {
@@ -147,6 +155,7 @@ string IValue::toString() {
   s << ", Size: " << size;
   s << ", Offset: " << offset; 
   s << ", Index: " << index;
+  s << ", Line: " << lineNumber;
   s << ", FirstByte: " << firstByte;
   s << ", Length: " << length;
   s << ", Initialized: " << isInitialized();

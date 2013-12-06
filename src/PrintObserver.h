@@ -74,11 +74,11 @@ public:
 	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, bool arg);
+	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg);
 
-	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, bool arg);
+	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg);
 
-	virtual void allocax_struct(IID iid, uint64_t size, int inx, bool arg);
+	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg);
 
 	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx);
 

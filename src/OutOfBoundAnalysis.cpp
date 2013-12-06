@@ -46,6 +46,7 @@ void OutOfBoundAnalysis::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVAL
   int* shadow = (int*) malloc(sizeof(int));
   shadow[0] = line;
   ptrLocation->setShadow((void*)shadow);
+  ptrLocation->setLineNumber(line);
 
   executionStack.top()[inx] = ptrLocation;
 
@@ -177,8 +178,10 @@ void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int line, 
   }
 
   int* shadow = (int*) malloc(sizeof(int));
-  shadow[0] = line;
+//  shadow[0] = line;
+  shadow[0] = srcPtrLocation->getLineNumber();
   destLocation->setShadow((void*) shadow);
+  destLocation->setLineNumber(line);
 
   executionStack.top()[inx] = destLocation;
 
@@ -199,6 +202,7 @@ void OutOfBoundAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int li
 
     if (src->iid != 0) {
       destPtrLocation->setShadow(srcLocation->getShadow());
+      destPtrLocation->setLineNumber(srcLocation->getLineNumber());
     }
 
     // retrieve actual destination

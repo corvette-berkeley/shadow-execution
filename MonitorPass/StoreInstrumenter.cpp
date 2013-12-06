@@ -13,11 +13,11 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     // skip stores from main if operands are arguments
     if (BasicBlock *basicBlock = storeInst->getParent()) {
       if (Function *function = basicBlock->getParent()) {
-	if (function->getName() == "main") {
-	  if (dyn_cast<Argument>(storeInst->getValueOperand())) {
-	    return false;
-	  }
-	}
+        if (function->getName() == "main") {
+          if (dyn_cast<Argument>(storeInst->getValueOperand())) {
+            return false;
+          }
+        }
       }
     }
 

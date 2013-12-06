@@ -20,6 +20,8 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* inxC = computeIndex(allocaInst);
 
+    Constant* lineC = INT32_CONSTANT(getLineNumber(inst), SIGNED);
+
     Type *type = allocaInst->getAllocatedType();
     if (!type) return false;
 
@@ -32,10 +34,10 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     Value::use_iterator it = allocaInst->use_begin();
     for(; it != allocaInst->use_end(); it++) {
       if (StoreInst *store = dyn_cast<StoreInst>(*it)) {
-	if (dyn_cast<Argument>(store->getValueOperand())) {
-	  isArgument = true;
-	  break;
-	}
+        if (dyn_cast<Argument>(store->getValueOperand())) {
+          isArgument = true;
+          break;
+        }
       }
     }	
     Constant* isArgumentC = BOOL_CONSTANT(isArgument);
@@ -58,7 +60,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Constant* elemKindC = KIND_CONSTANT(elemKind);
 
-      Instruction* call = CALL_IID_KIND_INT64_INT_BOOL("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC, isArgumentC);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC, lineC, isArgumentC);
       instrs.push_back(call);
 
     } else if (type->isStructTy()) {
@@ -68,14 +70,14 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
-      Instruction* call = CALL_IID_INT64_INT_BOOL("llvm_allocax_struct", iidC, sizeC, inxC, isArgumentC);
+      Instruction* call = CALL_IID_INT64_INT_INT_BOOL("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC);
         instrs.push_back(call);
     } else {
       // alloca for scalar and pointer type
       
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_BOOL("llvm_allocax", iidC, kindC, size, inxC, isArgumentC);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC);
       instrs.push_back(call);
     }
 

@@ -58,11 +58,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
   if (src->inx == -1) {
     // cannot load using constant address
     doLoad = false;
-  }
-  else if (src->isGlobal) {
+  } else if (src->isGlobal) {
     srcPtrLocation = globalSymbolTable[src->inx];
-  }
-  else {
+  } else {
     srcPtrLocation = executionStack.top()[src->inx];
   }
 
@@ -90,31 +88,31 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       VALUE value = srcPtrLocation->readValue(internalOffset, type);
 
       if (debug) {
-	cout << "\tIndex values:" << endl;
-	cout << "\t\tvalueIndex: " << valueIndex << endl;
-	cout << "\t\tsrcOffset: " << srcOffset << endl;
-	cout << "\t\tcurrOffset: " << currOffset << endl;
-	cout << "\t\tsrcOffset" << srcOffset << endl;
-	cout << "\t\tinternal offset: " << internalOffset << endl;
-	cout << "\tsrcLocation: " << srcLocation->toString() << endl;
-	cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
-	cout << "\t\tVALUE returned (float): " << value.as_flp << endl;
-	cout << "\t\tVALUE returned (int): " << value.as_int << endl;
+        cout << "\tIndex values:" << endl;
+        cout << "\t\tvalueIndex: " << valueIndex << endl;
+        cout << "\t\tsrcOffset: " << srcOffset << endl;
+        cout << "\t\tcurrOffset: " << currOffset << endl;
+        cout << "\t\tsrcOffset" << srcOffset << endl;
+        cout << "\t\tinternal offset: " << internalOffset << endl;
+        cout << "\tsrcLocation: " << srcLocation->toString() << endl;
+        cout << "\tCalling readValue with internal offset: " << internalOffset << " and size: " << KIND_GetSize(type) << endl; 
+        cout << "\t\tVALUE returned (float): " << value.as_flp << endl;
+        cout << "\t\tVALUE returned (int): " << value.as_int << endl;
       }
-      
+
       // copying src into dest
       srcLocation->copy(destLocation);
       destLocation->setSize(KIND_GetSize(type));
       destLocation->setValue(value);
       destLocation->setType(type);
-      
+
       // sync load
       //bool sync = false;
       bool sync = syncLoad(destLocation, src, type);
-      
+
       // sync heap if sync value
       if (sync) {
-	srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
+        srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
       }
     } else {
       destLocation->setSize(KIND_GetSize(type));
@@ -123,17 +121,19 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
       // sync load
       bool sync = syncLoad(destLocation, src, type);
-      
+
       // sync heap if sync value
       if (sync) {
-	VALUE value;
-	value.as_ptr = (void*) destLocation;
-	srcPtrLocation->setLength(1);
-	srcPtrLocation->setValue(value);
-	srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
+        VALUE value;
+        value.as_ptr = (void*) destLocation;
+        srcPtrLocation->setLength(1);
+        srcPtrLocation->setValue(value);
+        srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
       }
     }
-    
+
+    destLocation->setLineNumber(line);
+
     executionStack.top()[inx] = destLocation;
     if (debug) {
       cout << destLocation->toString() << endl;
@@ -142,22 +142,24 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
   else {
     // NEW case for pointer constants
     // TODO: revise again
-    cout << "[Load] => pointer constant" << endl;
-  
+    if (debug)
+      cout << "[Load] => pointer constant" << endl;
+
     IValue* destLocation = new IValue();
     destLocation->setSize(KIND_GetSize(type));
     destLocation->setType(type);
     destLocation->setLength(0);
-    
+
     // sync load
-    bool sync = syncLoad(destLocation, src, type);
-    
+    syncLoad(destLocation, src, type);
+
     // sync heap if sync value
-    if (sync) {
-      destLocation->setValue(src->value);
-      destLocation->setType(src->kind);
-    }
-    
+    // if (sync) {
+//      destLocation->setValue(src->value);
+//      destLocation->setType(src->kind);
+//    }
+
+    destLocation->setLineNumber(line);
     executionStack.top()[inx] = destLocation;
     if (debug) {
       cout << destLocation->toString() << endl;
@@ -562,7 +564,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     IValue *loc1 = executionStack.top()[op1->inx];
     value1 = loc1->getValue().as_int;
   }
-  
+
   if (op2->inx == -1) {
     value2 = op2->value.as_int;
   }
@@ -752,43 +754,45 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bool arg) {
+void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, int line, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, inx);
+    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx);
 
   IValue* ptrLocation;
   IValue* location;
-//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
   if (debug) {
     cout << "LOCAL alloca" << endl;
   }
-    // alloca for non-argument variables
+  // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
   location->setLength(0);
   VALUE value;
   value.as_ptr = location;
   ptrLocation = new IValue(PTR_KIND, value, LOCAL);
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
+  ptrLocation->setLineNumber(line);
   executionStack.top()[inx] = ptrLocation;
   /*
      } else {
      safe_assert(!callArgs.empty());
-    cout << "ARG alloca" << endl;
-    // alloca for function arguments
-    location = callArgs.top();
-    ///
-    /// cout << "Actual element pointing to" << endl;
-    /// IValue* actual = (IValue*)location->getValue().as_ptr;
-    /// cout << "\t" << actual->toString() << endl;
-    ///
-    VALUE value;
-    value.as_ptr = (void*) location;
-    ptrLocation = new IValue(PTR_KIND, value, LOCAL);
-    ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
-    executionStack.top()[inx] = ptrLocation;
-    callArgs.pop();
+     cout << "ARG alloca" << endl;
+  // alloca for function arguments
+  location = callArgs.top();
+  ///
+  /// cout << "Actual element pointing to" << endl;
+  /// IValue* actual = (IValue*)location->getValue().as_ptr;
+  /// cout << "\t" << actual->toString() << endl;
+  ///
+  VALUE value;
+  value.as_ptr = (void*) location;
+  ptrLocation = new IValue(PTR_KIND, value, LOCAL);
+  ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
+  executionStack.top()[inx] = ptrLocation;
+  callArgs.pop();
   }
   */
+
   if (debug) {
     cout << "Location: " << location->toString() << endl;
     cout << ptrLocation->toString() << endl;
@@ -797,9 +801,9 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, bo
   return;
 }
 
-void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, bool arg) {
+void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, int line, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, inx);
+    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, line, inx);
 
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
@@ -819,54 +823,55 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
       structType.pop();
     }
 
-//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
-    IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
-    for (uint64_t i = 0; i < size; i++) {
-      if (type == STRUCT_KIND) {
-        for (uint64_t j = 0; j < structSize; j++) {
-          IValue* var = new IValue(structKind[j]);
-          length++;
-          var->setFirstByte(firstByte + bitOffset/8);
-          var->setBitOffset(bitOffset%8);
-          var->setLength(0);
-          unsigned structType = structKind[j];
-          firstByte += KIND_GetSize(structType);
-          bitOffset = (structType == INT1_KIND) ? bitOffset + 1 : bitOffset;
-          locArr[i*structSize+j] = *var;
-        }
-      } else {
-        IValue* var = new IValue(type);
+  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+  IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
+  for (uint64_t i = 0; i < size; i++) {
+    if (type == STRUCT_KIND) {
+      for (uint64_t j = 0; j < structSize; j++) {
+        IValue* var = new IValue(structKind[j]);
         length++;
         var->setFirstByte(firstByte + bitOffset/8);
         var->setBitOffset(bitOffset%8);
         var->setLength(0);
-        firstByte += KIND_GetSize(type);
-        bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
-        if (type == INT1_KIND) {
-          bitOffset++;
-        }
-        locArr[i] = *var;
+        unsigned structType = structKind[j];
+        firstByte += KIND_GetSize(structType);
+        bitOffset = (structType == INT1_KIND) ? bitOffset + 1 : bitOffset;
+        locArr[i*structSize+j] = *var;
       }
+    } else {
+      IValue* var = new IValue(type);
+      length++;
+      var->setFirstByte(firstByte + bitOffset/8);
+      var->setBitOffset(bitOffset%8);
+      var->setLength(0);
+      firstByte += KIND_GetSize(type);
+      bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
+      if (type == INT1_KIND) {
+        bitOffset++;
+      }
+      locArr[i] = *var;
     }
-
-    VALUE locArrPtrVal;
-    locArrPtrVal.as_ptr = (void*) locArr; 
-    IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, LOCAL);
-    locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
-    locArrPtr->setLength(length);
-    executionStack.top()[inx] = locArrPtr;
-    /*
-  } else {
-    safe_assert(!callArgs.empty());
-    IValue *location = callArgs.top();
-    VALUE value;
-    value.as_ptr = (void*) location;
-    IValue* ptrLocation = new IValue(PTR_KIND, value, LOCAL); 
-    ptrLocation->setSize(location->getSize());
-    executionStack.top()[inx] = ptrLocation;
-    callArgs.pop();
   }
-  */
+
+  VALUE locArrPtrVal;
+  locArrPtrVal.as_ptr = (void*) locArr; 
+  IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, LOCAL);
+  locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
+  locArrPtr->setLength(length);
+  locArrPtr->setLineNumber(line);
+  executionStack.top()[inx] = locArrPtr;
+  /*
+     } else {
+     safe_assert(!callArgs.empty());
+     IValue *location = callArgs.top();
+     VALUE value;
+     value.as_ptr = (void*) location;
+     IValue* ptrLocation = new IValue(PTR_KIND, value, LOCAL); 
+     ptrLocation->setSize(location->getSize());
+     executionStack.top()[inx] = ptrLocation;
+     callArgs.pop();
+     }
+     */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << endl;
@@ -874,50 +879,51 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   return;
 }
 
-void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, bool arg) {
+void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg) {
   if (debug)
-    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, inx);
+    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, line, inx);
 
   safe_assert(structType.size() == size);
 
-//  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
-    unsigned firstByte = 0;
-    unsigned bitOffset = 0;
-    unsigned length = 0;
-    IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
-    for (uint64_t i = 0; i < size; i++) {
-      KIND type = structType.front();
-      IValue* var = new IValue(type);
-      var->setFirstByte(firstByte + bitOffset/8);
-      var->setBitOffset(bitOffset%8);
-      var->setLength(0);
-      firstByte += KIND_GetSize(type);
-      bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
-      length++;
-      ptrToStructVar[i] = *var;
-      structType.pop();
-    }
-    safe_assert(structType.empty());
-
-    VALUE structPtrVal;
-    structPtrVal.as_ptr = (void*) ptrToStructVar;
-    IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
-    structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
-    structPtrVar->setLength(length);
-
-    executionStack.top()[inx] = structPtrVar;
-    /*
-  } else {
-    safe_assert(!callArgs.empty());
-    IValue *location = callArgs.top();
-    VALUE value;
-    value.as_ptr = (void*) location;
-    IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
-    ptrLocation->setSize(location->getSize());
-    executionStack.top()[inx] = ptrLocation;
-    callArgs.pop();
+  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
+  unsigned firstByte = 0;
+  unsigned bitOffset = 0;
+  unsigned length = 0;
+  IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
+  for (uint64_t i = 0; i < size; i++) {
+    KIND type = structType.front();
+    IValue* var = new IValue(type);
+    var->setFirstByte(firstByte + bitOffset/8);
+    var->setBitOffset(bitOffset%8);
+    var->setLength(0);
+    firstByte += KIND_GetSize(type);
+    bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
+    length++;
+    ptrToStructVar[i] = *var;
+    structType.pop();
   }
-  */
+  safe_assert(structType.empty());
+
+  VALUE structPtrVal;
+  structPtrVal.as_ptr = (void*) ptrToStructVar;
+  IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
+  structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
+  structPtrVar->setLength(length);
+  structPtrVar->setLineNumber(line);
+
+  executionStack.top()[inx] = structPtrVar;
+  /*
+     } else {
+     safe_assert(!callArgs.empty());
+     IValue *location = callArgs.top();
+     VALUE value;
+     value.as_ptr = (void*) location;
+     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
+     ptrLocation->setSize(location->getSize());
+     executionStack.top()[inx] = ptrLocation;
+     callArgs.pop();
+     }
+     */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << "\n";
@@ -1030,13 +1036,13 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   internalOffset = destPtrOffset - currOffset;
 
   if (debug) {
-  cout << "\tdestPtrOffset: " << destPtrOffset << endl;
-  cout << "\tvalueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
-  cout << "\tinternalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
+    cout << "\tdestPtrOffset: " << destPtrOffset << endl;
+    cout << "\tvalueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
+    cout << "\tinternalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
 
-  cout << "\tDest: " << destLocation->toString() << endl;
+    cout << "\tDest: " << destLocation->toString() << endl;
 
-  cout << "\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
+    cout << "\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize() << endl;
   }
 
   // writing src into dest
@@ -1107,7 +1113,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
         inx);
 
   IValue* basePtrLocation; 
-  
+
   if (base->isGlobal) {
     basePtrLocation = globalSymbolTable[base->inx];
   } else {
@@ -1135,7 +1141,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   } else {
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, 0, 0, 0);
   }
-  
+
+  ptrLocation->setLineNumber(line);
+
   executionStack.top()[inx] = ptrLocation;
   if (debug)
     cout << executionStack.top()[inx]->toString() << endl;
@@ -1590,7 +1598,7 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
   IValue *ptrToInt = new IValue(type, int_value);
   executionStack.top()[inx] = ptrToInt;
   if (debug)
-  cout << executionStack.top()[inx]->toString() << "\n";
+    cout << executionStack.top()[inx]->toString() << "\n";
 }
 
 void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
@@ -2106,13 +2114,13 @@ void InterpreterObserver::after_void_call() {
   safe_assert(!recentBlock.empty());
   recentBlock.pop();
 
-    // empty myStack and callArgs
-    while (!myStack.empty()) {
-      myStack.pop();
-    }
-    while (!callArgs.empty()) {
-      callArgs.pop();
-    }
+  // empty myStack and callArgs
+  while (!myStack.empty()) {
+    myStack.pop();
+  }
+  while (!callArgs.empty()) {
+    callArgs.pop();
+  }
 }
 
 void InterpreterObserver::after_struct_call() {

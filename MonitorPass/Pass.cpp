@@ -373,7 +373,7 @@ REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 // ***** Other Operations ***** //
 REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
-REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
+// REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call") // cuong: limited support for intrinsic 
 REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
