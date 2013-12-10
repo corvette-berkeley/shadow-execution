@@ -265,27 +265,31 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   }
 
   VALUE vresult;
+  if (debug) {
+    cout << (int64_t)v1 << " " << (int64_t)v2 << endl;
+    cout << (uint64_t)v1 << " " << (uint64_t)v2 << endl;
+  }
   switch (op) {
     case ADD:
-      vresult.as_int = (uint64_t) v1 + (uint64_t) v2;
+      vresult.as_int = (int64_t) v1 + (int64_t) v2;
       break;
     case SUB:
-      vresult.as_int = (int) v1 - (int) v2;
+      vresult.as_int = (int64_t) v1 - (int64_t) v2;
       break;
     case MUL:
-      vresult.as_int = (int) v1 * (int) v2;
+      vresult.as_int = (int64_t) v1 * (int64_t) v2;
       break;
     case UDIV:
-      vresult.as_int = (int) v1 / (int) v2;
+      vresult.as_int = (int64_t) v1 / (int64_t) v2;
       break;
     case SDIV:
-      vresult.as_int = (int) v1 / (int) v2;
+      vresult.as_int = (int64_t) v1 / (int64_t) v2;
       break;
     case UREM:
-      vresult.as_int = (int) v1 % (int) v2;
+      vresult.as_int = (int64_t) v1 % (int64_t) v2;
       break;
     case SREM:
-      vresult.as_int = (int) v1 % (int) v2;
+      vresult.as_int = (int64_t) v1 % (int64_t) v2;
       break;
     case FADD:
       switch(op1->kind) {
