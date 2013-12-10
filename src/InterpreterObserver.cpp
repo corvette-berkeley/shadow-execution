@@ -2186,6 +2186,9 @@ void InterpreterObserver::create_stack_frame(int size) {
   if (debug) {
     printf("<<<<< CREATE STACK FRAME OF SIZE %d >>>>>\n", size);
   }
+
+  isReturn = false;
+
   std::vector<IValue*> frame (size);
   for (int i = 0; i < size; i++) {
     if (!callArgs.empty()) {
