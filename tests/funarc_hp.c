@@ -20,7 +20,7 @@ double fun( double x )
 int main( int argc, char **argv)
 {
 
-  int i, n = 3000;
+  int i, n = 6000;
   double h, t1, t2, dppi;
   double s1;
 
@@ -37,7 +37,8 @@ int main( int argc, char **argv)
     t1 = t2;
   }
 
+  printf("value of s1 is %f\n", s1);
+
   return 0;
 }
-
 
