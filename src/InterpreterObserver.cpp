@@ -1899,14 +1899,14 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     printf("<<<<< ICMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(op1).c_str(), KVALUE_ToString(op2).c_str(), pred, inx);
   }
 
-  int v1, v2;
+  int64_t v1, v2;
 
   // get value of v1
   if (op1->inx == -1) { // constant
     v1 = getValueFromConstant(op1);
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromIValue(loc1);
+    v1 = loc1->getValue().as_int;
   }
 
   // get value of v2
@@ -1914,8 +1914,10 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     v2 = getValueFromConstant(op2);
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromIValue(loc2);
+    v2 = loc2->getValue().as_int;
   }
+  cout << "=============" << v1 << endl;
+  cout << "=============" << v2 << endl;
 
   int result = 0;
   switch(pred) {
