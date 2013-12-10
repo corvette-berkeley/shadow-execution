@@ -431,7 +431,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -448,7 +448,17 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 << value2;
+  uint64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 << value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (uint32_t)value1 << (uint32_t)value2;
+  }
+  else {
+    cout << "[SHL]: Operand type is not int32 or int64" << endl;
+    safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -458,6 +468,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
 
@@ -473,7 +484,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  unsigned value1, value2;
+  uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -490,7 +501,18 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  int64_t result = value1 >> value2;
+
+  uint64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 >> value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (uint32_t)value1 >> (uint32_t)value2;
+  }
+  else {
+    cout << "[LSHR]: Operand type is not int32 or int64" << endl;
+    safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -500,6 +522,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
 
@@ -515,7 +538,7 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -532,7 +555,18 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 >> value2;
+
+  uint64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 >> value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (uint32_t)value1 >> (uint32_t)value2;
+  }
+  else {
+    cout << "[ASHR]: Operand type is not int32 or int64" << endl;
+    safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -542,6 +576,7 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
   return;
@@ -556,7 +591,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  int64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -573,7 +608,18 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 & value2;
+
+  int64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 & value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (int32_t)value1 & (int32_t)value2;
+  }
+  else {
+    cout << "[AND]: Operand type is not int32 or int64" << endl;
+    safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -583,6 +629,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
   return;
@@ -597,7 +644,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  int64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -614,7 +661,17 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 | value2;
+  int64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 | value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (int32_t)value1 | (int32_t)value2;
+  }
+  else {
+    cout << "[OR_]: Operand type is not int32 or int64" << endl;
+    safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -624,6 +681,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
   return;
@@ -631,6 +689,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 
 void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
   if (debug) {
+    cout << "========" << endl;
     printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (nuw ? "1" : "0"),
         (nsw ? "1" : "0"),
@@ -638,7 +697,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  int64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -655,7 +714,18 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 ^ value2;
+  int64_t result;
+  if (op1->kind == INT64_KIND) {
+    result = value1 ^ value2;
+  }
+  else if (op1->kind == INT32_KIND) {
+    result = (int32_t)value1 ^ (int32_t)value2;
+  }
+  else {
+    result = (int32_t)value1 ^ (int32_t)value2;
+    //cout << "[XOR]: Operand type is not int32 or int64" << endl;
+    //safe_assert(false);
+  }
 
   VALUE vresult;
   vresult.as_int = result;
@@ -665,6 +735,7 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   executionStack.top()[inx] = nloc;
 
   if (debug) {
+    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
   return;
