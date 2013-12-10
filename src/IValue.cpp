@@ -175,12 +175,12 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-//  cout << "readValue KIND: " << KIND_ToString(type) << endl;
-//  cout << toString() << endl;
+  cout << "readValue KIND: " << KIND_ToString(type) << endl;
+  cout << toString() << endl;
 
 
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
-//  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
+  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
 
   int byte = KIND_GetSize(type);
   VALUE value;
@@ -188,7 +188,7 @@ VALUE IValue::readValue(int offset, KIND type) {
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
     // efficient code for common cases
     value = valueArray[index].getValue();
-//    cout << "value: " << value.as_int << endl;
+    cout << "value: " << value.as_int << endl;
   } else {
     // uncommon cases
     unsigned nextIndex = index;
@@ -209,7 +209,7 @@ VALUE IValue::readValue(int offset, KIND type) {
     for (unsigned i = index; i < nextIndex; i++) {
       IValue value = valueArray[i];
 
-//      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
+      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
 
       KIND type = value.getType();
       int size = KIND_GetSize(type);
@@ -221,14 +221,14 @@ VALUE IValue::readValue(int offset, KIND type) {
       }
     }
 
-//    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
+    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
 
     // truncate content from total content
     uint8_t* truncContent = (uint8_t*) calloc(8, sizeof(uint8_t)); // TODO: magic number 8
     int trcInx = 0;
 
     for (int i = offset; i < offset + byte; i++) {
-//      cout << "\t [IValue::readvalue] i: " << i << endl;
+      cout << "\t [IValue::readvalue] i: " << i << endl;
       truncContent[trcInx] = totalContent[i];
       trcInx++;
     }
@@ -252,9 +252,9 @@ VALUE IValue::readValue(int offset, KIND type) {
     }
     }
 
-    //cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+    // cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
   }
-//  cout << "value at the end: " << value.as_int << endl;
+  cout << "value at the end: " << value.as_int << endl;
 
   return value;
 }
