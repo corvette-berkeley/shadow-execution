@@ -459,6 +459,9 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   else if (op1->kind == INT32_KIND) {
     result = (uint32_t)value1 << (uint32_t)value2;
   }
+  else if (op1->kind == INT8_KIND) {
+    result = (uint8_t)value1 << (uint8_t)value2;
+  }
   else {
     cout << "[SHL]: Operand type is not int32 or int64" << endl;
     safe_assert(false);
@@ -512,6 +515,9 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
   else if (op1->kind == INT32_KIND) {
     result = (uint32_t)value1 >> (uint32_t)value2;
+  }
+  else if (op1->kind == INT8_KIND) {
+    result = (uint8_t)value1 >> (uint8_t)value2;
   }
   else {
     cout << "[LSHR]: Operand type is not int32 or int64" << endl;
@@ -620,6 +626,9 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   else if (op1->kind == INT32_KIND) {
     result = (int32_t)value1 & (int32_t)value2;
   }
+  else if (op1->kind == INT8_KIND) {
+    result = (int8_t)value1 & (int8_t)value2;
+  }
   else {
     cout << "[AND]: Operand type is not int32 or int64" << endl;
     safe_assert(false);
@@ -671,6 +680,9 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   }
   else if (op1->kind == INT32_KIND) {
     result = (int32_t)value1 | (int32_t)value2;
+  }
+  else if (op1->kind == INT8_KIND) {
+    result = (int8_t)value1 | (int8_t)value2;
   }
   else {
     cout << "[OR_]: Operand type is not int32 or int64" << endl;

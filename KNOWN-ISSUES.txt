@@ -25,29 +25,32 @@ Failed assertion in Load (8)
    ./tsort.out list.txt (failed assert in load)
     ./vdir.out
     ./ls.out
+   ./shred.out list.txt
+    ./join.out list.txt list.txt
+   id
+   ./du.out -h
+
 
 Failed assertion at getelement_struct (2)
    fmt list.txt (in getelementptr struct/from a global value)
     ./sort.out list.txt (constant pointer)
 
 Mismatch at store (23)
-   ./cksum.out list.txt
-    ./cp.out list.txt temp.txt
-    ./comm.out list.txt list.txt
    ./csplit.out -f xyz list.txt 11 72 98
-    ./date.out 
     ./dirname.out /usr/local
-   ./du.out -h
-   ./expr.out  linux : lin
-   id
-    ./join.out list.txt list.txt
-    md5sum list.txt
    mktemp testingXXX
-   ./ptx.out list.txt
    ./realpath.out -L list.txt
-   ./shred.out list.txt
-  ./shuf.out list.txt
+   address will never match)
         uptime
+   ./ptx.out list.txt
+   ./expr.out  linux : lin
+
+
+PTRTOINT
+  ./shuf.out list.txt (ptrtoint, expected mismatch because pointer
+    ./comm.out list.txt list.txt
+    ./date.out 
+
 
 Failed assertion at return struct (3)
     ./pr.out list.txt
@@ -79,7 +82,7 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (49)
+Passing (52)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
    basename list.txt   
@@ -130,3 +133,6 @@ Passing (49)
     ./sha256sum.out list.txt 
     ./sha384sum.out list.txt 
     ./sha512sum.out list.txt
+   ./cksum.out list.txt
+    ./cp.out list.txt temp.txt
+    md5sum list.txt
