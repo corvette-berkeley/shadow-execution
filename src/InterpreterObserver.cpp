@@ -267,7 +267,7 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
   VALUE vresult;
   switch (op) {
     case ADD:
-      vresult.as_int = (int) v1 + (int) v2;
+      vresult.as_int = (uint64_t) v1 + (uint64_t) v2;
       break;
     case SUB:
       vresult.as_int = (int) v1 - (int) v2;
