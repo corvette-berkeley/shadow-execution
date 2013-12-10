@@ -24,6 +24,7 @@ Failed assertion in Load (8)
    ./paste.out list.txt list.txt	
    ./tsort.out list.txt (failed assert in load)
     ./vdir.out
+    ./ls.out
 
 Failed assertion at getelement_struct (2)
    fmt list.txt (in getelementptr struct/from a global value)
@@ -40,18 +41,12 @@ Mismatch at store (23)
    ./expr.out  linux : lin
    id
     ./join.out list.txt list.txt
-    ./ls.out
     md5sum list.txt
    mktemp testingXXX
    ./ptx.out list.txt
    ./realpath.out -L list.txt
    ./shred.out list.txt
   ./shuf.out list.txt
-    ./sha1sum.out list.txt 
-    ./sha224sum.out list.txt 
-    ./sha256sum.out list.txt 
-    ./sha384sum.out list.txt 
-    ./sha512sum.out list.txt (in alloca)
         uptime
 
 Failed assertion at return struct (3)
@@ -59,9 +54,6 @@ Failed assertion at return struct (3)
     ./sleep.out 2
     ./timeout.out 1 sleep 10; date
 
-Failed assertion after call (args not empty) (2)
-    ./kill.out pid
-    ./truncate.out -s 5 list.txt
 
 
 During instrumentation:
@@ -87,7 +79,7 @@ Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (42)
+Passing (49)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
    basename list.txt   
@@ -131,7 +123,10 @@ Passing (42)
    ./uniq.out list.txt
   ./unlink.out list.txt
    wc list.txt
-
-  
-
-
+    ./kill.out pid
+    ./truncate.out -s 5 list.txt  
+    ./sha1sum.out list.txt 
+    ./sha224sum.out list.txt 
+    ./sha256sum.out list.txt 
+    ./sha384sum.out list.txt 
+    ./sha512sum.out list.txt
