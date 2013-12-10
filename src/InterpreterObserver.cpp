@@ -473,7 +473,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  int value1, value2;
+  unsigned value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
   }
@@ -490,7 +490,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     value2 = loc2->getValue().as_int;
   }
 
-  int result = value1 >> value2;
+  int64_t result = value1 >> value2;
 
   VALUE vresult;
   vresult.as_int = result;
