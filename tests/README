@@ -1,0 +1,10 @@
+
+To instrument all current passing core utilities:
+./utility-regressions.py passing-utilities.txt
+Feedback: log.out
+
+To interpret the code:
+./run-commands.py passing-commands.txt
+(except for tee)
+
+Feedback: log-run.out
