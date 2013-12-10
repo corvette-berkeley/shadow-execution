@@ -10,6 +10,18 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
+TODO:
+review bitwise operators.
+printing operators makes it very helpful.
+comparison fixing.
+	   why would pwd go through?
+checking for divergence.
+how to compare two utilities.
+output and logging info.
+ptrtoint.
+check in example (example + foo).
+re-run everything.
+
 CORE UTILITIES (42/100).
 
 During interpretation:
@@ -29,7 +41,6 @@ Failed assertion in Load (8)
     ./join.out list.txt list.txt
    id
    ./du.out -h
-
 
 Failed assertion at getelement_struct (2)
    fmt list.txt (in getelementptr struct/from a global value)
@@ -66,23 +77,23 @@ Verifier' on function '@vasnprintf
 coreutils/lib/vasnprintf.c
 
 Broken module (11)
-   ./df.out -h 
-   ./factor.out 8
-   ./install.out -b list.txt backup.txt
+   ./df.out -h (seg fault)
+   ./factor.out 8 (not instrumented)
+   ./install.out -b list.txt backup.txt (***PASSES)
    ./numfmt 2 (*** PASSES)
-   ./mkdir.out hola
-   ./printf.out "%s" hello
-   ./seq.out 2
-   ./stat.out list.txt
+   ./mkdir.out hola (mismatch at store)
+   ./printf.out "%s" hello (unhandled type)
+   ./seq.out 2 (unhandled type)
+   ./stat.out list.txt (unhandled type)
    ./stdbuf.out (*** PASSES)
-   ./stty.out
-   ./who.out
+   ./stty.out (getelement_struct)
+   ./who.out (getelement_struct)
 
 Failed assertion at getGlobalIndex (1)
    od
 
 
-Passing (52)
+Passing (53)
 =======
    ./base64.out list.txt (getelementptr_array of global variable)
    basename list.txt   
@@ -136,3 +147,4 @@ Passing (52)
    ./cksum.out list.txt
     ./cp.out list.txt temp.txt
     md5sum list.txt
+   ./install.out -b list.txt backup.txt (***PASSES)
