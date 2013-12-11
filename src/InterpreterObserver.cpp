@@ -1726,11 +1726,21 @@ void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx
         (conditional ? "1" : "0"),
         KVALUE_ToString(op1).c_str(), inx);
   }
+
+  IValue* cond = (op1->inx == -1) ? NULL : executionStack.top()[op1->inx];
+
+  if (cond != NULL && ((bool) cond->getIntValue() != (bool) op1->value.as_int)) {
+    cerr << "\tKVALUE: " << KVALUE_ToString(op1) << endl;
+    cerr << "\tIVALUE: " << cond->toString() << endl;
+
+    cerr << "\tShadow and concrete executions diverge at this branch." << endl;
+    safe_assert(false);
+  }
 }
 
 void InterpreterObserver::branch2(IID iid, bool conditional, int inx) {
   if (debug) {
-    printf("<<<<< BRANCH >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+    printf("<<<<< BRANCH2 (GOTO) >>>>> %s, cond: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         (conditional ? "1" : "0"), inx);
   }
 }
