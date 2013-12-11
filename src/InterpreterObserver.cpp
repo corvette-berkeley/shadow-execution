@@ -1903,18 +1903,18 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
   // get value of v1
   if (op1->inx == -1) { // constant
-    v1 = getValueFromConstant(op1);
+    v1 = op1->value.as_int;
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
-    v1 = loc1->getValue().as_int;
+    v1 = loc1->getIntValue();
   }
 
   // get value of v2
   if (op2->inx == -1) { // constant
-    v2 = getValueFromConstant(op2);
+    v2 = op2->value.as_int;
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
-    v2 = loc2->getValue().as_int;
+    v2 = loc2->getIntValue();
   }
   cout << "=============" << v1 << endl;
   cout << "=============" << v2 << endl;
@@ -1981,7 +1981,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     v1 = getValueFromConstant(op1);
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromIValue(loc1);
+    v1 = loc1->getFlpValue();
   }
 
   // get value of v2
@@ -1989,7 +1989,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     v2 = getValueFromConstant(op2);
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromIValue(loc2);
+    v2 = loc2->getFlpValue();
   }
 
   int result = 0;

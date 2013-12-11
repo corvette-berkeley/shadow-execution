@@ -75,6 +75,12 @@ class IValue {
 
     VALUE getValue();
 
+    int64_t getIntValue();
+
+    void* getPtrValue();
+
+    double getFlpValue();
+
     SCOPE getScope();
 
     bool isInitialized();
