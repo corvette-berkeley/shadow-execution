@@ -73,6 +73,9 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
     // creating new value
     IValue *destLocation = new IValue();    
+    cout << src->inx << " : " << srcPtrLocation << endl;
+    cout << src->inx << "'s value : " << srcPtrLocation->getValue().as_ptr << endl;
+    cout << inx << " : " << destLocation << endl;
     if (srcPtrLocation->isInitialized()) {
       IValue *srcLocation = NULL;
 
@@ -120,9 +123,10 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       destLocation->setLength(0);
 
       // sync load
-      bool sync = syncLoad(destLocation, src, type);
+      syncLoad(destLocation, src, type);
 
       // sync heap if sync value
+      /*
       if (sync) {
         VALUE value;
         value.as_ptr = (void*) destLocation;
@@ -130,14 +134,18 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
         srcPtrLocation->setValue(value);
         srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
       }
+      */
     }
 
+    cout << src->inx << " : " << srcPtrLocation << endl;
+    cout << src->inx << "'s value : " << srcPtrLocation->getValue().as_ptr << endl;
     destLocation->setLineNumber(line);
 
     executionStack.top()[inx] = destLocation;
     if (debug) {
       cout << "stack frame index " << inx << endl; 
       cout << destLocation->toString() << endl;
+      cout << destLocation << endl; 
     }
   }
   else {
@@ -164,6 +172,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
     executionStack.top()[inx] = destLocation;
     if (debug) {
       cout << destLocation->toString() << endl;
+      cout << destLocation << endl; 
     }
   }
 
@@ -364,8 +373,10 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
 
   IValue *nloc = new IValue(op1->kind, vresult);
   executionStack.top()[inx] = nloc;
-  if (debug)
+  if (debug) {
     cout << nloc->toString() << "\n";
+    cout << nloc << endl;
+  }
 
   return;
 }
@@ -1114,14 +1125,19 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 
   if (debug) {
     cout << "\tSrc: " << srcLocation->toString() << endl;
+//    cout << srcLocation << endl; // print address
   }
 
   // retrieve actual destination
   IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
   unsigned valueIndex = destPtrLocation->getIndex();
   unsigned currOffset = values[valueIndex].getFirstByte();
-  destLocation = &values[valueIndex];
+  destLocation = values + valueIndex;
+    // &values[valueIndex];
   internalOffset = destPtrOffset - currOffset;
+//  cout << dest->inx << " : " << destPtrLocation << endl; // print address 
+//  cout << dest->inx << "'s value : " << values << endl; // print address 
+//  cout << destLocation << endl; // print address
 
   if (debug) {
     cout << "\tdestPtrOffset: " << destPtrOffset << endl;
@@ -1134,8 +1150,6 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   }
 
   // writing src into dest
-  // destPtrLocation->writeValue(internalOffset, destPtrLocation->getSize(), srcLocation);
-
   destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation);
   destPtrLocation->setInitialized();
 
