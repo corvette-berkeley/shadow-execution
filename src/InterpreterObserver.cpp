@@ -136,6 +136,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
     executionStack.top()[inx] = destLocation;
     if (debug) {
+      cout << "stack frame index " << inx << endl; 
       cout << destLocation->toString() << endl;
     }
   }
@@ -246,22 +247,23 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
         KVALUE_ToString(op2).c_str(),
         inx);
 
-  long double v1, v2;
+  int64_t v1, v2;
 
   // get value of v1
   if (op1->iid == 0) { // constant
-    v1 = getValueFromConstant(op1);
+    v1 = op1->value.as_int;
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
-    v1 = getValueFromIValue(loc1);
+    v1 = loc1->getIntValue();
+    cout << loc1->toString() << endl; 
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
-    v2 = getValueFromConstant(op2);
+    v2 = op2->value.as_int;
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
-    v2 = getValueFromIValue(loc2);
+    v2 = loc2->getIntValue();
   }
 
   VALUE vresult;
@@ -1070,11 +1072,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   if (dest->inx == -1) { // pointer constant
     // do nothing
     return;
-  }
-  else if (dest->isGlobal) {
+  } else if (dest->isGlobal) {
     destPtrLocation = globalSymbolTable[dest->inx];
-  }
-  else {
+  } else {
     destPtrLocation = executionStack.top()[dest->inx];
   }
 
@@ -1107,6 +1107,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     if (src->isGlobal) {
       srcLocation = globalSymbolTable[src->inx];
     } else {
+      cout << "stack frame index " << src->inx << endl;
       srcLocation = executionStack.top()[src->inx];
     }
   }
@@ -1718,7 +1719,6 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   return;
 }
 
-
 // ***** TerminatorInst ***** //
 void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {
   if (debug) {
@@ -1734,7 +1734,7 @@ void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx
     cerr << "\tIVALUE: " << cond->toString() << endl;
 
     cerr << "\tShadow and concrete executions diverge at this branch." << endl;
-    safe_assert(false);
+    // safe_assert(false);
   }
 }
 
@@ -1932,33 +1932,43 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   int result = 0;
   switch(pred) {
     case CmpInst::ICMP_EQ:
+      cout << "PRED = ICMP_EQ" << endl;
       result = v1 == v2;
       break;
     case CmpInst::ICMP_NE:
+      cout << "PRED = ICMP_NE" << endl;
       result = v1 != v2;
       break;
     case CmpInst::ICMP_UGT:
+      cout << "PRED = ICMP_UGT" << endl;
       result = v1 > v2;
       break;
     case CmpInst::ICMP_UGE:
+      cout << "PRED = ICMP_UGE" << endl;
       result = v1 >= v2;
       break;
     case CmpInst::ICMP_ULT:
+      cout << "PRED = ICMP_ULT" << endl;
       result = v1 < v2;
       break;
     case CmpInst::ICMP_ULE:
+      cout << "PRED = ICMP_ULE" << endl;
       result = v1 <= v2;
       break;
     case CmpInst::ICMP_SGT:
+      cout << "PRED = ICMP_SGT" << endl;
       result = v1 > v2;
       break;
     case CmpInst::ICMP_SGE:
+      cout << "PRED = ICMP_SGE" << endl;
       result = v1 >= v2;
       break;
     case CmpInst::ICMP_SLT:
+      cout << "PRED = ICMP_SLT" << endl;
       result = v1 < v2;
       break;
     case CmpInst::ICMP_SLE:
+      cout << "PRED = ICMP_SLE" << endl;
       result = v1 <= v2;
       break;
     default:
