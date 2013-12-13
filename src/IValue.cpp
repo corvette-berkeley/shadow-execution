@@ -16,6 +16,10 @@ void IValue::setValue(VALUE v) {
   value = v;
 }
 
+void IValue::setValueOffset(int64_t v) {
+  valueOffset = v;
+}
+
 void IValue::setScope(SCOPE s) {
   scope = s;
 }
@@ -58,6 +62,10 @@ KIND IValue::getType() {
 
 VALUE IValue::getValue() {
   return value;
+}
+
+int64_t IValue::getValueOffset() {
+  return valueOffset;
 }
 
 SCOPE IValue::getScope() {
@@ -356,6 +364,10 @@ int64_t IValue::getIntValue() {
 
 void* IValue::getPtrValue() {
   return value.as_ptr;
+}
+
+void* IValue::getIPtrValue() {
+  return (void*)((int64_t)value.as_ptr + valueOffset);
 }
 
 double IValue::getFlpValue() {

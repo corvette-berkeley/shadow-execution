@@ -10,8 +10,9 @@ class IValue {
   private:
     KIND type; // see Common.h for definitions
     VALUE value; // union type (use extension later on)
+    int64_t valueOffset; // used for pointers to calculate shadow pointer address
     unsigned size; // size of data the pointer points to
-    int offset;
+    int offset; // distance from base pointer to this object
     int bitOffset; // to represent data smaller than a byte; value ranges from 0 to 7
     unsigned index; // index of this object
     unsigned firstByte; // the length in byte to the base pointer
@@ -35,21 +36,23 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s), lineNumber(0) {}
+ IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s), lineNumber(0)  {}
 
-    IValue(KIND t, VALUE v): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t, VALUE v, unsigned f): type(t), value(v), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER), lineNumber(0) {}
+ IValue(KIND t, VALUE v, unsigned f): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), valueOffset(-1), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t): type(t), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t): type(t), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
-    IValue(): type(INV_KIND), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
 
     void setType(KIND t);
 
     void setValue(VALUE v);
+
+    void setValueOffset(int64_t v);
 
     void setScope(SCOPE s);
 
@@ -75,11 +78,15 @@ class IValue {
 
     VALUE getValue();
 
+    int64_t getValueOffset();
+
     int64_t getIntValue();
 
     void* getPtrValue();
 
     double getFlpValue();
+
+    void* getIPtrValue();
 
     SCOPE getScope();
 
