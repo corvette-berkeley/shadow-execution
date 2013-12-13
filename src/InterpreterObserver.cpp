@@ -257,28 +257,33 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
         inx);
 
   int64_t v1, v2;
+  long double d1, d2;
 
   // get value of v1
   if (op1->iid == 0) { // constant
     v1 = op1->value.as_int;
+    d1 = op1->value.as_flp;
   } else { // register
     IValue *loc1 = executionStack.top()[op1->inx];
     v1 = loc1->getIntValue();
-    cout << loc1->toString() << endl; 
+    d1 = loc1->getFlpValue();
   }
 
   // get value of v2
   if (op2->iid == 0) { // constant
     v2 = op2->value.as_int;
+    d2 = op2->value.as_flp;
   } else { // register
     IValue *loc2 = executionStack.top()[op2->inx];
     v2 = loc2->getIntValue();
+    d2 = loc2->getFlpValue();
   }
 
   VALUE vresult;
   if (debug) {
     cout << (int64_t)v1 << " " << (int64_t)v2 << endl;
     cout << (uint64_t)v1 << " " << (uint64_t)v2 << endl;
+    cout << (double)d1 << " " << (double)d2 << endl;
   }
   switch (op) {
     case ADD:
@@ -305,13 +310,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
     case FADD:
       switch(op1->kind) {
         case FLP32_KIND: 
-          vresult.as_flp = (float) v1 + (float) v2;
+          vresult.as_flp = (float) d1 + (float) d2;
           break;
         case FLP64_KIND:
-          vresult.as_flp = (double) v1 + (double) v2;
+          vresult.as_flp = (double) d1 + (double) d2;
           break;
         case FLP80X86_KIND:
-          vresult.as_flp = v1 + v2;
+          vresult.as_flp = d1 + d2;
           break;
         default:
           cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
@@ -321,13 +326,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
     case FSUB:
       switch(op1->kind) {
         case FLP32_KIND: 
-          vresult.as_flp = (float) v1 - (float) v2;
+          vresult.as_flp = (float) d1 - (float) d2;
           break;
         case FLP64_KIND:
-          vresult.as_flp = (double) v1 - (double) v2;
+          vresult.as_flp = (double) d1 - (double) d2;
           break;
         case FLP80X86_KIND:
-          vresult.as_flp = v1 - v2;
+          vresult.as_flp = d1 - d2;
           break;
         default:
           cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
@@ -337,13 +342,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
     case FMUL:
       switch(op1->kind) {
         case FLP32_KIND: 
-          vresult.as_flp = (float) v1 * (float) v2;
+          vresult.as_flp = (float) d1 * (float) d2;
           break;
         case FLP64_KIND:
-          vresult.as_flp = (double) v1 * (double) v2;
+          vresult.as_flp = (double) d1 * (double) d2;
           break;
         case FLP80X86_KIND:
-          vresult.as_flp = v1 * v2;
+          vresult.as_flp = d1 * d2;
           break;
         default:
           cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
@@ -353,13 +358,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
     case FDIV:
       switch(op1->kind) {
         case FLP32_KIND: 
-          vresult.as_flp = (float) v1 / (float) v2;
+          vresult.as_flp = (float) d1 / (float) d2;
           break;
         case FLP64_KIND:
-          vresult.as_flp = (double) v1 / (double) v2;
+          vresult.as_flp = (double) d1 / (double) d2;
           break;
         case FLP80X86_KIND:
-          vresult.as_flp = v1 / v2;
+          vresult.as_flp = d1 / d2;
           break;
         default:
           cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
@@ -1744,10 +1749,12 @@ void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx
   IValue* cond = (op1->inx == -1) ? NULL : executionStack.top()[op1->inx];
 
   if (cond != NULL && ((bool) cond->getIntValue() != (bool) op1->value.as_int)) {
-    cerr << "\tKVALUE: " << KVALUE_ToString(op1) << endl;
-    cerr << "\tIVALUE: " << cond->toString() << endl;
+    if (debug) {
+      cerr << "\tKVALUE: " << KVALUE_ToString(op1) << endl;
+      cerr << "\tIVALUE: " << cond->toString() << endl;
 
-    cerr << "\tShadow and concrete executions diverge at this branch." << endl;
+      cerr << "\tShadow and concrete executions diverge at this branch." << endl;
+    }
     // safe_assert(false);
   }
 }
@@ -1940,49 +1947,51 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     IValue *loc2 = executionStack.top()[op2->inx];
     v2 = loc2->getIntValue();
   }
-  cout << "=============" << v1 << endl;
-  cout << "=============" << v2 << endl;
+  if (debug) {
+    cout << "=============" << v1 << endl;
+    cout << "=============" << v2 << endl;
+  }
 
   int result = 0;
   switch(pred) {
     case CmpInst::ICMP_EQ:
-      cout << "PRED = ICMP_EQ" << endl;
+      if(debug) cout << "PRED = ICMP_EQ" << endl;
       result = v1 == v2;
       break;
     case CmpInst::ICMP_NE:
-      cout << "PRED = ICMP_NE" << endl;
+      if(debug) cout << "PRED = ICMP_NE" << endl;
       result = v1 != v2;
       break;
     case CmpInst::ICMP_UGT:
-      cout << "PRED = ICMP_UGT" << endl;
+      if(debug) cout << "PRED = ICMP_UGT" << endl;
       result = v1 > v2;
       break;
     case CmpInst::ICMP_UGE:
-      cout << "PRED = ICMP_UGE" << endl;
+      if(debug) cout << "PRED = ICMP_UGE" << endl;
       result = v1 >= v2;
       break;
     case CmpInst::ICMP_ULT:
-      cout << "PRED = ICMP_ULT" << endl;
+      if(debug) cout << "PRED = ICMP_ULT" << endl;
       result = v1 < v2;
       break;
     case CmpInst::ICMP_ULE:
-      cout << "PRED = ICMP_ULE" << endl;
+      if(debug) cout << "PRED = ICMP_ULE" << endl;
       result = v1 <= v2;
       break;
     case CmpInst::ICMP_SGT:
-      cout << "PRED = ICMP_SGT" << endl;
+      if(debug) cout << "PRED = ICMP_SGT" << endl;
       result = v1 > v2;
       break;
     case CmpInst::ICMP_SGE:
-      cout << "PRED = ICMP_SGE" << endl;
+      if(debug) cout << "PRED = ICMP_SGE" << endl;
       result = v1 >= v2;
       break;
     case CmpInst::ICMP_SLT:
-      cout << "PRED = ICMP_SLT" << endl;
+      if(debug) cout << "PRED = ICMP_SLT" << endl;
       result = v1 < v2;
       break;
     case CmpInst::ICMP_SLE:
-      cout << "PRED = ICMP_SLE" << endl;
+      if(debug) cout << "PRED = ICMP_SLE" << endl;
       result = v1 <= v2;
       break;
     default:

@@ -175,12 +175,12 @@ void IValue::copy(IValue *dest) {
 }
 
 VALUE IValue::readValue(int offset, KIND type) {
-  cout << "readValue KIND: " << KIND_ToString(type) << endl;
-  cout << toString() << endl;
+//  cout << "readValue KIND: " << KIND_ToString(type) << endl;
+//  cout << toString() << endl;
 
 
   IValue* valueArray = static_cast<IValue*>(value.as_ptr);
-  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
+//  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
 
   int byte = KIND_GetSize(type);
   VALUE value;
@@ -188,7 +188,7 @@ VALUE IValue::readValue(int offset, KIND type) {
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
     // efficient code for common cases
     value = valueArray[index].getValue();
-    cout << "value: " << value.as_int << endl;
+//    cout << "value: " << value.as_int << endl;
   } else {
     // uncommon cases
     unsigned nextIndex = index;
@@ -209,7 +209,7 @@ VALUE IValue::readValue(int offset, KIND type) {
     for (unsigned i = index; i < nextIndex; i++) {
       IValue value = valueArray[i];
 
-      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
+//      cout << "\t [IValue::readValue] value: " << value.toString() << endl;
 
       KIND type = value.getType();
       int size = KIND_GetSize(type);
@@ -221,14 +221,14 @@ VALUE IValue::readValue(int offset, KIND type) {
       }
     }
 
-    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
+//    cout << "\t [IValue::readvalue] value in double: " << ((double*) totalContent)[0] << endl;
 
     // truncate content from total content
     uint8_t* truncContent = (uint8_t*) calloc(8, sizeof(uint8_t)); // TODO: magic number 8
     int trcInx = 0;
 
     for (int i = offset; i < offset + byte; i++) {
-      cout << "\t [IValue::readvalue] i: " << i << endl;
+//      cout << "\t [IValue::readvalue] i: " << i << endl;
       truncContent[trcInx] = totalContent[i];
       trcInx++;
     }
@@ -237,26 +237,26 @@ VALUE IValue::readValue(int offset, KIND type) {
     switch(type) {
     case FLP32_KIND: {
       float* truncValue = (float*) truncContent;
-      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+//      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
       value.as_flp = *truncValue;
       break;
     }
     case FLP64_KIND: {
       double* truncValue = (double*) truncContent;
-      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+//      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
       value.as_flp = *truncValue;
       break;
     }
     default: {
       int64_t* truncValue = (int64_t*) truncContent;
-      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
+//      cout << "\t [IValue:readvalue] final value: " << truncValue[0] << endl;
       value.as_int = *truncValue;
       break;
     }
     }
 
   }
-  cout << "value at the end: " << value.as_int << endl;
+//  cout << "value at the end: " << value.as_int << endl;
 
   return value;
 }
@@ -307,13 +307,13 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
 
     while (byteWrittens < byte) {
       IValue *currentValue = &valueArray[currentIndex];
-//      cout << "=== Ivalue: " << currentValue->toString() << endl;
-//      cout << "=== current content: " << (int64_t) *content << endl; 
-//      cout << "=== current value: " << currentValue->getValue().as_int << endl;
+      cout << "=== Ivalue: " << currentValue->toString() << endl;
+      cout << "=== current content: " << (int64_t) *content << endl; 
+      cout << "=== current value: " << currentValue->getValue().as_int << endl;
       byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
-//      cout << "=== byteWrittens: " << byteWrittens << endl;
-//      cout << "=== current value after: " << currentValue->getValue().as_int << endl;
-//      cout << "=== Ivalue after: " << currentValue->toString() << endl;
+      cout << "=== byteWrittens: " << byteWrittens << endl;
+      cout << "=== current value after: " << currentValue->getValue().as_int << endl;
+      cout << "=== Ivalue after: " << currentValue->toString() << endl;
       content += byteWrittens - oldByteWrittens;
       oldByteWrittens = byteWrittens;
       currentIndex++;
