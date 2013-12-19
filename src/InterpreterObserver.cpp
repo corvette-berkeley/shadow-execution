@@ -1079,20 +1079,16 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, int inx) {
   if (debug) {
     printf("<<<<< STORE >>>>> %s, %s, %s, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
-        KVALUE_ToString(dest).c_str(), //op
-        KVALUE_ToString(src).c_str(), line, inx); // kv
+        KVALUE_ToString(dest).c_str(), 
+        KVALUE_ToString(src).c_str(), line, inx); 
   }
 
-  // retrieve ptr destination
-  IValue* destPtrLocation;
-  if (dest->inx == -1) { // pointer constant
-    // do nothing
-    return;
-  } else if (dest->isGlobal) {
-    destPtrLocation = globalSymbolTable[dest->inx];
-  } else {
-    destPtrLocation = executionStack.top()[dest->inx];
-  }
+  // pointer constant; we simply ignore this case
+  if (dest->inx == -1) return;
+
+  // retrieve destination pointer operand
+  IValue* destPtrLocation = dest->isGlobal? globalSymbolTable[dest->inx] :
+    executionStack.top()[dest->inx];
 
   if (debug) {
     cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
@@ -1102,9 +1098,8 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   if (!destPtrLocation->isInitialized()) {
     IValue* iValue = new IValue(src->kind);
     iValue->setLength(0);
-    VALUE value;
-    value.as_ptr = (void*) iValue;
-    destPtrLocation->setValue(value);
+    destPtrLocation->setValueOffset((int64_t)destPtrLocation->getPtrValue() -
+        (int64_t)iValue);
     destPtrLocation->setInitialized();
   }
 
@@ -1130,19 +1125,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 
   if (debug) {
     cout << "\tSrc: " << srcLocation->toString() << endl;
-//    cout << srcLocation << endl; // print address
   }
 
   // retrieve actual destination
-  IValue* values = (IValue*)destPtrLocation->getValue().as_ptr;
+  IValue* values = (IValue*)destPtrLocation->getIPtrValue();
   unsigned valueIndex = destPtrLocation->getIndex();
   unsigned currOffset = values[valueIndex].getFirstByte();
   destLocation = values + valueIndex;
-    // &values[valueIndex];
   internalOffset = destPtrOffset - currOffset;
-//  cout << dest->inx << " : " << destPtrLocation << endl; // print address 
-//  cout << dest->inx << "'s value : " << values << endl; // print address 
-//  cout << destLocation << endl; // print address
 
   if (debug) {
     cout << "\tdestPtrOffset: " << destPtrOffset << endl;
