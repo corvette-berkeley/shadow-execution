@@ -178,6 +178,7 @@ void IValue::copy(IValue *dest) {
   dest->setOffset(offset);
   dest->setIndex(index);
   dest->setLength(length);
+  dest->setValueOffset(valueOffset);
   // dest->setScope(scope); // I don't think the scope should be propagated
   // note: we do never overwrite the field firstByte
 }
@@ -187,7 +188,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 //  cout << toString() << endl;
 
 
-  IValue* valueArray = static_cast<IValue*>(value.as_ptr);
+  IValue* valueArray = static_cast<IValue*>(getIPtrValue());
 //  cout << "valueArray[index]: " <<  valueArray[index].toString() << endl;
 
   int byte = KIND_GetSize(type);
@@ -276,20 +277,15 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
     byte = maxOffset - offset + 1;
   }
 
-//  cout << "=== setValue === " << byte << endl;
-
   for (int i = 0; i < byte; i++) {
-//    cout << "=== at " << i + offset << " " << (int64_t) valueBytes[i+offset] << endl;
     valueBytes[i+offset] = content[i];
-//    cout << "=== at " << i + offset << " " << (int64_t) content[i] << endl;
-//    cout << "=== at " << i + offset << " " << (int64_t) valueBytes[i+offset] << endl;
   }
 
   return byte;
 } 
 
 void IValue::writeValue(int offset, int byte, IValue* src) {
-  IValue* valueArray = static_cast<IValue*>(value.as_ptr);
+  IValue* valueArray = static_cast<IValue*>(getIPtrValue());
 
   cout << "\t writing " << byte << " bytes\n" << endl;
 

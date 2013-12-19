@@ -52,12 +52,13 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
         inx);
   }
 
-  bool doLoad = true;
+  bool isPointerConstant = false;
   IValue* srcPtrLocation;
 
+  // obtain source pointer value
   if (src->inx == -1) {
     // cannot load using constant address
-    doLoad = false;
+    isPointerConstant = true;
   } else if (src->isGlobal) {
     srcPtrLocation = globalSymbolTable[src->inx];
   } else {
@@ -65,7 +66,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
   }
 
   // perform load
-  if (doLoad) {
+  if (!isPointerConstant) {
 
     if (debug) {
       cout << "\tsrcPtrLocation: " << srcPtrLocation->toString() << endl;
@@ -73,17 +74,14 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
     // creating new value
     IValue *destLocation = new IValue();    
-    cout << src->inx << " : " << srcPtrLocation << endl;
-    cout << src->inx << "'s value : " << srcPtrLocation->getValue().as_ptr << endl;
-    cout << inx << " : " << destLocation << endl;
     if (srcPtrLocation->isInitialized()) {
       IValue *srcLocation = NULL;
 
       // retrieving source
-      IValue* values = (IValue*)srcPtrLocation->getValue().as_ptr;
+      IValue* values = (IValue*)srcPtrLocation->getIPtrValue();
       unsigned valueIndex = srcPtrLocation->getIndex();
       unsigned currOffset = values[valueIndex].getFirstByte();
-      srcLocation = &values[valueIndex];
+      srcLocation = values + valueIndex;
 
       // calculating internal offset
       unsigned srcOffset = srcPtrLocation->getOffset();
@@ -110,13 +108,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       destLocation->setType(type);
 
       // sync load
-      //bool sync = false;
       bool sync = syncLoad(destLocation, src, type);
-
-      // sync heap if sync value
-      if (sync) {
-        srcPtrLocation->writeValue(internalOffset, destLocation->getSize(), destLocation);
-      }
     } else {
       destLocation->setSize(KIND_GetSize(type));
       destLocation->setType(type);
@@ -124,21 +116,8 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
       // sync load
       syncLoad(destLocation, src, type);
-
-      // sync heap if sync value
-      /*
-      if (sync) {
-        VALUE value;
-        value.as_ptr = (void*) destLocation;
-        srcPtrLocation->setLength(1);
-        srcPtrLocation->setValue(value);
-        srcPtrLocation->setSize(KIND_GetSize(destLocation->getType()));
-      }
-      */
     }
 
-    cout << src->inx << " : " << srcPtrLocation << endl;
-    cout << src->inx << "'s value : " << srcPtrLocation->getValue().as_ptr << endl;
     destLocation->setLineNumber(line);
 
     executionStack.top()[inx] = destLocation;
@@ -161,12 +140,6 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
 
     // sync load
     syncLoad(destLocation, src, type);
-
-    // sync heap if sync value
-    // if (sync) {
-//      destLocation->setValue(src->value);
-//      destLocation->setType(src->kind);
-//    }
 
     destLocation->setLineNumber(line);
     executionStack.top()[inx] = destLocation;
@@ -1039,8 +1012,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 
   switch(kv->kind) {
     case PTR_KIND:
-      result = true; // don't compare pointer
-      // result = (dest->getValue().as_ptr == kv->value.as_ptr);
+      result = (dest->getValue().as_ptr == kv->value.as_ptr);
       break;
     case INT1_KIND:
       result = ((bool)dest->getValue().as_int == (bool)kv->value.as_int);
@@ -1094,7 +1066,8 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
   }
 
-  // TODO: Review this
+  // the destination pointer is not initialized
+  // initialize with an empty IValue object
   if (!destPtrLocation->isInitialized()) {
     IValue* iValue = new IValue(src->kind);
     iValue->setLength(0);
@@ -1118,7 +1091,6 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     if (src->isGlobal) {
       srcLocation = globalSymbolTable[src->inx];
     } else {
-      cout << "stack frame index " << src->inx << endl;
       srcLocation = executionStack.top()[src->inx];
     }
   }
@@ -1157,7 +1129,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     cout << "\tCalling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize() << endl;
   }
 
-  IValue* writtenValue = new IValue(srcLocation->getType(), destPtrLocation->readValue(internalOffset, src->kind)); // NOTE: destLocation->getType() before
+  // NOTE: destLocation->getType() before
+  IValue* writtenValue = new IValue(srcLocation->getType(),
+      destPtrLocation->readValue(internalOffset, src->kind)); 
 
   if (debug) {
     cout << "\twrittenValue: " << writtenValue->toString() << endl;
@@ -2528,6 +2502,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   switch (type) {
     case PTR_KIND:
+      cValueVoid = concrete->getPtrValue();
+      sync = (iValue->getPtrValue() != cValueVoid);
+      if (sync) {
+        syncValue.as_ptr = cValueVoid;
+        iValue->setValue(syncValue);
+      }
       break;
     case INT1_KIND: 
     case INT8_KIND: 
