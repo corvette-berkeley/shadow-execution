@@ -108,7 +108,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       destLocation->setType(type);
 
       // sync load
-      bool sync = syncLoad(destLocation, src, type);
+      syncLoad(destLocation, src, type);
     } else {
       destLocation->setSize(KIND_GetSize(type));
       destLocation->setType(type);
@@ -2495,6 +2495,7 @@ void InterpreterObserver::printCurrentFrame() {
 bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
   bool sync = false;
   VALUE syncValue;
+  void* cValueVoid;
   long cValueInt;
   float cValueFloat;
   double cValueDouble;
@@ -2502,7 +2503,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   switch (type) {
     case PTR_KIND:
-      cValueVoid = concrete->getPtrValue();
+      cValueVoid = concrete->value.as_ptr;
       sync = (iValue->getPtrValue() != cValueVoid);
       if (sync) {
         syncValue.as_ptr = cValueVoid;
