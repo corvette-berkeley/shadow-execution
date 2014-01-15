@@ -39,3 +39,13 @@ uniq list.txt
 unlink list.txt
 wc list.txt
 rm list.txt 
+truncate -s 5 list.txt
+sha1sum list.txt
+sha224sum list.txt
+sha256sum list.txt
+sha384sum list.txt
+sha512sum list.txt
+cksum list.txt
+cp list.txt temp.txt
+md5sum list.txt
+install -b list.txt backup.txt
