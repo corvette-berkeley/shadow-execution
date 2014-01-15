@@ -10,6 +10,14 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
+TESTING:
+  Checking at store
+  Checking for branch divergence
+  TODO:
+    Model printf to check stdout
+  COMMENT: 
+    We also have syncing at load
+
 TODO:
 review bitwise operators.
 printing operators makes it very helpful.
@@ -22,7 +30,7 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (42/100).
+CORE UTILITIES (53/100).
 
 During interpretation:
 ==============
