@@ -40,3 +40,14 @@ unexpand
 uniq
 unlink
 wc
+kill
+truncate
+sha1sum
+sha224sum
+sha256sum
+sha384sum
+sha512sum
+cksum
+cp
+md5sum
+install
