@@ -26,6 +26,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   count_++;
 
   InstrPtrVector instrs;
+  InstrPtrVector instrsAfter;
 
   Constant* iid = IID_CONSTANT(callInst);
   Constant* inx = computeIndex(callInst);
@@ -125,18 +126,23 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     // kind is the type of each element (the return type is known to be PTR)
     noUnwind = false;
-    call = CALL_IID_BOOL_KIND_KVALUE_INT_INT("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx);
+
+    Value* mallocAddress = KVALUE_VALUE(callInst, instrsAfter, NOSIGN);
+    call = CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx, mallocAddress);
+    instrsAfter.push_back(call); // new
+
+    InsertAllBefore(instrs, callInst);
+    InsertAllAfter(instrsAfter, callInst); // new
   }
   else {
     // kind is the return type of the function
     call = CALL_IID_BOOL_KIND_INT("llvm_call", iid, noUnwindC, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
   }
-  instrs.push_back(call);
 
-  // instrument
-  InsertAllBefore(instrs, callInst);
+  ///////
 
-  InstrPtrVector instrsAfter;
   if (callInst->getCalledFunction() == NULL || callInst->getCalledFunction()->getName() != "malloc") {
     Instruction* call = NULL;
 
