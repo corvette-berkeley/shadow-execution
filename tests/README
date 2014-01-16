@@ -1,4 +1,9 @@
 
+
+*************
+CORE UTILITES
+*************
+
 To instrument all current passing core utilities:
 ./utility-regressions.py passing-utilities.txt
 Feedback: log.out
@@ -8,3 +13,13 @@ To interpret the code:
 (except for tee)
 
 Feedback: log-run.out
+
+
+***********
+SMALL TESTS
+***********
+
+To instrument and run all small regression tests:
+./small-regressions.py tests.txt
+Feedback: log.out
+

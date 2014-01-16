@@ -835,7 +835,7 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, int line, bool arg, KVALUE* actualAddress) {
   if (debug) {
     printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d], %s\n", 
-	   IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
+       IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
   }
 
   IValue* ptrLocation;
@@ -852,6 +852,8 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
   value.as_ptr = actualAddress->value.as_ptr;
   ptrLocation = new IValue(PTR_KIND, value, LOCAL);
   ptrLocation->setValueOffset((int64_t)location - (int64_t)value.as_ptr);
+  cout << "actual address: " << actualAddress->value.as_ptr << endl;
+  cout << "location" << location << endl;
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
   ptrLocation->setLineNumber(line);
@@ -1000,7 +1002,8 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 
   switch(kv->kind) {
     case PTR_KIND:
-      result = (dest->getValue().as_ptr == kv->value.as_ptr);
+      //result = ((int64_t)dest->getValue().as_ptr + dest->getIndex()*dest->getSize() == (int64_t)kv->value.as_ptr);
+      result = ((int64_t)dest->getValue().as_ptr + dest->getOffset() == (int64_t)kv->value.as_ptr);
       break;
     case INT1_KIND:
       result = ((bool)dest->getValue().as_int == (bool)kv->value.as_int);
@@ -1120,6 +1123,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   // NOTE: destLocation->getType() before
   IValue* writtenValue = new IValue(srcLocation->getType(),
       destPtrLocation->readValue(internalOffset, src->kind)); 
+  writtenValue->setSize(destLocation->getSize());
+  writtenValue->setIndex(destLocation->getIndex());
+  writtenValue->setOffset(destLocation->getOffset());
 
   if (debug) {
     cout << "\twrittenValue: " << writtenValue->toString() << endl;
@@ -1297,6 +1303,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
     int index;
+    cout << "size of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
@@ -2431,6 +2438,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     for(int i = 0; i < numObjects; i++) {
       // creating object
       VALUE iValue;
+      // TODO: check if we need uninitialized value
       IValue *var = new IValue(type, iValue, currOffset);
       ((IValue*)addr)[i] = *var;
       ((IValue*)addr)[i].setValueOffset(newPointer->getValueOffset()); //setting basepointer value offset?
@@ -2448,8 +2456,9 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     assert(myStack.size() == 0);
 
     unsigned size = structType.size();
-    if (debug)
+    if (debug) {
       cout << "\nNumber of fields: " << size << endl;
+    }
     unsigned firstByte = 0;
     unsigned length = 0;
     IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
@@ -2465,8 +2474,9 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     safe_assert(structType.empty());
 
     VALUE structPtrVal;
-    structPtrVal.as_ptr = (void*) ptrToStructVar;
+    structPtrVal.as_ptr = mallocAddress->value.as_ptr;
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
+    structPtrVar->setValueOffset((int64_t)ptrToStructVar - (int64_t)mallocAddress->value.as_ptr);  ////////////
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
 
@@ -2512,7 +2522,14 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       // TODO: we use int64_t to represent a void* here
       // might not work on 32 bit machine
       cValueVoid = *((int64_t*) concrete->value.as_ptr);
-      sync = (iValue->getValue().as_int != cValueVoid);
+
+      cout << "index: " << iValue->getIndex() << endl;
+      cout << "size: " << iValue->getSize() << endl;
+      cout << "value: " << iValue->getValue().as_int << endl;
+      cout << "first value: " << iValue->getValue().as_int + iValue->getOffset() << endl;
+      cout << "second value: " << cValueVoid << endl;
+
+      sync = (iValue->getValue().as_int + iValue->getOffset() != cValueVoid);
       if (sync) {
         syncValue.as_int = cValueVoid;
         iValue->setValue(syncValue);

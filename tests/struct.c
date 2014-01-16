@@ -13,5 +13,5 @@ int main() {
   printf("Address of struct p is: %ld\n", &p);
   printf("Address of the first field in p is: %ld\n", &p.x);
 
-  return a;
+  return 0;
 }

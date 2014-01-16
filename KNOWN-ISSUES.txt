@@ -35,7 +35,7 @@ CORE UTILITIES (53/100).
 During interpretation:
 ==============
 
-Failed assertion in Load (8)
+Failed assertion in Load (13)
    ./chown.out root temp.txt
 ./chgrp.out staff /usr/local
     ./dircolors.out
@@ -54,7 +54,7 @@ Failed assertion at getelement_struct (2)
    fmt list.txt (in getelementptr struct/from a global value)
     ./sort.out list.txt (constant pointer)
 
-Mismatch at store (23)
+Mismatch at store (8)
    ./csplit.out -f xyz list.txt 11 72 98
     ./dirname.out /usr/local
    mktemp testingXXX
@@ -65,7 +65,7 @@ Mismatch at store (23)
    ./expr.out  linux : lin
 
 
-PTRTOINT
+PTRTOINT (3)
   ./shuf.out list.txt (ptrtoint, expected mismatch because pointer
     ./comm.out list.txt list.txt
     ./date.out 

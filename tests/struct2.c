@@ -17,5 +17,7 @@ int main() {
   l.a = p1;
   l.b = p2;
 
-  return l.a.coor[0] + l.b.coor[1];
+  int result = l.a.coor[0] + l.b.coor[1];
+  return 0;
 }
+
