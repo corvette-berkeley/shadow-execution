@@ -333,8 +333,8 @@ void llvm_call(IID iid, bool nounwind, KIND type, int inx) {
   DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, inx)
 }
 
-void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, size, inx)
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx, KVALUE* mallocAddress) {
+  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, size, inx, mallocAddress)
 }
 
 void llvm_vaarg() {
