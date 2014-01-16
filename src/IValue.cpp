@@ -167,6 +167,7 @@ string IValue::toString() {
   s << ", FirstByte: " << firstByte;
   s << ", Length: " << length;
   s << ", Initialized: " << isInitialized();
+  s << ", ValueOffset: " << valueOffset;
 
   return s.str();
 }
