@@ -821,6 +821,30 @@ public:
 	}
 
 /*******************************************************************************************/
+	Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE(const char* func, Value* iid, Value* k1, Value* size, Value* inx, Value* line, Value* arg, Value* result) {
+	  TypePtrVector ArgTypes;
+	  ArgTypes.push_back(IID_TYPE());
+	  ArgTypes.push_back(KIND_TYPE());
+	  ArgTypes.push_back(INT64_TYPE());
+	  ArgTypes.push_back(INT32_TYPE());
+	  ArgTypes.push_back(INT32_TYPE());
+	  ArgTypes.push_back(BOOL_TYPE());
+	  ArgTypes.push_back(KVALUEPTR_TYPE());
+
+	  ValuePtrVector Args;
+	  Args.push_back(iid);
+	  Args.push_back(k1);
+	  Args.push_back(size);
+	  Args.push_back(inx);
+	  Args.push_back(line);
+	  Args.push_back(arg);
+	  Args.push_back(result);
+	  
+	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+
+/*******************************************************************************************/
 	Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL(const char* func, Value* iid, Value* k1, Value* size, Value* inx, Value* line, Value* arg) {
 	  TypePtrVector ArgTypes;
 	  ArgTypes.push_back(IID_TYPE());
@@ -841,7 +865,6 @@ public:
 	  return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
-
 /*******************************************************************************************/
 	
 	Instruction* CALL_IID_KIND_KVALUE_INT(const char* func, Value* iid, Value* kind, Value* k, Value* inx) {
@@ -849,7 +872,7 @@ public:
 	  ArgTypes.push_back(IID_TYPE());
 	  ArgTypes.push_back(KIND_TYPE());
 	  ArgTypes.push_back(KVALUEPTR_TYPE());
-		ArgTypes.push_back(INT32_TYPE());
+	  ArgTypes.push_back(INT32_TYPE());
 
 	  ValuePtrVector Args;
 	  Args.push_back(iid);

@@ -41,6 +41,8 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       }
     }	
     Constant* isArgumentC = BOOL_CONSTANT(isArgument);
+
+    Value* result = KVALUE_VALUE(allocaInst, instrs, NOSIGN);
     
     if (type->isArrayTy()) {
       // alloca for array type
@@ -77,12 +79,12 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, result);
       instrs.push_back(call);
     }
 
     // instrument
-    InsertAllBefore(instrs, allocaInst);
+    InsertAllAfter(instrs, allocaInst);
 
     return true;
 

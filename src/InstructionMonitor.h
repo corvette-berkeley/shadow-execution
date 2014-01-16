@@ -42,7 +42,7 @@ extern "C" {
   void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int x);
 
   // ***** Memory Access and Addressing Operations ***** //
-  void llvm_allocax(IID iid, KIND kind, uint64_t size, int x, int line, bool arg);
+  void llvm_allocax(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, KVALUE* result);
   void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x, int line, bool arg);
   void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg);
   void llvm_load(IID iid, KIND kind, KVALUE* op, int line, int x);

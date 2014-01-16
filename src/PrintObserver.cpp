@@ -193,8 +193,9 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, line, inx);
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d] %s\n", 
+	 IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, line, inx, KVALUE_ToString(result).c_str());
 }
 
 void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg) {

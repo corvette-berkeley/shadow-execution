@@ -832,9 +832,11 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, int line, bool arg) {
-  if (debug)
-    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx);
+void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, int line, bool arg, KVALUE* actualAddress) {
+  if (debug) {
+    printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d], %s\n", 
+	   IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
+  }
 
   IValue* ptrLocation;
   IValue* location;
@@ -845,9 +847,12 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
   // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
   location->setLength(0);
+
   VALUE value;
-  value.as_ptr = location;
+  value.as_ptr = actualAddress->value.as_ptr;
   ptrLocation = new IValue(PTR_KIND, value, LOCAL);
+  ptrLocation->setValueOffset((int64_t)location - (int64_t)value.as_ptr);
+
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
   ptrLocation->setLineNumber(line);
   executionStack.top()[inx] = ptrLocation;
@@ -1719,7 +1724,7 @@ void InterpreterObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx
 
       cerr << "\tShadow and concrete executions diverge at this branch." << endl;
     }
-    // safe_assert(false);
+    safe_assert(false);
   }
 }
 
@@ -2495,7 +2500,7 @@ void InterpreterObserver::printCurrentFrame() {
 bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
   bool sync = false;
   VALUE syncValue;
-  void* cValueVoid;
+  int64_t cValueVoid;
   long cValueInt;
   float cValueFloat;
   double cValueDouble;
@@ -2503,10 +2508,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   switch (type) {
     case PTR_KIND:
-      cValueVoid = concrete->value.as_ptr;
-      sync = (iValue->getPtrValue() != cValueVoid);
+      // TODO: we use int64_t to represent a void* here
+      // might not work on 32 bit machine
+      cValueVoid = *((int64_t*) concrete->value.as_ptr);
+      sync = (iValue->getValue().as_int != cValueVoid);
       if (sync) {
-        syncValue.as_ptr = cValueVoid;
+        syncValue.as_int = cValueVoid;
         iValue->setValue(syncValue);
       }
       break;

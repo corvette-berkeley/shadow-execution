@@ -110,8 +110,8 @@ void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg) {
-  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, line, arg)
+void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result) {
+  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, line, arg, result)
 }
 
 void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg) {
