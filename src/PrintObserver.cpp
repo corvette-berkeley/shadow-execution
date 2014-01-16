@@ -198,12 +198,12 @@ void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line
 	 IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, line, inx, KVALUE_ToString(result).c_str());
 }
 
-void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg) {
-  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, line, inx);
+void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
+  printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(kind).c_str(), size, arg, line, KVALUE_ToString(addr).c_str(), inx);
 }
 
-void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg) {
-  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, inx: %d\n", IID_ToString(iid).c_str(), size, arg, line, inx);
+void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
+  printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, line, KVALUE_ToString(addr).c_str(), inx);
 }
 
 void PrintObserver::store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx) {

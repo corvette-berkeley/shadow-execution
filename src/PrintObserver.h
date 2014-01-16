@@ -76,9 +76,9 @@ public:
 	// ***** Memory Access and Addressing Operations ***** //
 	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result);
 
-	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg);
+	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
 
-	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg);
+	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
 
 	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int line, int inx);
 

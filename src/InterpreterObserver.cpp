@@ -884,29 +884,39 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
   return;
 }
 
-void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, int line, bool arg) {
+void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
   if (debug)
-    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, line, inx);
+    printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, line, KVALUE_ToString(addr).c_str(), inx);
 
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
   unsigned length = 0; 
+
+  //
+  // calculate size of the array to be allocated
+  //
   size = 1;
   while (!arraySize.empty()) {
     size = size * arraySize.front();
     arraySize.pop();
   }
 
+  //
+  // if array element is struct, get list of primitive types for each struct
+  // element
+  //
   uint64_t structSize = 1;
-  if (type == STRUCT_KIND) structSize = structType.size();
+  if (type == STRUCT_KIND) {
+   structSize = structType.size(); 
+  }
   KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
-  if (type == STRUCT_KIND)
+  if (type == STRUCT_KIND) {
     for (uint64_t i = 0; i < structSize; i++) {
       structKind[i] = structType.front();
       structType.pop();
     }
+  }
 
-  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
   IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
   for (uint64_t i = 0; i < size; i++) {
     if (type == STRUCT_KIND) {
@@ -936,25 +946,12 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
     }
   }
 
-  VALUE locArrPtrVal;
-  locArrPtrVal.as_ptr = (void*) locArr; 
-  IValue* locArrPtr = new IValue(PTR_KIND, locArrPtrVal, LOCAL);
+  IValue* locArrPtr = new IValue(PTR_KIND, addr->value, LOCAL);
+  locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
   locArrPtr->setLineNumber(line);
   executionStack.top()[inx] = locArrPtr;
-  /*
-     } else {
-     safe_assert(!callArgs.empty());
-     IValue *location = callArgs.top();
-     VALUE value;
-     value.as_ptr = (void*) location;
-     IValue* ptrLocation = new IValue(PTR_KIND, value, LOCAL); 
-     ptrLocation->setSize(location->getSize());
-     executionStack.top()[inx] = ptrLocation;
-     callArgs.pop();
-     }
-     */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << endl;
@@ -962,13 +959,12 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   return;
 }
 
-void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg) {
+void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
   if (debug)
-    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, line, inx);
+    printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, line, KVALUE_ToString(addr).c_str(), inx);
 
   safe_assert(structType.size() == size);
 
-  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
   unsigned length = 0;
@@ -987,26 +983,13 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int li
   }
   safe_assert(structType.empty());
 
-  VALUE structPtrVal;
-  structPtrVal.as_ptr = (void*) ptrToStructVar;
-  IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
+  IValue* structPtrVar = new IValue(PTR_KIND, addr->value);
+  structPtrVar->setValueOffset((int64_t) ptrToStructVar - (int64_t) structPtrVar->getPtrValue());
   structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
   structPtrVar->setLength(length);
   structPtrVar->setLineNumber(line);
 
   executionStack.top()[inx] = structPtrVar;
-  /*
-     } else {
-     safe_assert(!callArgs.empty());
-     IValue *location = callArgs.top();
-     VALUE value;
-     value.as_ptr = (void*) location;
-     IValue* ptrLocation = new IValue(PTR_KIND, value, true); 
-     ptrLocation->setSize(location->getSize());
-     executionStack.top()[inx] = ptrLocation;
-     callArgs.pop();
-     }
-     */
 
   if (debug)
     cout << executionStack.top()[inx]->toString() << "\n";
@@ -1252,7 +1235,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     } else {
       ptrArray = executionStack.top()[op->inx];
     }
-    IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);
+    IValue* array = static_cast<IValue*>(ptrArray->getIPtrValue());
 
     getElementPtrIndexList.pop();
 
@@ -1275,12 +1258,14 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     if (index < (int) ptrArray->getLength()) {
       IValue* arrayElem = array + index;
       arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue());
+      arrayElemPtr->setValueOffset(ptrArray->getValueOffset());
       arrayElemPtr->setIndex(index);
       arrayElemPtr->setLength(ptrArray->getLength());
       arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
       arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
     } else {
       arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), ptrArray->getSize(), 0, 0, 0);
+      arrayElemPtr->setValueOffset(ptrArray->getValueOffset());
     }
   }
 
@@ -1307,7 +1292,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     cout << structPtr->toString() << endl;
 
   if (structPtr->isInitialized()) {
-    IValue* structBase = static_cast<IValue*>(structPtr->getValue().as_ptr);
+    IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
     int index;
     getElementPtrIndexList.pop();
@@ -1324,12 +1309,14 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     if (index < (int) structPtr->getLength()) {
       IValue* structElem = structBase + index;
       structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
+      structElemPtr->setValueOffset(structPtr->getValueOffset());
       structElemPtr->setIndex(index);
       structElemPtr->setLength(structPtr->getLength());
       structElemPtr->setSize(KIND_GetSize(structElem->getType()));
       structElemPtr->setOffset(structElem->getFirstByte());
     } else {
       structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
+      structElemPtr->setValueOffset(structPtr->getValueOffset());
     }
   } else {
     getElementPtrIndexList.pop();
@@ -1339,6 +1326,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       getElementPtrIndexList.pop();
     safe_assert(getElementPtrIndexList.empty());
     structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
+    structElemPtr->setValueOffset(structPtr->getValueOffset());
   }
 
   executionStack.top()[inx] = structElemPtr;

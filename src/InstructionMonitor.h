@@ -43,8 +43,8 @@ extern "C" {
 
   // ***** Memory Access and Addressing Operations ***** //
   void llvm_allocax(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, KVALUE* result);
-  void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x, int line, bool arg);
-  void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg);
+  void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, KVALUE* addr);
+  void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg, KVALUE* addr);
   void llvm_load(IID iid, KIND kind, KVALUE* op, int line, int x);
   void llvm_store(IID iid, KVALUE* op, KVALUE* value, int line, int x);
   void llvm_fence();

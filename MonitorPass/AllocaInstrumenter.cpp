@@ -42,7 +42,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     }	
     Constant* isArgumentC = BOOL_CONSTANT(isArgument);
 
-    Value* result = KVALUE_VALUE(allocaInst, instrs, NOSIGN);
+    Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN);
     
     if (type->isArrayTy()) {
       // alloca for array type
@@ -62,7 +62,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Constant* elemKindC = KIND_CONSTANT(elemKind);
 
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC, lineC, isArgumentC);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC, lineC, isArgumentC, allocaAddress);
       instrs.push_back(call);
 
     } else if (type->isStructTy()) {
@@ -72,14 +72,14 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
-      Instruction* call = CALL_IID_INT64_INT_INT_BOOL("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC);
+      Instruction* call = CALL_IID_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC, allocaAddress);
         instrs.push_back(call);
     } else {
       // alloca for scalar and pointer type
       
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, result);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, allocaAddress);
       instrs.push_back(call);
     }
 

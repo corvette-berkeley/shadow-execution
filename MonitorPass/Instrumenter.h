@@ -590,13 +590,14 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT64_INT_INT_BOOL(const char* func, Value* iid, Value* size, Value* inx, Value* line, Value* arg) {
+	Instruction* CALL_IID_INT64_INT_INT_BOOL_KVALUE(const char* func, Value* iid, Value* size, Value* inx, Value* line, Value* arg, Value* addr) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT64_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
+		ArgTypes.push_back(KVALUEPTR_TYPE());
 
 		ValuePtrVector Args;
 		Args.push_back(iid);
@@ -604,6 +605,7 @@ public:
 		Args.push_back(inx);
 		Args.push_back(line);
 		Args.push_back(arg);
+		Args.push_back(addr);
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
