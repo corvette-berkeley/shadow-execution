@@ -1160,7 +1160,7 @@ void InterpreterObserver::atomicrmw() {
 }
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int line, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< GETELEMENTPTR= >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, line: %d, [INX: %d]\n", 
         IID_ToString(iid).c_str(),
         (inbound ? "1" : "0"),
@@ -1170,6 +1170,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
         size,
         line,
         inx);
+  }
 
   IValue* basePtrLocation; 
 
@@ -1195,18 +1196,19 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
       cout << "newOffset: " << newOffset << endl;
     }
 
-    unsigned index = findIndex((IValue*) basePtrLocation->getValue().as_ptr, newOffset, basePtrLocation->getLength()); // TODO: revise offset
+    unsigned index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset, basePtrLocation->getLength()); // TODO: revise offset, getValue().as_ptr
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
   } else {
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, 0, 0, 0);
   }
 
+  ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
   ptrLocation->setLineNumber(line);
 
   executionStack.top()[inx] = ptrLocation;
-  if (debug)
+  if (debug) {
     cout << executionStack.top()[inx]->toString() << endl;
-
+  }
   return;
 }
 
@@ -1681,17 +1683,21 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size
 }
 
 void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< BITCAST >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
   IValue *bitcastLoc = new IValue(type, value, size/8, src->getOffset(), src->getIndex(), src->getLength()); // TODO: check
+  bitcastLoc->setValueOffset(src->getValueOffset());
   executionStack.top()[inx] = bitcastLoc;
-  if (debug)
+  
+  if (debug) {
     cout << bitcastLoc->toString() << endl;
+  }
   return;
 }
 
@@ -2392,7 +2398,7 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
 void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx, KVALUE* mallocAddress) {
 
   if (debug) {
-    printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, size:%d, [INX: %d] %s", 
+    printf("<<<<< CALL MALLOC >>>>> %s, call_value: %s, return type: %s, nounwind: %d, size:%d, [INX: %d], %s", 
         IID_ToString(iid).c_str(), 
         KVALUE_ToString(call_value).c_str(), 
         KIND_ToString(type).c_str(), 
@@ -2415,8 +2421,10 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
 
     // creating pointer object
     VALUE returnValue;
-    returnValue.as_ptr = addr;    
-    executionStack.top()[inx] = new IValue(PTR_KIND, returnValue, size/8, 0, 0, numObjects);
+    returnValue.as_ptr = mallocAddress->value.as_ptr;
+    IValue* newPointer = new IValue(PTR_KIND, returnValue, size/8, 0, 0, numObjects);
+    newPointer->setValueOffset((int64_t)addr - (int64_t)returnValue.as_ptr);
+    executionStack.top()[inx] = newPointer;
 
     // creating locations
     unsigned currOffset = 0;
@@ -2425,12 +2433,15 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
       VALUE iValue;
       IValue *var = new IValue(type, iValue, currOffset);
       ((IValue*)addr)[i] = *var;
+      ((IValue*)addr)[i].setValueOffset(newPointer->getValueOffset()); //setting basepointer value offset?
 
       // updating offset
       currOffset += (size/8);
     }
-    if (debug)
+
+    if (debug) {
       cout << endl << executionStack.top()[inx]->toString() << endl;
+    }
   } else {
     // cuong: should empty stack too
     myStack.pop();
