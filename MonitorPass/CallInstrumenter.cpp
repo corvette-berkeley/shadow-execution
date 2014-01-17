@@ -104,18 +104,27 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       if (TypeToKind(dest->getElementType()) == STRUCT_KIND) {
 	uint64_t allocation = pushStructType((StructType*) dest->getElementType(), instrs);
 	cout << "After allocation: " << allocation << endl;
-	/*
+	
+	unsigned sum = 0;
         if (StructType *st = dyn_cast<StructType>(dest->getElementType())) {
           unsigned numElems = st->getNumElements();
-          unsigned sum = 0;
+	  cout << "numElems: " << numElems << endl;
           for(unsigned i = 0; i < numElems; i++) {
             Type* type = st->getElementType(i);
-            sum =+ type->getPrimitiveSizeInBits();
+	    type->dump();
+	    cout << "elem size: " << type->getPrimitiveSizeInBits() << endl;
+            sum = sum + type->getPrimitiveSizeInBits();
+	    cout << "Intermediate sum: " << sum << endl;
           }
+	  cout << "Sum: " << sum << endl;
         }
-	*/
+	size = INT32_CONSTANT(sum, false);
       }
-      size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+      else {
+	size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+      }
+      cout << "Size of struct: ";
+      size->dump();
     }
     else {
       returnKind = INT8_KIND;

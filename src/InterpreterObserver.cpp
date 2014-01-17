@@ -1002,7 +1002,14 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 
   switch(kv->kind) {
     case PTR_KIND:
-      //result = ((int64_t)dest->getValue().as_ptr + dest->getIndex()*dest->getSize() == (int64_t)kv->value.as_ptr);
+      cout << "index: " << dest->getIndex() << endl;
+      cout << "size: " << dest->getSize() << endl;
+      cout << "value: " << dest->getValue().as_int << endl;
+      cout << "first value: " << dest->getValue().as_int + dest->getOffset() << endl;
+      cout << "offset: " << dest->getOffset() << endl;
+      cout << "bitoffset: " << dest->getBitOffset() << endl;
+      cout << "second value: " << kv->value.as_int << endl;
+
       result = ((int64_t)dest->getValue().as_ptr + dest->getOffset() == (int64_t)kv->value.as_ptr);
       break;
     case INT1_KIND:
@@ -1126,6 +1133,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   writtenValue->setSize(destLocation->getSize());
   writtenValue->setIndex(destLocation->getIndex());
   writtenValue->setOffset(destLocation->getOffset());
+  writtenValue->setBitOffset(destLocation->getBitOffset());
 
   if (debug) {
     cout << "\twrittenValue: " << writtenValue->toString() << endl;
@@ -2116,9 +2124,11 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
 }
 
 void InterpreterObserver::push_stack(KVALUE* value) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH ARGS TO STACK >>>>>, value %s\n", KVALUE_ToString(value).c_str());
+  }
   myStack.push(value);
+  cout << "here" << endl;
 }
 
 void InterpreterObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
@@ -2186,6 +2196,7 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
 
     IValue* reg = executionStack.top()[callerVarIndex.top()];
     reg->setValue(kvalue->value);
+    reg->setValueOffset(0); // new
     callerVarIndex.pop();
 
     if (debug) {
@@ -2415,12 +2426,13 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
         KVALUE_ToString(mallocAddress).c_str());
   }
 
-  if (type != STRUCT_KIND) {
-    // retrieving original number of bytes
-    KVALUE* argValue = myStack.top();
-    myStack.pop();
-    assert(myStack.size() == 0);
 
+  // retrieving original number of bytes
+  KVALUE* argValue = myStack.top();
+  myStack.pop();
+  assert(myStack.size() == 0);
+  
+  if (type != STRUCT_KIND) {
     // allocating space
     int numObjects = argValue->value.as_int*8 / size;
     int actualSize = sizeof(IValue) * numObjects;    
@@ -2451,26 +2463,43 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
       cout << endl << executionStack.top()[inx]->toString() << endl;
     }
   } else {
-    // cuong: should empty stack too
-    myStack.pop();
-    assert(myStack.size() == 0);
 
-    unsigned size = structType.size();
+    // allocating space
+    unsigned numStructs = argValue->value.as_int*8 / size;
+    unsigned fields = structType.size();
+
+    int actualSize = sizeof(IValue) * numStructs * fields;    
+    void *addr = malloc(actualSize);
+    IValue* ptrToStructVar = (IValue*)addr;
+
     if (debug) {
-      cout << "\nNumber of fields: " << size << endl;
+      cout << "\nSize: " << size << endl;
+      cout << "Num Structs: " << numStructs << endl;
+      cout << "Number of fields: " << fields << endl;
     }
-    unsigned firstByte = 0;
-    unsigned length = 0;
-    IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
-    for (unsigned i = 0; i < size; i++) {
-      KIND type = structType.front();
-      IValue* var = new IValue(type);
-      var->setFirstByte(firstByte);
-      firstByte += KIND_GetSize(type);
-      length++;
-      ptrToStructVar[i] = *var;
+
+    KIND fieldTypes[fields];
+    for(unsigned i = 0; i < fields; i++) {
+      fieldTypes[i] = structType.front();
       structType.pop();
     }
+
+    unsigned length = 0;
+    for(unsigned i = 0; i < numStructs; i++) {
+      unsigned firstByte = 0;
+      for (unsigned j = 0; j < fields; j++) {
+	//KIND type = structType.front();
+	KIND type = fieldTypes[j];
+	IValue* var = new IValue(type);
+	var->setFirstByte(firstByte);
+	firstByte += KIND_GetSize(type);
+	ptrToStructVar[i+j] = *var;
+	//structType.pop();
+	length++;
+	cout << "Created a field of struct: " << length << endl;
+      }
+    }
+
     safe_assert(structType.empty());
 
     VALUE structPtrVal;
