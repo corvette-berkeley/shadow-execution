@@ -2026,34 +2026,64 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
   int result = 0;
   switch(pred) {
-    case CmpInst::ICMP_EQ:
+    case CmpInst::FCMP_FALSE:
+      if (debug)
+        cout << "\tCondition is FALSE" << endl;
+      result = 0;
+      break;
+    case CmpInst::FCMP_TRUE:
+      if (debug)
+        cout << "\tCondition is TRUE" << endl;
+      result = 1;
+      break;
+    case CmpInst::FCMP_UEQ:
+      if (debug)
+        cout << "\tCondition is UEQ" << endl;
       result = v1 == v2;
       break;
-    case CmpInst::ICMP_NE:
+    case CmpInst::FCMP_UNE:
+      if (debug)
+        cout << "\tCondition is UNE" << endl;
       result = v1 != v2;
       break;
-    case CmpInst::ICMP_UGT:
+    case CmpInst::FCMP_UGT:
+      if (debug)
+        cout << "\tCondition is UGT" << endl;
       result = v1 > v2;
       break;
-    case CmpInst::ICMP_UGE:
+    case CmpInst::FCMP_UGE:
+      if (debug)
+        cout << "\tCondition is UGE" << endl;
       result = v1 >= v2;
       break;
-    case CmpInst::ICMP_ULT:
+    case CmpInst::FCMP_ULT:
+      if (debug)
+        cout << "\tCondition is ULT" << endl;
       result = v1 < v2;
       break;
-    case CmpInst::ICMP_ULE:
+    case CmpInst::FCMP_ULE:
+      if (debug)
+        cout << "\tCondition is ULT" << endl;
       result = v1 <= v2;
       break;
-    case CmpInst::ICMP_SGT:
+    case CmpInst::FCMP_OGT:
+      if (debug)
+        cout << "\tCondition is OGT" << endl;
       result = v1 > v2;
       break;
-    case CmpInst::ICMP_SGE:
+    case CmpInst::FCMP_OGE:
+      if (debug)
+        cout << "\tCondition is OGE" << endl;
       result = v1 >= v2;
       break;
-    case CmpInst::ICMP_SLT:
+    case CmpInst::FCMP_OLT:
+      if (debug)
+        cout << "\tCondition is OLT" << endl;
       result = v1 < v2;
       break;
-    case CmpInst::ICMP_SLE:
+    case CmpInst::FCMP_OLE:
+      if (debug)
+        cout << "\tCondition is OLE" << endl;
       result = v1 <= v2;
       break;
     default:
