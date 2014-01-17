@@ -2488,15 +2488,13 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     for(unsigned i = 0; i < numStructs; i++) {
       unsigned firstByte = 0;
       for (unsigned j = 0; j < fields; j++) {
-	//KIND type = structType.front();
 	KIND type = fieldTypes[j];
 	IValue* var = new IValue(type);
 	var->setFirstByte(firstByte);
 	firstByte += KIND_GetSize(type);
-	ptrToStructVar[i+j] = *var;
-	//structType.pop();
-	length++;
+	ptrToStructVar[length] = *var;
 	cout << "Created a field of struct: " << length << endl;
+	length++;
       }
     }
 
