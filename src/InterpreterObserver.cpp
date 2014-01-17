@@ -270,13 +270,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
       vresult.as_int = (int64_t) v1 * (int64_t) v2;
       break;
     case UDIV:
-      vresult.as_int = (int64_t) v1 / (int64_t) v2;
+      vresult.as_int = (uint64_t) v1 / (uint64_t) v2;
       break;
     case SDIV:
       vresult.as_int = (int64_t) v1 / (int64_t) v2;
       break;
     case UREM:
-      vresult.as_int = (int64_t) v1 % (int64_t) v2;
+      vresult.as_int = (uint64_t) v1 % (uint64_t) v2;
       break;
     case SREM:
       vresult.as_int = (int64_t) v1 % (int64_t) v2;
