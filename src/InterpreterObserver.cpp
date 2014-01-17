@@ -1315,10 +1315,9 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
     int index;
     cout << "size of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
-    index = getElementPtrIndexList.front();
+    index = getElementPtrIndexList.front()*structType.size();
     getElementPtrIndexList.pop();
-    structBase = structBase + index*structType.size();
-    index = getElementPtrIndexList.empty() ? 0 : getElementPtrIndexList.front();
+    index = getElementPtrIndexList.empty() ? index : index + getElementPtrIndexList.front();
     if (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
@@ -2498,19 +2497,19 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     }
 
     unsigned length = 0;
+    unsigned firstByte = 0;
     for(unsigned i = 0; i < numStructs; i++) {
-      unsigned firstByte = 0;
       for (unsigned j = 0; j < fields; j++) {
-	KIND type = fieldTypes[j];
-	IValue* var = new IValue(type);
-	var->setFirstByte(firstByte);
-	firstByte = firstByte + KIND_GetSize(type);
-	ptrToStructVar[length] = *var;
-	if (debug) {
-	  cout << "Created a field of struct: " << length << endl;
-	  cout << "\t" << ptrToStructVar[length].toString() << endl;
-	}
-	length++;
+        KIND type = fieldTypes[j];
+        IValue* var = new IValue(type);
+        var->setFirstByte(firstByte);
+        firstByte = firstByte + KIND_GetSize(type);
+        ptrToStructVar[length] = *var;
+        if (debug) {
+          cout << "Created a field of struct: " << length << endl;
+          cout << ptrToStructVar[length].toString() << endl;
+        }
+        length++;
       }
     }
 
@@ -2525,7 +2524,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
 
     executionStack.top()[inx] = structPtrVar;
     if (debug)
-      cout << structPtrVar->toString() << endl << endl;
+      cout << structPtrVar->toString() << endl;
     //cerr << "[Interpreter::call_malloc=] => Unimplemented Structs" << endl;
     //abort();
   }
