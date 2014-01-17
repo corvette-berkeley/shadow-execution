@@ -1947,19 +1947,19 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
       break;
     case CmpInst::ICMP_UGT:
       if(debug) cout << "PRED = ICMP_UGT" << endl;
-      result = v1 > v2;
+      result = (uint64_t)v1 > (uint64_t)v2;
       break;
     case CmpInst::ICMP_UGE:
       if(debug) cout << "PRED = ICMP_UGE" << endl;
-      result = v1 >= v2;
+      result = (uint64_t)v1 >= (uint64_t)v2;
       break;
     case CmpInst::ICMP_ULT:
       if(debug) cout << "PRED = ICMP_ULT" << endl;
-      result = v1 < v2;
+      result = (uint64_t)v1 < (uint64_t)v2;
       break;
     case CmpInst::ICMP_ULE:
       if(debug) cout << "PRED = ICMP_ULE" << endl;
-      result = v1 <= v2;
+      result = (uint64_t)v1 <= (uint64_t)v2;
       break;
     case CmpInst::ICMP_SGT:
       if(debug) cout << "PRED = ICMP_SGT" << endl;

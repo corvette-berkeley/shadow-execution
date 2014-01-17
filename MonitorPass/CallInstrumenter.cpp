@@ -34,8 +34,9 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   // for later reference: iid and function name
   Function *callee = callInst->getCalledFunction();
   if (callee) {
-    cout << "called function: " << callee->getName().str() << endl;
+    cout << "called function: " << callee->getName().str() << " id: " << endl;
     iid->dump();
+    cout << endl;
   }
 
   // whether this call unwinds the stack

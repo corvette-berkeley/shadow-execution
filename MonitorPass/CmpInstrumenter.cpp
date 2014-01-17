@@ -17,10 +17,10 @@ bool CmpInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
 
-    Value* lop = KVALUE_VALUE(cmpInst->getOperand(0U), instrs, NOSIGN);
+    Value* lop = KVALUE_VALUE(cmpInst->getOperand(0U), instrs, SIGNED);
     if(lop == NULL) return false;
 
-    Value* rop = KVALUE_VALUE(cmpInst->getOperand(1U), instrs, NOSIGN);
+    Value* rop = KVALUE_VALUE(cmpInst->getOperand(1U), instrs, SIGNED);
     if(rop == NULL) return false;
 
     Constant* iidC = IID_CONSTANT(cmpInst);
