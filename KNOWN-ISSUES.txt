@@ -10,6 +10,9 @@ DONE: Function pointers.
 DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
 DONE: Modelling phi instruction 
 
+KNOW ISSUES:
+  Padding make concrete and shadow memory model inconsistent.
+
 TESTING:
   Checking at store
   Checking for branch divergence

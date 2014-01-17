@@ -20,7 +20,7 @@ double fun( double x )
 int main( int argc, char **argv)
 {
 
-  int i, n = 6000;
+  int i, n = 1000;
   double h, t1, t2, dppi;
   double s1;
 

@@ -15,7 +15,7 @@ int main( int argc, char **argv) {
   int i, j, k; // diff: added constants
   double a, b; // removed fun, h, s1, and x
   double h, s1, x;
-  const int n = 10000;
+  const int n = 1000;
   const double fuzz = 1e-26; // diff: added fuzz
 
   a = 0.0;
