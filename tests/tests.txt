@@ -27,3 +27,5 @@ mainargs
 phinode
 struct
 struct2
+uninitialized_ptr
+global_ptr

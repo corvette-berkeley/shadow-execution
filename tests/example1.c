@@ -22,8 +22,10 @@ int main() {
   short* d = (short*)a;
   
   short e = *(d+2);
-  short f = *(d+3);
+  printf("E = %d\n", 5);
 
+  short f = *(d+3);
+  //interpreter_check_short(&e, 5); 
   d[5] = 4; // a short written in the middle of the third value
 
   int **g = &a;
