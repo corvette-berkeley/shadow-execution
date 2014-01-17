@@ -853,43 +853,28 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
   value.as_ptr = actualAddress->value.as_ptr;
   ptrLocation = new IValue(PTR_KIND, value, LOCAL);
   ptrLocation->setValueOffset((int64_t)location - (int64_t)value.as_ptr);
-  cout << "actual address: " << actualAddress->value.as_ptr << endl;
-  cout << "location" << location << endl;
+  if (debug) {
+    cout << "actual address: " << actualAddress->value.as_ptr << endl;
+    cout << "location" << location << endl;
+  }
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
   ptrLocation->setLineNumber(line);
   executionStack.top()[inx] = ptrLocation;
-  /*
-     } else {
-     safe_assert(!callArgs.empty());
-     cout << "ARG alloca" << endl;
-  // alloca for function arguments
-  location = callArgs.top();
-  ///
-  /// cout << "Actual element pointing to" << endl;
-  /// IValue* actual = (IValue*)location->getValue().as_ptr;
-  /// cout << "\t" << actual->toString() << endl;
-  ///
-  VALUE value;
-  value.as_ptr = (void*) location;
-  ptrLocation = new IValue(PTR_KIND, value, LOCAL);
-  ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
-  executionStack.top()[inx] = ptrLocation;
-  callArgs.pop();
-  }
-  */
 
   if (debug) {
     cout << "Location: " << location->toString() << endl;
     cout << ptrLocation->toString() << endl;
   }
 
+  safe_assert(ptrLocation->getValueOffset() != -1);
   return;
 }
 
 void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
-  if (debug)
+  if (debug) {
     printf("<<<<< ALLOCA_ARRAY >>>>> %s, elemkind:%s, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), arg, line, KVALUE_ToString(addr).c_str(), inx);
+  }
 
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
@@ -956,15 +941,18 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   locArrPtr->setLineNumber(line);
   executionStack.top()[inx] = locArrPtr;
 
-  if (debug)
+  if (debug) {
     cout << executionStack.top()[inx]->toString() << endl;
+  }
 
+  safe_assert(locArrPtr->getValueOffset() != -1);
   return;
 }
 
 void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
-  if (debug)
+  if (debug) {
     printf("<<<<< ALLOCA STRUCT >>>>> %s, size: %ld, arg: %d, line: %d, addr: %s, [INX: %d]\n", IID_ToString(iid).c_str(), size, arg, line, KVALUE_ToString(addr).c_str(), inx);
+  }
 
   safe_assert(structType.size() == size);
 
@@ -994,8 +982,12 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int li
 
   executionStack.top()[inx] = structPtrVar;
 
-  if (debug)
-    cout << executionStack.top()[inx]->toString() << "\n";
+  if (debug) {
+    cout << executionStack.top()[inx]->toString() << endl;
+  }
+
+  safe_assert(structPtrVar->getValueOffset() != -1);
+  return;
 }
 
 bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
@@ -1214,6 +1206,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
     unsigned index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset, basePtrLocation->getLength()); // TODO: revise offset, getValue().as_ptr
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
   } else {
+    cout << "Pointer is not initialized!" << endl;
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, 0, 0, 0);
   }
 
@@ -1224,6 +1217,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   if (debug) {
     cout << executionStack.top()[inx]->toString() << endl;
   }
+  //safe_assert(ptrLocation->getValueOffset() != -1);
   return;
 }
 
@@ -2388,9 +2382,10 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   location->setLength(0);
 
   VALUE value;
-  value.as_ptr = location;
+  value.as_ptr = kvalue->value.as_ptr;
   IValue* ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
   ptrLocation->setSize(KIND_GetSize(initializer->kind)); // put in constructor
+  ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
   // store it in globalSymbolTable
   globalSymbolTable[kvalue->inx] = ptrLocation;
