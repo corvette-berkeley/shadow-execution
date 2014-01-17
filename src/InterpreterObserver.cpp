@@ -2504,7 +2504,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
 	KIND type = fieldTypes[j];
 	IValue* var = new IValue(type);
 	var->setFirstByte(firstByte);
-	firstByte += KIND_GetSize(type);
+	firstByte = firstByte + KIND_GetSize(type);
 	ptrToStructVar[length] = *var;
 	if (debug) {
 	  cout << "Created a field of struct: " << length << endl;
