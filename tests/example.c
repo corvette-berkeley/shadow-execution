@@ -11,6 +11,7 @@ int main() {
   }
   else {
     y = x - 1;
+    //assert(false);
   }
   printf("%p\n", r);
   printf("%p\n", q);
