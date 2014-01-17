@@ -11,5 +11,11 @@ int main(int argc, char** argv) {
   if(argc > 1)
     f(argv[1]);
   f(argv[argc-1];
+  if (argv > 1) {
+    temp = argc[1];
+  } else {
+    temp = argc[0];
+  }
+  
   return 0;
 }

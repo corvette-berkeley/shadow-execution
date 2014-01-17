@@ -1188,26 +1188,26 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   }
   IValue* ptrLocation;
 
+  int offsetValue;
+  if (offset->inx != -1) {
+    offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
+  }
+  else {
+    offsetValue = offset->value.as_int;
+  }
+
+  // offset in bytes from base ptr
+  unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
+  if (debug) {
+    cout << "newOffset: " << newOffset << endl;
+  }
+
   if (basePtrLocation->isInitialized()) {
-    int offsetValue;
-    if (offset->inx != -1) {
-      offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
-    }
-    else {
-      offsetValue = offset->value.as_int;
-    }
-
-    // offset in bytes from base ptr
-    unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
-    if (debug) {
-      cout << "newOffset: " << newOffset << endl;
-    }
-
     unsigned index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset, basePtrLocation->getLength()); // TODO: revise offset, getValue().as_ptr
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
   } else {
     cout << "Pointer is not initialized!" << endl;
-    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, 0, 0, 0);
+    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, 0, 0);
   }
 
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
