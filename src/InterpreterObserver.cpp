@@ -2,6 +2,7 @@
 #include "InterpreterObserver.h"
 
 #include <assert.h>
+#include <math.h>
 #include <stack>
 #include "stdbool.h"
 #include <vector>
@@ -2476,7 +2477,7 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
   } else {
 
     // allocating space
-    unsigned numStructs = argValue->value.as_int*8 / size;
+    unsigned numStructs = ceil(argValue->value.as_int*8.0 / size);
     unsigned fields = structType.size();
 
     int actualSize = sizeof(IValue) * numStructs * fields;    
@@ -2484,7 +2485,8 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     IValue* ptrToStructVar = (IValue*)addr;
 
     if (debug) {
-      cout << "\nSize: " << size << endl;
+      cout << "\nTotal size of malloc in bits: " << argValue->value.as_int*8 << endl;
+      cout << "Size: " << size << endl;
       cout << "Num Structs: " << numStructs << endl;
       cout << "Number of fields: " << fields << endl;
     }
