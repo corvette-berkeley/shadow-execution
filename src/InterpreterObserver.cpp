@@ -1301,6 +1301,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
         KIND_ToString(arrayKind).c_str(),
         inx);
 
+  cout << "structType size " << structType.size() << endl;
+
   IValue* structPtr = executionStack.top()[op->inx];
   IValue* structElemPtr;
 
@@ -1312,9 +1314,13 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
     int index;
     cout << "size of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
-    getElementPtrIndexList.pop();
     index = getElementPtrIndexList.front();
     getElementPtrIndexList.pop();
+    structBase = structBase + index*structType.size();
+    index = getElementPtrIndexList.empty() ? 0 : getElementPtrIndexList.front();
+    if (!getElementPtrIndexList.empty()) {
+      getElementPtrIndexList.pop();
+    }
     safe_assert(getElementPtrIndexList.empty());
 
     index = structPtr->getIndex() + index;
@@ -1344,6 +1350,11 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     safe_assert(getElementPtrIndexList.empty());
     structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
     structElemPtr->setValueOffset(structPtr->getValueOffset());
+  }
+
+  // empty structType
+  while (!structType.empty()) {
+    structType.pop();
   }
 
   executionStack.top()[inx] = structElemPtr;

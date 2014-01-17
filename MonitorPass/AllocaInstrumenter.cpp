@@ -73,7 +73,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
       Instruction* call = CALL_IID_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC, allocaAddress);
-        instrs.push_back(call);
+      instrs.push_back(call);
     } else {
       // alloca for scalar and pointer type
       

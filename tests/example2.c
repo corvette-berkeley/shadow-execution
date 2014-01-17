@@ -9,7 +9,7 @@ struct X {
 
 int main() {
   struct X *x = (struct X *)malloc(sizeof(struct X)*10);
-  printf("%ld\n", sizeof(struct X));
+//  printf("%ld\n", sizeof(struct X));
   x[7].c = 3;
   return 0;
 } 

@@ -13,6 +13,8 @@ class GetElementPtrInstrumenter : public Instrumenter {
   public:
     GetElementPtrInstrumenter(std::string name, Instrumentation* instrumentation) : Instrumenter(name, instrumentation){};
     bool CheckAndInstrument(Instruction* inst);
+    uint64_t pushStructType(StructType* structType, InstrPtrVector& instrs);
+    uint64_t pushStructType(ArrayType* arrayType, InstrPtrVector& instrs);
 };
 
 #endif
