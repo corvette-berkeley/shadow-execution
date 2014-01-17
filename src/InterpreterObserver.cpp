@@ -1661,7 +1661,8 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
 
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
-  int64_t ptrValue = value.as_int;
+  // to calculate the pointer value, need to add the offset
+  int64_t ptrValue = value.as_int + src->getOffset(); 
 
   VALUE int_value;
 
@@ -1803,8 +1804,7 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
       executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
       executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
     } else {
-      executionStack.top()[callerVarIndex.top()]->setValue(returnValue->getValue()); 
-      executionStack.top()[callerVarIndex.top()]->setType(returnValue->getType()); 
+      returnValue->copy(executionStack.top()[callerVarIndex.top()]);
     }
     if (debug)
       cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
@@ -2345,6 +2345,8 @@ void InterpreterObserver::create_stack_frame(int size) {
   for (int i = 0; i < size; i++) {
     if (!callArgs.empty()) {
       frame[i] = callArgs.top();
+      if (debug)
+        cout << "\t Argument " << i << ": " << frame[i]->toString() << endl;
       callArgs.pop();
     } else {
       frame[i] = new IValue();

@@ -162,6 +162,7 @@ string IValue::toString() {
 
   s << ", Size: " << size;
   s << ", Offset: " << offset; 
+  s << ", BitOffset: " << bitOffset;
   s << ", Index: " << index;
   s << ", Line: " << lineNumber;
   s << ", FirstByte: " << firstByte;
@@ -177,6 +178,7 @@ void IValue::copy(IValue *dest) {
   dest->setValue(value);
   dest->setSize(size);
   dest->setOffset(offset);
+  dest->setBitOffset(bitOffset);
   dest->setIndex(index);
   dest->setLength(length);
   dest->setValueOffset(valueOffset);
