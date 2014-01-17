@@ -82,7 +82,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // this branch is the case for heap
 
     if (gepInst->getNumIndices() != 1) {
-      cout << "[GetElementPtr] => Multiple indices\n";
+      cout << "[GetElementPtr] => Multiple indices" << endl;
       abort();
     }
 
@@ -93,7 +93,18 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* kindC = KIND_CONSTANT(kind);
 
-    Constant* size = INT64_CONSTANT(elemT->getPrimitiveSizeInBits(), false);
+    Constant* size;
+    int isize = 0;
+
+    if (elemT->isPointerTy()) {
+      isize = 64;
+      size = INT64_CONSTANT(isize, false);
+    }
+    else {
+      isize = elemT->getPrimitiveSizeInBits();
+      size = INT64_CONSTANT(isize, false);
+    }
+    assert(isize != 0);
 
     Constant* line = INT32_CONSTANT(getLineNumber(gepInst), SIGNED);
 

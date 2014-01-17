@@ -1000,6 +1000,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       cout << "value: " << dest->getValue().as_int << endl;
       cout << "first value: " << dest->getValue().as_int + dest->getOffset() << endl;
       cout << "offset: " << dest->getOffset() << endl;
+      cout << "valueOffset: " << dest->getValueOffset() << endl;
       cout << "bitoffset: " << dest->getBitOffset() << endl;
       cout << "second value: " << kv->value.as_int << endl;
 
@@ -1199,14 +1200,17 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   // offset in bytes from base ptr
   unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
   if (debug) {
-    cout << "newOffset: " << newOffset << endl;
+    cout << "\tSize: " << size << endl;
+    cout << "\tBase Offset: " << basePtrLocation->getOffset() << endl;
+    cout << "\tOffset: " << offsetValue << endl;
+    cout << "\tnewOffset: " << newOffset << endl;
   }
 
   if (basePtrLocation->isInitialized()) {
     unsigned index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset, basePtrLocation->getLength()); // TODO: revise offset, getValue().as_ptr
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
   } else {
-    cout << "Pointer is not initialized!" << endl;
+    cout << "\tPointer is not initialized!" << endl;
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, 0, 0);
   }
 
