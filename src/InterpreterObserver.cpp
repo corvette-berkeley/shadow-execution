@@ -1061,11 +1061,14 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   // the destination pointer is not initialized
   // initialize with an empty IValue object
   if (!destPtrLocation->isInitialized()) {
+    if (debug) {
+      cout << "\tDestination pointer location is not initialized" << endl;
+    }
     IValue* iValue = new IValue(src->kind);
     iValue->setLength(0);
-    destPtrLocation->setValueOffset((int64_t)destPtrLocation->getPtrValue() -
-        (int64_t)iValue);
+    destPtrLocation->setValueOffset( (int64_t)iValue- (int64_t)destPtrLocation->getPtrValue() ); 
     destPtrLocation->setInitialized();
+    cout << "\tInitialized destPtr: " << destPtrLocation->toString() << endl;
   }
 
   unsigned destPtrOffset = destPtrLocation->getOffset();
