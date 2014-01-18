@@ -159,3 +159,62 @@ Passing (53)
     ./cp.out list.txt temp.txt
     md5sum list.txt
    ./install.out -b list.txt backup.txt (***PASSES)
+
+
+Latest run on 1/17/2014.
+
+
+[SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./echo.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./env.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./hostid.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./logname.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./nproc.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./pwd.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./sum.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./sync.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./true.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./tty.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./uname.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./expand.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./unexpand.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./unlink.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./wc.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./chroot.out with error code: 125
+[SUCCESSFULLY RUNNING COMMAND]: ./stdbuf.out with error code: 125
+[SUCCESSFULLY RUNNING COMMAND]: ./chcon.out with error code: 1
+[SUCCESSFULLY RUNNING COMMAND]: ./false.out with error code: 1
+[SUCCESSFULLY RUNNING COMMAND]: ./readlink.out with error code: 1
+
+Cuong:
+[FAILED RUNNING COMMAND]: ./basename.out with error code: 5
+[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5
+[FAILED RUNNING COMMAND]: ./cut.out with error code: 5
+[FAILED RUNNING COMMAND]: ./dir.out with error code: -11
+[FAILED RUNNING COMMAND]: ./fold.out with error code: -11
+[FAILED RUNNING COMMAND]: ./link.out with error code: 5
+[FAILED RUNNING COMMAND]: ./mkfifo.out with error code: 5
+[FAILED RUNNING COMMAND]: ./mv.out with error code: 5
+[FAILED RUNNING COMMAND]: ./numfmt.out with error code: -11
+[FAILED RUNNING COMMAND]: ./nice.out with error code: -11
+[FAILED RUNNING COMMAND]: ./nohup.out with error code: -11
+[FAILED RUNNING COMMAND]: ./rmdir.out with error code: 5
+[FAILED RUNNING COMMAND]: ./runcon.out with error code: -11
+[FAILED RUNNING COMMAND]: ./split.out with error code: -11
+
+Cindy:
+[FAILED RUNNING COMMAND]: ./touch.out with error code: -11
+[FAILED RUNNING COMMAND]: ./whoami.out with error code: -11
+[FAILED RUNNING COMMAND]: ./uniq.out with error code: 5
+[FAILED RUNNING COMMAND]: ./rm.out with error code: 5
+[FAILED RUNNING COMMAND]: ./truncate.out with error code: -11
+[FAILED RUNNING COMMAND]: ./sha1sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./sha224sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./cp.out with error code: 5
+[FAILED RUNNING COMMAND]: ./md5sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./install.out with error code: 5
