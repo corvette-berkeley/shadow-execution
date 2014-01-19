@@ -189,20 +189,20 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./readlink.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./nice.out with error code: -11
 [SUCCESSFULLY RUNNING COMMAND]: ./runcon.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./split.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 5
 
 Cuong:
 [FAILED RUNNING COMMAND]: ./basename.out with error code: 5
 [FAILED RUNNING COMMAND]: ./chmod.out with error code: 5
-[FAILED RUNNING COMMAND]: ./cut.out with error code: 5
-[FAILED RUNNING COMMAND]: ./dir.out with error code: -11
-[FAILED RUNNING COMMAND]: ./fold.out with error code: -11
+[FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
 [FAILED RUNNING COMMAND]: ./link.out with error code: 5
 [FAILED RUNNING COMMAND]: ./mkfifo.out with error code: 5
 [FAILED RUNNING COMMAND]: ./mv.out with error code: 5
 [FAILED RUNNING COMMAND]: ./numfmt.out with error code: -11
 [FAILED RUNNING COMMAND]: ./nohup.out with error code: -11
-[FAILED RUNNING COMMAND]: ./rmdir.out with error code: 5
-[FAILED RUNNING COMMAND]: ./split.out with error code: -11
 
 Cindy:
 [FAILED RUNNING COMMAND]: ./touch.out with error code: -11

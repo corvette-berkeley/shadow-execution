@@ -1066,7 +1066,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     }
     IValue* iValue = new IValue(src->kind);
     iValue->setLength(0);
-    destPtrLocation->setValueOffset( (int64_t)iValue- (int64_t)destPtrLocation->getPtrValue() ); 
+    destPtrLocation->setValueOffset( (int64_t)iValue - (int64_t)destPtrLocation->getPtrValue() ); 
     destPtrLocation->setInitialized();
     cout << "\tInitialized destPtr: " << destPtrLocation->toString() << endl;
   }
@@ -1214,7 +1214,9 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
     ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
   } else {
     cout << "\tPointer is not initialized!" << endl;
-    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, 0, 0);
+    VALUE newPtrValue;
+    newPtrValue.as_int = basePtrLocation->getValue().as_int + newOffset;
+    ptrLocation = new IValue(PTR_KIND, newPtrValue, size/8, 0, 0, 0);
   }
 
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
@@ -1303,7 +1305,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
         KIND_ToString(arrayKind).c_str(),
         inx);
 
-  cout << "structType size " << structType.size() << endl;
+  cout << "\tstructType size " << structType.size() << endl;
 
   IValue* structPtr = executionStack.top()[op->inx];
   IValue* structElemPtr;
@@ -1315,7 +1317,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
     int index;
-    cout << "size of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
+    cout << "\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
     index = getElementPtrIndexList.front()*structType.size();
     getElementPtrIndexList.pop();
     index = getElementPtrIndexList.empty() ? index : index + getElementPtrIndexList.front();
@@ -1327,11 +1329,17 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     index = structPtr->getIndex() + index;
 
     if (debug)
-      cout << "Getting element at index: " << index << endl;
+      cout << "\tGetting element at index: " << index << endl;
 
     // TODO: revisit this
     if (index < (int) structPtr->getLength()) {
+      if (debug) {
+        cout << "\tstructBase = " << structBase->toString() << endl;
+      }
       IValue* structElem = structBase + index;
+      if (debug) {
+        cout << "\tstructElem = " << structElem->toString() << endl;
+      }
       structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
       structElemPtr->setValueOffset(structPtr->getValueOffset());
       structElemPtr->setIndex(index);
