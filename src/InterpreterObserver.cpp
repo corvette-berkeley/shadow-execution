@@ -839,12 +839,10 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
        IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
   }
 
-  IValue* ptrLocation;
-  IValue* location;
-  //  if (!arg || callArgs.empty()) { // callArgs can be empty for main function
-  if (debug) {
-    cout << "LOCAL alloca" << endl;
-  }
+  IValue *ptrLocation, *location;
+
+  if (debug) cout << "LOCAL alloca" << endl;
+
   // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
   location->setLength(0);
@@ -1048,15 +1046,16 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   }
 
   // pointer constant; we simply ignore this case
-  if (dest->inx == -1) return;
+  if (dest->inx == -1) {
+    if (debug) cout << "\tIgnoring pointer constant." << endl;
+    return; 
+  }
 
   // retrieve destination pointer operand
   IValue* destPtrLocation = dest->isGlobal? globalSymbolTable[dest->inx] :
     executionStack.top()[dest->inx];
 
-  if (debug) {
-    cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
-  }
+  if (debug) cout << "\tDestPtr: " << destPtrLocation->toString() << endl;
 
   // the destination pointer is not initialized
   // initialize with an empty IValue object
@@ -1079,6 +1078,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
   // retrieve source
   if (src->iid == 0) {
     srcLocation = new IValue(src->kind, src->value);
+    srcLocation->setLength(0); // uninitialized constant pointer 
     if (src->kind == INT1_KIND) {
       srcLocation->setBitOffset(1);
     }
@@ -1103,7 +1103,9 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 
   if (debug) {
     cout << "\tdestPtrOffset: " << destPtrOffset << endl;
-    cout << "\tvalueIndex: " << valueIndex << " currOffset: " << currOffset <<  " Other offset: "  << destPtrOffset << endl;
+
+    cout << "\tvalueIndex: " << valueIndex << " currOffset: " << currOffset << " Other offset: "  << destPtrOffset << endl;
+
     cout << "\tinternalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize() << endl;
 
     cout << "\tDest: " << destLocation->toString() << endl;
@@ -1305,26 +1307,49 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
         KIND_ToString(arrayKind).c_str(),
         inx);
 
-  cout << "\tstructType size " << structType.size() << endl;
+  if (debug) cout << "\tstructType size " << structType.size() << endl;
 
-  IValue* structPtr = executionStack.top()[op->inx];
-  IValue* structElemPtr;
+  IValue *structPtr, *structElemPtr; 
+  int structElemNo, structSize, index, i;
+  int* structElemSize;
 
-  if (debug)
-    cout << structPtr->toString() << endl;
+  // get the operand struct
+  structPtr = executionStack.top()[op->inx];
+  structElemNo = structType.size();
+  structElemSize = (int*) malloc(sizeof(int)*structElemNo);
 
+  // record struct element size
+  // compute struct size
+  structSize = 0;
+  i = 0;
+  while (!structType.empty()) {
+    structElemSize[i] = KIND_GetSize(structType.front());
+    structSize += structElemSize[i];
+    i++;
+    structType.pop();
+  }
+
+  if (debug) cout << "\tstructSize is " << structSize << endl;
+
+  if (debug) cout << structPtr->toString() << endl;
+
+  // compute struct index
+  cout << "\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
+  index = getElementPtrIndexList.front()*structElemNo;
+  getElementPtrIndexList.pop();
+  index = getElementPtrIndexList.empty() ? index : index + getElementPtrIndexList.front();
+  if (!getElementPtrIndexList.empty()) {
+    getElementPtrIndexList.pop();
+  }
+  safe_assert(getElementPtrIndexList.empty());
+
+  //
+  // compute the result; consider two cases: the struct pointer operand is
+  // initialized and is not initialized
+  //
   if (structPtr->isInitialized()) {
     IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
-    int index;
-    cout << "\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
-    index = getElementPtrIndexList.front()*structType.size();
-    getElementPtrIndexList.pop();
-    index = getElementPtrIndexList.empty() ? index : index + getElementPtrIndexList.front();
-    if (!getElementPtrIndexList.empty()) {
-      getElementPtrIndexList.pop();
-    }
-    safe_assert(getElementPtrIndexList.empty());
 
     index = structPtr->getIndex() + index;
 
@@ -1351,19 +1376,19 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       structElemPtr->setValueOffset(structPtr->getValueOffset());
     }
   } else {
-    getElementPtrIndexList.pop();
-    // TODO: review this
-    // this getelementptr instruction has only one index
-    if (!getElementPtrIndexList.empty())
-      getElementPtrIndexList.pop();
-    safe_assert(getElementPtrIndexList.empty());
-    structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
-    structElemPtr->setValueOffset(structPtr->getValueOffset());
-  }
+    int i, size; 
+    VALUE structElemPtrValue;
 
-  // empty structType
-  while (!structType.empty()) {
-    structType.pop();
+    // compute the value for the element pointer
+    size = structElemSize[index%structSize];
+    structElemPtrValue = structPtr->getValue();
+    structElemPtrValue.as_int = structElemPtrValue.as_int + (index/structSize)*structSize;
+    for (i = 0; i < index%structSize; i++) {
+      structElemPtrValue.as_int += structElemSize[i];
+    }
+
+    structElemPtr = new IValue(PTR_KIND, structElemPtrValue, size, 0, 0, 0);
+    structElemPtr->setValueOffset((int64_t)structElemPtr - structElemPtr->getValue().as_int);
   }
 
   executionStack.top()[inx] = structElemPtr;
@@ -2153,6 +2178,7 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   if (cond->value.as_int) {
     if (tvalue->inx == -1) {
       result = new IValue(tvalue->kind, tvalue->value);
+      result->setLength(0); // uninitialized pointer
     }
     else {
       safe_assert(false);
@@ -2161,6 +2187,7 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   else {
     if (fvalue->inx == -1) {
       result = new IValue(fvalue->kind, fvalue->value);
+      result->setLength(0); // uninitialized pointer
     }
     else {
       safe_assert(false);
@@ -2402,6 +2429,7 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   value.as_ptr = kvalue->value.as_ptr;
   IValue* ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
   ptrLocation->setSize(KIND_GetSize(initializer->kind)); // put in constructor
+  ptrLocation->setLength(0);
   ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
   // store it in globalSymbolTable
@@ -2439,7 +2467,9 @@ void InterpreterObserver::call(IID iid, bool nounwind, KIND type, int inx) {
       argCopy = new IValue();
       arg->copy(argCopy);
     } else {
+      // argument is a constant
       argCopy = new IValue(value->kind, value->value, LOCAL);
+      argCopy->setLength(0); // uninitialized pointer
     }
     callArgs.push(argCopy);
   }
