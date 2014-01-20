@@ -163,6 +163,7 @@ Passing (53)
 
 Latest run on 1/17/2014.
 
+=== 34 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -201,6 +202,7 @@ Latest run on 1/17/2014.
 
 
 Cuong:
+=== 7 programs === 
 [FAILED RUNNING COMMAND]: ./basename.out with error code: 5
 [FAILED RUNNING COMMAND]: ./chmod.out with error code: 5
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
@@ -210,6 +212,7 @@ Cuong:
 [FAILED RUNNING COMMAND]: ./nohup.out with error code: -11
 
 Cindy:
+=== 9 programs ===
 [FAILED RUNNING COMMAND]: ./rm.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha1sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha224sum.out with error code: 5
