@@ -163,7 +163,7 @@ Passing (53)
 
 Latest run on 1/17/2014.
 
-=== 39 programs ===
+=== 41 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -204,6 +204,8 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./link.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./basename.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./install.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 5
 
 
 Cuong:
@@ -212,13 +214,11 @@ Cuong:
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
 
 Cindy:
-=== 9 programs ===
+=== 7 programs ===
 [FAILED RUNNING COMMAND]: ./rm.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha1sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha224sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./cp.out with error code: 5
 [FAILED RUNNING COMMAND]: ./md5sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./install.out with error code: 5
