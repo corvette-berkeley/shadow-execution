@@ -163,7 +163,7 @@ Passing (53)
 
 Latest run on 1/17/2014.
 
-=== 37 programs ===
+=== 38 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -202,14 +202,14 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./mkfifo.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./nohup.out with error code: -11
 [SUCCESSFULLY RUNNING COMMAND]: ./link.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 5
 
 
 Cuong:
-=== 4 programs === 
+=== 3 programs === 
 [FAILED RUNNING COMMAND]: ./basename.out with error code: 5
-[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5
+[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  [padding] 
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
-[FAILED RUNNING COMMAND]: ./mv.out with error code: 5
 
 Cindy:
 === 9 programs ===

@@ -1174,7 +1174,7 @@ void InterpreterObserver::atomicrmw() {
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int line, int inx) {
   if (debug) {
-    printf("<<<<< GETELEMENTPTR= >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, line: %d, [INX: %d]\n", 
+    printf("<<<<< GETELEMENTPTR= >>>>> %s, inbound:%s, pointer_value:%s, index:%s, kind: %s, size: %ld, line: %d, [INX: %d]\n\n", 
         IID_ToString(iid).c_str(),
         (inbound ? "1" : "0"),
         KVALUE_ToString(base).c_str(),
@@ -1185,29 +1185,27 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
         inx);
   }
 
-  IValue* basePtrLocation; 
+  IValue *basePtrLocation, *ptrLocation; 
+  int index;
+  unsigned newOffset;
 
-  if (base->isGlobal) {
-    basePtrLocation = globalSymbolTable[base->inx];
-  } else {
-    basePtrLocation = executionStack.top()[base->inx];
-  }
-  IValue* ptrLocation;
+  // get base pointer operand
+  basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
+    executionStack.top()[base->inx];
 
-  int offsetValue;
-  if (offset->inx != -1) {
-    offsetValue = executionStack.top()[offset->inx]->getValue().as_int;
-  }
-  else {
-    offsetValue = offset->value.as_int;
-  }
+  if (debug) cout << "\tPointer operand " << basePtrLocation->toString() << endl;
 
-  // offset in bytes from base ptr
-  unsigned newOffset = (offsetValue * (size/8)) + basePtrLocation->getOffset();
+  // get index operand
+  index = offset->inx == -1 ? offset->value.as_int :
+    executionStack.top()[offset->inx]->getValue().as_int; 
+
+  // compute new offset from base pointer in bytes 
+  newOffset = (index * (size/8)) + basePtrLocation->getOffset();
+
   if (debug) {
     cout << "\tSize: " << size << endl;
     cout << "\tBase Offset: " << basePtrLocation->getOffset() << endl;
-    cout << "\tOffset: " << offsetValue << endl;
+    cout << "\tIndex: " << index << endl;
     cout << "\tnewOffset: " << newOffset << endl;
   }
 
@@ -1299,7 +1297,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
 
 void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx) {
   if (debug)
-    printf("<<<<< GETELEMENTPTR_STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, arrayKind: %s, [INX: %d]\n", 
+    printf("<<<<< GETELEMENTPTR_STRUCT >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, arrayKind: %s, [INX: %d]\n\n", 
         IID_ToString(iid).c_str(),
         (inbound ? "1" : "0"),
         KVALUE_ToString(op).c_str(),
@@ -1331,7 +1329,7 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
   if (debug) cout << "\tstructSize is " << structSize << endl;
 
-  if (debug) cout << structPtr->toString() << endl;
+  if (debug) cout << "\t" << structPtr->toString() << endl;
 
   // compute struct index
   cout << "\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
@@ -1342,6 +1340,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     getElementPtrIndexList.pop();
   }
   safe_assert(getElementPtrIndexList.empty());
+
+  if (debug) cout << "\tIndex is " << index << endl;
 
   //
   // compute the result; consider two cases: the struct pointer operand is
@@ -1380,10 +1380,10 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
     VALUE structElemPtrValue;
 
     // compute the value for the element pointer
-    size = structElemSize[index%structSize];
+    size = structElemSize[index%structElemNo];
     structElemPtrValue = structPtr->getValue();
-    structElemPtrValue.as_int = structElemPtrValue.as_int + (index/structSize)*structSize;
-    for (i = 0; i < index%structSize; i++) {
+    structElemPtrValue.as_int = structElemPtrValue.as_int + (index/structElemNo)*structSize;
+    for (i = 0; i < index%structElemNo; i++) {
       structElemPtrValue.as_int += structElemSize[i];
     }
 
