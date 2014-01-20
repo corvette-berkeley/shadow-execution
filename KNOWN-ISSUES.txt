@@ -193,6 +193,11 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./touch.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./uniq.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./truncate.out with error code: -11
+
 
 Cuong:
 [FAILED RUNNING COMMAND]: ./basename.out with error code: 5
@@ -205,11 +210,7 @@ Cuong:
 [FAILED RUNNING COMMAND]: ./nohup.out with error code: -11
 
 Cindy:
-[FAILED RUNNING COMMAND]: ./touch.out with error code: -11
-[FAILED RUNNING COMMAND]: ./whoami.out with error code: -11
-[FAILED RUNNING COMMAND]: ./uniq.out with error code: 5
 [FAILED RUNNING COMMAND]: ./rm.out with error code: 5
-[FAILED RUNNING COMMAND]: ./truncate.out with error code: -11
 [FAILED RUNNING COMMAND]: ./sha1sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha224sum.out with error code: 5
 [FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5
