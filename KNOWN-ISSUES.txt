@@ -197,6 +197,7 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: -11
 [SUCCESSFULLY RUNNING COMMAND]: ./uniq.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./truncate.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./numfmt.out with error code: -11
 
 
 Cuong:
@@ -206,7 +207,6 @@ Cuong:
 [FAILED RUNNING COMMAND]: ./link.out with error code: 5
 [FAILED RUNNING COMMAND]: ./mkfifo.out with error code: 5
 [FAILED RUNNING COMMAND]: ./mv.out with error code: 5
-[FAILED RUNNING COMMAND]: ./numfmt.out with error code: -11
 [FAILED RUNNING COMMAND]: ./nohup.out with error code: -11
 
 Cindy:
