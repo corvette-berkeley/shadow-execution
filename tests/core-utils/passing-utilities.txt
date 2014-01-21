@@ -18,6 +18,7 @@ expand
 false
 fmt
 fold
+groups
 hostid
 id
 install
@@ -35,6 +36,9 @@ nohup
 nproc
 numfmt
 od
+pathchk
+pinky
+printenv
 pwd
 readlink
 realpath
@@ -51,6 +55,7 @@ split
 stdbuf
 sum
 sync
+tee
 touch
 true
 truncate

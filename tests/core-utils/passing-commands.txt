@@ -18,6 +18,7 @@ expand list.txt
 false --version
 fmt list.txt
 fold -5 list.txt
+groups
 hostid
 id
 install -b list.txt backup.txt
@@ -35,6 +36,9 @@ nohup time
 nproc
 numfmt 2
 od -b list.txt
+pathchk -p /usr/local
+pinky
+printenv
 pwd
 readlink
 realpath -L list.txt
