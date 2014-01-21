@@ -29,3 +29,5 @@ struct
 struct2
 uninitialized_ptr
 global_ptr
+flatten
+flatten2
