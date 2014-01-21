@@ -38,7 +38,7 @@ CORE UTILITIES (60/100).
 
 Latest run on 1/20/2014.
 
-=== 63 programs ===
+=== 64 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -103,63 +103,58 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY COMMAND]: ./sha512sum.out list.txt
 [SUCCESSFULLY RUNNING COMMAND]:   id
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
-
+ ./mkdir.out hola (*** PASSES)
 
 === FAILING: 1 programs === 
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
 
-During interpretation [18 programs]:
+During interpretation [4 programs]:
 ==============
 
-Failed assertion in Load (6)
-   ./paste.out list.txt list.txt [SEG FAULT]	
-    ./vdir.out [ FAILED DURING INSTRUMENTATION ]
-    ./ls.out [ FAILED DURING INSTRUMENTATION ]
+   ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
-   ./du.out -h [ FAILED DURING INSTRUMENTATION ]
-
-Failed assertion at getelement_struct (1)
-    ./sort.out list.txt (constant pointer) [FAILED DURING INSTRUMENTATION]
-
-Mismatch at store (4)
-   ./csplit.out -f xyz list.txt 11 72 98 [ FAILED DURING INSTRUMENTATION ]
    mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
-./ptx.out list.txt [ FAILED DURING INSTRUMENTATION ]
-   ./expr.out  linux : lin [ FAIL DURING INSTRUMENTATION ]
+    ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 
-PTRTOINT (1)
-    ./comm.out list.txt list.txt
-
-
-Failed assertion at return struct (3)
-    ./pr.out list.txt
-    ./sleep.out 2
-    ./timeout.out 1 sleep 10; date
-
-
-
-During instrumentation [12]:
+During instrumentation [18]:
 ===================
 All failing when verifying the same function: Running pass 'Module
 Verifier' on function '@vasnprintf
 coreutils/lib/vasnprintf.c
 
-Broken module (11)
+Broken module (7)
    ./df.out -h (seg fault)
-   ./factor.out 8 (not instrumented)
+   ./factor.out 8 (not packed)
    ./install.out -b list.txt backup.txt (***PASSES)
    ./numfmt 2 (*** PASSES)
-   ./mkdir.out hola (mismatch at store)
+   ./mkdir.out hola (*** PASSES)
    ./printf.out "%s" hello (unhandled type)
-   ./seq.out 2 (unhandled type)
-   ./stat.out list.txt (unhandled type)
+   ./seq.out 2 (not packed, i64 i64)
+   ./stat.out list.txt (not packed, i64 i64)
    ./stdbuf.out (*** PASSES)
-   ./stty.out (getelement_struct)
-   ./who.out (getelement_struct)
+   ./stty.out (mismatched values at store)
+   ./who.out (mismatched values at store)
 
 Failed assertion at getGlobalIndex (1)
    od
+
+Struct packing assertion (10)
+   ./du.out -h (not packed, i64 i64)
+    ./ls.out (not packed, i64 i64)
+    ./vdir.out (not packed, i64 i64)
+    ./pr.out list.txt (not packed, i64 i64)
+    ./sleep.out 2 (not packed, i64 i64)
+    ./timeout.out 1 sleep 10; date (not packed, i64 i64)
+    ./ptx.out list.txt (not packed, i8* i8*)
+
+    ./sort.out list.txt (constant pointer) (not packed)
+   ./csplit.out -f xyz list.txt 11 72 98 (not packed)
+   ./expr.out  linux : lin (not packed)
+
+
+
+
 
 ===== OLD LIST ====
 
