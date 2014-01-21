@@ -61,6 +61,14 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   } else if (elemT->isStructTy()) {
     // this branch is the case for local struct
     StructType* structType = (StructType*) elemT;
+    if (structType->isPacked()) {
+      cout << "The struct is packed" << endl;
+    }
+    else {
+      structType->dump();
+      cout << "The struct is NOT packed" << endl;
+      abort();
+    }
     pushStructType(structType, instrs);
     
     for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
