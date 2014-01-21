@@ -38,7 +38,7 @@ CORE UTILITIES (60/100).
 
 Latest run on 1/20/2014.
 
-=== 60 programs ===
+=== 63 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -98,24 +98,15 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./chown.out root temp.txt
 [SUCCESSFULLY RUNNING COMMAND]: ./chgrp.out staff /usr/local
 [SUCCESSFULLY RUNNING COMMAND]:  uptime
-<<<<<<< .mine
 [SUCCESSFULLY COMMAND]: ./sha256sum.out list.txt
 [SUCCESSFULLY COMMAND]: ./sha384sum.out list.txt
 [SUCCESSFULLY COMMAND]: ./sha512sum.out list.txt
-=======
 [SUCCESSFULLY RUNNING COMMAND]:   id
-[SUCCESSFULLY RUNNING COMMAND]: ./sha256sum.out with error code: 5 
->>>>>>> .r6231
+[SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
 
 
-=== FAILING: 5 programs === 
+=== FAILING: 1 programs === 
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
-[FAILED RUNNING COMMAND]: ./dircolors.out
-<<<<<<< .mine
-=======
-[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
-[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
->>>>>>> .r6231
 
 During interpretation [18 programs]:
 ==============

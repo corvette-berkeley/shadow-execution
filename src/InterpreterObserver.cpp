@@ -1192,8 +1192,13 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   //
   // get base pointer operand
   //
-  basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
-    executionStack.top()[base->inx];
+  if (base->inx == -1) {
+    // constant base pointer
+    basePtrLocation = new IValue(PTR_KIND, base->value, 0, 0, 0, 0);
+  } else {
+    basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
+      executionStack.top()[base->inx];
+  }
 
   if (debug) cout << "\tPointer operand " << basePtrLocation->toString() << endl;
 
