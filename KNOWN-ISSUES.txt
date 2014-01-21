@@ -33,7 +33,7 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (64/87).
+CORE UTILITIES (65/87).
 
 
 Latest run on 1/20/2014.
@@ -127,11 +127,15 @@ Broken module (7)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
 
+  ===== FAILED BECAUSE OF =====
+  ===== PASSED OTHERWISE ===== 
    ./factor.out 8 (not packed) - It passes if the packing check is
    removed. Not counted as passing yet.
    ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
    is removed. Not counted as passing yet.
 
+  ===== FAILED DURING INSTRUMENTATION OF VASNPRINTF =====
+  ===== PASSED OTHERWISE ===== 
    ./mkdir.out hola (*** PASSES)
    ./stdbuf.out (*** PASSES)
    ./install.out -b list.txt backup.txt (***PASSES)
@@ -151,7 +155,7 @@ Struct packing assertion (11)
   ./dir.out with error code: 5  (not packed, i64 i64)
 
 
-FAILED INSTRUMENTATION]: i_cat.bc
+[FAILED INSTRUMENTATION]: i_cat.bc
 [FAILED INSTRUMENTATION]: i_cp.bc
 [FAILED INSTRUMENTATION]: i_date.bc
 [FAILED INSTRUMENTATION]: i_install.bc
