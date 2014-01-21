@@ -61,14 +61,29 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   } else if (elemT->isStructTy()) {
     // this branch is the case for local struct
     StructType* structType = (StructType*) elemT;
+
+    // checking struct packing
+    //////////////////////////
     if (structType->isPacked()) {
+      structType->dump();
       cout << "The struct is packed" << endl;
     }
     else {
       structType->dump();
       cout << "The struct is NOT packed" << endl;
-      abort();
+      if (structType->hasName()) {
+	cout << "Name: " << structType->getName().str() << endl;
+	abort();
+      }
+      else {
+	cout << "The struct does not have a name" << endl;
+	gepInst->dump();
+	// do not abort if the struct does not have a name?
+	abort();
+      }
     }
+    //////////////////////////
+
     pushStructType(structType, instrs);
     
     for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
