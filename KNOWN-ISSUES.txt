@@ -38,7 +38,7 @@ CORE UTILITIES (54/100).
 
 Latest run on 1/20/2014.
 
-=== 54 programs ===
+=== 58 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -94,11 +94,15 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./mknod.out temp.txt b 12 5 
 [SUCCESSFULLY RUNNING COMMAND]: ./tsort.out list.txt 
 [SUCCESSFULLY RUNNING COMMAND]: ./join.out list.txt list.txt
+[SUCCESSFULLY RUNNING COMMAND]: ./chmod.out with error code: 5  
+[SUCCESSFULLY RUNNING COMMAND]: ./chown.out root temp.txt
+[SUCCESSFULLY RUNNING COMMAND]: ./chgrp.out staff /usr/local
+[SUCCESSFULLY RUNNING COMMAND]:  uptime
 
 
 === FAILING: 5 programs === 
-[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
+[FAILED RUNNING COMMAND]: ./dircolors.out
 [FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
 [FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
 [FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
@@ -106,24 +110,20 @@ Latest run on 1/20/2014.
 During interpretation [18 programs]:
 ==============
 
-Failed assertion in Load (9)
-   ./chown.out root temp.txt
-./chgrp.out staff /usr/local
-    ./dircolors.out
+Failed assertion in Load (6)
    ./paste.out list.txt list.txt	
     ./vdir.out
     ./ls.out
    ./shred.out list.txt
    id
-   ./du.out -h
+   ./du.out -h [ FAILED DURING INSTRUMENTATION ]
 
 Failed assertion at getelement_struct (1)
     ./sort.out list.txt (constant pointer)
 
-Mismatch at store (5)
-   ./csplit.out -f xyz list.txt 11 72 98
+Mismatch at store (4)
+   ./csplit.out -f xyz list.txt 11 72 98 [ FAILED DURING INSTRUMENTATION ]
    mktemp testingXXX
-        uptime
    ./ptx.out list.txt
    ./expr.out  linux : lin [ FAIL DURING INSTRUMENTATION ]
 
