@@ -34,6 +34,7 @@ nice
 nohup time
 nproc
 numfmt 2
+od -b list.txt
 pwd
 readlink
 realpath -L list.txt

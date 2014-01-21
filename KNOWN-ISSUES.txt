@@ -38,7 +38,7 @@ CORE UTILITIES (64/87).
 
 Latest run on 1/20/2014.
 
-=== 64 programs ===
+=== 65 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -104,22 +104,17 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]:   id
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
 [SUCCESSFUL]  ./mkdir.out hola 
-
-During interpretation [5 programs]:
-==============
-
-[FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
+./od.out -b list.txt
 
 During interpretation [4 programs]:
 ==============
-
    ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
    mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
     ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 
-During instrumentation [18]:
+During instrumentation [19]:
 ===================
 All failing when verifying the same function: Running pass 'Module
 Verifier' on function '@vasnprintf
@@ -127,23 +122,22 @@ coreutils/lib/vasnprintf.c
 
 Broken module (7)
    ./df.out -h (seg fault)
-   ./factor.out 8 (not packed) - It passes if the packing check is removed.
    ./printf.out "%s" hello (unhandled type)
-   ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
-   is removed.
    ./stat.out list.txt (not packed, i64 i64)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
+
+   ./factor.out 8 (not packed) - It passes if the packing check is
+   removed. Not counted as passing yet.
+   ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
+   is removed. Not counted as passing yet.
 
    ./mkdir.out hola (*** PASSES)
    ./stdbuf.out (*** PASSES)
    ./install.out -b list.txt backup.txt (***PASSES)
    ./numfmt 2 (*** PASSES)
 
-Failed assertion at getGlobalIndex (1)
-   od
-
-Struct packing assertion (10)
+Struct packing assertion (11)
    ./du.out -h (not packed, i64 i64)
     ./ls.out (not packed, i64 i64)
     ./vdir.out (not packed, i64 i64)
@@ -154,8 +148,20 @@ Struct packing assertion (10)
    ./expr.out  linux : lin (not packed)
     ./ptx.out list.txt
    ./csplit.out -f xyz list.txt 11 72 98
+  ./dir.out with error code: 5  (not packed, i64 i64)
 
 
+FAILED INSTRUMENTATION]: i_cat.bc
+[FAILED INSTRUMENTATION]: i_cp.bc
+[FAILED INSTRUMENTATION]: i_date.bc
+[FAILED INSTRUMENTATION]: i_install.bc
+[FAILED INSTRUMENTATION]: i_mv.bc
+[FAILED INSTRUMENTATION]: i_realpath.bc
+[FAILED INSTRUMENTATION]: i_split.bc
+[FAILED INSTRUMENTATION]: i_stdbuf.bc
+[FAILED INSTRUMENTATION]: i_touch.bc
+[FAILED INSTRUMENTATION]: i_truncate.bc
+[FAILED INSTRUMENTATION]: i_uname.bc
 
 ===== OLD LIST ====
 

@@ -150,10 +150,10 @@ struct MonitorPass : public FunctionPass {
 
    // creating global indices
    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
-     if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
+     //if (GlobalValue::isPrivateLinkage(i->getLinkage())) {
        IID iid = static_cast<IID>(reinterpret_cast<ADDRINT>(&*i));
        instrumentation->createGlobalIndex(iid);
-     }
+       // }
    }
 
    // call back to create global symbol table
@@ -172,7 +172,7 @@ struct MonitorPass : public FunctionPass {
 
    // call back to create each global
    for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
-     if (!GlobalValue::isPrivateLinkage(i->getLinkage())) {
+     //if (GlobalValue::isPrivateLinkage(i->getLinkage())) {
        i->dump();
        
        InstrPtrVector instrs;
@@ -204,8 +204,8 @@ struct MonitorPass : public FunctionPass {
        instrs.push_back(call);
 	
        instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
-     }
-   }
+       //} // isPrivateLinkage
+   } // global iterator
    
    return Instrumentation::GetInstance()->Initialize(M);
   }
