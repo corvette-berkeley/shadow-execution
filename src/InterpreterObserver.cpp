@@ -39,8 +39,10 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
       low = mid + 1;
     }
   }
-  if (debug)
-    cout << "Returning high: " << high << " " << values[high].getFirstByte() << endl;
+  if (debug) {
+    cout << "\t\tReturning high: " << high << " " << "values[high] = " << values[high].toString() << endl;
+    cout << "\t\tReturning high: " << high << " " << values[high].getFirstByte() << endl;
+  }
   return high; // high
 }
 

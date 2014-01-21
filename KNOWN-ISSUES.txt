@@ -33,7 +33,7 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (60/100).
+CORE UTILITIES (64/87).
 
 
 Latest run on 1/20/2014.
@@ -103,9 +103,11 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY COMMAND]: ./sha512sum.out list.txt
 [SUCCESSFULLY RUNNING COMMAND]:   id
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
- ./mkdir.out hola (*** PASSES)
+[SUCCESSFUL]  ./mkdir.out hola 
 
-=== FAILING: 1 programs === 
+During interpretation [5 programs]:
+==============
+
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
 
 During interpretation [4 programs]:
@@ -126,15 +128,16 @@ coreutils/lib/vasnprintf.c
 Broken module (7)
    ./df.out -h (seg fault)
    ./factor.out 8 (not packed)
-   ./install.out -b list.txt backup.txt (***PASSES)
-   ./numfmt 2 (*** PASSES)
-   ./mkdir.out hola (*** PASSES)
    ./printf.out "%s" hello (unhandled type)
    ./seq.out 2 (not packed, i64 i64)
    ./stat.out list.txt (not packed, i64 i64)
-   ./stdbuf.out (*** PASSES)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
+
+   ./mkdir.out hola (*** PASSES)
+   ./stdbuf.out (*** PASSES)
+   ./install.out -b list.txt backup.txt (***PASSES)
+   ./numfmt 2 (*** PASSES)
 
 Failed assertion at getGlobalIndex (1)
    od
