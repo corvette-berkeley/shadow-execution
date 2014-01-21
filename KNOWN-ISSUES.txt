@@ -33,12 +33,12 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (66/87).
+CORE UTILITIES (71/100).
 
 
 Latest run on 1/20/2014.
 
-=== 66 programs passing ===
+=== 71 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -106,17 +106,30 @@ Latest run on 1/20/2014.
 ./od.out -b list.txt
 ./factor.out 8
 ./seq.out 2
-
-
+  tee (usage: ls | ./tee.out out) (check with packing)
+./pinky.out (check with packing)
+./printenv.out (check with packing)
+./groups.out (check with packing)
+./pathchk -p /usr/local (check with packing)
 
 **************
-GENERAL (5)
+GENERAL (13)
 **************
    ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
    ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
     ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
-    ./date.out (seg fault) 
+    ./date.out (seg fault)
+    ./users.out [MISMATCH AT STORE]  (check with packing)
+    tail (infinite loop when instrumenting?) (check with packing)
+    head (infinite loop when instrumenting?) (check with packing)
+    tac (fails during instrumentation) (check with packing)
+    ./tr.out abc ABC (seg fault) (check with packing)
+    dd (we can instrument, but I do not know what arguments to use)
+    (check with packing)
+    yes (we can instrument, but I do not know what arguments to use)
+    (check with packing)
+    nl (fails during instrumentation) (check with packing)
 
 *****************************
 VASNPRINTF FUNCTION (5)
