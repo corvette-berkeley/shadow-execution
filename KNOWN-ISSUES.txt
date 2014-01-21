@@ -103,20 +103,26 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]:   id
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
 [SUCCESSFUL]  ./mkdir.out hola 
-./od.out -b list.txt
-./factor.out 8
-./seq.out 2
-  tee (usage: ls | ./tee.out out) 
-./pinky.out 
-./printenv.out 
-./groups.out
-./pathchk -p /usr/local 
-./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
-./yes.out 1234567 | grep 1234567 | head -10
+[SUCCESSFUL] ./od.out -b list.txt
+[SUCCESSFUL] ./factor.out 8
+[SUCCESSFUL] ./seq.out 2
+[SUCCESSFUL]   tee (usage: ls | ./tee.out out) 
+[SUCCESSFUL] ./pinky.out 
+[SUCCESSFUL] ./printenv.out 
+[SUCCESSFUL] ./groups.out
+[SUCCESSFUL] ./pathchk -p /usr/local 
+[SUCCESSFUL] ./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
+[SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
 
 **************
 GENERAL (11)
 **************
+
+Interpretation
+   ./paste.out list.txt list.txt [SEG FAULT]
+   ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
+   ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
+    ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 Instrumentation	
     tail (packing check fails, infinite loop when instrumenting otherwise) 
@@ -126,12 +132,6 @@ Instrumentation
     tac (packed assertion fails)
     nl (packed assertion fails)
     head (infinite loop when instrumenting)
-
-Interpretation
-   ./paste.out list.txt list.txt [SEG FAULT]
-   ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
-   ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
-    ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 
 *****************************
@@ -146,31 +146,14 @@ coreutils/lib/vasnprintf.c
 CURRENT FAILURES 
 ################
 
-Instrumentation
-   ./df.out -h (packed assertion fails)
-   ./stat.out list.txt (packed assertion fails)
-
 Interpretation
    ./printf.out "%s" hello (mismatched values)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
 
-
-  ===== FAILED DURING INSTRUMENTATION OF VASNPRINT =====
-  ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
-  ===== PASSED OTHERWISE ===== 
-   ./factor.out 8 (not packed) - It passes if the packing check is
-   removed. Not counted as passing yet.
-   ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
-   is removed. Not counted as passing yet.
-
-  ===== FAILED DURING INSTRUMENTATION OF VASNPRINTF =====
-  ===== PASSED OTHERWISE ===== 
-   ./mkdir.out hola (*** PASSES)
-   ./stdbuf.out (*** PASSES)
-   ./install.out -b list.txt backup.txt (***PASSES)
-   ./numfmt 2 (*** PASSES)
-
+Instrumentation
+   ./df.out -h (packed assertion fails)
+   ./stat.out list.txt (packed assertion fails)
 
 ***********************************
 STRUCT PADDING CHECKING (11)
@@ -179,11 +162,6 @@ STRUCT PADDING CHECKING (11)
 ################
 CURRENT FAILURES
 ################
-
-Failing during instrumentation when packing check disabled
-   ./expr.out  linux : lin
-    ./ptx.out list.txt
-   ./csplit.out -f xyz list.txt 11 72 98
 
 Failing during interpretation when packing check disabled
    ./du.out -h (not packed, i64 i64), assertion failure
@@ -195,17 +173,41 @@ Failing during interpretation when packing check disabled
     ./sort.out list.txt (constant pointer) (not packed), mismatched values
   ./dir.out  (not packed, i64 i64), seg fault
 
+Failing during instrumentation when packing check disabled
+   ./expr.out  linux : lin
+    ./ptx.out list.txt
+   ./csplit.out -f xyz list.txt 11 72 98
+
+
+#############
+OTHER NOTES
+############
+
+===== FAILED DURING INSTRUMENTATION OF VASNPRINT =====
+===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
+===== PASSED OTHERWISE ===== 
+./factor.out 8 (not packed) - It passes if the packing check is
+removed. Not counted as passing yet.
+./seq.out 2 (not packed, i64 i64) - It passes if the packing check
+is removed. Not counted as passing yet.
+
+===== FAILED DURING INSTRUMENTATION OF VASNPRINTF =====
+===== PASSED OTHERWISE ===== 
+  ./mkdir.out hola (*** PASSES)
+  ./stdbuf.out (*** PASSES)
+  ./install.out -b list.txt backup.txt (***PASSES)
+./numfmt 2 (*** PASSES)
 
 ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
 ===== PASSED OTHERWISE ===== 
-cat
-cp
-install
-mv
-realpath
-split
-stdbuf
-touch
-tuncate
-uname
+  cat
+  cp
+  install
+  mv
+  realpath
+  split
+  stdbuf
+  touch
+  tuncate
+  uname
 
