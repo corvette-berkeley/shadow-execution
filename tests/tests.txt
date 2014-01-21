@@ -31,3 +31,4 @@ uninitialized_ptr
 global_ptr
 flatten
 flatten2
+struct_cast
