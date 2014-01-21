@@ -12,6 +12,7 @@ cut
 date 
 dircolors
 dirname
+dd
 echo
 env
 expand
@@ -68,3 +69,4 @@ unlink
 uptime
 wc
 whoami
+yes
