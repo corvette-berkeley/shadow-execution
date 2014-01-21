@@ -33,45 +33,103 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (53/100).
+CORE UTILITIES (54/100).
 
-During interpretation:
+
+Latest run on 1/20/2014.
+
+=== 54 programs ===
+
+[SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./echo.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./env.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./hostid.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./logname.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./nproc.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./pwd.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./sum.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./sync.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./true.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./tty.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./uname.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./expand.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./unexpand.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./unlink.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./wc.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
+[SUCCESSFULLY RUNNING COMMAND]: ./chroot.out with error code: 125
+[SUCCESSFULLY RUNNING COMMAND]: ./stdbuf.out with error code: 125
+[SUCCESSFULLY RUNNING COMMAND]: ./chcon.out with error code: 1
+[SUCCESSFULLY RUNNING COMMAND]: ./false.out with error code: 1
+[SUCCESSFULLY RUNNING COMMAND]: ./readlink.out with error code: 1
+[SUCCESSFULLY RUNNING COMMAND]: ./nice.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./runcon.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./split.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./touch.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./uniq.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./truncate.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./numfmt.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./mkfifo.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./nohup.out with error code: -11
+[SUCCESSFULLY RUNNING COMMAND]: ./link.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./basename.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./install.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./rm.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./date.out 
+[SUCCESSFULLY RUNNING COMMAND]: ./shuf.out list.txt 
+[SUCCESSFULLY RUNNING COMMAND]: ./dirname.out /usr/local
+[SUCCESSFULLY RUNNING COMMAND]: ./realpath.out -L list.txt
+[SUCCESSFULLY RUNNING COMMAND]:  fmt list.txt 
+[SUCCESSFULLY RUNNING COMMAND]: ./ln.out -s list.txt list.txt.2 
+[SUCCESSFULLY RUNNING COMMAND]: ./mknod.out temp.txt b 12 5 
+[SUCCESSFULLY RUNNING COMMAND]: ./tsort.out list.txt 
+[SUCCESSFULLY RUNNING COMMAND]: ./join.out list.txt list.txt
+
+
+=== FAILING: 5 programs === 
+[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  
+[FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
+[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
+[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
+[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
+
+During interpretation [18 programs]:
 ==============
 
-Failed assertion in Load (13)
+Failed assertion in Load (9)
    ./chown.out root temp.txt
 ./chgrp.out staff /usr/local
     ./dircolors.out
-   	 ./ln.out -s list.txt list.txt.2 
-    ./mknod.out temp.txt b 12 5 (failed assert in load)
    ./paste.out list.txt list.txt	
-   ./tsort.out list.txt (failed assert in load)
     ./vdir.out
     ./ls.out
    ./shred.out list.txt
-    ./join.out list.txt list.txt
    id
    ./du.out -h
 
-Failed assertion at getelement_struct (2)
-   fmt list.txt (in getelementptr struct/from a global value)
+Failed assertion at getelement_struct (1)
     ./sort.out list.txt (constant pointer)
 
-Mismatch at store (8)
+Mismatch at store (5)
    ./csplit.out -f xyz list.txt 11 72 98
-    ./dirname.out /usr/local
    mktemp testingXXX
-   ./realpath.out -L list.txt
-   address will never match)
         uptime
    ./ptx.out list.txt
-   ./expr.out  linux : lin
+   ./expr.out  linux : lin [ FAIL DURING INSTRUMENTATION ]
 
 
-PTRTOINT (3)
-  ./shuf.out list.txt (ptrtoint, expected mismatch because pointer
+PTRTOINT (1)
     ./comm.out list.txt list.txt
-    ./date.out 
 
 
 Failed assertion at return struct (3)
@@ -103,6 +161,7 @@ Broken module (11)
 Failed assertion at getGlobalIndex (1)
    od
 
+===== OLD LIST ====
 
 Passing (53)
 =======
@@ -161,60 +220,3 @@ Passing (53)
    ./install.out -b list.txt backup.txt (***PASSES)
 
 
-Latest run on 1/20/2014.
-
-=== 45 programs ===
-
-[SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./echo.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./env.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./hostid.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./logname.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./nproc.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./pwd.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./sum.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./sync.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./true.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./tty.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./uname.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./expand.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./unexpand.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./unlink.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./wc.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./chroot.out with error code: 125
-[SUCCESSFULLY RUNNING COMMAND]: ./stdbuf.out with error code: 125
-[SUCCESSFULLY RUNNING COMMAND]: ./chcon.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./false.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./readlink.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./nice.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./runcon.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./split.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./touch.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./uniq.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./truncate.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./numfmt.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./mkfifo.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./nohup.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./link.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./basename.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./install.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./rm.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 5
-
-
-=== FAILING: 5 programs === 
-[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  
-[FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
-[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
-[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
-[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
