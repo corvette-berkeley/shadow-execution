@@ -1189,17 +1189,23 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   int index;
   unsigned newOffset;
 
+  //
   // get base pointer operand
+  //
   basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
     executionStack.top()[base->inx];
 
   if (debug) cout << "\tPointer operand " << basePtrLocation->toString() << endl;
 
+  //
   // get index operand
+  // 
   index = offset->inx == -1 ? offset->value.as_int :
     executionStack.top()[offset->inx]->getValue().as_int; 
 
+  //
   // compute new offset from base pointer in bytes 
+  // 
   newOffset = (index * (size/8)) + basePtrLocation->getOffset();
 
   if (debug) {
@@ -1323,20 +1329,26 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
   if (debug) cout << "\tstructType size " << structType.size() << endl;
 
   IValue *structPtr, *structElemPtr; 
-  int structElemNo, structSize, index, i;
-  int* structElemSize;
+  int structElemNo, structSize, index, size, i, newOffset;
+  int* structElemSize, *structElem;
 
-  // get the operand struct
+  //
+  // get the struct operand
+  //
   structPtr = executionStack.top()[op->inx];
   structElemNo = structType.size();
   structElemSize = (int*) malloc(sizeof(int)*structElemNo);
+  structElem = (int*) malloc(sizeof(int)*structElemNo);
 
+  //
   // record struct element size
   // compute struct size
+  //
   structSize = 0;
   i = 0;
   while (!structType.empty()) {
     structElemSize[i] = KIND_GetSize(structType.front());
+    structElem[i] = structType.front();
     structSize += structElemSize[i];
     i++;
     structType.pop();
@@ -1375,11 +1387,22 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
   if (structPtr->isInitialized()) {
     IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
+    newOffset = structSize * (index/structElemNo);
+    for (i = 0; i < index % structElemNo; i++) {
+      newOffset = newOffset + KIND_GetSize(structElem[i]);
+    }
 
-    index = structPtr->getIndex() + index;
+    newOffset = newOffset + structPtr->getOffset();
 
-    if (debug)
-      cout << "\tGetting element at index: " << index << endl;
+    size = KIND_GetSize(structElem[index % structElemNo]);
+
+
+    if (debug) cout << "\tGetting element at index: " << index << endl;
+    if (debug) cout << "\tNew offset is: " << newOffset << endl;
+
+    index = findIndex((IValue*) structPtr->getIPtrValue(), newOffset, structPtr->getLength()); // TODO: revise offset, getValue().as_ptr
+
+    if (debug) cout << "\tNew index is: " << index << endl;
 
     // TODO: revisit this
     if (index < (int) structPtr->getLength()) {
@@ -1394,8 +1417,8 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       structElemPtr->setValueOffset(structPtr->getValueOffset());
       structElemPtr->setIndex(index);
       structElemPtr->setLength(structPtr->getLength());
-      structElemPtr->setSize(KIND_GetSize(structElem->getType()));
-      structElemPtr->setOffset(structElem->getFirstByte());
+      structElemPtr->setSize(size);
+      structElemPtr->setOffset(newOffset);
     } else {
       structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
       structElemPtr->setValueOffset(structPtr->getValueOffset());

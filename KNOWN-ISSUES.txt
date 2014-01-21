@@ -139,7 +139,7 @@ Failed assertion at return struct (3)
 
 
 
-During instrumentation:
+During instrumentation [12]:
 ===================
 All failing when verifying the same function: Running pass 'Module
 Verifier' on function '@vasnprintf
