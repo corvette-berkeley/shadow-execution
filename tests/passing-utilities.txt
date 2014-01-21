@@ -9,12 +9,12 @@ chroot
 cksum
 cp
 cut
-date 
 dircolors
 dirname
 echo
 env
 expand
+factor
 false
 fmt
 fold
@@ -41,6 +41,7 @@ realpath
 rm
 rmdir
 runcon
+seq
 sha1sum
 sha224sum
 sha256sum

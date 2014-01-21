@@ -38,7 +38,7 @@ CORE UTILITIES (65/87).
 
 Latest run on 1/20/2014.
 
-=== 65 programs ===
+=== 66 programs passing/ 21 programs failing===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -85,7 +85,6 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./date.out 
 [SUCCESSFULLY RUNNING COMMAND]: ./shuf.out list.txt 
 [SUCCESSFULLY RUNNING COMMAND]: ./dirname.out /usr/local
 [SUCCESSFULLY RUNNING COMMAND]: ./realpath.out -L list.txt
@@ -105,29 +104,40 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
 [SUCCESSFUL]  ./mkdir.out hola 
 ./od.out -b list.txt
+./factor.out 8
+./seq.out 2
 
-During interpretation [4 programs]:
-==============
+
+
+**************
+GENERAL (5)
+**************
    ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
-   mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
+   ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
     ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
+    ./date.out (seg fault) 
 
+*****************************
+VASNPRINTF FUNCTION (5)
+*****************************
 
-During instrumentation [19]:
-===================
 All failing when verifying the same function: Running pass 'Module
 Verifier' on function '@vasnprintf
 coreutils/lib/vasnprintf.c
 
-Broken module (7)
+################
+CURRENT FAILURES 
+################
+
    ./df.out -h (seg fault)
    ./printf.out "%s" hello (unhandled type)
-   ./stat.out list.txt (not packed, i64 i64)
+   ./stat.out list.txt (not packed, i64 i64), unhandled type
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
 
-  ===== FAILED BECAUSE OF =====
+  ===== FAILED DURING INSTRUMENTATION OF VASNPRINT =====
+  ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
   ===== PASSED OTHERWISE ===== 
    ./factor.out 8 (not packed) - It passes if the packing check is
    removed. Not counted as passing yet.
@@ -141,31 +151,45 @@ Broken module (7)
    ./install.out -b list.txt backup.txt (***PASSES)
    ./numfmt 2 (*** PASSES)
 
-Struct packing assertion (11)
-   ./du.out -h (not packed, i64 i64)
-    ./ls.out (not packed, i64 i64)
-    ./vdir.out (not packed, i64 i64)
-    ./pr.out list.txt (not packed, i64 i64)
-    ./sleep.out 2 (not packed, i64 i64)
-    ./timeout.out 1 sleep 10; date (not packed, i64 i64)
-    ./sort.out list.txt (constant pointer) (not packed)
-   ./expr.out  linux : lin (not packed)
+
+***********************************
+STRUCT PADDING CHECKING (11)
+***********************************
+
+################
+CURRENT FAILURES
+################
+
+Failing during instrumentation when packing check disabled
+   ./expr.out  linux : lin
     ./ptx.out list.txt
    ./csplit.out -f xyz list.txt 11 72 98
-  ./dir.out with error code: 5  (not packed, i64 i64)
+
+Failing during instrumentation when packing check disabled
+   ./du.out -h (not packed, i64 i64), assertion failure
+    ./ls.out (not packed, i64 i64), seg fault
+    ./vdir.out (not packed, i64 i64), mismatched values
+    ./pr.out list.txt (not packed, i64 i64), unhandled type
+    ./sleep.out 2 (not packed, i64 i64), unhandled type
+    ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
+    ./sort.out list.txt (constant pointer) (not packed), mismatched values
+  ./dir.out  (not packed, i64 i64), seg fault
 
 
-[FAILED INSTRUMENTATION]: i_cat.bc
-[FAILED INSTRUMENTATION]: i_cp.bc
-[FAILED INSTRUMENTATION]: i_date.bc
-[FAILED INSTRUMENTATION]: i_install.bc
-[FAILED INSTRUMENTATION]: i_mv.bc
-[FAILED INSTRUMENTATION]: i_realpath.bc
-[FAILED INSTRUMENTATION]: i_split.bc
-[FAILED INSTRUMENTATION]: i_stdbuf.bc
-[FAILED INSTRUMENTATION]: i_touch.bc
-[FAILED INSTRUMENTATION]: i_truncate.bc
-[FAILED INSTRUMENTATION]: i_uname.bc
+  ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
+  ===== PASSED OTHERWISE ===== 
+cat
+cp
+date
+install
+mv
+realpath
+split
+stdbuf
+touch
+tuncate
+uname
+
 
 ===== OLD LIST ====
 

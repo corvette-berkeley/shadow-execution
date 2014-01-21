@@ -9,12 +9,12 @@ chroot
 cksum list.txt
 cp list.txt temp.txt
 cut -c2 list.txt
-date
 dircolors
 dirname /usr/local
 echo
 env
 expand list.txt
+factor 8
 false --version
 fmt list.txt
 fold -5 list.txt
@@ -41,6 +41,7 @@ realpath -L list.txt
 rm out.txt 
 rmdir hello
 runcon
+seq 2
 sha1sum list.txt
 sha224sum list.txt
 sha256sum list.txt

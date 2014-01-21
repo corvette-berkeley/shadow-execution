@@ -73,13 +73,13 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       cout << "The struct is NOT packed" << endl;
       if (structType->hasName()) {
 	cout << "Name: " << structType->getName().str() << endl;
-	abort();
+	//abort();
       }
       else {
 	cout << "The struct does not have a name" << endl;
 	gepInst->dump();
 	// do not abort if the struct does not have a name?
-	abort();
+	//abort();
       }
     }
     //////////////////////////
