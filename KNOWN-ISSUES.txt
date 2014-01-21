@@ -33,12 +33,12 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (54/100).
+CORE UTILITIES (60/100).
 
 
 Latest run on 1/20/2014.
 
-=== 58 programs ===
+=== 60 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -98,12 +98,13 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./chown.out root temp.txt
 [SUCCESSFULLY RUNNING COMMAND]: ./chgrp.out staff /usr/local
 [SUCCESSFULLY RUNNING COMMAND]:  uptime
+[SUCCESSFULLY RUNNING COMMAND]:   id
+[SUCCESSFULLY RUNNING COMMAND]: ./sha256sum.out with error code: 5 
 
 
 === FAILING: 5 programs === 
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
 [FAILED RUNNING COMMAND]: ./dircolors.out
-[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
 [FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
 [FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
 
@@ -111,20 +112,19 @@ During interpretation [18 programs]:
 ==============
 
 Failed assertion in Load (6)
-   ./paste.out list.txt list.txt	
-    ./vdir.out
-    ./ls.out
-   ./shred.out list.txt
-   id
+   ./paste.out list.txt list.txt [SEG FAULT]	
+    ./vdir.out [ FAILED DURING INSTRUMENTATION ]
+    ./ls.out [ FAILED DURING INSTRUMENTATION ]
+   ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
    ./du.out -h [ FAILED DURING INSTRUMENTATION ]
 
 Failed assertion at getelement_struct (1)
-    ./sort.out list.txt (constant pointer)
+    ./sort.out list.txt (constant pointer) [FAILED DURING INSTRUMENTATION]
 
 Mismatch at store (4)
    ./csplit.out -f xyz list.txt 11 72 98 [ FAILED DURING INSTRUMENTATION ]
-   mktemp testingXXX
-   ./ptx.out list.txt
+   mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
+./ptx.out list.txt [ FAILED DURING INSTRUMENTATION ]
    ./expr.out  linux : lin [ FAIL DURING INSTRUMENTATION ]
 
 

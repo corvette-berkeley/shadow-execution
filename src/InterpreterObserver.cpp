@@ -1187,7 +1187,7 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
 
   IValue *basePtrLocation, *ptrLocation; 
   int index;
-  unsigned newOffset;
+  int newOffset;
 
   //
   // get base pointer operand

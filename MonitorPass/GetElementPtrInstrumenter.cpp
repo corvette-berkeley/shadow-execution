@@ -101,7 +101,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       abort();
     }
 
-    Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, NOSIGN);
+    Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, SIGNED);
     if(idxOp == NULL) return false;  
 
     KIND kind = TypeToKind(elemT);
