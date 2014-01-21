@@ -33,12 +33,12 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (65/87).
+CORE UTILITIES (66/87).
 
 
 Latest run on 1/20/2014.
 
-=== 66 programs passing/ 21 programs failing===
+=== 66 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -165,7 +165,7 @@ Failing during instrumentation when packing check disabled
     ./ptx.out list.txt
    ./csplit.out -f xyz list.txt 11 72 98
 
-Failing during instrumentation when packing check disabled
+Failing during interpretation when packing check disabled
    ./du.out -h (not packed, i64 i64), assertion failure
     ./ls.out (not packed, i64 i64), seg fault
     ./vdir.out (not packed, i64 i64), mismatched values
@@ -176,11 +176,10 @@ Failing during instrumentation when packing check disabled
   ./dir.out  (not packed, i64 i64), seg fault
 
 
-  ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
-  ===== PASSED OTHERWISE ===== 
+===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
+===== PASSED OTHERWISE ===== 
 cat
 cp
-date
 install
 mv
 realpath
@@ -189,64 +188,4 @@ stdbuf
 touch
 tuncate
 uname
-
-
-===== OLD LIST ====
-
-Passing (53)
-=======
-   ./base64.out list.txt (getelementptr_array of global variable)
-   basename list.txt   
-   cat list.txt
-   ./chmod.out +x temp.txt (unhandled type?) 
-   chroot
-   /.chcon.out -R --type=ssh_home_t
-    ./cut.out -c2 list.txt
-    ./dir.out
-   echo
-   ./env.out
-   false --version
-   ./fold.out -5 list.txt
-   hostid
-   link list.txt link.txt
-   logname
-   mkfifo temp (it creates a file...)
-   ./mv.out list.txt out.txt
-   ./numfmt 2 (*** PASSES)
-   nice
-   nproc
-    ./nohup.out time (or nohup)
-   pwd
-   readlink
-   ./rmdir.out hello (where hello is a directory)
-    ./rm.out list.txt 
-   runcon
-   ./split.out -b 22 list.txt list
-   ./stdbuf.out (*** PASSES)
-    sum list.txt
-   sync
-   tee (usage: ls | ./tee.out out)
-    ./tail -10 list.txt
-    ./touch.out out.txt
-   ./true.out --version
-    ./tty.out
-   whoami
-    ./uname.out
-    ./expand.out list.txt
-   ./unexpand.out list.txt
-   ./uniq.out list.txt
-  ./unlink.out list.txt
-   wc list.txt
-    ./kill.out pid
-    ./truncate.out -s 5 list.txt  
-    ./sha1sum.out list.txt 
-    ./sha224sum.out list.txt 
-    ./sha256sum.out list.txt 
-    ./sha384sum.out list.txt 
-    ./sha512sum.out list.txt
-   ./cksum.out list.txt
-    ./cp.out list.txt temp.txt
-    md5sum list.txt
-   ./install.out -b list.txt backup.txt (***PASSES)
-
 

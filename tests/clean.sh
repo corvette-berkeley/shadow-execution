@@ -4,10 +4,10 @@
 
 for p in `cat $1`
 do
-  rm "$p.bc"
-  rm "$p.s"
-  rm "i_$p.bc"
-  rm "i_$p.s"
-  rm "$p.ll"
-  rm "$p.out"
+  svn rm "$p.bc"
+  svn rm "$p.s"
+  svn rm "i_$p.bc"
+  svn rm "i_$p.s"
+  svn rm "$p.ll"
+  svn rm "$p.out"
 done
