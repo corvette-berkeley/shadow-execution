@@ -119,6 +119,7 @@ GENERAL (11)
 **************
 
 Interpretation
+Cuong:
    ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
    ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
@@ -147,6 +148,7 @@ CURRENT FAILURES
 ################
 
 Interpretation
+Cindy:
    ./printf.out "%s" hello (mismatched values)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
