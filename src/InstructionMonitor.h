@@ -90,6 +90,7 @@ extern "C" {
   void llvm_push_phinode_value(int valId, int blockId);
   void llvm_push_return_struct(KVALUE* value);
   void llvm_push_struct_type(KIND kind);
+  void llvm_push_struct_element_size(uint64_t s);
   void llvm_push_getelementptr_inx(KVALUE* value);
   void llvm_push_getelementptr_inx2(int value);
   void llvm_push_array_size(uint64_t i);

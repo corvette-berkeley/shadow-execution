@@ -8,7 +8,7 @@ struct Y {
   int x;
   double y;
   int z;
-};
+} __attribute__((packed));
 
 struct X {
   int a;
@@ -17,7 +17,7 @@ struct X {
   double b;
   char name[1];
   char* ptrname;
-};
+} __attribute__((packed));
 
 
 int main() {

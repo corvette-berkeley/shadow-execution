@@ -1240,6 +1240,15 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
         inx);
 
   IValue* arrayElemPtr;
+  int elemFlattenSize;
+
+  elemFlattenSize = 0;
+  while (!structElementSize.empty()) {
+    elemFlattenSize += structElementSize.front();
+    structElementSize.pop();
+  }
+  elemFlattenSize = elemFlattenSize == 0 ? 1 : elemFlattenSize;
+  if (debug) cout << "\tStruct element flatten size: " << elemFlattenSize << endl; 
 
   if (op->iid == 0) {
     // TODO: review this
@@ -1249,23 +1258,29 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     getElementPtrIndexList.pop();
     getElementPtrIndexList.pop();
   } else {
-    IValue* ptrArray;
-    if (op->isGlobal) {
-      ptrArray = globalSymbolTable[op->inx];
-    } else {
-      ptrArray = executionStack.top()[op->inx];
-    }
-    IValue* array = static_cast<IValue*>(ptrArray->getIPtrValue());
+    IValue *ptrArray, *array;
+    int index;
+
+    ptrArray = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
+    array = static_cast<IValue*>(ptrArray->getIPtrValue());
+
+    if (debug) cout << "\tPointer operand: " << ptrArray->toString() << endl;
 
     getElementPtrIndexList.pop();
 
-    int index = 1;
+    //
+    // compute the index
+    //
+    index = 1;
     arraySize.pop();
     while (!arraySize.empty()) {
       index = index * arraySize.front();
       arraySize.pop();
     }
     index = getElementPtrIndexList.front()*index;
+    if (debug) cout << "\tIndex: " << index << endl;
+    index = elemFlattenSize * index;
+    if (debug) cout << "\tIndex: " << index << endl;
     getElementPtrIndexList.pop();
     safe_assert(getElementPtrIndexList.empty());
 
@@ -1335,9 +1350,19 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
   cout << "\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size() << endl;
   index = getElementPtrIndexList.front()*structElemNo;
   getElementPtrIndexList.pop();
-  index = getElementPtrIndexList.empty() ? index : index + getElementPtrIndexList.front();
+  if (!getElementPtrIndexList.empty()) {
+    unsigned i;
+    for (i = 0; i < getElementPtrIndexList.front(); i++) {
+      index = index + structElementSize.front();
+      safe_assert(!structElementSize.empty());
+      structElementSize.pop();
+    }
+  }
   if (!getElementPtrIndexList.empty()) {
     getElementPtrIndexList.pop();
+  }
+  while (!structElementSize.empty()) {
+    structElementSize.pop();
   }
   safe_assert(getElementPtrIndexList.empty());
 
@@ -1961,7 +1986,8 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   } else {
     IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
       executionStack.top()[op1->inx];
-    v1 = loc1->getIntValue();
+    v1 = loc1->getType() == PTR_KIND ? loc1->getIntValue() + loc1->getOffset()
+      : loc1->getIntValue();
   }
 
   // get value of v2
@@ -1970,7 +1996,8 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
   } else {
     IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
       executionStack.top()[op2->inx];
-    v2 = loc2->getIntValue();
+    v2 = loc2->getType() == PTR_KIND ? loc2->getIntValue() + loc2->getOffset()
+      : loc2->getIntValue();
   } 
 
   if (debug) {
@@ -2239,10 +2266,17 @@ void InterpreterObserver::push_struct_type(KIND kind) {
   structType.push(kind);
 }
 
+void InterpreterObserver::push_struct_element_size(uint64_t s) {
+  if (debug) {
+    printf("<<<<< PUSH STRUCT ELEMENT SIZE >>>>> size: %ld\n", s);
+  }
+  structElementSize.push(s);
+}
+
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
   int idx = int_value->value.as_int;
   if (debug)
-    printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
+    printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %s\n", KVALUE_ToString(int_value).c_str());
   getElementPtrIndexList.push(idx);
 }
 

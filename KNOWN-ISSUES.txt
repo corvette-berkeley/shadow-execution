@@ -161,9 +161,9 @@ Passing (53)
    ./install.out -b list.txt backup.txt (***PASSES)
 
 
-Latest run on 1/17/2014.
+Latest run on 1/20/2014.
 
-=== 41 programs ===
+=== 45 programs ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -206,19 +206,15 @@ Latest run on 1/17/2014.
 [SUCCESSFULLY RUNNING COMMAND]: ./basename.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./install.out with error code: 5
 [SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./rm.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 5
 
 
-Cuong:
-=== 2 programs === 
-[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  [padding] 
+=== FAILING: 5 programs === 
+[FAILED RUNNING COMMAND]: ./chmod.out with error code: 5  
 [FAILED RUNNING COMMAND]: ./dir.out with error code: 5 
-
-Cindy:
-=== 7 programs ===
-[FAILED RUNNING COMMAND]: ./rm.out with error code: 5
-[FAILED RUNNING COMMAND]: ./sha1sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./sha224sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5
-[FAILED RUNNING COMMAND]: ./md5sum.out with error code: 5
+[FAILED RUNNING COMMAND]: ./sha256sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
+[FAILED RUNNING COMMAND]: ./sha384sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]
+[FAILED RUNNING COMMAND]: ./sha512sum.out with error code: 5 [FAILED DURING INSTRUMENTATION]

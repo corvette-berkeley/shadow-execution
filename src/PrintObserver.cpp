@@ -415,6 +415,10 @@ void PrintObserver::push_struct_type(KIND kind) {
   printf("<<<<< PUSH STRUCT TYPE >>>>> kind: %s\n", KIND_ToString(kind).c_str());
 }
 
+void PrintObserver::push_struct_element_size(uint64_t s) {
+  printf("<<<<< PUSH STRUCT ELEMENT SIZE >>>>> size: %ld\n", s);
+}
+
 void PrintObserver::push_getelementptr_inx(KVALUE* value) {
   printf("<<<<< PUSH GETELEMENTPTR INX >>>>> kvalue: %s\n", KVALUE_ToString(value).c_str());
 }

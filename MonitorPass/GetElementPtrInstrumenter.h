@@ -15,6 +15,9 @@ class GetElementPtrInstrumenter : public Instrumenter {
     bool CheckAndInstrument(Instruction* inst);
     uint64_t pushStructType(StructType* structType, InstrPtrVector& instrs);
     uint64_t pushStructType(ArrayType* arrayType, InstrPtrVector& instrs);
+    uint64_t getFlatSize(StructType* structType);
+    uint64_t getFlatSize(ArrayType* arrayType); 
+    void pushStructElementSize(StructType* structType, InstrPtrVector& instrs);
 };
 
 #endif

@@ -165,6 +165,8 @@ public:
 	void push_return_struct(KVALUE* value);
 
 	void push_struct_type(KIND kind);
+
+  void push_struct_element_size(uint64_t size);
 	
 	void push_getelementptr_inx(KVALUE* value);
 

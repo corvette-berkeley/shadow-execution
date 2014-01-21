@@ -93,6 +93,7 @@ public:
 	virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
 	virtual void push_struct_type(KIND kind UNUSED) {};
+  virtual void push_struct_element_size(uint64_t s UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
 	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};

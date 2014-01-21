@@ -297,6 +297,10 @@ void llvm_push_struct_type(KIND kind) {
   DISPATCH_TO_OBSERVERS(push_struct_type, kind);
 } 
 
+void llvm_push_struct_element_size(uint64_t s) {
+  DISPATCH_TO_OBSERVERS(push_struct_element_size, s);
+}
+
 void llvm_construct_array_type(uint64_t i) {
   DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }

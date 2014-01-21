@@ -27,6 +27,7 @@ class InterpreterObserver : public InstructionObserver {
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
   queue<KIND> structType; // store struct type
+  queue<uint64_t> structElementSize; // store struct (non-flatten) element size
   queue<KVALUE*> returnStruct; // store values of returned struct
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
@@ -201,6 +202,8 @@ class InterpreterObserver : public InstructionObserver {
   void push_phinode_value(int valId, int blockId);
 
   void push_struct_type(KIND kind);
+
+  void push_struct_element_size(uint64_t s);
 
   void push_getelementptr_inx(KVALUE* int_value);
 
