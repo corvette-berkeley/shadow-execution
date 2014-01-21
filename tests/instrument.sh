@@ -6,7 +6,7 @@ export CC=$LPATH"/clang -use-gold-plugin"
 export RANLIB="/bin/true"
 export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src"
 
-$CC -c -emit-llvm -g $1.c -o $1.bc
+$CC -c -fpack-struct -emit-llvm -g $1.c -o $1.bc
 
 llvm-dis $1.bc
 
