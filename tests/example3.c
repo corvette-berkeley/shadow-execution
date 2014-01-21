@@ -6,11 +6,11 @@
 struct X {
   int a;
   double b;
-} __attribute__((packed));
+};
 
 struct Y {
   int c;
-} __attribute__((packed));
+};
 
 
 int main() {
