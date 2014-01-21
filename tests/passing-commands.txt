@@ -1,51 +1,64 @@
 base64 list.txt
 basename list.txt   
 cat list.txt
-chmod +x temp.txt
-chroot
 chcon -R --type=ssh_home_t
+chgrp staff /usr/local
+chmod +x temp.txt
+chown root temp.txt
+chroot
+cksum list.txt
+cp list.txt temp.txt
 cut -c2 list.txt
-dir
+date
+dircolors
+dirname /usr/local
 echo
 env
+expand list.txt
 false --version
+fmt list.txt
 fold -5 list.txt
 hostid
+id
+install -b list.txt backup.txt
+join list.txt list.txt
 link list.txt link.txt
+ln -s list.txt list.txt.2
 logname
+md5sum list.txt
+mkdir hello
 mkfifo temp
-mv list.txt out.txt
-numfmt 2
+mknod temp.txt b 12 5
+mv temp.txt out.txt
 nice
-nproc
 nohup time
+nproc
+numfmt 2
 pwd
 readlink
+realpath -L list.txt
+rm out.txt 
 rmdir hello
 runcon
-split -b 22 list.txt list
-stdbuf
-sum list.txt
-sync
-tail -10 list.txt
-touch out.txt
-true --version
-tty
-whoami
-uname
-expand list.txt
-unexpand list.txt
-uniq list.txt
-unlink list.txt
-wc list.txt
-rm list.txt 
-truncate -s 5 list.txt
 sha1sum list.txt
 sha224sum list.txt
 sha256sum list.txt
 sha384sum list.txt
 sha512sum list.txt
-cksum list.txt
-cp list.txt temp.txt
-md5sum list.txt
-install -b list.txt backup.txt
+shuf list.txt
+split -b 22 list.txt list
+stdbuf
+sum list.txt
+sync
+touch out.txt
+true --version
+truncate -s 5 list.txt
+tsort list.txt 
+tty
+uname
+unexpand list.txt
+uniq list.txt
+unlink list.txt
+uptime
+whoami
+wc list.txt
