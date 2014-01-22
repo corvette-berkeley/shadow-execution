@@ -36,6 +36,7 @@ mknod
 mktemp
 mv
 nice
+nl
 nohup
 nproc
 numfmt
@@ -61,6 +62,7 @@ split
 stdbuf
 sum
 sync
+tac
 tee
 timeout
 touch

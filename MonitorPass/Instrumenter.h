@@ -140,6 +140,8 @@ int KIND_GetSize(int kind) {
       return 1;
     case INT16_KIND:
       return 2;
+    case INT24_KIND:
+      return 3;
     case INT32_KIND:
     case FLP32_KIND:
       return 4;
@@ -168,16 +170,17 @@ int KIND_GetSize(int kind) {
 	KIND TypeToKind(Type* T) {
 	  if(T->isIntegerTy()) {
 	    switch(T->getScalarSizeInBits()) {
-	    case 1U:  return INT1_KIND;
-	    case 8U:  return INT8_KIND;
-	    case 16U: return INT16_KIND;
-	    case 32U: return INT32_KIND;
-	    case 64U: return INT64_KIND;
-	    }
-	  } else if(T->isFloatingPointTy()) {
-	    if(T->isFloatTy()) {
-	      return FLP32_KIND;
-	    } else if(T->isDoubleTy()) {
+        case 1U:  return INT1_KIND;
+        case 8U:  return INT8_KIND;
+        case 16U: return INT16_KIND;
+        case 24U: return INT24_KIND;
+        case 32U: return INT32_KIND;
+        case 64U: return INT64_KIND;
+      }
+    } else if(T->isFloatingPointTy()) {
+      if(T->isFloatTy()) {
+        return FLP32_KIND;
+      } else if(T->isDoubleTy()) {
 	      return FLP64_KIND;
 	    } else if(T->isFP128Ty()) {
 	      return FLP128_KIND;

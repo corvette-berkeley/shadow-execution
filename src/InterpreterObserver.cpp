@@ -205,7 +205,7 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
 
 long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
   KIND kind = op->kind;
-  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
+  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
     return op->value.as_int;
   } else {
     return op->value.as_flp;
@@ -214,7 +214,7 @@ long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
 
 long double InterpreterObserver::getValueFromIValue(IValue* loc) {
   KIND kind = loc->getType();
-  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT32_KIND || kind == INT64_KIND) {
+  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
     return loc->getValue().as_int;
   } else {
     return loc->getValue().as_flp;
@@ -431,34 +431,39 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 
   uint64_t value1, value2;
   if (op1->inx == -1) {
-    value1 = op1->value.as_int;
+    value1 = KVALUE_ToIntValue(op1);
   }
   else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
+    IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
+    value1 = loc1->getIntValue();
   }
 
   if (op2->inx == -1) {
-    value2 = op2->value.as_int;
+    value2 = KVALUE_ToIntValue(op2);
   }
   else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
+    IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
+    value2 = loc2->getIntValue();
   }
 
   uint64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 << value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (uint32_t)value1 << (uint32_t)value2;
-  }
-  else if (op1->kind == INT8_KIND) {
-    result = (uint8_t)value1 << (uint8_t)value2;
-  }
-  else {
-    cout << "[SHL]: Operand type is not int32 or int64" << endl;
-    safe_assert(false);
+  switch (op1->kind) {
+    case INT8_KIND:
+      result = (uint8_t)value1 << (uint8_t)value2;
+      break;
+    case INT16_KIND:
+      result = (uint16_t)value1 << (uint16_t)value2;
+      break;
+    case INT24_KIND:
+    case INT32_KIND:
+      result = (uint32_t)value1 << (uint32_t) value2;
+      break;
+    case INT64_KIND:
+      result = value1 << value2;
+      break;
+    default:
+      cout << "[SHL]: Operand type is not in8 or int16 or in24 or int32 or int64" << endl;
+      safe_assert(false);
   }
 
   VALUE vresult;
@@ -485,6 +490,9 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
+  // TODO: FIX THIS
+  // ADD CASES FOR GLOBAL VARIABLES
+  
   uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
@@ -503,6 +511,9 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
 
+  // TODO: FIX THIS
+  // ADD CASES FOR OTHER INT TYPE
+  
   uint64_t result;
   if (op1->kind == INT64_KIND) {
     result = value1 >> value2;
@@ -514,7 +525,7 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
     result = (uint8_t)value1 >> (uint8_t)value2;
   }
   else {
-    cout << "[LSHR]: Operand type is not int32 or int64" << endl;
+    cout << "[LSHR]: Operand type is not int32 or int64 or int8" << endl;
     safe_assert(false);
   }
 
@@ -1015,6 +1026,9 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
     case INT16_KIND: 
       result = ((int16_t)dest->getValue().as_int == (int16_t)kv->value.as_int);
       break;
+    case INT24_KIND:
+      result = (dest->getIntValue() == KVALUE_ToIntValue(kv));
+      break;
     case INT32_KIND: 
       result = ((int32_t)dest->getValue().as_int == (int32_t)kv->value.as_int);
       break;
@@ -1480,6 +1494,7 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
   int16_t* int16Ptr = (int16_t*) int64Ptr;
   int32_t* int32Ptr = (int32_t*) int64Ptr;
   VALUE truncValue;
+  IValue* srcTemp = new IValue();
 
   switch (type) {
     case INT1_KIND:
@@ -1490,6 +1505,11 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
       break;
     case INT16_KIND:
       truncValue.as_int = *int16Ptr;
+      break;
+    case INT24_KIND:
+      src->copy(srcTemp);
+      srcTemp->setType(INT24_KIND);
+      truncValue.as_int = srcTemp->getIntValue();
       break;
     case INT32_KIND:
       truncValue.as_int = *int32Ptr;
@@ -1520,6 +1540,7 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
     intValue = (bool) intValue;
   }
   VALUE zextValue;
+  IValue* srcTemp = new IValue();
 
   switch (type) {
     case INT1_KIND:
@@ -1530,6 +1551,11 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       break;
     case INT16_KIND:
       zextValue.as_int = (int16_t) intValue;
+      break;
+    case INT24_KIND:
+      src->copy(srcTemp);
+      srcTemp->setType(INT24_KIND);
+      zextValue.as_int = srcTemp->getIntValue();
       break;
     case INT32_KIND: 
       zextValue.as_int = (int32_t) intValue;
@@ -1558,6 +1584,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   VALUE value = src->getValue();
 
   VALUE ext_value;
+  IValue* srcTemp = new IValue();
 
   switch (type) {
     case INT1_KIND:
@@ -1568,6 +1595,11 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       break;
     case INT16_KIND:
       ext_value.as_int = (int16_t) value.as_int;
+      break;
+    case INT24_KIND:
+      src->copy(srcTemp);
+      srcTemp->setType(INT24_KIND);
+      ext_value.as_int = srcTemp->getIntValue();
       break;
     case INT32_KIND: 
       ext_value.as_int = (int32_t) value.as_int;
@@ -1768,6 +1800,8 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
   int64_t ptrValue = value.as_int + src->getOffset(); 
 
   VALUE int_value;
+  int8_t* ptrValue8;
+  int64_t* ptrValue64;
 
   switch (type) {
     case INT1_KIND:
@@ -1778,6 +1812,14 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
       break;
     case INT16_KIND:
       int_value.as_int = (int16_t) ptrValue;
+      break;
+    case INT24_KIND:
+      ptrValue8 = (int8_t*) &ptrValue;
+      ptrValue8[3] = 0;
+      ptrValue8[4] = 0;
+      ptrValue8[5] = 0;
+      ptrValue64 = (int64_t*) ptrValue8;
+      int_value.as_int = *ptrValue64;
       break;
     case INT32_KIND:
       int_value.as_int = (int32_t) ptrValue;
@@ -2749,6 +2791,18 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       cValueInt = *((int16_t*) concrete->value.as_ptr);
       sync = (iValue->getValue().as_int != cValueInt);
       if (sync) {
+        syncValue.as_int = cValueInt;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT24_KIND:
+      cValueInt = KVALUE_ToIntValue(concrete);
+      sync = (iValue->getIntValue() != cValueInt);
+      if (sync) {
+        if (debug) {
+          cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
+          cout << "\t CONCRETE: " << cValueInt << endl; 
+        }
         syncValue.as_int = cValueInt;
         iValue->setValue(syncValue);
       }

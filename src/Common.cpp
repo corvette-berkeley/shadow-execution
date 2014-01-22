@@ -41,6 +41,9 @@ std::string KVALUE_ToString(KVALUE* kv) {
     case INT16_KIND:
       s << "INT16: " << kv->value.as_int << "]";
       break;
+    case INT24_KIND:
+      s << "INT24: " << kv->value.as_int << "]";
+      break;
     case INT32_KIND:
       s << "INT32: " << kv->value.as_int << "]";
       break;
@@ -82,6 +85,35 @@ std::string KVALUE_ToString(KVALUE* kv) {
   }
   return s.str();
 }
+
+int64_t KVALUE_ToIntValue(KVALUE* kv) {
+  int64_t v; 
+  int64_t* vp64;
+  int8_t* vp8;
+  v = kv->value.as_int;
+  switch (kv->kind) {
+    case INT1_KIND:
+      return (bool) v;
+    case INT8_KIND:
+      return (int8_t) v;
+    case INT16_KIND:
+      return (int16_t) v;
+    case INT24_KIND:
+      vp64 = &v;
+      vp8 = (int8_t*) vp64;
+      vp8[3] = 0;
+      vp8[4] = 0;
+      vp8[5] = 0;
+      return *vp64;
+    case INT32_KIND:
+      return (int32_t) v;
+    case INT64_KIND:
+      return (int64_t) v;
+    default:
+      return v;
+  }
+
+}
   
 std::string KIND_ToString(int kind) {
   std::stringstream s;
@@ -100,6 +132,9 @@ std::string KIND_ToString(int kind) {
     break;
   case INT16_KIND:
     s << "[INT16]";
+    break;
+  case INT24_KIND:
+    s << "[INT24]";
     break;
   case INT32_KIND:
     s << "[INT32]";
@@ -136,6 +171,8 @@ int KIND_GetSize(int kind) {
       return 1;
     case INT16_KIND:
       return 2;
+    case INT24_KIND:
+      return 3;
     case INT32_KIND:
     case FLP32_KIND:
       return 4;

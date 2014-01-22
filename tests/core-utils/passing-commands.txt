@@ -36,6 +36,7 @@ mknod temp.txt b 12 5
 mktemp testingXXX
 mv temp.txt out.txt
 nice
+nl list.txt
 nohup time
 nproc
 numfmt 2
@@ -61,6 +62,7 @@ split -b 22 list.txt list
 stdbuf
 sum list.txt
 sync
+tac list.txt
 timeout 1 sleep 10; date
 touch out.txt
 tr

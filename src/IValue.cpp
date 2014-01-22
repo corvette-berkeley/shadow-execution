@@ -133,6 +133,9 @@ string IValue::toString() {
   case INT16_KIND:
     s << "[INT16: " << value.as_int << "]";
     break;
+  case INT24_KIND:
+    s << "[INT24: " << value.as_int << "]";
+    break;
   case INT32_KIND:
     s << "[INT32: " << value.as_int << "]";
     break;
@@ -355,7 +358,10 @@ bool IValue::isIValue(KIND t) {
 }
 
 int64_t IValue::getIntValue() {
-  int64_t v = value.as_int;
+  int64_t v; 
+  int64_t* vp64;
+  int8_t* vp8;
+  v = value.as_int;
   switch (type) {
     case INT1_KIND:
       return (bool) v;
@@ -363,6 +369,13 @@ int64_t IValue::getIntValue() {
       return (int8_t) v;
     case INT16_KIND:
       return (int16_t) v;
+    case INT24_KIND:
+      vp64 = &v;
+      vp8 = (int8_t*) vp64;
+      vp8[3] = 0;
+      vp8[4] = 0;
+      vp8[5] = 0;
+      return *vp64;
     case INT32_KIND:
       return (int32_t) v;
     case INT64_KIND:

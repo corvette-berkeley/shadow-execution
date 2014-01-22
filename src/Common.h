@@ -62,17 +62,18 @@ const KIND	INV_KIND	= 0U,
   INT1_KIND 	= 2U,
   INT8_KIND 	= 3U,
   INT16_KIND 	= 4U,
-  INT32_KIND 	= 5U,
-  INT64_KIND 	= 6U,
-  FLP32_KIND	= 7U,
-  FLP64_KIND	= 8U,
-  FLP128_KIND	= 9U,
-  FLP80X86_KIND  = 10U,
-  FLP128PPC_KIND = 11U,
-  ARRAY_KIND = 12U,
-  STRUCT_KIND = 13U,
-  INTPTR_KIND = 14U,
-  VOID_KIND = 15U;
+  INT24_KIND = 5U,
+  INT32_KIND 	= 6U,
+  INT64_KIND 	= 7U,
+  FLP32_KIND	= 8U,
+  FLP64_KIND	= 9U,
+  FLP128_KIND	= 10U,
+  FLP80X86_KIND  = 11U,
+  FLP128PPC_KIND = 12U,
+  ARRAY_KIND = 13U,
+  STRUCT_KIND = 14U,
+  INTPTR_KIND = 15U,
+  VOID_KIND = 16U;
 
 
 const IID INV_IID = 0U;
@@ -94,6 +95,7 @@ struct kvalue_t {
 std::string IID_ToString(IID& iid);
 std::string PTR_ToString(PTR& ptr);
 std::string KVALUE_ToString(KVALUE* kv);
+int64_t KVALUE_ToIntValue(KVALUE* kv);
 std::string KIND_ToString(int kind);
 int KIND_GetSize(int kind);
 
