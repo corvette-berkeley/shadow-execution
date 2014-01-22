@@ -37,6 +37,7 @@ nohup time
 nproc
 numfmt 2
 od -b list.txt
+paste list.txt list.txt
 pathchk -p /usr/local
 pinky
 printenv

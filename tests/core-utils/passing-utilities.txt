@@ -37,6 +37,7 @@ nohup
 nproc
 numfmt
 od
+paste
 pathchk
 pinky
 printenv
