@@ -288,7 +288,7 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
 } 
 
 void IValue::writeValue(int offset, int byte, IValue* src) {
-  int valueOffset, length, bitOffset;
+  int64_t valueOffset, length, bitOffset;
   IValue* valueArray = static_cast<IValue*>(getIPtrValue());
 
   cout << "\t writing " << byte << " bytes\n" << endl;

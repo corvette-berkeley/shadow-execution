@@ -38,7 +38,7 @@ CORE UTILITIES (74/100).
 
 Latest run on 1/20/2014.
 
-=== 74 programs passing ===
+=== 77 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -115,15 +115,16 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
 [SUCCESSFUL] ./paste.out list.txt list.txt [SEG FAULT]
 [SUCCESSFUL] ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
+[SUCCESSFUL]   ./mktemp testingXXX [SEG FAULT] 
+[SUCCESSFUL]  ./shred.out -n 2 list.txt [SEG FAULT] [THIS MIGHT TAKE A WHILE] 
+
 
 **************
-GENERAL (11)
+GENERAL (7)
 **************
 
 Interpretation
 Cuong:
-   ./shred.out list.txt [SEG FAULT] 
-   ./mktemp testingXXX [SEG FAULT] 
 
 Instrumentation	
     tail (packing check fails, infinite loop when instrumenting otherwise) 

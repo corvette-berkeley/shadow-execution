@@ -31,6 +31,7 @@ md5sum list.txt
 mkdir hello
 mkfifo temp
 mknod temp.txt b 12 5
+mktemp testingXXX
 mv temp.txt out.txt
 nice
 nohup time
@@ -52,6 +53,7 @@ sha224sum list.txt
 sha256sum list.txt
 sha384sum list.txt
 sha512sum list.txt
+shred -n 2 list.txt
 shuf list.txt
 split -b 22 list.txt list
 stdbuf
