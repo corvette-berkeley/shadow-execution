@@ -99,6 +99,9 @@ uint64_t AllocaInstrumenter::pushStructType(StructType* structType, InstrPtrVect
   for (uint64_t i = 0; i < size; i++) {
     Type* elemType = structType->getElementType(i);
     KIND elemKind = TypeToKind(elemType);
+    if (elemKind == INV_KIND) {
+      elemType->dump();
+    }
     safe_assert(elemKind != INV_KIND);
     if (elemKind == ARRAY_KIND) {
       allocation += pushStructType((ArrayType*)elemType, instrs);

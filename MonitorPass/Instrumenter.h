@@ -155,14 +155,6 @@ public:
 	      return FLP128PPC_KIND;;
 	    }
 	  } else if(T->isPointerTy()) {
-	    /*
-	      if ((dyn_cast<PointerType>(T))->getElementType()->isIntegerTy()) {
-	      return INTPTR_KIND;
-	      }
-	      else {
-	      return PTR_KIND;
-	      }
-	    */
 	    return PTR_KIND;
 	  } else if (T->isArrayTy()) {
 	    return ARRAY_KIND;
