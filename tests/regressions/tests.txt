@@ -38,7 +38,6 @@ example6
 example7
 example8
 example9
-example
 fadd_double_global
 fadd_double_local
 fadd_float_3ops
