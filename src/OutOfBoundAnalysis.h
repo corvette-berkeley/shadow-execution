@@ -25,7 +25,7 @@ class OutOfBoundAnalysis : public InterpreterObserver {
         index, KIND kind, uint64_t size, int line, int inx);
 
     virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND
-        kind, int inx);
+        kind, int elementSize, int inx);
 
     virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND
         kind, KIND arrayKind, int inx);

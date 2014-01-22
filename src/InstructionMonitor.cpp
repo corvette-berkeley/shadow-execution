@@ -147,10 +147,9 @@ void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIN
   DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, line, inx)
 }
 
-void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_array, iid, isbound, value, kind, inx)
+void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int elementSize, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_array, iid, isbound, value, kind, elementSize, inx)
 }
-
 
 void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind1, KIND kind2, int inx) {
   DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, isbound, value, kind1, kind2, inx)

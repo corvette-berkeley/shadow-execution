@@ -51,7 +51,7 @@ extern "C" {
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int line, int x);
-  void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int x);
+  void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int elementSize, int x);
   void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
 
   // ***** Conversion Operations ***** //

@@ -1247,17 +1247,18 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
   return;
 }
 
-void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
+void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx) {
   if (debug)
-    printf("<<<<< GETELEMENTPTR_ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+    printf("<<<<< GETELEMENTPTR_ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, elementSize: %d, [INX: %d]\n", 
         IID_ToString(iid).c_str(),
         (inbound ? "1" : "0"),
         KVALUE_ToString(op).c_str(),
         KIND_ToString(kind).c_str(),
+        elementSize,
         inx);
 
   IValue* arrayElemPtr;
-  int elemFlattenSize;
+  int elemFlattenSize, newOffset;
 
   elemFlattenSize = 0;
   while (!structElementSize.empty()) {
@@ -1294,9 +1295,18 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       index = index * arraySize.front();
       arraySize.pop();
     }
-    index = getElementPtrIndexList.front()*index;
+    index = getElementPtrIndexList.front()*index; // index for non-flatten array
     if (debug) cout << "\tIndex: " << index << endl;
-    index = elemFlattenSize * index;
+
+    //
+    // compute new offset
+    //
+    newOffset = ptrArray->getOffset() + elementSize*index; 
+
+    //
+    // compute the index for latten array
+    //
+    index = elemFlattenSize * index; // index of flatten array
     if (debug) cout << "\tIndex: " << index << endl;
     getElementPtrIndexList.pop();
     safe_assert(getElementPtrIndexList.empty());
@@ -1316,8 +1326,10 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
       arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
       arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
     } else {
-      arrayElemPtr = new IValue(PTR_KIND, ptrArray->getValue(), ptrArray->getSize(), 0, 0, 0);
-      arrayElemPtr->setValueOffset(ptrArray->getValueOffset());
+      VALUE arrayElemPtrValue;
+      arrayElemPtrValue.as_int = ptrArray->getValue().as_int + newOffset;
+      arrayElemPtr = new IValue(PTR_KIND, arrayElemPtrValue, ptrArray->getSize(), 0, 0, 0);
+      arrayElemPtr->setValueOffset((int64_t)arrayElemPtr - arrayElemPtr->getValue().as_int);
     }
   }
 
@@ -1391,6 +1403,18 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
   if (debug) cout << "\tIndex is " << index << endl;
 
+  newOffset = structSize * (index/structElemNo);
+  for (i = 0; i < index % structElemNo; i++) {
+    newOffset = newOffset + KIND_GetSize(structElem[i]);
+  }
+
+  newOffset = newOffset + structPtr->getOffset();
+
+  size = KIND_GetSize(structElem[index % structElemNo]);
+
+
+  if (debug) cout << "\tNew offset is: " << newOffset << endl;
+
   //
   // compute the result; consider two cases: the struct pointer operand is
   // initialized and is not initialized
@@ -1398,18 +1422,6 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
   if (structPtr->isInitialized()) {
     IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
 
-    newOffset = structSize * (index/structElemNo);
-    for (i = 0; i < index % structElemNo; i++) {
-      newOffset = newOffset + KIND_GetSize(structElem[i]);
-    }
-
-    newOffset = newOffset + structPtr->getOffset();
-
-    size = KIND_GetSize(structElem[index % structElemNo]);
-
-
-    if (debug) cout << "\tGetting element at index: " << index << endl;
-    if (debug) cout << "\tNew offset is: " << newOffset << endl;
 
     index = findIndex((IValue*) structPtr->getIPtrValue(), newOffset, structPtr->getLength()); // TODO: revise offset, getValue().as_ptr
 
@@ -1435,16 +1447,12 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
       structElemPtr->setValueOffset(structPtr->getValueOffset());
     }
   } else {
-    int i, size; 
+    if (debug) cout << "\tPointer is not initialized" << endl;
     VALUE structElemPtrValue;
 
     // compute the value for the element pointer
-    size = structElemSize[index%structElemNo];
     structElemPtrValue = structPtr->getValue();
-    structElemPtrValue.as_int = structElemPtrValue.as_int + (index/structElemNo)*structSize;
-    for (i = 0; i < index%structElemNo; i++) {
-      structElemPtrValue.as_int += structElemSize[i];
-    }
+    structElemPtrValue.as_int = structElemPtrValue.as_int + newOffset;
 
     structElemPtr = new IValue(PTR_KIND, structElemPtrValue, size, 0, 0, 0);
     structElemPtr->setValueOffset((int64_t)structElemPtr - structElemPtr->getValue().as_int);
@@ -1814,7 +1822,7 @@ void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size,
   IValue *bitcastLoc = new IValue(type, value, size/8, src->getOffset(), src->getIndex(), src->getLength()); // TODO: check
   bitcastLoc->setValueOffset(src->getValueOffset());
   executionStack.top()[inx] = bitcastLoc;
-  
+
   if (debug) {
     cout << bitcastLoc->toString() << endl;
   }

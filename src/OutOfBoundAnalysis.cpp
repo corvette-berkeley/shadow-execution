@@ -53,7 +53,7 @@ void OutOfBoundAnalysis::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVAL
   return;
 }
 
-void OutOfBoundAnalysis::getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, int inx) {
+void OutOfBoundAnalysis::getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, int elementSize UNUSED, int inx) {
 
   IValue* ptrArray = executionStack.top()[op->inx];
   IValue* array = static_cast<IValue*>(ptrArray->getValue().as_ptr);

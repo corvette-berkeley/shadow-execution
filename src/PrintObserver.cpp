@@ -239,12 +239,13 @@ void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* ind
 	 inx);
 }
 
-void PrintObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int inx) {
-  printf("<<<<< GETELEMENTPTR ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, [INX: %d]\n", 
+void PrintObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx) {
+  printf("<<<<< GETELEMENTPTR ARRAY >>>>> %s, inbound:%s, pointer_value:%s, kind: %s, elementSize: %d, [INX: %d]\n", 
       IID_ToString(iid).c_str(),
 	 (inbound ? "1" : "0"),
 	 KVALUE_ToString(op).c_str(),
 	 KIND_ToString(kind).c_str(),
+   elementSize,
 	 inx);
 }
 
