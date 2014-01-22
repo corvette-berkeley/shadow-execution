@@ -6,5 +6,5 @@ int main() {
   a[3] = 4L;
   long b = a[3];
 
-  return b;
+  return 0;
 }

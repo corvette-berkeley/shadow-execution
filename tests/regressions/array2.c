@@ -4,5 +4,5 @@ int main() {
   int **x = &p;
   int d = x[0];
 
-  return d;
+  return 0;
 }

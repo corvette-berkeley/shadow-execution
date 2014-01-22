@@ -92,7 +92,7 @@ def main():
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
-        log.write("[FAILED RUNNING EXECUTABLE]: " + iexecutablefile + "\n")
+        log.write("[FAILED RUNNING EXECUTABLE]: " + iexecutablefile + " with error code " + str(retval) + "\n")
 
 
 

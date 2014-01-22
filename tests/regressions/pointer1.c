@@ -4,5 +4,5 @@ int main() {
   int** c = &b;
   int d = **c;
 
-  return d;
+  return 0;
 }

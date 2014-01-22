@@ -8,5 +8,5 @@ int main()
   mul = add * sub;
   div = mul / sub;
 
-  return div;
+  return 0;
 }
