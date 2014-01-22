@@ -38,7 +38,7 @@ CORE UTILITIES (74/100).
 
 Latest run on 1/20/2014.
 
-=== 77 programs passing ===
+=== 79 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -117,22 +117,21 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 [SUCCESSFUL]   ./mktemp testingXXX [SEG FAULT] 
 [SUCCESSFUL]  ./shred.out -n 2 list.txt [SEG FAULT] [THIS MIGHT TAKE A WHILE] 
+[SUCCESSFUL]  ./tr.out abc ABC < list.txt (packed assertion fails)
+[SUCCESSFUL]  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
 
 
 **************
-GENERAL (7)
+GENERAL (6)
 **************
 
-Interpretation
 Cuong:
-
 Instrumentation	
     tail (packing check fails, infinite loop when instrumenting otherwise) 
     ./users.out(packed assertion fails) 
-    ./date.out (packed assertion fails)
-    ./tr.out abc ABC (packed assertion fails)
-    tac (packed assertion fails)
-    nl (packed assertion fails)
+    ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
+    tac (packed assertion fails) [USE INT24 TYPE]
+    nl (packed assertion fails) [USE INT24 TYPE]
     head (infinite loop when instrumenting)
 
 
@@ -148,8 +147,8 @@ coreutils/lib/vasnprintf.c
 CURRENT FAILURES 
 ################
 
-Interpretation
 Cindy:
+Interpretation
    ./printf.out "%s" hello (mismatched values)
    ./stty.out (mismatched values at store)
    ./who.out (mismatched values at store)
@@ -159,7 +158,7 @@ Instrumentation
    ./stat.out list.txt (packed assertion fails)
 
 ***********************************
-STRUCT PADDING CHECKING (11)
+STRUCT PADDING CHECKING (10)
 ***********************************
 
 ################
@@ -172,7 +171,6 @@ Failing during interpretation when packing check disabled
     ./vdir.out (not packed, i64 i64), mismatched values
     ./pr.out list.txt (not packed, i64 i64), unhandled type
     ./sleep.out 2 (not packed, i64 i64), unhandled type
-    ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
     ./sort.out list.txt (constant pointer) (not packed), mismatched values
   ./dir.out  (not packed, i64 i64), seg fault
 
@@ -213,4 +211,6 @@ is removed. Not counted as passing yet.
   touch
   tuncate
   uname
+  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
+  ./tr.out abc ABC < list.txt (packed assertion fails)
 

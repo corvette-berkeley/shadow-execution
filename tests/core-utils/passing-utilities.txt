@@ -60,7 +60,9 @@ stdbuf
 sum
 sync
 tee
+timeout
 touch
+tr
 true
 truncate
 tsort

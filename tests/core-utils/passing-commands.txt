@@ -59,7 +59,9 @@ split -b 22 list.txt list
 stdbuf
 sum list.txt
 sync
+timeout 1 sleep 10; date
 touch out.txt
+tr
 true --version
 truncate -s 5 list.txt
 tsort list.txt 
