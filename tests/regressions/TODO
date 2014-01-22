@@ -2,3 +2,7 @@
 add
 ---
 - more than two operands, different combinations
+
+fadd
+----
+- finish other types. make sure values make sense.
