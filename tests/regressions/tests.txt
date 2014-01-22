@@ -1,5 +1,3 @@
-add_double
-add_float
 add_fptrunc
 add_int_3ops
 add_int_constants
