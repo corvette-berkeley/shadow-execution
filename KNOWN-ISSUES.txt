@@ -103,7 +103,6 @@ Latest run on 1/20/2014.
 [SUCCESSFULLY RUNNING COMMAND]:   id
 [SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
 [SUCCESSFUL]  ./mkdir.out hola 
-[SUCCESSFUL] ./od.out -b list.txt
 [SUCCESSFUL] ./factor.out 8
 [SUCCESSFUL] ./seq.out 2
 [SUCCESSFUL]   tee (usage: ls | ./tee.out out) 
@@ -157,6 +156,7 @@ Interpretation
 
 Instrumentation
    ./df.out -h (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - VASNPRINTF]
+   ./od.out -b list.txt [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - VASNPRINTF]
    ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
 ***********************************
@@ -168,7 +168,7 @@ CURRENT FAILURES
 ################
 
 Failing during interpretation when packing check disabled
-   ./du.out -h (not packed, i64 i64), assertion failure [CALL MALLOC]
+   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT]
     ./vdir.out (not packed, i64 i64), mismatched values [THE BITCODE FAILS ITSELF] 
     ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
