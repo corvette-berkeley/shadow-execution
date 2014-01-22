@@ -33,7 +33,7 @@ def main():
       bitcodefile = executable + '.bc' 
       bitcode = open(bitcodefile, 'w')
 
-      command = ['clang', '-c', '-emit-llvm', executable + '.c', '-o', bitcodefile]
+      command = ['clang', '-c', '-emit-llvm', executable + '.c', '-fpack-struct', '-o', bitcodefile]
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
