@@ -10,7 +10,7 @@ $CC -c -fpack-struct -emit-llvm -g $1.c -o $1.bc
 
 llvm-dis $1.bc
 
-$LPATH/opt -load ../MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.bc
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.bc
 
 llvm-dis tmppass.bc
 llc tmppass.bc
