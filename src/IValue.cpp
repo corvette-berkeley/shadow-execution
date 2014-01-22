@@ -288,9 +288,14 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
 } 
 
 void IValue::writeValue(int offset, int byte, IValue* src) {
+  int valueOffset, length, bitOffset;
   IValue* valueArray = static_cast<IValue*>(getIPtrValue());
 
   cout << "\t writing " << byte << " bytes\n" << endl;
+
+  valueOffset = src->getValueOffset();
+  length = src->getLength();
+  bitOffset = src->getBitOffset();
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
     // efficient code for common case
@@ -318,6 +323,9 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
       cout << "=== current content: " << (int64_t) *content << endl; 
       cout << "=== current value: " << currentValue->getValue().as_int << endl;
       byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
+      currentValue->setLength(length);
+      currentValue->setValueOffset(valueOffset);
+      currentValue->setBitOffset(bitOffset);
       cout << "=== byteWrittens: " << byteWrittens << endl;
       cout << "=== current value after: " << currentValue->getValue().as_int << endl;
       cout << "=== Ivalue after: " << currentValue->toString() << endl;

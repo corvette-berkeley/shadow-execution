@@ -1146,6 +1146,10 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     safe_assert(false);
   }
 
+  if (debug) {
+    cout << "\tsrcLocation: " << srcLocation->toString() << endl;
+  }
+
   return;
 }
 

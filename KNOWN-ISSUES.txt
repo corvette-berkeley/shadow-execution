@@ -113,6 +113,7 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./pathchk -p /usr/local 
 [SUCCESSFUL] ./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
 [SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
+[SUCCESSFUL] ./paste.out list.txt list.txt [SEG FAULT]
 
 **************
 GENERAL (11)
@@ -120,7 +121,6 @@ GENERAL (11)
 
 Interpretation
 Cuong:
-   ./paste.out list.txt list.txt [SEG FAULT]
    ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
    ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
     ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
