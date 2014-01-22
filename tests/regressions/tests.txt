@@ -1,7 +1,11 @@
-add_int
 add_int_3ops
-add_long
-add_short
+add_int_constants
+add_int_global
+add_int_local
+add_long_global
+add_long_local
+add_short_global
+add_short_local
 example1
 example2
 example3
