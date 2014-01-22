@@ -7,9 +7,9 @@ chmod +x temp.txt
 chown root temp.txt
 chroot
 cksum list.txt
+comm list.txt list.txt
 cp list.txt temp.txt
 cut -c2 list.txt
-date
 dircolors
 dirname /usr/local
 dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K

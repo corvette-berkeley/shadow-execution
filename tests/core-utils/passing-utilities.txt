@@ -7,9 +7,9 @@ chmod
 chown
 chroot
 cksum
+comm
 cp
 cut
-date 
 dircolors
 dirname
 dd

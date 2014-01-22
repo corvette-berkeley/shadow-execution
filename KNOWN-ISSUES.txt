@@ -114,6 +114,7 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
 [SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
 [SUCCESSFUL] ./paste.out list.txt list.txt [SEG FAULT]
+[SUCCESSFUL] ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 **************
 GENERAL (11)
@@ -121,9 +122,8 @@ GENERAL (11)
 
 Interpretation
 Cuong:
-   ./shred.out list.txt [ASSERT FAIL AT IVALUE::TOSTRING()] 
-   ./mktemp testingXXX [ASSERT FAIL AT IVALUE::TOSTRING()] 
-    ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
+   ./shred.out list.txt [SEG FAULT] 
+   ./mktemp testingXXX [SEG FAULT] 
 
 Instrumentation	
     tail (packing check fails, infinite loop when instrumenting otherwise) 

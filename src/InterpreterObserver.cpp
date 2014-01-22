@@ -2727,6 +2727,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       cValueInt = *((int8_t*) concrete->value.as_ptr);
       sync = (iValue->getValue().as_int != cValueInt);
       if (sync) {
+        if (debug) {
+          cout << "\tINT8_KIND case: " << endl;
+          cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
+          cout << "\t CONCRETE: " << cValueInt << endl; 
+          cout << "\t CONCRETE FULL: " << concrete->value.as_int << endl;
+        }
         syncValue.as_int = cValueInt;
         iValue->setValue(syncValue);
       }
