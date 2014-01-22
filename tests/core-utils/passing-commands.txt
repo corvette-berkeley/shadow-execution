@@ -10,7 +10,7 @@ cksum list.txt
 comm list.txt list.txt
 cp list.txt temp.txt
 cut -c2 list.txt
-dir
+dir ../arrayoutofbound/
 dircolors
 dirname /usr/local
 dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
@@ -27,7 +27,7 @@ install -b list.txt backup.txt
 join list.txt list.txt
 link list.txt link.txt
 ln -s list.txt list.txt.2
-ls
+ls ../arrayoutofbound/
 logname
 md5sum list.txt
 mkdir hello

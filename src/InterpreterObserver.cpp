@@ -608,35 +608,41 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
   int64_t value1, value2;
   if (op1->inx == -1) {
-    value1 = op1->value.as_int;
+    value1 = KVALUE_ToIntValue(op1);
   }
   else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
+    IValue *loc1 = op1->isGlobal? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
+    value1 = loc1->getIntValue();
   }
 
   if (op2->inx == -1) {
-    value2 = op2->value.as_int;
+    value2 = KVALUE_ToIntValue(op2);
   }
   else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
+    IValue *loc2 = op2->isGlobal? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
+    value2 = loc2->getIntValue();
   }
 
 
   int64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 & value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (int32_t)value1 & (int32_t)value2;
-  }
-  else if (op1->kind == INT8_KIND) {
-    result = (int8_t)value1 & (int8_t)value2;
-  }
-  else {
-    cout << "[AND]: Operand type is not int32 or int64" << endl;
-    safe_assert(false);
+  switch (op1->kind) {
+    case INT8_KIND:
+      result = (int8_t)value1 & (int8_t)value2;
+      break;
+    case INT16_KIND:
+      result = (int16_t)value1 & (int16_t)value2;
+      break;
+    case INT24_KIND:
+    case INT32_KIND:
+      result = (int32_t)value1 & (int32_t)value2;
+      break;
+    case INT64_KIND:
+      result = value1 & value2;
+      break;
+    default:
+      cout << "[AND]: Operand type is not int8-64" << endl;
+      cout << KIND_ToString(op1->kind) << endl;
+      safe_assert(false);
   }
 
   VALUE vresult;

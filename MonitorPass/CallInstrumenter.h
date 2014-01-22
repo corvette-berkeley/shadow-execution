@@ -17,6 +17,8 @@ class CallInstrumenter : public Instrumenter {
   private:
     uint64_t pushStructType(StructType* structType, InstrPtrVector& instrs);
     uint64_t pushStructType(ArrayType* arrayType, InstrPtrVector& instrs);
+    unsigned getFlatSize(ArrayType* arrayType);
+    unsigned getFlatSize(StructType* structType);
 };
 
 #endif

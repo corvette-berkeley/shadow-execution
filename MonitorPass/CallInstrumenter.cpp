@@ -20,7 +20,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   if (noUnwind && callInst->getType()->isVoidTy()) {
     return false;
   }
-  
+
   safe_assert(parent_ != NULL);
 
   count_++;
@@ -67,6 +67,9 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   Instruction* call = NULL;
 
+  //
+  // the case for MALLOC
+  //
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "malloc") {
     Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
@@ -79,7 +82,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     Value::use_iterator it = callInst->use_begin();
     for(; it != callInst->use_end(); it++) {
       if ((bitcast = dyn_cast<BitCastInst>(*it)) != NULL) {
-	break;
+        break;
       }
     }
 
@@ -103,26 +106,23 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       kind = KIND_CONSTANT(returnKind);
 
       if (TypeToKind(dest->getElementType()) == STRUCT_KIND) {
-	uint64_t allocation = pushStructType((StructType*) dest->getElementType(), instrs);
-	cout << "After allocation: " << allocation << endl;
-	
-	unsigned sum = 0;
-        if (StructType *st = dyn_cast<StructType>(dest->getElementType())) {
-          unsigned numElems = st->getNumElements();
-	  cout << "numElems: " << numElems << endl;
-          for(unsigned i = 0; i < numElems; i++) {
-            Type* type = st->getElementType(i);
-	    type->dump();
-	    cout << "elem size: " << type->getPrimitiveSizeInBits() << endl;
-            sum = sum + type->getPrimitiveSizeInBits();
-	    cout << "Intermediate sum: " << sum << endl;
-          }
-	  cout << "Sum: " << sum << endl;
-        }
-	size = INT32_CONSTANT(sum, false);
+        uint64_t allocation = pushStructType((StructType*) dest->getElementType(), instrs);
+        cout << "After allocation: " << allocation << endl;
+
+        StructType* structType = (StructType*) dest->getElementType();
+
+        structType->dump();
+
+        unsigned sum = getFlatSize(structType) * 8;
+
+        cout << "Sum is: " << sum; 
+
+        safe_assert(sum > 0);
+
+        size = INT32_CONSTANT(sum, false);
       }
       else {
-	size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+        size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
       }
       cout << "Size of struct: ";
       size->dump();
@@ -223,6 +223,68 @@ uint64_t CallInstrumenter::pushStructType(ArrayType* arrayType, InstrPtrVector& 
       Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
       instrs.push_back(call);
       allocation++;
+    }
+  }
+
+  return allocation;
+}
+
+unsigned CallInstrumenter::getFlatSize(ArrayType* arrayType) {
+  Type* elemTy; 
+  int size; 
+  unsigned allocation;
+  KIND elemKind;
+
+  // 
+  // for multi-dimensional array
+  // get flatten size
+  //
+  size = 1;
+  elemTy = arrayType;
+  while (dyn_cast<ArrayType>(elemTy)) {
+    size = size*((ArrayType*)elemTy)->getNumElements();
+    elemTy = ((ArrayType*)elemTy)->getElementType();
+  }
+
+  //
+  // get element kind
+  //
+  elemKind = TypeToKind(elemTy);
+  safe_assert(elemKind != INV_KIND);
+
+  //
+  // element kind can be struct or primitive type
+  //
+  if (elemKind == STRUCT_KIND) {
+    allocation = size * getFlatSize( (StructType*) elemTy );
+  } else {
+    allocation = size * KIND_GetSize(elemKind);
+  }
+
+  return allocation;
+}
+
+unsigned CallInstrumenter::getFlatSize(StructType* structType) {
+  unsigned size, allocation, i;
+
+  allocation = 0;
+  size = structType->getNumElements();
+
+  //
+  // iterate through all struct element types
+  // accumulate allocation size
+  //
+  for (i = 0; i < size; i++) {
+    Type* elemType = structType->getElementType(i);
+    KIND elemKind = TypeToKind(elemType);
+    safe_assert(elemKind != INV_KIND);
+
+    if (elemKind == ARRAY_KIND) {
+      allocation += getFlatSize((ArrayType*) elemType);
+    } else if (elemKind == STRUCT_KIND) {
+      allocation += getFlatSize((StructType*) elemType);
+    } else {
+      allocation += KIND_GetSize(elemKind);
     }
   }
 

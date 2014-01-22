@@ -33,7 +33,7 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (81/100).
+CORE UTILITIES (83/100).
 
 
 Latest run on 1/20/2014.
@@ -126,7 +126,7 @@ Latest run on 1/20/2014.
 
 
 **************
-GENERAL (5)
+GENERAL (4)
 **************
 
 Cuong:
@@ -178,7 +178,7 @@ Failing during interpretation when packing check disabled
 Failing during instrumentation when packing check disabled
    ./expr.out  linux : lin [FAILED ON PRINTV] 
     ./ptx.out list.txt [CALL MALLOC]
-   ./csplit.out -f xyz list.txt 11 72 98 [I24]
+   ./csplit.out -f xyz list.txt 11 72 98 
 
 
 #############
