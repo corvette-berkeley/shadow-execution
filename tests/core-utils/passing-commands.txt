@@ -63,7 +63,6 @@ stdbuf
 sum list.txt
 sync
 tac list.txt
-timeout 1 sleep 10; date
 touch out.txt
 tr
 true --version
