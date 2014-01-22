@@ -1,0 +1,88 @@
+50 LLVM instructions (+5 for only C++)
+
+============
+Binary Operations
+============
+add
+fadd
+sub
+fsub
+mul
+fmul
+udiv
+sdiv
+urem
+srem
+frem
+
+=================
+Bitwise Binary Operations
+=================
+shl
+lshr
+ashr
+and
+or
+xor
+
+============
+Vector Operations
+============
+extractelement // only C++
+insertelement  // only C++
+shufflevector   // only C++
+
+==============
+Aggregate Operations
+==============
+extractvalue // only C++
+insertvalue  //only C++
+
+============================
+Memory Access and Addressing Operations
+============================
+alloca
+load
+store
+fence
+cmpxchg
+atomicrmw
+getelementptr
+
+================
+Terminator Instructions
+================
+branch
+indirectbr
+invoke
+resume
+return
+switch
+unreachable
+
+===============
+Conversion Operations
+===============
+trunc
+zext
+sext
+fptrunc
+fpext
+fptoui
+fptosi
+uitofp
+sitofp
+ptrtoint
+inttoptr
+bitcast
+
+============
+Other Operations
+============
+icmp
+fcmp
+phinode
+select
+call 
+va_arg
+landingpad
