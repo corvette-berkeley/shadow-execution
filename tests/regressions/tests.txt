@@ -1,3 +1,7 @@
+add_int
+add_int_3ops
+add_long
+add_short
 example1
 example2
 example3
@@ -17,7 +21,6 @@ funarc_hp
 simpsons
 lagrange
 functionptr
-add
 add_double
 add_float
 add_fptrunc
