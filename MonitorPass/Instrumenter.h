@@ -132,7 +132,39 @@ public:
 	}
 
 	/*******************************************************************************************/
+int KIND_GetSize(int kind) {
+  switch(kind) {
+    case PTR_KIND:
+      return sizeof(void*);
+    case INT8_KIND:
+      return 1;
+    case INT16_KIND:
+      return 2;
+    case INT32_KIND:
+    case FLP32_KIND:
+      return 4;
+    case INT64_KIND:
+    case FLP64_KIND:
+      return 8;
+    case FLP128_KIND:
+      return 16;
+    case FLP80X86_KIND:
+      return 10;
+    case FLP128PPC_KIND:
+      return 16;
+    case INT1_KIND:
+      return 0;
+//      return 1;
+//      printf("Don't support bit right now!\n");
+//      safe_assert(false);
+    default:
+      // shouldn't reach here
+      safe_assert(false);
+      return 0;
+  }
+}
 
+	/*******************************************************************************************/
 	KIND TypeToKind(Type* T) {
 	  if(T->isIntegerTy()) {
 	    switch(T->getScalarSizeInBits()) {
@@ -405,12 +437,13 @@ public:
   }
 
   /*******************************************************************************************/
-  Instruction* CALL_IID_BOOL_KVALUE_KIND_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind, Value* inx) {
+  Instruction* CALL_IID_BOOL_KVALUE_KIND_INT_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind, Value* inx, Value* inx2) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
     ArgTypes.push_back(BOOL_TYPE());
     ArgTypes.push_back(KVALUEPTR_TYPE());
     ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
 
     ValuePtrVector Args;
@@ -419,6 +452,7 @@ public:
     Args.push_back(kvalue);
     Args.push_back(kind);
     Args.push_back(inx);
+    Args.push_back(inx2);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

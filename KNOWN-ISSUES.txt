@@ -33,12 +33,12 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (74/100).
+CORE UTILITIES (81/100).
 
 
 Latest run on 1/20/2014.
 
-=== 79 programs passing ===
+=== 81 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -119,6 +119,8 @@ Latest run on 1/20/2014.
 [SUCCESSFUL]  ./shred.out -n 2 list.txt [SEG FAULT] [THIS MIGHT TAKE A WHILE] 
 [SUCCESSFUL]  ./tr.out abc ABC < list.txt (packed assertion fails)
 [SUCCESSFUL]  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
+[SUCCESSFUL]  ./ls.out (not packed, i64 i64), seg fault
+[SUCCESSFUL]  ./dir.out  (not packed, i64 i64), seg fault
 
 
 **************
@@ -128,7 +130,7 @@ GENERAL (6)
 Cuong:
 Instrumentation	
     tail (packing check fails, infinite loop when instrumenting otherwise) 
-    ./users.out(packed assertion fails) 
+    ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS]
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
     tac (packed assertion fails) [USE INT24 TYPE]
     nl (packed assertion fails) [USE INT24 TYPE]
@@ -154,11 +156,11 @@ Interpretation
    ./who.out (mismatched values at store)
 
 Instrumentation
-   ./df.out -h (packed assertion fails)
-   ./stat.out list.txt (packed assertion fails)
+   ./df.out -h (packed assertion fails) [NEED TO LOOK INTO BITCODE] 
+   ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
 ***********************************
-STRUCT PADDING CHECKING (10)
+STRUCT PADDING CHECKING (8)
 ***********************************
 
 ################
@@ -166,18 +168,16 @@ CURRENT FAILURES
 ################
 
 Failing during interpretation when packing check disabled
-   ./du.out -h (not packed, i64 i64), assertion failure
-    ./ls.out (not packed, i64 i64), seg fault
-    ./vdir.out (not packed, i64 i64), mismatched values
-    ./pr.out list.txt (not packed, i64 i64), unhandled type
-    ./sleep.out 2 (not packed, i64 i64), unhandled type
+   ./du.out -h (not packed, i64 i64), assertion failure [CALL MALLOC]
+    ./vdir.out (not packed, i64 i64), mismatched values [THE BITCODE FAILS ITSELF] 
+    ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
+    ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sort.out list.txt (constant pointer) (not packed), mismatched values
-  ./dir.out  (not packed, i64 i64), seg fault
 
 Failing during instrumentation when packing check disabled
-   ./expr.out  linux : lin
-    ./ptx.out list.txt
-   ./csplit.out -f xyz list.txt 11 72 98
+   ./expr.out  linux : lin [I24] 
+    ./ptx.out list.txt [I24]
+   ./csplit.out -f xyz list.txt 11 72 98 [I24]
 
 
 #############

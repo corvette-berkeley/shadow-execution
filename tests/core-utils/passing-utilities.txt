@@ -10,6 +10,7 @@ cksum
 comm
 cp
 cut
+dir
 dircolors
 dirname
 dd
@@ -26,6 +27,7 @@ install
 join
 link
 ln 
+ls 
 logname
 md5sum
 mkdir

@@ -15,5 +15,5 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -
 llvm-dis tmppass.bc
 llc tmppass.bc
 
-$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt foo.o
+$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt 
 
