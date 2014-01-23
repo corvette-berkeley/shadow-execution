@@ -1,3 +1,4 @@
 ./timeout.out 1 sleep 10; date
 ls | ./tee.out out
 ./kill.out id
+./yes.out 1234567 | grep 1234567 | head -10

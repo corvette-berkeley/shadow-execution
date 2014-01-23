@@ -7,7 +7,7 @@
 [FAILED RUNNING COMMAND]: ./chown.out with error code: 1
 [FAILED RUNNING COMMAND]: ./chroot.out with error code: 125
 [SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
-[FAILED RUNNING COMMAND]: ./comm.out with error code: 5
+[SUCCESSFULLY RUNNING COMMAND]: ./comm.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./dir.out with error code: 0
@@ -30,17 +30,17 @@
 [SUCCESSFULLY RUNNING COMMAND]: ./ls.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./logname.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./mkdir.out with error code: 0
+[FAILED ERROR CODE MISMATCH]: ./mkdir.out with error codes: 0 1
 [FAILED RUNNING COMMAND]: ./mkfifo.out with error code: 1
 [FAILED RUNNING COMMAND]: ./mknod.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./mktemp.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 0
+[FAILED ERROR CODE MISMATCH]: ./mv.out with error codes: 0 1
 [SUCCESSFULLY RUNNING COMMAND]: ./nice.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./nl.out with error code: 0
 [FAILED RUNNING COMMAND]: ./nohup.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./nproc.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./numfmt.out with error code: 0
-[FAILED RUNNING COMMAND]: ./od.out with error code: 5
+[FAILED ERROR CODE MISMATCH]: ./od.out with error codes: 0 5
 [SUCCESSFULLY RUNNING COMMAND]: ./paste.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./pathchk.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./pinky.out with error code: 0
@@ -48,8 +48,8 @@
 [SUCCESSFULLY RUNNING COMMAND]: ./pwd.out with error code: 0
 [FAILED RUNNING COMMAND]: ./readlink.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./realpath.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./rm.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 0
+[FAILED ERROR CODE MISMATCH]: ./rm.out with error codes: 0 1
+[FAILED ERROR CODE MISMATCH]: ./rmdir.out with error codes: 0 1
 [FAILED RUNNING COMMAND]: ./runcon.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 0
@@ -76,4 +76,3 @@
 [SUCCESSFULLY RUNNING COMMAND]: ./uptime.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./wc.out with error code: 0
-[FAILED RUNNING COMMAND]: ./yes.out with error code: -11

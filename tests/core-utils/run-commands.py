@@ -19,8 +19,28 @@ def main():
   log = open(logfile, "w") 
 
   ############################################
+  # running uninstrumented code
+  
   # reading command
   for line in executables:
+    command = []
+    for token in line.split():
+      if (len(command) == 0):
+        token = "bin/" + token 
+      command.append(token)
+    print command
+
+    # revert list.txt
+    revert_command = ["cp", "all-utilities.txt", "list.txt"]
+    call(revert_command, stdin=None, stdout=None, stderr=None)
+
+    # running command
+    retval_uninstrumented = call(command, stdin=None, stdout=None, stderr=None)
+
+  ############################################
+  # running instrumented code
+    
+  # reading command
     command = []
     for token in line.split():
       if (len(command) == 0):
@@ -28,18 +48,19 @@ def main():
       command.append(token)
     print command
 
-    # running command
-    retval = call(command, stdin=None, stdout=None, stderr=None)
-
     # revert list.txt
     revert_command = ["cp", "all-utilities.txt", "list.txt"]
     call(revert_command, stdin=None, stdout=None, stderr=None)
 
-    # return -1 if running LLVM passes fails
-    if retval <> 0:
-      log.write("[FAILED RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval) + "\n")
+    # running command
+    retval_instrumented = call(command, stdin=None, stdout=None, stderr=None)
+
+    if retval_uninstrumented <> retval_instrumented:
+      log.write("[FAILED ERROR CODE MISMATCH]: " + command[0] + " with error codes: " + str(retval_uninstrumented) + " " + str(retval_instrumented) + "\n")
+    elif retval_instrumented <> 0:
+      log.write("[FAILED RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval_instrumented) + "\n")
     else:
-      log.write("[SUCCESSFULLY RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval) + "\n")
+      log.write("[SUCCESSFULLY RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval_instrumented) + "\n")
 
 if __name__ == "__main__":
   main()

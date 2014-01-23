@@ -76,4 +76,3 @@ unlink list.txt
 uptime
 whoami
 wc list.txt
-yes 1234567 | grep 1234567 | head -10
