@@ -1336,12 +1336,14 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     //
     // compute the index for latten array
     //
-    index = elemFlattenSize * index; // index of flatten array
+    
+    if (ptrArray->isInitialized()) {
+      index = findIndex((IValue*) ptrArray->getIPtrValue(), newOffset, ptrArray->getLength()); 
+    }
+    
     if (debug) cout << "\tIndex: " << index << endl;
     getElementPtrIndexList.pop();
     safe_assert(getElementPtrIndexList.empty());
-
-    index = ptrArray->getIndex() + index;
 
     if (debug)
       cout << "Getting element at index : " << index << endl;

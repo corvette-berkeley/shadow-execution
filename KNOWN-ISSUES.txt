@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (80/100).
+CORE UTILITIES (81/100).
 
 Latest run on 1/20/2014.
 
-=== 80 programs passing ===
+=== 81 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -119,6 +119,7 @@ Latest run on 1/20/2014.
 [SUCCESSFUL]  ./ls.out (not packed, i64 i64), seg fault
 [SUCCESSFUL]  tac list.txt (packed assertion fails) [USE INT24 TYPE]
 [SUCCESSFUL]  nl list.txt (packed assertion fails) [USE INT24 TYPE]
+[SUCCESSFUL]   ./csplit.out -f xyz list.txt 11 72 98 
 
 
 **************
@@ -137,7 +138,7 @@ Branch diverging
        ./dir.out  (not packed, i64 i64), seg fault
 
 *****************************
-VASNPRINTF FUNCTION (5)
+VASNPRINTF FUNCTION (6)
 *****************************
 
 All failing when verifying the same function: Running pass 'Module
@@ -178,7 +179,6 @@ Failing during interpretation when packing check disabled
 Failing during instrumentation when packing check disabled
    ./expr.out  linux : lin [FAILED ON PRINTV] 
     ./ptx.out list.txt [INT24 OPERATIONS]
-   ./csplit.out -f xyz list.txt 11 72 98 
 
 
 #############
