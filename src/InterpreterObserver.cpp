@@ -2,6 +2,7 @@
 #include "InterpreterObserver.h"
 
 #include <assert.h>
+#include <glog/logging.h>
 #include <math.h>
 #include <stack>
 #include "stdbool.h"
@@ -2512,8 +2513,9 @@ void InterpreterObserver::create_stack_frame(int size) {
   for (int i = 0; i < size; i++) {
     if (!callArgs.empty()) {
       frame[i] = callArgs.top();
-      if (debug)
+      if (debug) {
         cout << "\t Argument " << i << ": " << frame[i]->toString() << endl;
+      }
       callArgs.pop();
     } else {
       frame[i] = new IValue();
@@ -2524,13 +2526,18 @@ void InterpreterObserver::create_stack_frame(int size) {
 }
 
 void InterpreterObserver::create_global_symbol_table(int size) {
-  if (debug)
+  if (debug) {
     printf("<<<<< CREATE GLOBAL SYMBOL TABLE OF SIZE %d >>>>>\n", size);
+  }
+  // initialize logger
+  google::InitGoogleLogging("hola");
+  LOG(INFO) << "Testing!!!" << endl;
 
   for (int i = 0; i < size; i++) {
     IValue* value = new IValue();
     globalSymbolTable.push_back(value);
   }
+  return;
 }
 
 void InterpreterObserver::record_block_id(int id) {
@@ -2882,6 +2889,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   if (sync) {
     if (debug) {
+      LOG(INFO) << "Testing!!!" << endl;
       cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
       cout << "\t " << iValue->toString() << endl;
     }

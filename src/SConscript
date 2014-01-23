@@ -1,3 +1,4 @@
+import os
 import SCons.Warnings
 from distutils.version import StrictVersion
 
@@ -54,6 +55,7 @@ env.AppendUnique(
     #SHLINKFLAGS='-Wl,--no-undefined',
     SHLINKFLAGS='-Wl',
     LIBS='LLVM-$llvm_version',
+    CPPPATH=os.environ['GLOG_PATH']+'/include',
     )
 env.MergeFlags('!llvm-config --cxxflags --ldflags')
 
