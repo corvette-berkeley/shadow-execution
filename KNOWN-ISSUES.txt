@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (81/100).
+CORE UTILITIES (83/100).
 
 Latest run on 1/20/2014.
 
-=== 81 programs passing ===
+=== 83 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -161,7 +161,7 @@ Instrumentation
    ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
 ***********************************
-STRUCT PADDING CHECKING (8)
+STRUCT PADDING CHECKING (7)
 ***********************************
 
 ################
