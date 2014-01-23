@@ -33,12 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (83/100).
-
+CORE UTILITIES (80/100).
 
 Latest run on 1/20/2014.
 
-=== 82 programs passing ===
+=== 80 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -106,7 +105,6 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./factor.out 8
 [SUCCESSFUL] ./seq.out 2
 [SUCCESSFUL]   tee (usage: ls | ./tee.out out) 
-[SUCCESSFUL] ./pinky.out 
 [SUCCESSFUL] ./printenv.out 
 [SUCCESSFUL] ./groups.out
 [SUCCESSFUL] ./pathchk -p /usr/local 
@@ -119,7 +117,6 @@ Latest run on 1/20/2014.
 [SUCCESSFUL]  ./tr.out abc ABC < list.txt (packed assertion fails)
 [SUCCESSFUL]  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
 [SUCCESSFUL]  ./ls.out (not packed, i64 i64), seg fault
-[SUCCESSFUL]  ./dir.out  (not packed, i64 i64), seg fault
 [SUCCESSFUL]  tac list.txt (packed assertion fails) [USE INT24 TYPE]
 [SUCCESSFUL]  nl list.txt (packed assertion fails) [USE INT24 TYPE]
 
@@ -135,6 +132,9 @@ Instrumentation
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
     head (infinite loop when instrumenting)
 
+Branch diverging
+       ./pinky.out 
+       ./dir.out  (not packed, i64 i64), seg fault
 
 *****************************
 VASNPRINTF FUNCTION (5)
@@ -168,7 +168,7 @@ CURRENT FAILURES
 ################
 
 Failing during interpretation when packing check disabled
-   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT]
+   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT, BITCODE FAILS ITSELF]
     ./vdir.out (not packed, i64 i64), mismatched values [THE BITCODE FAILS ITSELF] 
     ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
