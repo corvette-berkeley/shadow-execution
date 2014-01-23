@@ -38,7 +38,7 @@ CORE UTILITIES (83/100).
 
 Latest run on 1/20/2014.
 
-=== 83 programs passing ===
+=== 82 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -177,7 +177,7 @@ Failing during interpretation when packing check disabled
 
 Failing during instrumentation when packing check disabled
    ./expr.out  linux : lin [FAILED ON PRINTV] 
-    ./ptx.out list.txt [CALL MALLOC]
+    ./ptx.out list.txt [INT24 OPERATIONS]
    ./csplit.out -f xyz list.txt 11 72 98 
 
 

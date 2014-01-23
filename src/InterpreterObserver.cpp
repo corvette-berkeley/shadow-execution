@@ -628,16 +628,20 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   int64_t result;
   switch (op1->kind) {
     case INT8_KIND:
+      if (debug) cout << "Value 1: " << (int8_t) value1 << " Value 2: " << (int8_t) value2 << endl;
       result = (int8_t)value1 & (int8_t)value2;
       break;
     case INT16_KIND:
+      if (debug) cout << "Value 1: " << (int16_t) value1 << " Value 2: " << (int16_t) value2 << endl;
       result = (int16_t)value1 & (int16_t)value2;
       break;
     case INT24_KIND:
     case INT32_KIND:
+      if (debug) cout << "Value 1: " << (int32_t) value1 << " Value 2: " << (int32_t) value2 << endl;
       result = (int32_t)value1 & (int32_t)value2;
       break;
     case INT64_KIND:
+      if (debug) cout << "Value 1: " << (int64_t) value1 << " Value 2: " << (int64_t) value2 << endl;
       result = value1 & value2;
       break;
     default:
@@ -654,7 +658,6 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   executionStack.top()[inx] = nloc;
 
   if (debug) {
-    cout << value1 << " " << value2 << endl;
     cout << nloc->toString() << endl;
   }
   return;
@@ -671,34 +674,40 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 
   int64_t value1, value2;
   if (op1->inx == -1) {
-    value1 = op1->value.as_int;
+    value1 = KVALUE_ToIntValue(op1);
   }
   else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
+    IValue *loc1 = op1->isGlobal? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
+    value1 = loc1->getIntValue();
   }
 
   if (op2->inx == -1) {
-    value2 = op2->value.as_int;
+    value2 = KVALUE_ToIntValue(op2);
   }
   else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
+    IValue *loc2 = op2->isGlobal? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
+    value2 = loc2->getIntValue();
   }
 
   int64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 | value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (int32_t)value1 | (int32_t)value2;
-  }
-  else if (op1->kind == INT8_KIND) {
-    result = (int8_t)value1 | (int8_t)value2;
-  }
-  else {
-    cout << "[OR_]: Operand type is not int32 or int64" << endl;
-    safe_assert(false);
+  switch (op1->kind) {
+    case INT8_KIND:
+      result = (int8_t)value1 | (int8_t)value2;
+      break;
+    case INT16_KIND:
+      result = (int16_t)value1 | (int16_t)value2;
+      break;
+    case INT24_KIND:
+    case INT32_KIND:
+      result = (int32_t)value1 | (int32_t)value2;
+      break;
+    case INT64_KIND:
+      result = value1 | value2;
+      break;
+    default:
+      cout << "[OR]: Operand type is not int8-64" << endl;
+      cout << KIND_ToString(op1->kind) << endl;
+      safe_assert(false);
   }
 
   VALUE vresult;
@@ -2794,7 +2803,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
     case INT1_KIND: 
     case INT8_KIND: 
       cValueInt8 = *((int8_t*) concrete->value.as_ptr);
-      sync = (iValue->getIntValue() != cValueInt8);
+      sync = (((int8_t) iValue->getIntValue()) != cValueInt8);
       if (sync) {
         if (debug) {
           cout << "\tINT8_KIND case: " << endl;
@@ -2813,7 +2822,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case INT16_KIND: 
       cValueInt16 = *((int16_t*) concrete->value.as_ptr);
-      sync = (iValue->getIntValue() != cValueInt16);
+      sync = (((int16_t) iValue->getIntValue()) != cValueInt16);
       if (sync) {
         cValueInt16Arr = (int16_t*) calloc(4, sizeof(int16_t)); 
         cValueInt16Arr[0] = cValueInt16; 
@@ -2822,12 +2831,15 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       }
       break;
     case INT24_KIND:
-      cValueInt32 = KVALUE_ToIntValue(concrete);
-      sync = (iValue->getIntValue() != cValueInt32);
+      cValueInt32 = *((int32_t*) concrete->value.as_ptr);
+      sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
         if (debug) {
+          cout << "\t INT24_KIND case: " << endl;
           cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
           cout << "\t CONCRETE: " << cValueInt32 << endl; 
+          cout << "\t CONCRETE 64: " << KVALUE_ToIntValue(concrete) << endl;
+          cout << "\t CONCRETE FULL: " << concrete->value.as_int << endl;
         }
         cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
         cValueInt32Arr[0] = cValueInt32; 
@@ -2836,12 +2848,14 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       }
       break;
     case INT32_KIND: 
+      if (debug) cout << "\t SYNCING INT32_KIND " << endl;
+      if (debug) cout << iValue->toString() << endl;
+      if (debug) cout << KVALUE_ToString(concrete) << endl;
       cValueInt32 = *((int32_t*) concrete->value.as_ptr);
-      sync = (iValue->getIntValue() != cValueInt32);
+      sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
         if (debug) {
           cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
-          cout << "\t CONCRETE: " << cValueInt32 << endl; 
         }
         cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
         cValueInt32Arr[0] = cValueInt32; 
