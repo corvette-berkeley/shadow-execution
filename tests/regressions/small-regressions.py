@@ -20,6 +20,7 @@ def main():
   instrumentorpath = os.getenv("INSTRUMENTOR_PATH")
   monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
   sourcepath = instrumentorpath + "/src"
+  glogpath = os.getenv("GLOG_PATH") + "/lib"
 
   logfile = "log.out"
   log = open(logfile, "w") 
@@ -75,7 +76,7 @@ def main():
       iexecutable = open(iexecutablefile, 'w')
 
       # added -lgmp for expr and other core utility
-      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-o', iexecutablefile]
+      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-L' + glogpath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-lglog', '-o', iexecutablefile]
       retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
 
       # return -1 if running LLVM passes fails
