@@ -1322,7 +1322,6 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     index = 1;
     arraySize.pop();
     while (!arraySize.empty()) {
-      index = index * arraySize.front();
       arraySize.pop();
     }
     index = getElementPtrIndexList.front()*index; // index for non-flatten array

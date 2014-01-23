@@ -37,7 +37,7 @@ CORE UTILITIES (82/100).
 
 Latest run on 1/20/2014.
 
-=== 82 programs passing ===
+=== 83 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -121,6 +121,7 @@ Latest run on 1/20/2014.
 [SUCCESSFUL]   ./csplit.out -f xyz list.txt 11 72 98 
 [SUCCESSFUL]   ./pinky.out 
 [SUCCESSFUL]   ./dir.out  (not packed, i64 i64), seg fault
+[SUCCESSFUL]   ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 
 **************
@@ -135,7 +136,6 @@ Instrumentation
     head (infinite loop when instrumenting)
 
 Interpretation
-   ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 *****************************
 VASNPRINTF FUNCTION (6)
