@@ -120,6 +120,8 @@ Latest run on 1/20/2014.
 [SUCCESSFUL]  tac list.txt (packed assertion fails) [USE INT24 TYPE]
 [SUCCESSFUL]  nl list.txt (packed assertion fails) [USE INT24 TYPE]
 [SUCCESSFUL]   ./csplit.out -f xyz list.txt 11 72 98 
+[SUCCESSFUL]   ./pinky.out 
+[SUCCESSFUL]   ./dir.out  (not packed, i64 i64), seg fault
 
 
 **************
@@ -134,8 +136,6 @@ Instrumentation
     head (infinite loop when instrumenting)
 
 Branch diverging
-       ./pinky.out 
-       ./dir.out  (not packed, i64 i64), seg fault
 
 *****************************
 VASNPRINTF FUNCTION (6)

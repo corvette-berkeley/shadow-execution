@@ -1609,10 +1609,10 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       ext_value.as_int = value.as_int & (1<<0); // TODO: confirm this
       break;
     case INT8_KIND:
-      ext_value.as_int = (int8_t) value.as_int;
+      ext_value.as_int = (int8_t) src->getIntValue();
       break;
     case INT16_KIND:
-      ext_value.as_int = (int16_t) value.as_int;
+      ext_value.as_int = (int16_t) src->getIntValue();
       break;
     case INT24_KIND:
       src->copy(srcTemp);
@@ -1620,10 +1620,10 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       ext_value.as_int = srcTemp->getIntValue();
       break;
     case INT32_KIND: 
-      ext_value.as_int = (int32_t) value.as_int;
+      ext_value.as_int = (int32_t) src->getIntValue();
       break;
     case INT64_KIND:
-      ext_value.as_int = (int64_t) value.as_int;
+      ext_value.as_int = (int64_t) src->getIntValue();
       break;
     default:
       cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
