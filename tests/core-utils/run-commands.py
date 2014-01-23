@@ -32,7 +32,7 @@ def main():
     retval = call(command, stdin=None, stdout=None, stderr=None)
 
     # revert list.txt
-    revert_command = ["svn", "revert", "list.txt"]
+    revert_command = ["cp", "all-utilities.txt", "list.txt"]
     call(revert_command, stdin=None, stdout=None, stderr=None)
 
     # return -1 if running LLVM passes fails

@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (83/100).
+CORE UTILITIES (82/100).
 
 Latest run on 1/20/2014.
 
-=== 83 programs passing ===
+=== 82 programs passing ===
 
 [SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
@@ -111,7 +111,6 @@ Latest run on 1/20/2014.
 [SUCCESSFUL] ./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
 [SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
 [SUCCESSFUL] ./paste.out list.txt list.txt [SEG FAULT]
-[SUCCESSFUL] ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 [SUCCESSFUL]   ./mktemp testingXXX [SEG FAULT] 
 [SUCCESSFUL]  ./shred.out -n 2 list.txt [SEG FAULT] [THIS MIGHT TAKE A WHILE] 
 [SUCCESSFUL]  ./tr.out abc ABC < list.txt (packed assertion fails)
@@ -135,7 +134,8 @@ Instrumentation
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
     head (infinite loop when instrumenting)
 
-Branch diverging
+Interpretation
+   ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
 
 *****************************
 VASNPRINTF FUNCTION (6)

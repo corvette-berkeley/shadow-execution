@@ -11,7 +11,7 @@ comm list.txt list.txt
 cp list.txt temp.txt
 cut -c2 list.txt
 dir ../arrayoutofbound/
-dircolors
+dircolors ../arrayoutofbound/
 dirname /usr/local
 dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
 echo
