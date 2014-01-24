@@ -50,6 +50,9 @@ std::string KVALUE_ToString(KVALUE* kv) {
     case INT64_KIND:
       s << "INT64: " << kv->value.as_int << "]";
       break;
+    case INT80_KIND:
+      s << "INT80: " << kv->value.as_int << "]";
+      break;
     case FLP32_KIND:
       // TODO: this assumes value.as_flp returns a long double value 
       s << "FLP32: " << (float) kv->value.as_flp << "]";
@@ -109,6 +112,8 @@ int64_t KVALUE_ToIntValue(KVALUE* kv) {
       return (int32_t) v;
     case INT64_KIND:
       return (int64_t) v;
+    case INT80_KIND:
+      return (int64_t) v; // for now...
     default:
       return v;
   }
@@ -141,6 +146,9 @@ std::string KIND_ToString(int kind) {
     break;
   case INT64_KIND:
     s << "[INT64]";
+    break;
+  case INT80_KIND:
+    s << "[INT80]";
     break;
   case FLP32_KIND:
     s << "[FLP32]";
@@ -179,6 +187,8 @@ int KIND_GetSize(int kind) {
     case INT64_KIND:
     case FLP64_KIND:
       return 8;
+    case INT80_KIND:
+      return 10;
     case FLP128_KIND:
       return 16;
     case FLP80X86_KIND:

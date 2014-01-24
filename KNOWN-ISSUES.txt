@@ -33,7 +33,7 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (82/100).
+CORE UTILITIES (83/100).
 
 Latest run on 1/20/2014.
 
