@@ -1,0 +1,14 @@
+df -h
+du -h
+expr linux : lin
+od list.txt
+pr list.txt
+printf "%s" hello
+ptx list.txt
+sleep 2
+sort list.txt
+stat list.txt
+stty
+users
+vdir ../arrayoutofbound
+who

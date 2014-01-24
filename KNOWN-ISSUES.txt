@@ -130,10 +130,12 @@ GENERAL (4)
 
 Cuong:
 Instrumentation	
-    tail (packing check fails, infinite loop when instrumenting otherwise) 
+    tail (packing check fails, infinite loop when instrumenting
+    otherwise)  (not in failing file)
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
-    head (infinite loop when instrumenting)
+    (not in failing file)
+    head (infinite loop when instrumenting) (not in failing file)
 
 Cindy:
 Interpretation
@@ -164,7 +166,7 @@ Failing during interpretation when packing check disabled
 
 Failing during instrumentation when packing check disabled
    ./expr.out  linux : lin [FAILED ON PRINTV] 
-    ./ptx.out list.txt [INT24 OPERATIONS]
+    ./ptx.out list.txt [Floating point exception]
 
 
 #############

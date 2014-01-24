@@ -14,6 +14,8 @@ To interpret the code:
 
 Feedback: log-run.out
 
+Use failing-utilities.txt and failing-commands.txt to run currently failing tests.
+
 
 ***********
 SMALL TESTS
