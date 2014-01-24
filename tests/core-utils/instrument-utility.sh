@@ -9,8 +9,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -
 
 # create executable 
 llc tmppass.bc
-$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog
-#$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
+$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
 
 # create executable for uninstrumented bitcode
 #llc $1.bc

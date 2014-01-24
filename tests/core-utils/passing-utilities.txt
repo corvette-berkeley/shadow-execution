@@ -18,6 +18,7 @@ dd
 echo
 env
 expand
+factor
 false
 fmt
 fold
@@ -42,7 +43,6 @@ nl
 nohup
 nproc
 numfmt
-od
 paste
 pathchk
 pinky
