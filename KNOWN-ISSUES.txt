@@ -136,12 +136,19 @@ LLC:
 
 Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+   ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
+
+All of the following mismatches seem to be caused by a wrong index calculated by
+   GETELEMENTPTR_STRUCT (the same instruction at
+   printf_getchargs). I believe the index should be 20 instead of
+   14. There is some confusion because it seems to be an array of
+   structs.
    ./printf.out "%s" hello [MISMATCH AT STORE]
    ./stty.out [MISMATCH AT STORE]
    ./who.out [MISMATCH AT STORE]
    ./df.out -h (packed assertion fails) [MISMATCH AT STORE]
    ./od.out -b list.txt [MISMATCH AT STORE]
-   ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
+
 
 ***********************************
 STRUCT PADDING CHECKING (7)
@@ -153,12 +160,13 @@ CURRENT FAILURES
 
 Failing during interpretation when packing check disabled
    ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT]
-    ./vdir.out (not packed, i64 i64), [MISMATCH AT STORE] 
     ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
+    ./vdir.out (not packed, i64 i64), [UNHANDLED TYPE/CANNOT PRINT IVALUE] 
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
    ./expr.out  linux : lin [GETELEMENT_ARRAY] 
-    ./ptx.out list.txt [MISMATCH AT STORE]
+    ./ptx.out list.txt [MISMATCH AT STORE] [Mismatch between # of args
+   and allocas]
 
 
 #############
