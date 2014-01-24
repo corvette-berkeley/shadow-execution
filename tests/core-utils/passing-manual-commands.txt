@@ -1,3 +1,5 @@
+./comm.out list.txt list.txt
+./factor.out 8
 ./timeout.out 1 sleep 10; date
 ls | ./tee.out out
 ./kill.out id

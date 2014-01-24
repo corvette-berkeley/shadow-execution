@@ -33,96 +33,96 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (83/100).
+CORE UTILITIES (84/101).
 
 Latest run on 1/20/2014.
 
-=== 83 programs passing ===
+=== 84 programs passing ===
 
-[SUCCESSFULLY RUNNING COMMAND]: ./base64.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./echo.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./env.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./hostid.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./logname.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./nproc.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./pwd.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./sum.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./sync.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./true.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./tty.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./uname.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./expand.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./unexpand.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./unlink.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./wc.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./chroot.out with error code: 125
-[SUCCESSFULLY RUNNING COMMAND]: ./stdbuf.out with error code: 125
-[SUCCESSFULLY RUNNING COMMAND]: ./chcon.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./false.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./readlink.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./nice.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./runcon.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./split.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./rmdir.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./cut.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./touch.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./whoami.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./uniq.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./truncate.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./numfmt.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./mkfifo.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./nohup.out with error code: -11
-[SUCCESSFULLY RUNNING COMMAND]: ./link.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./mv.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./basename.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./install.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./cp.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./rm.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./md5sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./sha1sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./sha224sum.out with error code: 5
-[SUCCESSFULLY RUNNING COMMAND]: ./shuf.out list.txt 
-[SUCCESSFULLY RUNNING COMMAND]: ./dirname.out /usr/local
-[SUCCESSFULLY RUNNING COMMAND]: ./realpath.out -L list.txt
-[SUCCESSFULLY RUNNING COMMAND]:  fmt list.txt 
-[SUCCESSFULLY RUNNING COMMAND]: ./ln.out -s list.txt list.txt.2 
-[SUCCESSFULLY RUNNING COMMAND]: ./mknod.out temp.txt b 12 5 
-[SUCCESSFULLY RUNNING COMMAND]: ./tsort.out list.txt 
-[SUCCESSFULLY RUNNING COMMAND]: ./join.out list.txt list.txt
-[SUCCESSFULLY RUNNING COMMAND]: ./chmod.out with error code: 5  
-[SUCCESSFULLY RUNNING COMMAND]: ./chown.out root temp.txt
-[SUCCESSFULLY RUNNING COMMAND]: ./chgrp.out staff /usr/local
-[SUCCESSFULLY RUNNING COMMAND]:  uptime
-[SUCCESSFULLY COMMAND]: ./sha256sum.out list.txt
-[SUCCESSFULLY COMMAND]: ./sha384sum.out list.txt
-[SUCCESSFULLY COMMAND]: ./sha512sum.out list.txt
-[SUCCESSFULLY RUNNING COMMAND]:   id
-[SUCCESSFULLY RUNNING COMMAND]: ./dircolors.out 
-[SUCCESSFUL]  ./mkdir.out hola 
-[SUCCESSFUL] ./factor.out 8
-[SUCCESSFUL] ./seq.out 2
-[SUCCESSFUL]   tee (usage: ls | ./tee.out out) 
-[SUCCESSFUL] ./printenv.out 
-[SUCCESSFUL] ./groups.out
-[SUCCESSFUL] ./pathchk -p /usr/local 
-[SUCCESSFUL] ./dd.out if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
-[SUCCESSFUL] ./yes.out 1234567 | grep 1234567 | head -10
-[SUCCESSFUL] ./paste.out list.txt list.txt [SEG FAULT]
-[SUCCESSFUL]   ./mktemp testingXXX [SEG FAULT] 
-[SUCCESSFUL]  ./shred.out -n 2 list.txt [SEG FAULT] [THIS MIGHT TAKE A WHILE] 
-[SUCCESSFUL]  ./tr.out abc ABC < list.txt (packed assertion fails)
-[SUCCESSFUL]  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
-[SUCCESSFUL]  ./ls.out (not packed, i64 i64), seg fault
-[SUCCESSFUL]  tac list.txt (packed assertion fails) [USE INT24 TYPE]
-[SUCCESSFUL]  nl list.txt (packed assertion fails) [USE INT24 TYPE]
-[SUCCESSFUL]   ./csplit.out -f xyz list.txt 11 72 98 
-[SUCCESSFUL]   ./pinky.out 
-[SUCCESSFUL]   ./dir.out  (not packed, i64 i64), seg fault
-[SUCCESSFUL]   ./comm.out list.txt list.txt [ MISMATCH AT STORE ]
-
+base64 list.txt
+basename list.txt   
+cat list.txt
+chcon -R --type=ssh_home_t
+chgrp staff /usr/local
+chmod +x temp.txt
+chown root temp.txt
+chroot
+cksum list.txt
+comm list.txt list.txt
+cp list.txt temp.txt
+csplit -f xyz list.txt 11 72 98 
+cut -c2 list.txt
+dir ../arrayoutofbound/
+dircolors ../arrayoutofbound/
+dirname /usr/local
+dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
+echo
+env
+expand list.txt
+false --version
+fmt list.txt
+fold -5 list.txt
+groups
+hostid
+id
+install -b list.txt backup.txt
+join list.txt list.txt
+link list.txt link.txt
+ln -s list.txt list.txt.2
+ls ../arrayoutofbound/
+logname
+md5sum list.txt
+mkdir hello
+mkfifo temp
+mknod temp.txt b 12 5
+mktemp testingXXX
+mv temp.txt out.txt
+nice
+nl list.txt
+nohup time
+nproc
+numfmt 2
+paste list.txt list.txt
+pathchk -p /usr/local
+pinky
+printenv
+pwd
+readlink
+realpath -L list.txt
+rm out.txt 
+rmdir hello
+runcon
+seq 2
+sha1sum list.txt
+sha224sum list.txt
+sha256sum list.txt
+sha384sum list.txt
+sha512sum list.txt
+shred -n 2 list.txt
+shuf list.txt
+split -b 22 list.txt list
+stdbuf
+sum list.txt
+sync
+tac list.txt
+touch out.txt
+tr
+true --version
+truncate -s 5 list.txt
+tsort list.txt 
+tty
+uname
+unexpand list.txt
+uniq list.txt
+unlink list.txt
+uptime
+whoami
+wc list.txt
+/factor.out 8
+./timeout.out 1 sleep 10; date
+ls | ./tee.out out
+./kill.out id
+./yes.out 1234567 | grep 1234567 | head -10
 
 **************
 GENERAL (4)
@@ -130,8 +130,7 @@ GENERAL (4)
 
 Cuong:
 Instrumentation	
-    tail (packing check fails, infinite loop when instrumenting
-    otherwise)  (not in failing file)
+    tail (packing check fails) [llc takes too long to create assembly for instrumented code] (not in failing file)
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
     (not in failing file)

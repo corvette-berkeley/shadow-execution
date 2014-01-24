@@ -14,4 +14,4 @@ $CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog
 
 # create executable for uninstrumented bitcode
 #llc $1.bc
-#$CC $1.s -o $1.out2 -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog
+#$CC $1.s -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog

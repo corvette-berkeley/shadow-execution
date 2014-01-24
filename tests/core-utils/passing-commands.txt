@@ -9,6 +9,7 @@ chroot
 cksum list.txt
 comm list.txt list.txt
 cp list.txt temp.txt
+csplit -f xyz list.txt 11 72 98 
 cut -c2 list.txt
 dir ../arrayoutofbound/
 dircolors ../arrayoutofbound/
@@ -40,7 +41,6 @@ nl list.txt
 nohup time
 nproc
 numfmt 2
-od -b list.txt
 paste list.txt list.txt
 pathchk -p /usr/local
 pinky
@@ -51,6 +51,7 @@ realpath -L list.txt
 rm out.txt 
 rmdir hello
 runcon
+seq 2
 sha1sum list.txt
 sha224sum list.txt
 sha256sum list.txt
