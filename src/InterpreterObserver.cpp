@@ -208,6 +208,10 @@ long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
   KIND kind = op->kind;
   if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
     return op->value.as_int;
+  } else if (kind == INT80_KIND) {
+    cout << "[getValueFromConstant] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return 0; // otherwise compiler warning
   } else {
     return op->value.as_flp;
   }
@@ -217,13 +221,17 @@ long double InterpreterObserver::getValueFromIValue(IValue* loc) {
   KIND kind = loc->getType();
   if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
     return loc->getValue().as_int;
+  } else if (kind == INT80_KIND) {
+    cout << "[getValueFromIValue] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return 0; // otherwise compiler warning
   } else {
     return loc->getValue().as_flp;
   }
 }
 
 void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
-  if (debug)
+  if (debug) {
     printf("<<<<< %s >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", 
         BINOP_ToString(op).c_str(),
         IID_ToString(iid).c_str(),
@@ -232,6 +240,13 @@ void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(),
         inx);
+  }
+
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[getValueFromConstant] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
 
   int64_t v1, v2;
   long double d1, d2;
@@ -430,6 +445,12 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
         KVALUE_ToString(op2).c_str(), inx);
   }
 
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[shl] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
   uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = KVALUE_ToIntValue(op1);
@@ -490,6 +511,13 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
   }
+
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[lshr] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
 
   // TODO: FIX THIS
   // ADD CASES FOR GLOBAL VARIABLES
@@ -554,6 +582,12 @@ void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[ashr] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
   uint64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
@@ -605,6 +639,12 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         (nsw ? "1" : "0"),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
+
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[and_] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
   }
 
   int64_t value1, value2;
@@ -672,6 +712,12 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
         KVALUE_ToString(op2).c_str(), inx);
   }
 
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[or_] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
   int64_t value1, value2;
   if (op1->inx == -1) {
     value1 = KVALUE_ToIntValue(op1);
@@ -734,6 +780,12 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+    cout << "[xor_] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
   int64_t value1, value2;
   if (op1->inx == -1) {
     value1 = op1->value.as_int;
@@ -781,38 +833,42 @@ void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 // ***** Vector Operations ***** //
 
 void InterpreterObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   cerr << "[InterpreterObserver::extractelement] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::insertelement() {
-  if (debug)
+  if (debug) {
     printf("<<<<< INSERTELEMENT >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::insertelement] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::shufflevector() {
-  if (debug)
+  if (debug) {
     printf("<<<<< SHUFFLEVECTOR >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::shufflevector] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 
 // ***** AGGREGATE OPERATIONS ***** //
 
 void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< EXTRACTVALUE >>>>> %s, agg_inx:%d, [INX: %d]\n",
         IID_ToString(iid).c_str(), opinx, inx);
+  }
 
   int index = getElementPtrIndexList.front();
   getElementPtrIndexList.pop();
@@ -830,8 +886,9 @@ void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
     }
   }
 
-  if (debug)
+  if (debug) {
     cout << "KVALUE: " << KVALUE_ToString(aggKValue) << endl;
+  }
 
   IValue* evValue = new IValue();
   if (aggIValue != NULL) {
@@ -844,20 +901,21 @@ void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
   }
 
   executionStack.top()[inx] = evValue;
-  if (debug)
+  if (debug) {
     cout << evValue->toString() << "\n";
-
+  }
   return;
 }
 
 void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(op1).c_str(),
         KVALUE_ToString(op2).c_str(), inx);
+  }
 
   cerr << "[InterpreterObserver::insertvalue] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 // ***** Memory Access and Addressing Operations ***** //
@@ -870,7 +928,9 @@ void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, in
 
   IValue *ptrLocation, *location;
 
-  if (debug) cout << "LOCAL alloca" << endl;
+  if (debug) {
+    cout << "LOCAL alloca" << endl;
+  }
 
   // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
@@ -1017,6 +1077,7 @@ void InterpreterObserver::allocax_struct(IID iid, uint64_t size, int inx, int li
   return;
 }
 
+
 bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
   bool result = false;
 
@@ -1070,11 +1131,18 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
   return result;
 }
 
+
 void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, int inx) {
   if (debug) {
     printf("<<<<< STORE >>>>> %s, %s, %s, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(dest).c_str(), 
         KVALUE_ToString(src).c_str(), line, inx); 
+  }
+
+  if (dest->kind == INT80_KIND || src->kind == INT80_KIND) {
+    cout << "[store] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
   }
 
   // pointer constant; we simply ignore this case
@@ -1160,7 +1228,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 
   // NOTE: destLocation->getType() before
   IValue* writtenValue = new IValue(srcLocation->getType(),
-      destPtrLocation->readValue(internalOffset, src->kind)); 
+				    destPtrLocation->readValue(internalOffset, src->kind)); 
   writtenValue->setSize(destLocation->getSize());
   writtenValue->setIndex(destLocation->getIndex());
   writtenValue->setOffset(destLocation->getOffset());
@@ -1184,28 +1252,34 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
 }
 
 void InterpreterObserver::fence() {
-  printf("<<<<< FENCE >>>>>\n");
+  if (debug) {
+    printf("<<<<< FENCE >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::fence] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx) {
-  printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      PTR_ToString(addr).c_str(),
-      KVALUE_ToString(kv1).c_str(),
-      KVALUE_ToString(kv2).c_str(), 
-      inx);
+  if (debug) {
+    printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	   PTR_ToString(addr).c_str(),
+	   KVALUE_ToString(kv1).c_str(),
+	   KVALUE_ToString(kv2).c_str(), 
+	   inx);
+  }
 
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::atomicrmw() {
-  printf("<<<<< ATOMICRMW >>>>>\n");
+  if (debug) {
+    printf("<<<<< ATOMICRMW >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::atomicrmw] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int line, int inx) {
@@ -1220,6 +1294,13 @@ void InterpreterObserver::getelementptr(IID iid, bool inbound, KVALUE* base, KVA
         line,
         inx);
   }
+
+  if (type == INT80_KIND) {
+    cout << "[getelementptr] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return; // otherwise compiler warning
+  }
+
 
   IValue *basePtrLocation, *ptrLocation; 
   int index;
@@ -1491,16 +1572,18 @@ void InterpreterObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op
 
   executionStack.top()[inx] = structElemPtr;
 
-  if (debug)
-    cout << executionStack.top()[inx]->toString() << "\n";
+  if (debug) {
+    cout << executionStack.top()[inx]->toString() << endl;
+  }
 }
 
 // ***** Conversion Operations ***** //
 
 void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< TRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
 
   IValue* src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -1534,6 +1617,10 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
     case INT64_KIND:
       truncValue.as_int = *int64Ptr;
       break;
+    case INT80_KIND:
+      cout << "[trunc] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      break;
     default:
       cerr << "[InterpreterObserver::trunc] => Unsupport integer type " << type << "\n";
       safe_assert(false);
@@ -1546,12 +1633,15 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
 }
 
 void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< ZEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[op->inx];
-  if (debug) cout << "Source value: " << src->toString() << endl;
+  if (debug) {
+    cout << "Source value: " << src->toString() << endl;
+  }
   int64_t intValue = src->getValue().as_int;
   if (op->kind == INT1_KIND) {
     intValue = (bool) intValue;
@@ -1580,6 +1670,10 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
     case INT64_KIND:
       zextValue.as_int = (int64_t) intValue;
       break;
+    case INT80_KIND:
+      cout << "[zext] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      break;
     default:
       cerr << "[InterpreterObserver::zext] => Unsupport integer type " << type << "\n";
       safe_assert(false);
@@ -1587,8 +1681,9 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 
   IValue* zextVar = new IValue(type, zextValue);
   executionStack.top()[inx] = zextVar;
-  if (debug)
+  if (debug) {
     cout << executionStack.top()[inx]->toString() << "\n";
+  }
 }
 
 void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
@@ -1624,6 +1719,10 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
     case INT64_KIND:
       ext_value.as_int = (int64_t) src->getIntValue();
       break;
+    case INT80_KIND:
+      cout << "[sext] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      break;
     default:
       cerr << "[InterpreterObserver::sext] => Unsupport integer type " << type << "\n";
       safe_assert(false);
@@ -1631,82 +1730,86 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
 
   IValue *ext_loc = new IValue(type, ext_value);
   executionStack.top()[inx] = ext_loc;
-  if (debug)
-    cout << ext_loc->toString() << "\n";
+  if (debug) {
+    cout << ext_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< FPTRUNC >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
 
-  if (type == FLP32_KIND)
-  {
+  if (type == FLP32_KIND) {
     trunc_value.as_flp = (float) value.as_flp;
   }
-  else if (type == FLP64_KIND)
-  {
+  else if (type == FLP64_KIND) {
     trunc_value.as_flp = (double) value.as_flp;
   }
-  else if (type == FLP80X86_KIND)
-  {
+  else if (type == FLP80X86_KIND) {
     trunc_value.as_flp = (long double) value.as_flp;
   }
-  else 
-  {
+  else {
     cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
-    abort();
+    safe_assert(false);
   }
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< FPEXT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
 
-  if (type == FLP32_KIND)
-  {
+  if (type == FLP32_KIND) {
     trunc_value.as_flp = (float) value.as_flp;
   }
-  else if (type == FLP64_KIND)
-  {
+  else if (type == FLP64_KIND) {
     trunc_value.as_flp = (double) value.as_flp;
   }
-  else if (type == FLP80X86_KIND)
-  {
+  else if (type == FLP80X86_KIND) {
     trunc_value.as_flp = (long double) value.as_flp;
   }
-  else 
-  {
+  else {
     cerr << "[InterpreterObserver::fpext] => Unsupport floating point type " << type << "\n";
-    abort();
+    safe_assert(false);
   }
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< FPTOUII >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
+
+  if (type == INT80_KIND) {
+      cout << "[fptoui] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      return;
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -1716,14 +1819,23 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, uint64_t size, 
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
+
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< FPTOSI >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
+
+  if (type == INT80_KIND) {
+    cout << "[fptosi] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return;
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
@@ -1733,83 +1845,82 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, uint64_t size, 
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
+
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< UITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
 
-  if (type == FLP32_KIND)
-  {
+  if (type == FLP32_KIND) {
     trunc_value.as_flp = (float) value.as_int;
   }
-  else if (type == FLP64_KIND)
-  {
+  else if (type == FLP64_KIND) {
     trunc_value.as_flp = (double) value.as_int;
   }
-  else if (type == FLP80X86_KIND)
-  {
+  else if (type == FLP80X86_KIND) {
     trunc_value.as_flp = (long double) value.as_int;
   }
-  else 
-  {
+  else {
     cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
-    abort();
+    safe_assert(false);
   }
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< SITOFP >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
 
-  if (type == FLP32_KIND)
-  {
+  if (type == FLP32_KIND) {
     trunc_value.as_flp = (float) value.as_int;
   }
-  else if (type == FLP64_KIND)
-  {
+  else if (type == FLP64_KIND) {
     trunc_value.as_flp = (double) value.as_int;
   }
-  else if (type == FLP80X86_KIND)
-  {
+  else if (type == FLP80X86_KIND) {
     trunc_value.as_flp = (long double) value.as_int;
   }
-  else 
-  {
+  else {
     cerr << "[InterpreterObserver::fptrunc] => Unsupport floating point type " << type << "\n";
-    abort();
+    safe_assert(false);
   }
 
   IValue *trunc_loc = new IValue(type, trunc_value);
   executionStack.top()[inx] = trunc_loc;
-  if (debug)
-    cout << trunc_loc->toString() << "\n";
 
+  if (debug) {
+    cout << trunc_loc->toString() << endl;
+  }
 }
 
 void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PTRTOINT >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
 
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -1844,20 +1955,33 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
     case INT64_KIND:
       int_value.as_int = ptrValue;
       break;
+    case INT80_KIND:
+      cout << "[ptrtoint] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      break;
     default:
       safe_assert(false); // this cannot happen
   }
 
   IValue *ptrToInt = new IValue(type, int_value);
   executionStack.top()[inx] = ptrToInt;
-  if (debug)
-    cout << executionStack.top()[inx]->toString() << "\n";
+
+  if (debug) {
+    cout << executionStack.top()[inx]->toString() << endl;
+  }
 }
 
 void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< INTTOPTR >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
+
+  if (op->kind == INT80_KIND) {
+      cout << "[fptoui] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      return;
+  }
 
   IValue *src = executionStack.top()[op->inx];
   VALUE value = src->getValue();
@@ -1865,14 +1989,22 @@ void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size
   ptr_value.as_ptr = value.as_ptr;
   IValue *intToPtr = new IValue(type, ptr_value);
   executionStack.top()[inx] = intToPtr;
-  if (debug)
-    cout << executionStack.top()[inx]->toString() << "\n";
+
+  if (debug) {
+    cout << executionStack.top()[inx]->toString() << endl;
+  }
 }
 
 void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   if (debug) {
     printf("<<<<< BITCAST >>>>> %s, %s, %s, size:%ld, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
+  }
+
+  if (op->kind == INT80_KIND || type == INT80_KIND) {
+      cout << "[bitcast] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      return;
   }
 
   IValue *src = executionStack.top()[op->inx];
@@ -1917,39 +2049,46 @@ void InterpreterObserver::branch2(IID iid, bool conditional, int inx) {
 }
 
 void InterpreterObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< INDIRECTBR >>>>> %s, address: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(op1).c_str(), inx);
+  }
 }
 
 void InterpreterObserver::invoke(IID iid, KVALUE* call_value, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< INVOKE >>>>> %s, call_value: %s, [INX: %d]", IID_ToString(iid).c_str(), KVALUE_ToString(call_value).c_str(), inx);
+  }
+
   while (!myStack.empty()) {
     KVALUE* value = myStack.top();
     myStack.pop();
     if (debug)
       printf(", arg: %s", KVALUE_ToString(value).c_str()); 
   }
-  if (debug)
-    printf("\n");
+  if (debug) {
+    cout << endl;
+  }
 
   cerr << "[InterpreterObserver::invoke] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::resume(IID iid, KVALUE* op1, int inx) {
-  printf("<<<<< RESUME >>>>> %s, acc_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-      KVALUE_ToString(op1).c_str(), inx);
+  if (debug) {
+    printf("<<<<< RESUME >>>>> %s, acc_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
+	   KVALUE_ToString(op1).c_str(), inx);
+  }
 
   cerr << "[InterpreterObserver::resume] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< RETURN 1>>>>> %s, ret_value: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(op1).c_str(), inx);
+  }
 
   safe_assert(!executionStack.empty());
 
@@ -1958,8 +2097,9 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    if (debug)
-      cout << "New stack size: " << executionStack.size() << "\n";
+    if (debug) {
+      cout << "New stack size: " << executionStack.size() << endl;
+    }
     safe_assert(!callerVarIndex.empty());
 
     if (returnValue == NULL) {
@@ -1968,8 +2108,9 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
     } else {
       returnValue->copy(executionStack.top()[callerVarIndex.top()]);
     }
-    if (debug)
-      cout << executionStack.top()[callerVarIndex.top()]->toString() << "\n";
+    if (debug) {
+      cout << executionStack.top()[callerVarIndex.top()]->toString() << endl;
+    }
 
     callerVarIndex.pop();
   } else {
@@ -1982,15 +2123,17 @@ void InterpreterObserver::return_(IID iid, KVALUE* op1, int inx) {
 }
 
 void InterpreterObserver::return2_(IID iid, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< RETURN 2>>>>> %s, [INX: %d]\n", IID_ToString(iid).c_str(), inx);
+  }
 
   safe_assert(!executionStack.empty());
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    if (debug)
-      cout << "New stack size: " << executionStack.size() << "\n";
+    if (debug) {
+      cout << "New stack size: " << executionStack.size() << endl;
+    }
   } else {
     cout << "The execution stack is empty.\n";
   }
@@ -2012,8 +2155,9 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
   executionStack.pop();
 
   if (!executionStack.empty()) {
-    if (debug)
-      cout << "New stack size: " << executionStack.size() << "\n";
+    if (debug) {
+      cout << "New stack size: " << executionStack.size() << endl;
+    }
     safe_assert(!callerVarIndex.empty());
     safe_assert(!returnStruct.empty());
 
@@ -2062,14 +2206,16 @@ void InterpreterObserver::return_struct_(IID iid, int inx, int valInx) {
 }
 
 void InterpreterObserver::switch_(IID iid, KVALUE* op, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< SWITCH >>>>> %s, condition: %s, [INX: %d]\n", IID_ToString(iid).c_str(),
         KVALUE_ToString(op).c_str(), inx);
-  abort();
+  }
 }
 
 void InterpreterObserver::unreachable() {
-  printf("<<<<< UNREACHABLE >>>>>\n");
+  if (debug) {
+    printf("<<<<< UNREACHABLE >>>>>\n");
+  }
 }
 
 // ***** Other Operations ***** //
@@ -2077,6 +2223,12 @@ void InterpreterObserver::unreachable() {
 void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
   if (debug) {
     printf("<<<<< ICMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(op1).c_str(), KVALUE_ToString(op2).c_str(), pred, inx);
+  }
+
+  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+      cout << "[icmp] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      return;
   }
 
   int64_t v1, v2;
@@ -2167,9 +2319,9 @@ void InterpreterObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 }
 
 void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< FCMP >>>>> %s, %s, %s, %d, [INX: %d]\n", IID_ToString(iid).c_str(), KVALUE_ToString(op1).c_str(), KVALUE_ToString(op2).c_str(), pred, inx);
-
+  }
 
   long double v1, v2;
 
@@ -2271,11 +2423,13 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 }
 
 void InterpreterObserver::phinode(IID iid, int inx) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PHINODE >>>>>: id %s [INX: %d] \n", IID_ToString(iid).c_str(), inx);
+  }
 
-  if (debug)
+  if (debug) {
     cout << recentBlock.top() << endl;
+  }
 
   IValue* phiNode;
 
@@ -2294,8 +2448,9 @@ void InterpreterObserver::phinode(IID iid, int inx) {
   phinodeValues.clear();
 
   executionStack.top()[inx] = phiNode;
-  if (debug)
-    cout << phiNode->toString() << "\n";
+  if (debug) {
+    cout << phiNode->toString() << endl;
+  }
 
   return;
 }
@@ -2328,8 +2483,9 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
   }
 
   executionStack.top()[inx] = result;
-  if (debug)
+  if (debug) {
     cout << result->toString() << endl;
+  }
   return;
 }
 
@@ -2337,25 +2493,28 @@ void InterpreterObserver::push_stack(KVALUE* value) {
   if (debug) {
     printf("<<<<< PUSH ARGS TO STACK >>>>>, value %s\n", KVALUE_ToString(value).c_str());
   }
+
   myStack.push(value);
-  cout << "here" << endl;
 }
 
 void InterpreterObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH PHINODE CONSTANT VALUE >>>>> kvalue: %s, blockid: %d\n", KVALUE_ToString(value).c_str(), blockId);
+  }
   phinodeConstantValues[blockId] = value;
 }
 
 void InterpreterObserver::push_phinode_value(int valId, int blockId) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH PHINODE VALUE >>>>> valId: %d, blockid: %d\n", valId, blockId);
+  }
   phinodeValues[blockId] = valId;
 }
 
 void InterpreterObserver::push_return_struct(KVALUE* value) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH RETURN STRUCT >>>>> value %s\n", KVALUE_ToString(value).c_str());
+  }
   returnStruct.push(value);
 }
 
@@ -2376,21 +2535,24 @@ void InterpreterObserver::push_struct_element_size(uint64_t s) {
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
   int idx = int_value->value.as_int;
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %s\n", KVALUE_ToString(int_value).c_str());
+  }
   getElementPtrIndexList.push(idx);
 }
 
 void InterpreterObserver::push_getelementptr_inx2(int int_value) {
   int idx = int_value;
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH GETELEMENTPTR INDEX >>>>>: %d\n", idx);
+  }
   getElementPtrIndexList.push(idx);
 }
 
 void InterpreterObserver::push_array_size(uint64_t size) {
-  if (debug)
+  if (debug) {
     printf("<<<<< PUSH ARRAY SIZE >>>>>: %ld\n", size);
+  }
   arraySize.push(size);
 }
 
@@ -2551,8 +2713,10 @@ void InterpreterObserver::create_global_symbol_table(int size) {
 }
 
 void InterpreterObserver::record_block_id(int id) {
-  if (debug)
+  if (debug) {
     printf("<<<<< RECORD BLOCK ID >>>>> %d\n", id);
+  }
+
   if (recentBlock.empty()) {
     recentBlock.push(id);
   } else {
@@ -2741,31 +2905,36 @@ void InterpreterObserver::call_malloc(IID iid, bool nounwind, KIND type, KVALUE*
     structPtrVar->setLength(length);
 
     executionStack.top()[inx] = structPtrVar;
-    if (debug)
+    if (debug) {
       cout << structPtrVar->toString() << endl;
-    //cerr << "[Interpreter::call_malloc=] => Unimplemented Structs" << endl;
-    //abort();
+    }
   }
 
   return;
 }
 
 void InterpreterObserver::vaarg() {
-  printf("<<<<< VAARG >>>>>\n");
+  if (debug) {
+    printf("<<<<< VAARG >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::vaarg] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::landingpad() {
-  printf("<<<<< LANDINGPAD >>>>>\n");
+  if (debug) {
+    printf("<<<<< LANDINGPAD >>>>>\n");
+  }
 
   cerr << "[InterpreterObserver::landingpad] => Unimplemented\n";
-  abort();
+  safe_assert(false);
 }
 
 void InterpreterObserver::printCurrentFrame() {
-  printf("Print current frame\n");
+  if (debug) {
+    printf("Print current frame\n");
+  }
 }
 
 bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
@@ -2871,6 +3040,10 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
         syncValue.as_int = cValueInt64;
         iValue->setValue(syncValue);
       }
+      break;
+    case INT80_KIND:
+      cout << "[syncload] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
       break;
     case FLP32_KIND:
       cValueFloat = *((float*) concrete->value.as_ptr);

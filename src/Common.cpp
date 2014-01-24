@@ -4,6 +4,9 @@
  */
 
 #include "Common.h"
+#include <stdio.h>
+
+using namespace std;
 
 std::string IID_ToString(IID& iid) {
 	std::stringstream s;
@@ -113,7 +116,8 @@ int64_t KVALUE_ToIntValue(KVALUE* kv) {
     case INT64_KIND:
       return (int64_t) v;
     case INT80_KIND:
-      return (int64_t) v; // for now...
+      cout << "[KVALUE_ToIntValue] Unsupported type INT80_KIND." << endl;
+      safe_assert(false);
     default:
       return v;
   }
