@@ -110,16 +110,19 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
         cout << "After allocation: " << allocation << endl;
 
         StructType* structType = (StructType*) dest->getElementType();
-
+	
         structType->dump();
-
+	
         unsigned sum = getFlatSize(structType) * 8;
-
+	
         cout << "Sum is: " << sum; 
-
+	
         safe_assert(sum > 0);
-
+	
         size = INT32_CONSTANT(sum, false);
+      }
+      else if (TypeToKind(dest->getElementType()) == PTR_KIND) {
+	size = INT32_CONSTANT(64, false); // pointers are 64 bits
       }
       else {
         size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);

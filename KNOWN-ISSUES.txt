@@ -158,7 +158,7 @@ Failing during interpretation when packing check disabled
     ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
    ./expr.out  linux : lin [GETELEMENT_ARRAY] 
-    ./ptx.out list.txt [Floating point exception]
+    ./ptx.out list.txt [MISMATCH AT STORE]
 
 
 #############
