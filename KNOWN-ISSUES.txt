@@ -135,29 +135,15 @@ Instrumentation
     ./date.out (packed assertion fails) [THE BIT CODE FAILS ITSELF]
     head (infinite loop when instrumenting)
 
-Interpretation
-
-*****************************
-VASNPRINTF FUNCTION (6)
-*****************************
-
-All failing when verifying the same function: Running pass 'Module
-Verifier' on function '@vasnprintf
-coreutils/lib/vasnprintf.c
-
-################
-CURRENT FAILURES 
-################
-
 Cindy:
 Interpretation
-   ./printf.out "%s" hello (mismatched values)
-   ./stty.out (mismatched values at store)
-   ./who.out (mismatched values at store)
+   ./printf.out "%s" hello [MISMATCH AT STORE]
+   ./stty.out [MISMATCH AT STORE]
+   ./who.out [MISMATCH AT STORE]
 
 Instrumentation
-   ./df.out -h (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - VASNPRINTF]
-   ./od.out -b list.txt [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - VASNPRINTF]
+   ./df.out -h (packed assertion fails) [MISMATCH AT STORE]
+   ./od.out -b list.txt [MISMATCH AT STORE]
    ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
 ***********************************
@@ -185,20 +171,12 @@ Failing during instrumentation when packing check disabled
 OTHER NOTES
 ############
 
-===== FAILED DURING INSTRUMENTATION OF VASNPRINT =====
 ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
 ===== PASSED OTHERWISE ===== 
 ./factor.out 8 (not packed) - It passes if the packing check is
 removed. Not counted as passing yet.
 ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
 is removed. Not counted as passing yet.
-
-===== FAILED DURING INSTRUMENTATION OF VASNPRINTF =====
-===== PASSED OTHERWISE ===== 
-  ./mkdir.out hola (*** PASSES)
-  ./stdbuf.out (*** PASSES)
-  ./install.out -b list.txt backup.txt (***PASSES)
-./numfmt 2 (*** PASSES)
 
 ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
 ===== PASSED OTHERWISE ===== 
