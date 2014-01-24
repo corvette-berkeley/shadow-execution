@@ -11,3 +11,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -
 llc tmppass.bc
 $CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog
 #$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -L/home/eecs/rubio/build-gmp-5.1.3/lib -lgmp -lglog
+
+# create executable for uninstrumented bitcode
+#llc $1.bc
+#$CC $1.s -o $1.out2 -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog

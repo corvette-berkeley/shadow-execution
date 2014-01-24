@@ -155,8 +155,8 @@ CURRENT FAILURES
 ################
 
 Failing during interpretation when packing check disabled
-   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT, BITCODE FAILS ITSELF]
-    ./vdir.out (not packed, i64 i64), mismatched values [THE BITCODE FAILS ITSELF] 
+   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT]
+    ./vdir.out (not packed, i64 i64), [MISMATCH AT STORE] 
     ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
