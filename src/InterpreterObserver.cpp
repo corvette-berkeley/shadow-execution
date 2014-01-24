@@ -512,19 +512,12 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
         KVALUE_ToString(op2).c_str(), inx);
   }
 
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[lshr] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return; // otherwise compiler warning
-  }
-
-
   // TODO: FIX THIS
   // ADD CASES FOR GLOBAL VARIABLES
   
   uint64_t value1, value2;
   if (op1->inx == -1) {
-    value1 = op1->value.as_int;
+    value1 = KVALUE_ToIntValue(op1);
   }
   else {
     IValue *loc1 = executionStack.top()[op1->inx];
@@ -540,21 +533,21 @@ void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   }
 
 
-  // TODO: FIX THIS
-  // ADD CASES FOR OTHER INT TYPE
-  
   uint64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 >> value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (uint32_t)value1 >> (uint32_t)value2;
-  }
-  else if (op1->kind == INT8_KIND) {
+  switch(op1->kind) {
+  case INT8_KIND:
     result = (uint8_t)value1 >> (uint8_t)value2;
-  }
-  else {
-    cout << "[LSHR]: Operand type is not int32 or int64 or int8" << endl;
+    break;
+  case INT24_KIND:
+  case INT32_KIND:
+    result = (uint32_t)value1 >> (uint32_t)value2;
+    break;
+  case INT64_KIND:
+    result = value1 >> value2;
+    break;
+  default:
+    cout << "type: " << KIND_ToString(op1->kind) << endl;
+    cout << "[LSHR]: Unhandled integer type" << endl;
     safe_assert(false);
   }
 
@@ -3002,6 +2995,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case INT24_KIND:
       cValueInt32 = *((int32_t*) concrete->value.as_ptr);
+      cValueInt32 = cValueInt32 & 0x00FFFFFF;
       sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
         if (debug) {
@@ -3010,6 +3004,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
           cout << "\t CONCRETE: " << cValueInt32 << endl; 
           cout << "\t CONCRETE 64: " << KVALUE_ToIntValue(concrete) << endl;
           cout << "\t CONCRETE FULL: " << concrete->value.as_int << endl;
+	  cout << "\t CONCRETE IN HEX: " << concrete->value.as_ptr << endl;
         }
         cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
         cValueInt32Arr[0] = cValueInt32; 
