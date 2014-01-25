@@ -138,16 +138,12 @@ Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
    ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
-All of the following mismatches seem to be caused by a wrong index calculated by
-   GETELEMENTPTR_STRUCT (the same instruction at
-   printf_getchargs). I believe the index should be 20 instead of
-   14. There is some confusion because it seems to be an array of
-   structs.
-   ./printf.out "%s" hello [MISMATCH AT STORE]
-   ./stty.out [MISMATCH AT STORE]
-   ./who.out [MISMATCH AT STORE]
-   ./df.out -h (packed assertion fails) [MISMATCH AT STORE]
-   ./od.out -b list.txt [MISMATCH AT STORE]
+   All of the following fail at the same program point.
+   ./printf.out "%s" hello [UNHANDLED TYPE]
+   ./stty.out [UNHANDLED TYPE]
+   ./who.out [UNHANDLED TYPE]
+   ./df.out -h (packed assertion fails) [UNHANDLED TYPE]
+   ./od.out -b list.txt [UNHANDLED TYPE]
 
 
 ***********************************

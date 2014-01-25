@@ -79,5 +79,6 @@ struct_flattening2
 struct_flattening3
 struct_i64
 struct_return
+struct_union
 sub
 var_args
