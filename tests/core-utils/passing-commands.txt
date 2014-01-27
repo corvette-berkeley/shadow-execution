@@ -82,3 +82,4 @@ pr list.txt
 sleep 2
 vdir
 du -h ../arrayoutofbound
+expr linux : li

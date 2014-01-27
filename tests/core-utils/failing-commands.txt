@@ -1,6 +1,4 @@
 df -h
-du -h
-expr linux : lin
 od list.txt
 printf "%s" hello
 ptx list.txt

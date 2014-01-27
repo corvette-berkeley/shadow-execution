@@ -87,3 +87,4 @@ vdir
 wc
 whoami
 yes
+expr
