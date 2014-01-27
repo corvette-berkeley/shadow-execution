@@ -1737,7 +1737,10 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
   if (debug) {
     cout << "Source value: " << src->toString() << endl;
   }
-  int64_t intValue = src->getIntValue();
+  int64_t intValue = src->getValue().as_int;
+  int64_t* intValuePtr;
+  intValuePtr = &intValue;
+
   if (op->kind == INT1_KIND) {
     intValue = (bool) intValue;
   }
@@ -1749,10 +1752,10 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       zextValue.as_int = intValue & (1<<0); // TODO: confirm this
       break;
     case INT8_KIND:
-      zextValue.as_int = (int8_t) intValue;
+      zextValue.as_int = *((int8_t*) intValuePtr);
       break;
     case INT16_KIND:
-      zextValue.as_int = (int16_t) intValue;
+      zextValue.as_int = *((int16_t*) intValuePtr);
       break;
     case INT24_KIND:
       src->copy(srcTemp);
@@ -1760,10 +1763,10 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
       zextValue.as_int = srcTemp->getIntValue();
       break;
     case INT32_KIND: 
-      zextValue.as_int = (int32_t) intValue;
+      zextValue.as_int = *((int32_t*) intValuePtr);
       break;
     case INT64_KIND:
-      zextValue.as_int = (int64_t) intValue;
+      zextValue.as_int = *((int64_t*) intValuePtr);
       break;
     case INT80_KIND:
       cout << "[zext] Unsupported INT80_KIND" << endl;

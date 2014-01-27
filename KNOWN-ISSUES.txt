@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (94/100).
+CORE UTILITIES (95/100).
 
 Latest run on 1/27/2014.
 
-=== 94 programs passing ===
+=== 95 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -133,6 +133,7 @@ ls | ./tee.out out
 ./printf.out "%s" hello 
 ./df.out -h 
 ./od.out -b list.txt 
+./stty.out
 
 **************
 GENERAL (4)
@@ -148,7 +149,6 @@ Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
 
    All of the following fail at the same program point.
-   ./stty.out [BRANCH DIVERGING]
 
 
 ***********************************

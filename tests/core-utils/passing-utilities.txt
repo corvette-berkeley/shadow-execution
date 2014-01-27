@@ -92,3 +92,4 @@ who
 printf
 df
 od
+stty
