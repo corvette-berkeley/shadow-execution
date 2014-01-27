@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (87/100).
+CORE UTILITIES (88/100).
 
-Latest run on 1/25/2014.
+Latest run on 1/27/2014.
 
-=== 87 programs passing ===
+=== 88 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -126,9 +126,10 @@ ls | ./tee.out out
 ./stat.out list.txt 
 ./pr.out list.txt
 ./sleep.out 2
+./vdir.out
 
 **************
-GENERAL (9)
+GENERAL (8)
 14 problems during instrumentation or interpretation.
 2 llc takes too long to create assembly.
 **************
@@ -149,7 +150,7 @@ Interpretation:
 
 
 ***********************************
-STRUCT PADDING CHECKING (7)
+STRUCT PADDING CHECKING (5)
 ***********************************
 
 ################
@@ -158,11 +159,9 @@ CURRENT FAILURES
 
 Failing during interpretation when packing check disabled
    ./du.out -h (not packed, i64 i64), assertion failure [MISMATCHED VALUE IN STORE]
-    ./vdir.out (not packed, i64 i64), [UNHANDLED TYPE/CANNOT PRINT IVALUE] 
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./ptx.out list.txt [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
    ./expr.out  linux : lin [GETELEMENT_ARRAY] 
-    ./ptx.out list.txt [MISMATCH AT STORE] [Mismatch between # of args
-   and allocas]
 
 
 #############

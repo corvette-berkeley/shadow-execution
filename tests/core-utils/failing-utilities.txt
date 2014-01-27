@@ -7,5 +7,4 @@ ptx
 sort
 stty
 users
-vdir
 who

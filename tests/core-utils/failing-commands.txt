@@ -7,5 +7,4 @@ ptx list.txt
 sort list.txt
 stty
 users
-vdir ../arrayoutofbound
 who
