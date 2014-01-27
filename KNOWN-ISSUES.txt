@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (84/100).
+CORE UTILITIES (85/100).
 
-Latest run on 1/20/2014.
+Latest run on 1/25/2014.
 
-=== 84 programs passing ===
+=== 85 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -123,6 +123,7 @@ wc list.txt
 ls | ./tee.out out
 ./kill.out id
 ./yes.out 1234567 | grep 1234567 | head -10
+./stat.out list.txt 
 
 **************
 GENERAL (9)
@@ -136,7 +137,6 @@ LLC:
 
 Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-   ./stat.out list.txt (packed assertion fails) [RETURN STRUCT]
 
    All of the following fail at the same program point.
    ./printf.out "%s" hello [UNHANDLED TYPE]

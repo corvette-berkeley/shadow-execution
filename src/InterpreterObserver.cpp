@@ -47,6 +47,105 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
   return high; // high
 }
 
+void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int line, int inx) {
+  if (debug) {
+    printf("<<<<< LOAD STRUCT >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
+        KIND_ToString(type).c_str(),
+        KVALUE_ToString(src).c_str(),
+        line,
+        inx);
+  }
+
+  int i, structSize;
+  IValue* dest;
+
+  structSize = returnStruct.size();
+  dest = (IValue*) malloc(structSize*sizeof(IValue));
+
+  if (src->inx == -1) {
+
+    //
+    // Case 1: struct constant.
+    //
+    // Create an IValue struct that has all values in structReturn.
+    //
+    
+    i = 0;
+    while (!returnStruct.empty()) {
+      KVALUE* concreteStructElem; 
+      IValue* structElem; 
+      
+      concreteStructElem = returnStruct.front();
+
+      if (concreteStructElem->inx == -1) {
+        structElem = new IValue(concreteStructElem->kind, concreteStructElem->value,
+            REGISTER);
+      } else {
+        structElem = concreteStructElem->isGlobal ?
+          globalSymbolTable[concreteStructElem->inx] :
+          executionStack.top()[concreteStructElem->inx];
+      }
+
+      dest[i] = *structElem;
+
+      i++;
+      returnStruct.pop();
+    }
+    
+    safe_assert(false);
+
+  } else {
+    
+    //
+    // Case 2: local or global struct.
+    //
+    
+    IValue* srcPointer;
+    IValue* structSrc;
+
+    srcPointer = src->isGlobal ? globalSymbolTable[src->inx] : executionStack.top()[src->inx];
+    structSrc = (IValue*) srcPointer->getIPtrValue();
+
+    i = 0;
+    while (!returnStruct.empty()) {
+      KVALUE *concreteStructElem, *concreteStructElemPtr; 
+      IValue *structElem;
+      int type;
+
+      //
+      // get concrete value in case we need to sync
+      //
+      concreteStructElem = returnStruct.front();
+
+      structElem = new IValue();
+      structSrc[i].copy(structElem);
+      type = structElem->getType();
+
+      //
+      // sync load
+      // first create a KVALUE pointer to concreteStructElem because sync load
+      // expect the KVALUE to be a pointer to the concrete value
+      //
+      concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE));
+      concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
+      syncLoad(structElem, concreteStructElemPtr, type);
+
+      dest[i] = *structElem;
+
+      i++;
+      returnStruct.pop();
+    }
+  }
+
+  dest->setLineNumber(line);
+
+  executionStack.top()[inx] = dest;
+
+  if (debug) cout << "Destination result: " << dest->toString() << endl;
+
+  return;
+}
+
 void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int inx) {
   if (debug) {
     printf("<<<<< LOAD >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
@@ -2930,6 +3029,11 @@ void InterpreterObserver::printCurrentFrame() {
   }
 }
 
+/**
+ *
+ * @param iValue the interpreted iValue of the concrete value
+ * @param concrete pointer to the concrete value
+ */
 bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) { 
   bool sync = false;
   VALUE syncValue;

@@ -12,6 +12,14 @@ void PrintObserver::load(IID iid, KIND type, KVALUE* op, int line, int inx) {
 	 inx);
 }
 
+void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int line, int inx) {
+  printf("<<<<< LOAD STRUCT >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(), 
+	 KIND_ToString(type).c_str(),
+	 KVALUE_ToString(op).c_str(),
+   line,
+	 inx);
+}
+
 // ***** Binary Operations ***** //
 
 void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {

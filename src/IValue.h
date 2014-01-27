@@ -36,17 +36,17 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
- IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(s), lineNumber(0)  {}
+ IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(s), lineNumber(0)  {}
 
-    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
 
- IValue(KIND t, VALUE v, unsigned f): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(1), scope(REGISTER), lineNumber(0) {}
+ IValue(KIND t, VALUE v, unsigned f): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(0), scope(REGISTER), lineNumber(0) {}
 
     IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), valueOffset(-1), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER), lineNumber(0) {}
 
-    IValue(KIND t): type(t), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t): type(t), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
 
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(1), scope(REGISTER), lineNumber(0) {}
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
 
     void setType(KIND t);
 

@@ -58,6 +58,8 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void load(IID iid, KIND kind, KVALUE* op, int line, int inx);
   
+  virtual void load_struct(IID iid, KIND kind, KVALUE* op, int line, int inx);
+
   // ***** Binary Operations ***** //
   
   virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);

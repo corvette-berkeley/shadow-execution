@@ -9,6 +9,9 @@ class LoadInstrumenter : public Instrumenter {
     LoadInstrumenter(std::string name, Instrumentation* instrumentation) :
       Instrumenter(name, instrumentation) {};
 
+    uint64_t pushStructType(StructType* structType, InstrPtrVector& instrs);
+    uint64_t pushStructType(ArrayType* arrayType, InstrPtrVector& instrs);
+
     virtual bool CheckAndInstrument(Instruction* inst);
 };
 
