@@ -1477,7 +1477,10 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     // return a dummy object
     arrayElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
     getElementPtrIndexList.pop();
-    getElementPtrIndexList.pop();
+    if (!getElementPtrIndexList.empty()) {
+      getElementPtrIndexList.pop();
+      safe_assert(getElementPtrIndexList.empty());
+    }
   } else {
     IValue *ptrArray, *array;
     int index;
@@ -1497,16 +1500,16 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     while (!arraySize.empty()) {
       arraySize.pop();
     }
-    index = getElementPtrIndexList.front()*index; // index for non-flatten array
+    index = getElementPtrIndexList.empty() ? 0 : getElementPtrIndexList.front()*index; // index for non-flatten array
     if (debug) cout << "\tIndex: " << index << endl;
 
     //
-    // compute new offset
+    // compute new offset for flatten array
     //
     newOffset = ptrArray->getOffset() + elementSize*index; 
 
     //
-    // compute the index for latten array
+    // compute the index for fatten array
     //
     
     if (ptrArray->isInitialized()) {
@@ -1514,11 +1517,10 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     }
     
     if (debug) cout << "\tIndex: " << index << endl;
-    getElementPtrIndexList.pop();
-    safe_assert(getElementPtrIndexList.empty());
-
-    if (debug)
-      cout << "Getting element at index : " << index << endl;
+    if (!getElementPtrIndexList.empty()) {
+      getElementPtrIndexList.pop();
+      safe_assert(getElementPtrIndexList.empty());
+    }
 
     // TODO: revisit this
     if (index < (int) ptrArray->getLength()) {

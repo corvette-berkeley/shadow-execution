@@ -37,7 +37,7 @@ CORE UTILITIES (89/100).
 
 Latest run on 1/27/2014.
 
-=== 89 programs passing ===
+=== 90 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -128,6 +128,7 @@ ls | ./tee.out out
 ./sleep.out 2
 ./vdir.out
 ./du.out -h ../arrayoutofbound
+./expr.out  linux : lin 
 
 **************
 GENERAL (8)
@@ -151,7 +152,7 @@ Interpretation:
 
 
 ***********************************
-STRUCT PADDING CHECKING (3)
+STRUCT PADDING CHECKING (2)
 ***********************************
 
 ################
@@ -161,7 +162,6 @@ CURRENT FAILURES
 Failing during interpretation when packing check disabled
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./ptx.out list.txt [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-   ./expr.out  linux : lin [GETELEMENT_ARRAY] 
 
 
 #############
