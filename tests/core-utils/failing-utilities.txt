@@ -2,12 +2,9 @@ df
 du
 expr
 od
-pr
 printf
 ptx
-sleep
 sort
-stat
 stty
 users
 vdir
