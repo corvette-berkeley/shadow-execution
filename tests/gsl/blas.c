@@ -1,5 +1,3 @@
-#include "../../../logging/cov_log.h"
-#include "../../../logging/cov_checker.h"
 #include <stdio.h>
 #include <gsl/gsl_blas.h>
 
