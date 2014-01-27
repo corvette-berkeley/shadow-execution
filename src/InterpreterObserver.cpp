@@ -1677,7 +1677,7 @@ void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, i
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
   }
 
-  IValue* src = executionStack.top()[op->inx];
+  IValue* src = op->isGlobal? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
   VALUE value = src->getValue();
   int64_t intValue = value.as_int;
   int64_t* int64Ptr = &intValue;
@@ -1730,11 +1730,12 @@ void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, in
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[op->inx];
+  IValue* src = op->isGlobal? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
+
   if (debug) {
     cout << "Source value: " << src->toString() << endl;
   }
-  int64_t intValue = src->getValue().as_int;
+  int64_t intValue = src->getIntValue();
   if (op->kind == INT1_KIND) {
     intValue = (bool) intValue;
   }
@@ -1784,7 +1785,7 @@ void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, in
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[op->inx];
+  IValue* src = op->isGlobal? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
   VALUE value = src->getValue();
 
   VALUE ext_value;
@@ -1833,7 +1834,7 @@ void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* kv, uint64_t size,
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1865,7 +1866,7 @@ void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* kv, uint64_t size, i
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1903,7 +1904,7 @@ void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* kv, uint64_t size, 
       return;
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1929,7 +1930,7 @@ void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* kv, uint64_t size, 
     return;
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1949,7 +1950,7 @@ void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -1981,7 +1982,7 @@ void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* kv, uint64_t size, 
         KIND_ToString(type).c_str(), KVALUE_ToString(kv).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[kv->inx];
+  IValue* src = kv->isGlobal? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
   VALUE value = src->getValue();
 
   VALUE trunc_value;
@@ -2014,7 +2015,7 @@ void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size
         KIND_ToString(type).c_str(), KVALUE_ToString(op).c_str(), size, inx);
   }
 
-  IValue *src = executionStack.top()[op->inx];
+  IValue* src = op->isGlobal? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
   VALUE value = src->getValue();
   // to calculate the pointer value, need to add the offset
   int64_t ptrValue = value.as_int + src->getOffset(); 
