@@ -44,6 +44,7 @@ numfmt 2
 paste list.txt list.txt
 pathchk -p /usr/local
 pinky
+pr list.txt
 printenv
 pwd
 readlink
@@ -59,7 +60,9 @@ sha384sum list.txt
 sha512sum list.txt
 shred -n 2 list.txt
 shuf list.txt
+sleep 2
 split -b 22 list.txt list
+stat list.txt
 stdbuf
 sum list.txt
 sync

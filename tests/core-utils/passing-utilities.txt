@@ -46,6 +46,7 @@ numfmt
 paste
 pathchk
 pinky
+pr
 printenv
 pwd
 readlink
@@ -61,7 +62,9 @@ sha384sum
 sha512sum
 shred
 shuf
+sleep
 split
+stat
 stdbuf
 sum
 sync

@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (85/100).
+CORE UTILITIES (87/100).
 
 Latest run on 1/25/2014.
 
-=== 85 programs passing ===
+=== 87 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -124,6 +124,8 @@ ls | ./tee.out out
 ./kill.out id
 ./yes.out 1234567 | grep 1234567 | head -10
 ./stat.out list.txt 
+./pr.out list.txt
+./sleep.out 2
 
 **************
 GENERAL (9)
@@ -155,9 +157,7 @@ CURRENT FAILURES
 ################
 
 Failing during interpretation when packing check disabled
-   ./du.out -h (not packed, i64 i64), assertion failure [RETURN STRUCT]
-    ./pr.out list.txt (not packed, i64 i64), unhandled type [RETURN STRUCT]
-    ./sleep.out 2 (not packed, i64 i64), unhandled type [RETURN STRUCT]
+   ./du.out -h (not packed, i64 i64), assertion failure [MISMATCHED VALUE IN STORE]
     ./vdir.out (not packed, i64 i64), [UNHANDLED TYPE/CANNOT PRINT IVALUE] 
     ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
    ./expr.out  linux : lin [GETELEMENT_ARRAY] 
