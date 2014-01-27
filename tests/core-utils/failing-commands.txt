@@ -1,8 +1,4 @@
-df -h
-od list.txt
-printf "%s" hello
 ptx list.txt
 sort list.txt
 stty
 users
-who

@@ -1,8 +1,4 @@
-df
-od
-printf
 ptx
 sort
 stty
 users
-who

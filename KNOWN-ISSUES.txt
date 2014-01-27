@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (89/100).
+CORE UTILITIES (94/100).
 
 Latest run on 1/27/2014.
 
-=== 90 programs passing ===
+=== 94 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -129,9 +129,13 @@ ls | ./tee.out out
 ./vdir.out
 ./du.out -h ../arrayoutofbound
 ./expr.out  linux : lin 
+./who.out 
+./printf.out "%s" hello 
+./df.out -h 
+./od.out -b list.txt 
 
 **************
-GENERAL (8)
+GENERAL (4)
 14 problems during instrumentation or interpretation.
 2 llc takes too long to create assembly.
 **************
@@ -144,11 +148,7 @@ Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
 
    All of the following fail at the same program point.
-   ./printf.out "%s" hello [UNHANDLED TYPE]
-   ./stty.out [UNHANDLED TYPE]
-   ./who.out [UNHANDLED TYPE]
-   ./df.out -h (packed assertion fails) [UNHANDLED TYPE]
-   ./od.out -b list.txt [UNHANDLED TYPE]
+   ./stty.out [BRANCH DIVERGING]
 
 
 ***********************************

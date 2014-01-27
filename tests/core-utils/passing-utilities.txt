@@ -88,3 +88,7 @@ wc
 whoami
 yes
 expr
+who
+printf
+df
+od

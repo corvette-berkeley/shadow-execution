@@ -83,3 +83,7 @@ sleep 2
 vdir
 du -h ../arrayoutofbound
 expr linux : li
+who
+printf "%s" hello
+df
+od
