@@ -191,3 +191,33 @@ is removed. Not counted as passing yet.
   ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
   ./tr.out abc ABC < list.txt (packed assertion fails)
 
+
+NAS Parallel Benchmarks
+================
+
+Failing at instrumentation time:
+
+PHI nodes not grouped at top of basic block!
+bt
+cg
+dc
+ep
+ft
+lu
+mg
+sp
+
+
+GSL Programs
+=========
+
+Failing at instrumentation:
+
+clang -cc1as: fatal error: error in backend: Unfinished frame!
+blas
+
+tmppass.s:7674788:1: error: invalid symbol redefinition
+.Ltmp109204:
+^
+bessel
+fft
