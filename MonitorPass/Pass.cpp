@@ -1,5 +1,7 @@
 #define DEBUG_TYPE "hello"
 
+#include <llvm/Analysis/Verifier.h>
+
 #include "Instrumentation.h"
 #include "Instrumenter.h"
 #include "MonitorPass.h"
@@ -116,7 +118,13 @@ struct MonitorPass : public FunctionPass {
 			     ArrayRef<Value*>(args)); 
 	  
 	  if (dyn_cast<PHINode>(itr)) {
-	    call->insertAfter(itr);
+	    // find the last phiNode in the block
+	    BasicBlock::iterator itr_tmp = itr;
+	    while(dyn_cast<PHINode>(itr_tmp)) {
+	      itr_tmp++;
+	    }
+	    itr_tmp--; 
+	    call->insertAfter(itr_tmp);
 	  } else {
 	    call->insertBefore(itr);
 	  }
@@ -139,7 +147,7 @@ struct MonitorPass : public FunctionPass {
    Instrumentation* instrumentation = Instrumentation::GetInstance();
    instrumentation->BeginModule(&M);
    Instrumenter* instrumenter = new Instrumenter("", instrumentation);
-   
+
    // split first block
    Function* mainFunction = M.getFunction("main");
    BasicBlock* firstBlock = &mainFunction->getEntryBlock();
@@ -203,7 +211,7 @@ struct MonitorPass : public FunctionPass {
        instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
        //} // isPrivateLinkage
    } // global iterator
-   
+
    return Instrumentation::GetInstance()->Initialize(M);
   }
 
@@ -372,10 +380,9 @@ REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp") //done
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
-REGISTER_INSTRUMENTER(CallInstrumenter, "call") // cuong: limited support for intrinsic 
+REGISTER_INSTRUMENTER(CallInstrumenter, "call") 
 REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
 REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
-
 
 
 /*******************************************************************************************/

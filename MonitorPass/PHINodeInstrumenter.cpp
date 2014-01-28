@@ -41,7 +41,17 @@ bool PHINodeInstrumenter::CheckAndInstrument(Instruction* inst) {
     Instruction* call = CALL_IID_INT("llvm_phinode", iidC, inxC);
     instrs.push_back(call);
 
-    InsertAllAfter(instrs, phiNode);
+    BasicBlock *phiBlock = phiNode->getParent();
+    PHINode* lastPHINode = phiNode;
+    for (BasicBlock::iterator itr = phiBlock->begin(), end = phiBlock->end(); itr != end; ++itr) {
+	  if (dyn_cast<PHINode>(itr)) {
+	    lastPHINode = dyn_cast<PHINode>(itr);
+	  } else {
+	    break;
+	  }
+    }
+
+    InsertAllAfter(instrs, lastPHINode);
 
     return true;
     
