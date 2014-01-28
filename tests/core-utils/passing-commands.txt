@@ -86,3 +86,5 @@ printf "%s" hello
 df
 od  -b list.txt
 stty
+du -h ../arrayoutofbound
+tsort list.txt

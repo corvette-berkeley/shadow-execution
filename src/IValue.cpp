@@ -366,7 +366,9 @@ int64_t IValue::getIntValue() {
     case INT1_KIND:
       return (bool) v;
     case INT8_KIND:
-      return (int8_t) v;
+      v = (int32_t) v;
+      v = v & 0x000000FF;
+      return v;
     case INT16_KIND:
       return (int16_t) v;
     case INT24_KIND:

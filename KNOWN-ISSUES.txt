@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (93/100).
+CORE UTILITIES (95/100).
 
-Latest run on 1/27/2014.
+Latest run on 1/28/2014.
 
-=== 93 programs passing ===
+=== 95 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -118,94 +118,41 @@ unlink list.txt
 uptime
 whoami
 wc list.txt
-/factor.out 8
-./timeout.out 1 sleep 10; date
+factor 8
+timeout 1 sleep 10; date
 ls | ./tee.out out
-./kill.out id
-./yes.out 1234567 | grep 1234567 | head -10
-./stat.out list.txt 
-./pr.out list.txt
-./sleep.out 2
-./vdir.out
-./expr.out  linux : lin 
-./who.out 
-./printf.out "%s" hello 
-./df.out -h 
-./od.out -b list.txt 
-./stty.out
+kill id
+yes 1234567 | grep 1234567 | head -10
+stat list.txt 
+pr list.txt
+sleep 2
+vdir
+expr  linux : lin 
+who 
+printf "%s" hello 
+df -h 
+od -b list.txt 
+stty
+tsort list.txt 
+du -h 
 
 **************
-GENERAL (4)
-14 problems during instrumentation or interpretation.
-2 llc takes too long to create assembly.
+FAILING (5)
 **************
 
-LLC:
+INSTRUMENTATION:
     tail (packing check fails) [llc takes too long to create assembly for instrumented code] (not in failing file)
     head [llc takes too long to create assembly for instrumented code] (not in failing file)
 
-Interpretation:
-    ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-    ./tsort list.txt [MISMATCH AT STORE]
-    ./du.out -h [MISMATCH AT STORE]
+INTERPRETATION:
+    ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
 
-
-
-***********************************
-STRUCT PADDING CHECKING (2)
-***********************************
-
-################
-CURRENT FAILURES
-################
-
-Failing during interpretation when packing check disabled
-    ./sort.out list.txt (constant pointer) (not packed), mismatched values [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-    ./ptx.out list.txt [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-
-
-#############
-OTHER NOTES
-############
-
-===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
-===== PASSED OTHERWISE ===== 
-./factor.out 8 (not packed) - It passes if the packing check is
-removed. 
-./seq.out 2 (not packed, i64 i64) - It passes if the packing check
-is removed. 
-
-===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
-===== PASSED OTHERWISE ===== 
-  cat
-  cp
-  install
-  mv
-  realpath
-  split
-  stdbuf
-  touch
-  tuncate
-  uname
-  ./timeout.out 1 sleep 10; date (not packed, i64 i64), unhandled type
-  ./tr.out abc ABC < list.txt (packed assertion fails)
 
 
 NAS Parallel Benchmarks
 ================
-
-Failing at instrumentation time:
-
-PHI nodes not grouped at top of basic block!
-bt
-cg
-dc
-ep
-ft
-lu
-mg
-sp
-
 
 GSL Programs
 =========

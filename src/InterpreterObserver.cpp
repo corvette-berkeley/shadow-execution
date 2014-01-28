@@ -213,8 +213,15 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int in
       // sync load
       syncLoad(destLocation, src, type);
     } else {
+
+      if (debug) cout << "\tSource pointer is not initialized!" << endl;
+
+      VALUE zeroValue;
+      zeroValue.as_int = 0;
+
       destLocation->setSize(KIND_GetSize(type));
       destLocation->setType(type);
+      destLocation->setValue(zeroValue);
       destLocation->setLength(0);
 
       // sync load
@@ -3044,7 +3051,6 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
   bool sync = false;
   VALUE syncValue;
   int64_t cValueVoid;
-  int8_t cValueInt8;
   int8_t* cValueInt8Arr;
   int16_t cValueInt16;
   int16_t* cValueInt16Arr;
@@ -3061,11 +3067,13 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       // might not work on 32 bit machine
       cValueVoid = *((int64_t*) concrete->value.as_ptr);
 
-      cout << "index: " << iValue->getIndex() << endl;
-      cout << "size: " << iValue->getSize() << endl;
-      cout << "value: " << iValue->getValue().as_int << endl;
-      cout << "first value: " << iValue->getValue().as_int + iValue->getOffset() << endl;
-      cout << "second value: " << cValueVoid << endl;
+      if (debug) {
+        cout << "index: " << iValue->getIndex() << endl;
+        cout << "size: " << iValue->getSize() << endl;
+        cout << "value: " << iValue->getValue().as_int << endl;
+        cout << "first value: " << iValue->getValue().as_int + iValue->getOffset() << endl;
+        cout << "second value: " << cValueVoid << endl;
+      }
 
       sync = (iValue->getValue().as_int + iValue->getOffset() != cValueVoid);
       if (sync) {
@@ -3075,17 +3083,19 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case INT1_KIND: 
     case INT8_KIND: 
-      cValueInt8 = *((int8_t*) concrete->value.as_ptr);
-      sync = (((int8_t) iValue->getIntValue()) != cValueInt8);
+      cValueInt32 = *((int32_t*) concrete->value.as_ptr);
+      cValueInt32 = cValueInt32 & 0x000000FF;
+
+      sync = (((int8_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
         if (debug) {
           cout << "\tINT8_KIND case: " << endl;
           cout << "\t IVALUE: " << iValue->getValue().as_int << endl; 
-          cout << "\t CONCRETE: " << cValueInt8 << endl; 
+          cout << "\t CONCRETE: " << cValueInt32 << endl; 
           cout << "\t CONCRETE FULL: " << concrete->value.as_int << endl;
         }
         cValueInt8Arr = (int8_t*) calloc(8, sizeof(int8_t));
-        cValueInt8Arr[0] = cValueInt8;
+        cValueInt8Arr[0] = cValueInt32;
         syncValue.as_int = *((int64_t*) cValueInt8Arr);
         iValue->setValue(syncValue);
         if (debug) {

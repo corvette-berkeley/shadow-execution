@@ -91,3 +91,5 @@ printf
 df
 od
 stty
+du
+tsort

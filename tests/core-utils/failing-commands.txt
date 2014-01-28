@@ -1,5 +1,3 @@
 ptx list.txt
 sort list.txt
 users
-tsort list.txt
-du -h
