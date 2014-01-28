@@ -68,7 +68,6 @@ touch out.txt
 tr
 true --version
 truncate -s 5 list.txt
-tsort list.txt 
 tty
 uname
 unexpand list.txt
@@ -80,11 +79,10 @@ wc list.txt
 stat list.txt
 pr list.txt
 sleep 2
-vdir
-du -h ../arrayoutofbound
+vdir ../arrayoutofbound
 expr linux : li
 who
 printf "%s" hello
 df
-od
+od  -b list.txt
 stty

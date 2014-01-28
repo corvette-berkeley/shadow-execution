@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (95/100).
+CORE UTILITIES (93/100).
 
 Latest run on 1/27/2014.
 
-=== 95 programs passing ===
+=== 93 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -127,7 +127,6 @@ ls | ./tee.out out
 ./pr.out list.txt
 ./sleep.out 2
 ./vdir.out
-./du.out -h ../arrayoutofbound
 ./expr.out  linux : lin 
 ./who.out 
 ./printf.out "%s" hello 
@@ -147,8 +146,9 @@ LLC:
 
 Interpretation:
     ./users.out(packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./tsort list.txt [MISMATCH AT STORE]
+    ./du.out -h [MISMATCH AT STORE]
 
-   All of the following fail at the same program point.
 
 
 ***********************************
@@ -171,9 +171,9 @@ OTHER NOTES
 ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
 ===== PASSED OTHERWISE ===== 
 ./factor.out 8 (not packed) - It passes if the packing check is
-removed. Not counted as passing yet.
+removed. 
 ./seq.out 2 (not packed, i64 i64) - It passes if the packing check
-is removed. Not counted as passing yet.
+is removed. 
 
 ===== FAILED DURING INSTRUMENTATION IF CHECKING FOR STRUCT PACKING ======
 ===== PASSED OTHERWISE ===== 
@@ -220,3 +220,5 @@ tmppass.s:7674788:1: error: invalid symbol redefinition
 ^
 bessel
 fft
+
+

@@ -1,3 +1,5 @@
 ptx
 sort
 users
+tsort
+du

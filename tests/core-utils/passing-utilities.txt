@@ -1,4 +1,4 @@
-se64
+base64
 basename
 cat
 chcon
@@ -15,7 +15,6 @@ dd
 dir
 dircolors
 dirname
-du
 echo
 env
 expand
@@ -76,7 +75,6 @@ touch
 tr
 true
 truncate
-tsort
 tty
 uname
 unexpand
