@@ -154,6 +154,15 @@ INTERPRETATION:
 NAS Parallel Benchmarks
 ================
 
+bt.A.x [SEG FAULT]
+cg.A.x [SEG FAULT]
+dc.A.x [BRANCH DIVERGE]
+ep.A.x [SEG FAULT]
+ft.A.x [SEG FAULT]
+lu.A.x [SEG FAULT]
+mg.A.x [SEG FAULT]
+sp.A.x [SEG FAULT]
+
 GSL Programs
 =========
 

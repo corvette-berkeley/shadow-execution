@@ -766,6 +766,8 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
 
   int64_t result;
   switch (op1->kind) {
+    case INT1_KIND:
+      result = (value1 == 1 && value2 == 1) ? 1 : 0;
     case INT8_KIND:
       if (debug) cout << "Value 1: " << (int8_t) value1 << " Value 2: " << (int8_t) value2 << endl;
       result = (int8_t)value1 & (int8_t)value2;
@@ -836,6 +838,8 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
 
   int64_t result;
   switch (op1->kind) {
+    case INT1_KIND:
+      result = (value1 == 0 && value2 == 0) ? 0 : 1;
     case INT8_KIND:
       result = (int8_t)value1 | (int8_t)value2;
       break;
@@ -1490,24 +1494,62 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     }
   } else {
     IValue *ptrArray, *array;
-    int index;
+    int *arraySizeVec, *indexVec;
+    int index, arrayDim, getIndexNo, i, j;
 
     ptrArray = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
     array = static_cast<IValue*>(ptrArray->getIPtrValue());
 
     if (debug) cout << "\tPointer operand: " << ptrArray->toString() << endl;
 
-    getElementPtrIndexList.pop();
+    //
+    // compute the index for flatten array representation of
+    // the program's multi-dimensional array
+    //
+    
+    arrayDim = arraySize.size();
+    arraySizeVec = (int*) malloc(arrayDim * sizeof(int));
 
-    //
-    // compute the index
-    //
-    index = 1;
-    arraySize.pop();
+    getIndexNo = getElementPtrIndexList.size();
+    indexVec = (int*) malloc(getIndexNo * sizeof(int));
+
+    // the size of out-most dimension; 
+    // we do not need this to compute the index
+    arraySize.pop(); 
+    i = 0;
     while (!arraySize.empty()) {
+      arraySizeVec[i] = arraySize.front();
       arraySize.pop();
+      i++;
     }
-    index = getElementPtrIndexList.empty() ? 0 : getElementPtrIndexList.front()*index; // index for non-flatten array
+    safe_assert(arraySize.empty());
+
+    arraySizeVec[arrayDim-1] = 1; 
+
+    for (i = 0; i < arrayDim - 1; i++) {
+      for (j = i+1; j < getIndexNo - 1; j++) {
+        arraySizeVec[i] *= arraySizeVec[j]; 
+      }
+    }
+
+    // the first index is for the pointer operand;
+    // it must be zero
+    safe_assert(getElementPtrIndexList.front() == 0);
+    getElementPtrIndexList.pop(); 
+
+    i = 0;
+    while (!getElementPtrIndexList.empty()) {
+      indexVec[i] = getElementPtrIndexList.front();
+      getElementPtrIndexList.pop();
+      i++;
+    }
+    safe_assert(getElementPtrIndexList.empty());
+
+    index = 0;
+    for (i = 0; i < getIndexNo - 1; i++) {
+      index += indexVec[i] * arraySizeVec[i];
+    }
+
     if (debug) cout << "\tIndex: " << index << endl;
 
     //
@@ -1516,7 +1558,7 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     newOffset = ptrArray->getOffset() + elementSize*index; 
 
     //
-    // compute the index for fatten array
+    // compute the index for the casted fatten array
     //
     
     if (ptrArray->isInitialized()) {
@@ -1524,10 +1566,6 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     }
     
     if (debug) cout << "\tIndex: " << index << endl;
-    if (!getElementPtrIndexList.empty()) {
-      getElementPtrIndexList.pop();
-      safe_assert(getElementPtrIndexList.empty());
-    }
 
     // TODO: revisit this
     if (index < (int) ptrArray->getLength()) {
@@ -2567,29 +2605,39 @@ void InterpreterObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* 
         KVALUE_ToString(fvalue).c_str(), inx);
   }
 
-  IValue* result = NULL;
-  if (cond->value.as_int) {
-    if (tvalue->inx == -1) {
-      result = new IValue(tvalue->kind, tvalue->value);
-      result->setLength(0); // uninitialized pointer
-    }
-    else {
-      safe_assert(false);
-    }
+  int condition;
+  IValue *conditionValue, *trueValue, *falseValue, *result;
+
+  if (cond->inx == -1) {
+    condition = cond->value.as_int;
+  } else {
+    conditionValue = cond->isGlobal ? globalSymbolTable[cond->inx] : executionStack.top()[cond->inx];
+    condition = conditionValue->getValue().as_int;
   }
-  else {
-    if (fvalue->inx == -1) {
-      result = new IValue(fvalue->kind, fvalue->value);
-      result->setLength(0); // uninitialized pointer
+
+
+  if (condition) {
+    if (tvalue->inx == -1) {
+      result = new IValue(tvalue->kind, tvalue->value, REGISTER);
+    } else {
+      result = new IValue();
+      trueValue = tvalue->isGlobal ? globalSymbolTable[tvalue->inx] : executionStack.top()[tvalue->inx];
+      trueValue->copy(result);
     }
-    else {
-      safe_assert(false);
+  } else {
+    if (fvalue->inx == -1) {
+      result = new IValue(fvalue->kind, fvalue->value, REGISTER);
+    } else {
+      result = new IValue();
+      falseValue = fvalue->isGlobal ? globalSymbolTable[fvalue->inx] : executionStack.top()[fvalue->inx];
+      falseValue->copy(result);
     }
   }
 
   executionStack.top()[inx] = result;
+
   if (debug) {
-    cout << result->toString() << endl;
+    cout << "Result is " << result->toString() << endl;
   }
   return;
 }
