@@ -169,13 +169,14 @@ GSL Programs
 
 Failing at instrumentation:
 
-clang -cc1as: fatal error: error in backend: Unfinished frame!
-blas
 
-tmppass.s:7674788:1: error: invalid symbol redefinition
-.Ltmp109204:
-^
-bessel
-fft
+Instruction referencing instruction not embedded in a basic block!
+  %707 = bitcast [2 x float]* %697 to <2 x float>*, !dbg !35194
+  <badref> = ptrtoint <2 x float>* %707 to i64
+Broken module: Running pass 'Module Verifier' on function '@gsl_matrix_complex_float_get'
+
+blas
+gaussian
+
 
 

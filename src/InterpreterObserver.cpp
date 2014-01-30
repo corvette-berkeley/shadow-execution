@@ -2857,7 +2857,7 @@ void InterpreterObserver::create_global_symbol_table(int size) {
     printf("<<<<< CREATE GLOBAL SYMBOL TABLE OF SIZE %d >>>>>\n", size);
   }
   // initialize logger
-  google::InitGoogleLogging("hola");
+  google::InitGoogleLogging("main");
   LOG(INFO) << "Initialized logger" << endl;
 
   for (int i = 0; i < size; i++) {
