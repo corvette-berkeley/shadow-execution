@@ -6,7 +6,14 @@ int main() {
   double c = a / b;
   printf("c: %lf\n", c);
 
-  if (c != 0) { // we want to warn the user b is NaN!
+  printf("c < 0.0: %d\n", (c < 0.0));
+  printf("c <= 0.0: %d\n", (c <= 0.0));
+  printf("c > 0.0: %d\n", (c > 0.0));
+  printf("c >= 0.0: %d\n", (c >= 0.0));
+  printf("c != 0.0: %d\n", (c != 0.0));
+  printf("c == 0.0: %d\n", (c == 0.0));
+
+  if (c > 0.0 || c < 0.0) { // we want to warn the user b is NaN!
     printf("Compute assuming x is non zero\n");
   }
   else {
