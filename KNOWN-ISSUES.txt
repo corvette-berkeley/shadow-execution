@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (95/100).
+CORE UTILITIES (97/100).
 
 Latest run on 1/28/2014.
 
-=== 95 programs passing ===
+=== 97 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -135,14 +135,12 @@ od -b list.txt
 stty
 tsort list.txt 
 du -h 
+tail -10 list.txt
+head -10 list.txt
 
 **************
-FAILING (5)
+FAILING (3)
 **************
-
-INSTRUMENTATION:
-    tail (packing check fails) [llc takes too long to create assembly for instrumented code] (not in failing file)
-    head [llc takes too long to create assembly for instrumented code] (not in failing file)
 
 INTERPRETATION:
     ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]

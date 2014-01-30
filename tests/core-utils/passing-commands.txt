@@ -11,17 +11,21 @@ comm list.txt list.txt
 cp list.txt temp.txt
 csplit -f xyz list.txt 11 72 98 
 cut -c2 list.txt
+df
 dir ../arrayoutofbound/
 dircolors ../arrayoutofbound/
 dirname /usr/local
 dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
+du -h ../arrayoutofbound
 echo
 env
 expand list.txt
+expr linux : li
 false --version
 fmt list.txt
 fold -5 list.txt
 groups
+head -5 list.txt
 hostid
 id
 install -b list.txt backup.txt
@@ -41,10 +45,13 @@ nl list.txt
 nohup time
 nproc
 numfmt 2
+od  -b list.txt
 paste list.txt list.txt
 pathchk -p /usr/local
 pinky
+pr list.txt
 printenv
+printf "%s" hello
 pwd
 readlink
 realpath -L list.txt
@@ -59,32 +66,27 @@ sha384sum list.txt
 sha512sum list.txt
 shred -n 2 list.txt
 shuf list.txt
+sleep 2
 split -b 22 list.txt list
+stat list.txt
 stdbuf
+stty
 sum list.txt
 sync
 tac list.txt
+tail -10 list.txt
 touch out.txt
 tr
 true --version
 truncate -s 5 list.txt
 tty
+tsort list.txt
 uname
 unexpand list.txt
 uniq list.txt
 unlink list.txt
 uptime
-whoami
-wc list.txt
-stat list.txt
-pr list.txt
-sleep 2
 vdir ../arrayoutofbound
-expr linux : li
+wc list.txt
 who
-printf "%s" hello
-df
-od  -b list.txt
-stty
-du -h ../arrayoutofbound
-tsort list.txt
+whoami
