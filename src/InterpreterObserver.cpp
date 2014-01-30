@@ -590,7 +590,7 @@ void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
       result = value1 << value2;
       break;
     default:
-      cout << "[SHL]: Operand type is not in8 or int16 or in24 or int32 or int64" << endl;
+      cout << "[SHL]: Operand type is not int8 or int16 or in24 or int32 or int64" << endl;
       safe_assert(false);
   }
 
@@ -768,6 +768,7 @@ void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   switch (op1->kind) {
     case INT1_KIND:
       result = (value1 == 1 && value2 == 1) ? 1 : 0;
+      break;
     case INT8_KIND:
       if (debug) cout << "Value 1: " << (int8_t) value1 << " Value 2: " << (int8_t) value2 << endl;
       result = (int8_t)value1 & (int8_t)value2;
@@ -840,6 +841,7 @@ void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* 
   switch (op1->kind) {
     case INT1_KIND:
       result = (value1 == 0 && value2 == 0) ? 0 : 1;
+      break;
     case INT8_KIND:
       result = (int8_t)value1 | (int8_t)value2;
       break;
