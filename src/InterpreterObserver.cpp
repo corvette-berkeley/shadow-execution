@@ -2858,7 +2858,7 @@ void InterpreterObserver::create_global_symbol_table(int size) {
   }
   // initialize logger
   google::InitGoogleLogging("hola");
-  LOG(INFO) << "Testing!!!" << endl;
+  LOG(INFO) << "Initialized logger" << endl;
 
   for (int i = 0; i < size; i++) {
     IValue* value = new IValue();
@@ -3242,7 +3242,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   if (sync) {
     if (debug) {
-      LOG(INFO) << "Testing!!!" << endl;
+      LOG(INFO) << "SYNCING AT LOAD DUE TO MISMATCH" << endl;
       cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
       cout << "\t " << iValue->toString() << endl;
     }

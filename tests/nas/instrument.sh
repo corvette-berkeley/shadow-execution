@@ -8,8 +8,8 @@ export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib"
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -o tmppass.bc $1.bc
 
 # create executable 
-llc tmppass.bc
-$CC tmppass.s -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
+#llc tmppass.bc
+$CC tmppass.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
 
 # create executable for uninstrumented bitcode
 #llc $1.bc

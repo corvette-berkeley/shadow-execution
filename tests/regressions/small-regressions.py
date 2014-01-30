@@ -58,6 +58,7 @@ def main():
 
       ###########################################
       # instrumented executable file
+      '''
       iassemblyfile = 'i_' + executable + '.s' 
       iassembly = open(iassemblyfile, 'w')
 
@@ -68,7 +69,7 @@ def main():
       if retval <> 0:
         log.write("[FAILED ASSEMBLY]: " + executable + ".s\n")
         continue 
-
+      '''  
       
       ############################################
       # creating instrumented executable file
@@ -76,7 +77,7 @@ def main():
       iexecutable = open(iexecutablefile, 'w')
 
       # added -lgmp for expr and other core utility
-      command = [llvm + '/clang', '-use-gold-plugin', iassemblyfile, '-L' + sourcepath, '-L' + glogpath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-lglog', '-o', iexecutablefile]
+      command = [llvm + '/clang', '-use-gold-plugin', ibitcodefile, '-L' + sourcepath, '-L' + glogpath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-lglog', '-o', iexecutablefile]
       retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
 
       # return -1 if running LLVM passes fails

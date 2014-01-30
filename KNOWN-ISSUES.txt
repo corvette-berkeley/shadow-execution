@@ -33,11 +33,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (97/100).
+CORE UTILITIES (95/100).
 
-Latest run on 1/28/2014.
+Latest run on 1/30/2014 at 9:59am.
 
-=== 97 programs passing ===
+=== 95 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -139,10 +139,13 @@ tail -10 list.txt
 head -10 list.txt
 
 **************
-FAILING (3)
+FAILING (5)
 **************
 
 INTERPRETATION:
+	comm [mismatch at store]
+	vdir [mismatch at store]
+
     ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
