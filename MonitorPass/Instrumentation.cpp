@@ -166,11 +166,11 @@ bool Instrumentation::CheckAndInstrument(Instruction* I) {
   return false;
 }
 
-void Instrumentation::PrintFiles() {
+void Instrumentation::PrintFiles(string name) {
   map<string, int>::iterator it;
   ofstream myfile;
 
-  myfile.open ("files.txt");
+  myfile.open (name.c_str());
   for(it = fileNames.begin(); it != fileNames.end(); it++) {
     myfile << it->first << ":" << it->second << endl;
   }

@@ -12,6 +12,7 @@
 #include <sstream>
 #include <set>
 
+cl::opt<string> FileName("file", cl::value_desc("filename"), cl::desc("File indexes"), cl::init("files.txt"));
 
 namespace {
 
@@ -248,7 +249,7 @@ struct MonitorPass : public FunctionPass {
   bool doFinalization(Module &M) {
     // printing filenames
     Instrumentation *instrumentation = Instrumentation::GetInstance();
-    instrumentation->PrintFiles();
+    instrumentation->PrintFiles(FileName);
 
     return Instrumentation::GetInstance()->Finalize(M);
   }

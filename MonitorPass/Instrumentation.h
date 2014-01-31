@@ -197,7 +197,7 @@ public:
    *
    * @note Printing the contents of the filenames map.
    */
-  void PrintFiles();
+  void PrintFiles(string name);
 
 
 public:
