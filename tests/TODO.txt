@@ -1,0 +1,22 @@
+
+Notes from meeting with Costin on 1/30.
+
+SYNC, line, file.
+test case runs line and file number where sync.
+asserts for each value.
+asserts in branches.
+unit tests for clang and gcc.
+printf in interpreter.
+gcc torture test.
+    compare printfs. 
+    combinations or automatic generated tests.
+    side effects.
+file for core utils, list of functions read/write, and all sources of syncing are there.
+
+implement clustering.
+    include function names.
+    syncing in cluster.
+   	  
+NaN in all programs.
+Syncing checking.
+

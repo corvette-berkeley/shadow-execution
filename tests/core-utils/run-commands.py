@@ -55,6 +55,7 @@ def main():
     # running command
     retval_instrumented = call(command, stdin=None, stdout=None, stderr=None)
 
+    # TODO: check for errno or other values
     if retval_uninstrumented <> retval_instrumented:
       log.write("[FAILED ERROR CODE MISMATCH]: " + command[0] + " with error codes: " + str(retval_uninstrumented) + " " + str(retval_instrumented) + "\n")
     elif retval_instrumented <> 0:
