@@ -35,7 +35,7 @@ def main():
       ibitcodefile = 'i_' + executable + '.bc' 
       ibitcode = open(ibitcodefile, 'w')
 
-      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', '--file', glog_log_dir + '/' + executable + '-files.txt', '-o', ibitcodefile]
+      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', '--file', glog_log_dir + '/' + executable + '-metadata.txt', '-o', ibitcodefile]
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails

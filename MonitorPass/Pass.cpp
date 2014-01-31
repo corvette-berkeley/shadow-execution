@@ -12,7 +12,7 @@
 #include <sstream>
 #include <set>
 
-cl::opt<string> FileName("file", cl::value_desc("filename"), cl::desc("File indexes"), cl::init("files.txt"));
+cl::opt<string> FileName("file", cl::value_desc("filename"), cl::desc("File names and indexes"), cl::init("metadata.txt"));
 
 namespace {
 
