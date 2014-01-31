@@ -1,62 +1,160 @@
+/**
+ * @file InterpreterObserver.cpp
+ * @brief
+ */
+
+/*
+ * Copyright (c) 2013, UC Berkeley All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ *
+ * 1.  Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this software must
+ * display the following acknowledgement: This product includes software
+ * developed by the UC Berkeley.
+ *
+ * 4. Neither the name of the UC Berkeley nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY UC BERKELEY ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL UC BERKELEY BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+// Author: Cuong Nguyen and Cindy Rubio-Gonzalez
 
 #include "InterpreterObserver.h"
 
+#include "stdbool.h"
 #include <assert.h>
-#include <glog/logging.h>
 #include <math.h>
 #include <stack>
-#include "stdbool.h"
 #include <vector>
+
 #include <llvm/IR/InstrTypes.h>
+#include <glog/logging.h>
 
+/***************************** Helper Functions *****************************/
 
-unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigned length) {
-  int low = 0;
-  int high = length - 1;
-  if (debug)
-    cout << "Offset: " << offset << " Length: " << length << endl;
+unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned length) {
+  int low, high, index;
 
+  //
+  // assert: offset cannot larger than the size of the array itself (int byte)
+  //
+  safe_assert(offset <= array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()));
+
+  //
+  // initializing lowerbound and upperbound of the index
+  //
+  low = 0;
+  high = length - 1;
+
+  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Offset: " << offset << " Length: " << length);
+
+  //
+  // search for the index using binary search
+  // the IValue at the index should have the largest byteOffset that is less
+  // than or equal to the offset
+  //
   while(low < high){
-    unsigned mid = (low + high) / 2;
-    if (debug)
-      cout << "mid: " << mid;
 
-    unsigned firstByte = values[mid].getFirstByte();
-    if (debug)
-      cout << " FirstByte: " << firstByte << endl;
-    if (offset == firstByte) {
-      if (debug)
-        cout << "Returning mid: " << mid << endl;
-      return mid;
-    }
-    else if ((mid + 1 <= length -1) && (firstByte < offset) && (offset < values[mid+1].getFirstByte())) {
-      if (debug)
-        cout << "Case 2, returning mid: " << mid << endl;
-      return mid;
-    }
-    else if (offset < firstByte) {
+    unsigned mid, firstByte;
+    mid = (low + high) / 2;
+
+    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Mid index: " << mid);
+
+    firstByte = array[mid].getFirstByte();
+
+    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Firstbyte: " << firstByte);
+
+    if (firstByte == offset) {
+      index = mid;
+      break;
+    } else if ((mid + 1 <= length -1) && (firstByte < offset) && (offset < array[mid+1].getFirstByte())) {
+      index = mid;
+      break;
+    } else if (offset < firstByte) {
       high = mid - 1;
     } else {
       low = mid + 1;
     }
+
   }
-  if (debug) {
-    cout << "\t\tReturning high: " << high << " " << "values[high] = " << values[high].toString() << endl;
-    cout << "\t\tReturning high: " << high << " " << values[high].getFirstByte() << endl;
-  }
-  return high; // high
+
+  index = high;
+
+  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Returning index: " << index); 
+
+  return index; 
 }
 
-void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int file, int line, int inx) {
-  if (debug) {
-    printf("<<<<< LOAD STRUCT >>>>> %s, kind:%s, %s, file: %d, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
-        KIND_ToString(type).c_str(),
-        KVALUE_ToString(src).c_str(),
-	file,
-        line,
-        inx);
+std::string InterpreterObserver::BINOP_ToString(int binop) {
+  std::stringstream s;
+  switch(binop) {
+    case ADD:
+      s << "ADD";
+      break;
+    case FADD:
+      s << "FADD";
+      break;
+    case SUB:
+      s << "SUB";
+      break;
+    case FSUB:
+      s << "FSUB";
+      break;
+    case MUL:
+      s << "MUL";
+      break;
+    case FMUL:
+      s << "FMUL";
+      break;
+    case UDIV:
+      s << "UDIV";
+      break;
+    case SDIV:
+      s << "SDIV";
+      break;
+    case FDIV:
+      s << "FDIV";
+      break;
+    case UREM:
+      s << "UREM";
+      break;
+    case SREM:
+      s << "SREM";
+      break;
+    case FREM:
+      s << "FREM";
+      break;
+    default: 
+      DEBUG_STDERR(__PRETTY_FUNCTION__ << "Unsupport binary operator operand: " << binop);
+      safe_assert(false);
+      break;
   }
+  return s.str();
+}
 
+/***************************** Interpretation *****************************/
+
+void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int file, int line, int inx) {
   int i, structSize;
   IValue* dest;
 
@@ -130,7 +228,7 @@ void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int file,
       concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE));
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
       if (syncLoad(structElem, concreteStructElemPtr, type)) {
-	LOG(INFO) << "[LOAD STRUCT] Syncing load at " << file << ":" << line << endl; 
+        LOG(INFO) << "[LOAD STRUCT] Syncing load at " << file << ":" << line << endl; 
       }
 
       dest[i] = *structElem;
@@ -273,79 +371,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
   return;
 }
 
-// ***** Binary Operations ***** //
 
-std::string InterpreterObserver::BINOP_ToString(int binop) {
-  std::stringstream s;
-  switch(binop) {
-    case ADD:
-      s << "ADD";
-      break;
-    case FADD:
-      s << "FADD";
-      break;
-    case SUB:
-      s << "SUB";
-      break;
-    case FSUB:
-      s << "FSUB";
-      break;
-    case MUL:
-      s << "MUL";
-      break;
-    case FMUL:
-      s << "FMUL";
-      break;
-    case UDIV:
-      s << "UDIV";
-      break;
-    case SDIV:
-      s << "SDIV";
-      break;
-    case FDIV:
-      s << "FDIV";
-      break;
-    case UREM:
-      s << "UREM";
-      break;
-    case SREM:
-      s << "SREM";
-      break;
-    case FREM:
-      s << "FREM";
-      break;
-    default: 
-      safe_assert(false);
-      break;
-  }
-  return s.str();
-}
-
-long double InterpreterObserver::getValueFromConstant(KVALUE* op) {
-  KIND kind = op->kind;
-  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
-    return op->value.as_int;
-  } else if (kind == INT80_KIND) {
-    cout << "[getValueFromConstant] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return 0; // otherwise compiler warning
-  } else {
-    return op->value.as_flp;
-  }
-}
-
-long double InterpreterObserver::getValueFromIValue(IValue* loc) {
-  KIND kind = loc->getType();
-  if (kind == INT1_KIND || kind == INT8_KIND || kind == INT16_KIND || kind == INT24_KIND || kind == INT32_KIND || kind == INT64_KIND) {
-    return loc->getValue().as_int;
-  } else if (kind == INT80_KIND) {
-    cout << "[getValueFromIValue] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return 0; // otherwise compiler warning
-  } else {
-    return loc->getValue().as_flp;
-  }
-}
 
 void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
   if (debug) {
@@ -2490,7 +2516,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
   // get value of v1
   if (op1->iid == 0) { // constant
-    v1 = getValueFromConstant(op1);
+    v1 = KVALUE_ToFlpValue(op1);
   } else {
     IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
       executionStack.top()[op1->inx];
@@ -2499,7 +2525,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
 
   // get value of v2
   if (op2->iid == 0) { // constant
-    v2 = getValueFromConstant(op2);
+    v2 = KVALUE_ToFlpValue(op2);
   } else {
     IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
       executionStack.top()[op2->inx];
