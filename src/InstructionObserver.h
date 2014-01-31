@@ -57,7 +57,7 @@ public:
 	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void load(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};

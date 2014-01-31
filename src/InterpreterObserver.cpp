@@ -1237,11 +1237,11 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 }
 
 
-void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, int inx) {
+void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int file, int line, int inx) {
   if (debug) {
-    printf("<<<<< STORE >>>>> %s, %s, %s, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
-        KVALUE_ToString(dest).c_str(), 
-        KVALUE_ToString(src).c_str(), line, inx); 
+    printf("<<<<< STORE >>>>> %s, %s, %s, file: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
+	   KVALUE_ToString(dest).c_str(), 
+	   KVALUE_ToString(src).c_str(), file, line, inx); 
   }
 
   if (dest->kind == INT80_KIND || src->kind == INT80_KIND) {

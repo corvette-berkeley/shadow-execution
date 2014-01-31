@@ -51,7 +51,7 @@ extern "C" {
   void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg, KVALUE* addr);
   void llvm_load(IID iid, KIND kind, KVALUE* op, int line, int x);
   void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int line, int x);
-  void llvm_store(IID iid, KVALUE* op, KVALUE* value, int line, int x);
+  void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int x);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();

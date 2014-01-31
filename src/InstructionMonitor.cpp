@@ -135,8 +135,8 @@ void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int line, int inx) {
   DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, line, inx);
 }
 
-void llvm_store(IID iid, KVALUE* op, KVALUE* value, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(store, iid, op, value, line, inx)
+void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(store, iid, op, value, file, line, inx)
 }
 
 void llvm_fence() {

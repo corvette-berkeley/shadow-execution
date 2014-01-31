@@ -42,16 +42,18 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* lineC = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
 
+    Constant* fileC = INT32_CONSTANT(-1, SIGNED);
     string filename = getFileName(storeInst);
-    cout << filename << endl;
-
-    
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
+      fileC = INT32_CONSTANT(parent_->fileCount, SIGNED);
       parent_->fileCount++;
     }
+    else {
+      fileC = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
+    }
 
-    Instruction* call = CALL_IID_KVALUE_KVALUE_INT_INT("llvm_store", iidC, pointerOp, valueOp, lineC, inxC);
+    Instruction* call = CALL_IID_KVALUE_KVALUE_INT_INT_INT("llvm_store", iidC, pointerOp, valueOp, fileC, lineC, inxC);
     instrs.push_back(call);
 
     // instrument

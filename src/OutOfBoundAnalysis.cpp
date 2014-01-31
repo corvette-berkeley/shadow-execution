@@ -188,7 +188,7 @@ void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int line, 
   return;
 }
 
-void OutOfBoundAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int line, int inx UNUSED) {
+void OutOfBoundAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int file UNUSED, int line, int inx UNUSED) {
   IValue* destPtrLocation = dest->isGlobal ? globalSymbolTable[dest->inx] :
     executionStack.top()[dest->inx];
 

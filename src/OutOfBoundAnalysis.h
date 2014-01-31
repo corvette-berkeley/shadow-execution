@@ -19,7 +19,7 @@ class OutOfBoundAnalysis : public InterpreterObserver {
 
     virtual void load(IID iid, KIND kind, KVALUE* op, int line, int inx);
 
-    virtual void store(IID iid, KVALUE* dest, KVALUE* src, int line, int inx);
+    virtual void store(IID iid, KVALUE* dest, KVALUE* src, int file, int line, int inx);
 
     virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE*
         index, KIND kind, uint64_t size, int line, int inx);
