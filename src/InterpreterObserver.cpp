@@ -129,7 +129,9 @@ void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int file,
       //
       concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE));
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
-      syncLoad(structElem, concreteStructElemPtr, type);
+      if (syncLoad(structElem, concreteStructElemPtr, type)) {
+	LOG(INFO) << "[LOAD STRUCT] Syncing load at " << file << ":" << line << endl; 
+      }
 
       dest[i] = *structElem;
 
@@ -158,6 +160,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
   }
 
   bool isPointerConstant = false;
+  bool sync = false;
   IValue* srcPtrLocation;
 
   // obtain source pointer value
@@ -213,10 +216,12 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
       destLocation->setType(type);
 
       // sync load
-      syncLoad(destLocation, src, type);
+      sync = syncLoad(destLocation, src, type);
     } else {
 
-      if (debug) cout << "\tSource pointer is not initialized!" << endl;
+      if (debug) {
+	cout << "\tSource pointer is not initialized!" << endl;
+      }
 
       VALUE zeroValue;
       zeroValue.as_int = 0;
@@ -227,7 +232,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
       destLocation->setLength(0);
 
       // sync load
-      syncLoad(destLocation, src, type);
+      sync = syncLoad(destLocation, src, type);
     }
 
     destLocation->setLineNumber(line);
@@ -251,7 +256,7 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
     destLocation->setLength(0);
 
     // sync load
-    syncLoad(destLocation, src, type);
+    sync = syncLoad(destLocation, src, type);
 
     destLocation->setLineNumber(line);
     executionStack.top()[inx] = destLocation;
@@ -259,6 +264,10 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
       cout << destLocation->toString() << endl;
       cout << destLocation << endl; 
     }
+  }
+
+  if (sync) {
+    LOG(INFO) << "[LOAD] Syncing load at " << file << ":" << line << endl;
   }
 
   return;
@@ -3264,7 +3273,6 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 
   if (sync) {
     if (debug) {
-      LOG(INFO) << "SYNCING AT LOAD DUE TO MISMATCH" << endl;
       cout << "\t SYNCING AT LOAD DUE TO MISMATCH" << endl;
       cout << "\t " << iValue->toString() << endl;
     }
