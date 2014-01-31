@@ -1,20 +1,37 @@
 #define DEBUG_TYPE "hello"
 
 #include <llvm/Analysis/Verifier.h>
+#include <llvm/Support/CommandLine.h>
+#include <llvm/Support/raw_ostream.h>
 
 #include "Instrumentation.h"
 #include "Instrumenter.h"
 #include "MonitorPass.h"
+
+#include <fstream>
+#include <sstream>
+#include <set>
 
 namespace {
 
 struct MonitorPass : public FunctionPass {
   static char ID;
 
+  set<string> includedFunctions;
+
   MonitorPass() : FunctionPass(ID) {}
   ~MonitorPass() {}
 
   virtual bool runOnFunction(Function &F) {
+
+    if (!includedFunctions.empty()) {
+      string name = F.getName().str();
+
+      if (includedFunctions.find(name) == includedFunctions.end()) {
+        return true;
+      }
+    }
+
     Module* M = F.getParent();
 
     Instrumentation* instrumentation = Instrumentation::GetInstance();
@@ -143,6 +160,17 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doInitialization(Module &M) {
+
+   ifstream inFile("include.txt");
+   string name;
+
+   if (inFile) {
+     while (inFile >> name) {
+       includedFunctions.insert(name);
+     }
+
+     inFile.close();
+   }
     
    Instrumentation* instrumentation = Instrumentation::GetInstance();
    instrumentation->BeginModule(&M);

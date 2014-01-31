@@ -174,6 +174,7 @@ string IValue::toString() {
   s << ", ValueOffset: " << valueOffset;
 
   return s.str();
+
 }
 
 void IValue::copy(IValue *dest) {
@@ -294,7 +295,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
   int64_t valueOffset, length, bitOffset, newOffset;
   IValue* valueArray = static_cast<IValue*>(getIPtrValue());
 
-  cout << "\t writing " << byte << " bytes\n" << endl;
+  // cout << "\t writing " << byte << " bytes\n" << endl;
 
   valueOffset = src->getValueOffset();
   length = src->getLength();
@@ -303,7 +304,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
     // efficient code for common case
-    cout << "\t trivial write" << endl;
+    // cout << "\t trivial write" << endl;
     src->copy(&valueArray[index]);
   } else {
     VALUE srcValue = src->getValue();
@@ -313,7 +314,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     uint8_t* content = (uint8_t*) malloc(byte*sizeof(uint8_t*));
     for (int i = 0; i < byte; i++) {
       content[i] = srcContent[i];
-      cout << "=== content value " << i << " " << (int64_t) content[i] << endl;
+      // cout << "=== content value " << i << " " << (int64_t) content[i] << endl;
     }
 
     // write the content to this value array

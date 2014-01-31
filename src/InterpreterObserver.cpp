@@ -1272,7 +1272,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int line, in
     iValue->setLength(0);
     destPtrLocation->setValueOffset( (int64_t)iValue - (int64_t)destPtrLocation->getPtrValue() ); 
     destPtrLocation->setInitialized();
-    cout << "\tInitialized destPtr: " << destPtrLocation->toString() << endl;
+    if (debug) cout << "\tInitialized destPtr: " << destPtrLocation->toString() << endl;
   }
 
   unsigned destPtrOffset = destPtrLocation->getOffset();
@@ -1510,13 +1510,20 @@ void InterpreterObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op,
     //
     
     arrayDim = arraySize.size();
+
+    if (debug) cout << "arrayDim " << arrayDim << endl;
+
     arraySizeVec = (int*) malloc(arrayDim * sizeof(int));
 
     getIndexNo = getElementPtrIndexList.size();
+
+    if (debug) cout << "getIndexNo " << getIndexNo << endl;
+
     indexVec = (int*) malloc(getIndexNo * sizeof(int));
 
     // the size of out-most dimension; 
     // we do not need this to compute the index
+    safe_assert(!arraySize.empty());
     arraySize.pop(); 
     i = 0;
     while (!arraySize.empty()) {
@@ -2488,6 +2495,8 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
     v2 = loc2->getFlpValue();
   } 
 
+  if (debug) cout << "v1 = " << v1 << " v2 = " << v2 << endl;
+
   int result = 0;
   switch(pred) {
     case CmpInst::FCMP_FALSE:
@@ -2530,6 +2539,16 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
         cout << "\tCondition is ULT" << endl;
       result = v1 <= v2;
       break;
+    case CmpInst::FCMP_OEQ:
+      if (debug)
+        cout << "\tCondition is OEQ" << endl;
+      result = v1 == v2;
+      break;
+    case CmpInst::FCMP_ONE:
+      if (debug)
+        cout << "\tCondition is ONE" << endl; 
+      result = v1 != v2;
+      break;
     case CmpInst::FCMP_OGT:
       if (debug)
         cout << "\tCondition is OGT" << endl;
@@ -2551,6 +2570,7 @@ void InterpreterObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int
       result = v1 <= v2;
       break;
     default:
+      safe_assert(false);
       break;
   }
 

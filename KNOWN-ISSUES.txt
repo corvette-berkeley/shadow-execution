@@ -37,7 +37,7 @@ CORE UTILITIES (95/100).
 
 Latest run on 1/30/2014 at 9:59am.
 
-=== 95 programs passing ===
+=== 94 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -48,7 +48,6 @@ chmod +x temp.txt
 chown root temp.txt
 chroot
 cksum list.txt
-comm list.txt list.txt
 cp list.txt temp.txt
 csplit -f xyz list.txt 11 72 98 
 cut -c2 list.txt
@@ -126,8 +125,6 @@ yes 1234567 | grep 1234567 | head -10
 stat list.txt 
 pr list.txt
 sleep 2
-vdir
-expr  linux : lin 
 who 
 printf "%s" hello 
 df -h 
@@ -143,19 +140,21 @@ FAILING (5)
 **************
 
 INTERPRETATION:
-	comm [mismatch at store]
-	vdir [mismatch at store]
-
     ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
 
+FAIL AGAIN IN LAST RUN:
+  comm list.txt list.txt
+  vdir
+  expr  linux : lin 
 
 
 NAS Parallel Benchmarks
 ================
 
 bt.A.x [SEG FAULT]
+bt.S.x [SEG FAULT]
 cg.A.x [SEG FAULT]
 dc.A.x [BRANCH DIVERGE]
 ep.A.x [SEG FAULT]
@@ -167,16 +166,11 @@ sp.A.x [SEG FAULT]
 GSL Programs
 =========
 
-Failing at instrumentation:
-
-
-Instruction referencing instruction not embedded in a basic block!
-  %707 = bitcast [2 x float]* %697 to <2 x float>*, !dbg !35194
-  <badref> = ptrtoint <2 x float>* %707 to i64
-Broken module: Running pass 'Module Verifier' on function '@gsl_matrix_complex_float_get'
-
-blas
-gaussian
-
-
-
+blas [PASS]
+bessel [PASS]
+fft [PASS]
+gaussian [PASS]
+polyroots [PASS]
+roots [PASS]
+sum [PASS]
+=======

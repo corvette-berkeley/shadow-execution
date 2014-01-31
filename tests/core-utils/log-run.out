@@ -3,7 +3,7 @@
 [SUCCESSFULLY RUNNING COMMAND]: ./cat.out with error code: 0
 [FAILED RUNNING COMMAND]: ./chcon.out with error code: 1
 [FAILED RUNNING COMMAND]: ./chgrp.out with error code: 1
-[SUCCESSFULLY RUNNING COMMAND]: ./chmod.out with error code: 0
+[FAILED RUNNING COMMAND]: ./chmod.out with error code: 1
 [FAILED RUNNING COMMAND]: ./chown.out with error code: 1
 [FAILED RUNNING COMMAND]: ./chroot.out with error code: 125
 [SUCCESSFULLY RUNNING COMMAND]: ./cksum.out with error code: 0
@@ -20,7 +20,7 @@
 [SUCCESSFULLY RUNNING COMMAND]: ./echo.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./env.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./expand.out with error code: 0
-[SUCCESSFULLY RUNNING COMMAND]: ./expr.out with error code: 0
+[FAILED ERROR CODE MISMATCH]: ./expr.out with error codes: 0 5
 [FAILED RUNNING COMMAND]: ./false.out with error code: 1
 [SUCCESSFULLY RUNNING COMMAND]: ./fmt.out with error code: 0
 [SUCCESSFULLY RUNNING COMMAND]: ./fold.out with error code: 0

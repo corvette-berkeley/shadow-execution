@@ -39,18 +39,18 @@ class InterpreterObserver : public InstructionObserver {
 
   bool isReturn; // whether return instruction is just executed
 
-  bool debug; // whether to print debugging information
-
   long double getValueFromConstant(KVALUE* op); 
 
   long double getValueFromIValue(IValue* loc); 
+
+  bool debug; // whether to print debugging information
 
   std::string BINOP_ToString(int binop); 
   
   void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);
 
  public:
-  
+
   InterpreterObserver(std::string name) : InstructionObserver(name) {
     debug =  true;
     isReturn = false;

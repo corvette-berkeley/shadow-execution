@@ -20,7 +20,7 @@ std::string PTR_ToString(PTR& ptr) {
 	return s.str();
 }
 
-std::string KVALUE_ToString(KVALUE* kv) {
+std::string KVALUE_ToString(KVALUE* kv __attribute__((__unused__))) {
 
   std::stringstream s;
 
@@ -90,6 +90,7 @@ std::string KVALUE_ToString(KVALUE* kv) {
     printf("after\n");
   }
   return s.str();
+
 }
 
 int64_t KVALUE_ToIntValue(KVALUE* kv) {
