@@ -66,6 +66,7 @@ plugin = env.SharedLibrary(
     'InstructionMonitor.cpp',
     'InterpreterObserver.cpp',
     'IValue.cpp',
+    'NaNPropagationAnalysis.cpp',
     'PrintObserver.cpp',
     'OutOfBoundAnalysis.cpp',
         ],

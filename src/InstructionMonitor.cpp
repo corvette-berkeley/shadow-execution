@@ -6,6 +6,7 @@
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
 #include "InterpreterObserver.h"
+#include "NaNPropagationAnalysis.h"
 #include "OutOfBoundAnalysis.h"
 #include "PrintObserver.h"
 
@@ -371,6 +372,7 @@ ObserverPtrList observers_;
 // active observers
 // REGISTER_OBSERVER(PrintObserver, "print")
 REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 
 /*******************************************************************************************/
