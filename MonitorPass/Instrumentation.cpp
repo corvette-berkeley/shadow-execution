@@ -162,3 +162,12 @@ bool Instrumentation::CheckAndInstrument(Instruction* I) {
   }
   return false;
 }
+
+void Instrumentation::PrintFiles() {
+  map<string, int>::iterator it;
+  cout << "Printing Files" << endl;
+  
+  for(it = fileNames.begin(); it != fileNames.end(); it++) {
+    cout << it->first << " " << it->second << endl;
+  }
+}

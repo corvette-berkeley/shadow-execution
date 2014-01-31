@@ -12,12 +12,14 @@
 #include <sstream>
 #include <set>
 
+
 namespace {
 
 struct MonitorPass : public FunctionPass {
   static char ID;
 
   set<string> includedFunctions;
+
 
   MonitorPass() : FunctionPass(ID) {}
   ~MonitorPass() {}
@@ -244,6 +246,10 @@ struct MonitorPass : public FunctionPass {
   }
 
   bool doFinalization(Module &M) {
+    // printing filenames
+    Instrumentation *instrumentation = Instrumentation::GetInstance();
+    instrumentation->PrintFiles();
+
     return Instrumentation::GetInstance()->Finalize(M);
   }
 

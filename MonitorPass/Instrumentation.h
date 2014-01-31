@@ -192,6 +192,14 @@ public:
    */
   void RegisterInstrumenter(InstrumenterBase* instrumenter);
 
+/**
+   * Printing filenames.
+   *
+   * @note Printing the contents of the filenames map.
+   */
+  void PrintFiles();
+
+
 public:
   BasicBlock* BB_;
   Function* F_;
@@ -203,6 +211,8 @@ public:
   std::map<uint64_t, int> blockIndices;
   int globalVarCount;
   std::map<uint64_t, int> globalIndices;
+  int fileCount; // counter of number of files 
+  std::map<std::string, int> fileNames; // map from filename to file index 
 
 private:
   InstrumenterPtrList instrumenters_;

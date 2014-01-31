@@ -233,9 +233,16 @@ int KIND_GetSize(int kind) {
     if (MDNode* node = inst->getMetadata("dbg")) {
       DILocation loc(node);
       return loc.getLineNumber();
-    } else {
-      return 0;
     }
+    return 0;
+  }
+
+  string getFileName(Instruction* inst) {
+    if (MDNode* node = inst->getMetadata("dbg")) {
+      DILocation loc(node);
+      return loc.getFilename().str();
+    }
+    return "n/a";
   }
 
   /*******************************************************************************************/
