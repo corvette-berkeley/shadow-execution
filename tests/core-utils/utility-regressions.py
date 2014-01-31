@@ -21,6 +21,7 @@ def main():
   monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
   sourcepath = instrumentorpath + "/src"
   glogpath = os.getenv("GLOG_PATH") + "/lib"
+  glog_log_dir = os.getenv("GLOG_log_dir")
 
   logfile = "log.out"
   log = open(logfile, "w") 
@@ -34,7 +35,7 @@ def main():
       ibitcodefile = 'i_' + executable + '.bc' 
       ibitcode = open(ibitcodefile, 'w')
 
-      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', "-o", ibitcodefile]
+      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', '--file', glog_log_dir + '/' + executable + '-files.txt', '-o', ibitcodefile]
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
