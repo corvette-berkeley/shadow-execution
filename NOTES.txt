@@ -1,3 +1,6 @@
+MonitorPass/The instruction instrumentation file.
+MonitorPass/Instrumenter.h
+
 M       src/InstructionMonitor.cpp
 M       src/InstructionMonitor.h
 M       src/InstructionObserver.h
@@ -6,11 +9,7 @@ src/InterpreterObserver.h
 src/InterpreterObserver.cpp
 src/PrintObserver.h
 src/PrintObserver.cpp
-
-Not really:
-M       MonitorPass/Pass.cpp
-M       MonitorPass/Instrumenters.h
-M       src/Observers.h
+src/OutOfBoundAnalysis.h
 
 Instruction reference:
 http://llvm.org/docs/LangRef.html

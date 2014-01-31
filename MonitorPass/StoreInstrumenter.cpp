@@ -42,7 +42,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* lineC = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
 
-    Constant* fileC = INT32_CONSTANT(-1, SIGNED);
+    Constant* fileC = NULL;
     string filename = getFileName(storeInst);
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted

@@ -118,7 +118,7 @@ void OutOfBoundAnalysis::getelementptr_struct(IID iid UNUSED, bool inbound UNUSE
 
 }
 
-void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int line, int inx) {
+void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int file UNUSED, int line, int inx) {
   IValue* srcPtrLocation = src->isGlobal ? globalSymbolTable[src->inx] :
     executionStack.top()[src->inx];
 

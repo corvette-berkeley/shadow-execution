@@ -47,11 +47,12 @@ unsigned InterpreterObserver::findIndex(IValue* values, unsigned offset, unsigne
   return high; // high
 }
 
-void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int line, int inx) {
+void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int file, int line, int inx) {
   if (debug) {
-    printf("<<<<< LOAD STRUCT >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
+    printf("<<<<< LOAD STRUCT >>>>> %s, kind:%s, %s, file: %d, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(),
         KVALUE_ToString(src).c_str(),
+	file,
         line,
         inx);
   }
@@ -146,11 +147,12 @@ void InterpreterObserver::load_struct(IID iid, KIND type, KVALUE* src, int line,
   return;
 }
 
-void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int line, int inx) {
+void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int line, int inx) {
   if (debug) {
-    printf("<<<<< LOAD >>>>> %s, kind:%s, %s, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
+    printf("<<<<< LOAD >>>>> %s, kind:%s, %s, file: %d, line %d, [INX: %d]\n", IID_ToString(iid).c_str(),
         KIND_ToString(type).c_str(),
         KVALUE_ToString(src).c_str(),
+	file,
         line,
         inx);
   }

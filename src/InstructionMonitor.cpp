@@ -127,12 +127,12 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KV
   DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, line, arg, addr);
 }
 
-void llvm_load(IID iid, KIND kind, KVALUE* op, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, kind, op, line, inx);
+void llvm_load(IID iid, KIND kind, KVALUE* op, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, kind, op, file, line, inx);
 }
 
-void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, line, inx);
+void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, file, line, inx);
 }
 
 void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int inx) {

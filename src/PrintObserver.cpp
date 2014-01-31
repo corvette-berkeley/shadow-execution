@@ -5,12 +5,14 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KIND type, KVALUE* op, int line, int inx) {
-  DEBUG_STDOUT("<<<<< LOAD >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " << KVALUE_ToString(op).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::load(IID iid, KIND type, KVALUE* op, int file, int line, int inx) {
+  DEBUG_STDOUT("<<<<< LOAD >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " << KVALUE_ToString(op).c_str() 
+	       << ", file: " << file << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int line, int inx) {
-  DEBUG_STDOUT("<<<<< LOAD STRUCT >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " << KVALUE_ToString(op).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int file, int line, int inx) {
+  DEBUG_STDOUT("<<<<< LOAD STRUCT >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " 
+	       << KVALUE_ToString(op).c_str() << ", file: " << file << ", line:" << line << ", [INX: " << inx << "]");
 }
 
 // ***** Binary Operations ***** //
