@@ -36,6 +36,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <iostream>
+#include <fstream>
+
 #include "Common.h"
 #include "Instrumentation.h"
 
@@ -165,9 +168,12 @@ bool Instrumentation::CheckAndInstrument(Instruction* I) {
 
 void Instrumentation::PrintFiles() {
   map<string, int>::iterator it;
-  cout << "Printing Files" << endl;
-  
+  ofstream myfile;
+
+  myfile.open ("files.txt");
   for(it = fileNames.begin(); it != fileNames.end(); it++) {
-    cout << it->first << " " << it->second << endl;
+    myfile << it->first << ":" << it->second << endl;
   }
+  myfile.close();
+  return;
 }
