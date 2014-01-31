@@ -6,7 +6,6 @@
 #ifndef COMMON_DEFS_H_
 #define COMMON_DEFS_H_
 
-// C/C++ libraries
 #include <cstdlib>
 #include <cstdio>
 #include <dlfcn.h>
@@ -27,23 +26,46 @@
 #include <iostream>
 #include <sstream>
 
-// std libraries
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
 
-// list of constants
 #include "Constants.h"
 
-typedef uintptr_t	ADDRINT;
-typedef uint64_t 	IID;
-typedef int64_t	 	INT;
-typedef int32_t         INT32; 
-typedef double	 	FLP;
-typedef void*	 	PTR;
-typedef bool            BOOL;
+using namespace std;
 
+//
+// Macros for debugging mode
+//
+// #define DEBUG_BUILD 1
+
+#ifdef DEBUG_BUILD
+#define DEBUG(x) x
+#define DEBUG_STDERR(x) std::cerr << x << endl
+#define DEBUG_STDOUT(x) std::cout << x << endl
+#define DEBUG_LOG(x) LOG(INFO) << x << endl
+#else
+#define DEBUG(x) while(0) {x}
+#define DEBUG_STDERR(x) while(0) {std::cerr << x << endl;}
+#define DEBUG_STDOUT(x) while(0) {std::cerr << x << endl;}
+#define DEBUG_LOG(x) while(0) {std::cerr << x << endl;}
+#endif
+
+//
+// Give meaningful names to types
+//
+typedef uintptr_t	ADDRINT;
+typedef uint64_t IID;
+typedef int64_t	INT;
+typedef int32_t INT32; 
+typedef double FLP;
+typedef void*	PTR;
+typedef bool BOOL;
+
+//
+// Data structures used in the observer
+//
 union value_t {
   INT as_int;
   FLP as_flp;
@@ -57,25 +79,24 @@ typedef uint32_t pred_t;
 typedef uint32_t kind_t;
 #define KIND kind_t
 
-const KIND	INV_KIND	= 0U,
-  PTR_KIND 	= 1U,
-  INT1_KIND 	= 2U,
-  INT8_KIND 	= 3U,
-  INT16_KIND 	= 4U,
-  INT24_KIND = 5U,
-  INT32_KIND 	= 6U,
-  INT64_KIND 	= 7U,
-  INT80_KIND = 8U,
-  FLP32_KIND	= 9U,
-  FLP64_KIND	= 10U,
-  FLP128_KIND	= 11U,
-  FLP80X86_KIND  = 12U,
-  FLP128PPC_KIND = 13U,
-  ARRAY_KIND = 14U,
-  STRUCT_KIND = 15U,
-  INTPTR_KIND = 16U,
-  VOID_KIND = 17U;
-
+const KIND	
+      INV_KIND	= 0U,
+      PTR_KIND 	= 1U,
+      INT1_KIND 	= 2U,
+      INT8_KIND 	= 3U,
+      INT16_KIND 	= 4U,
+      INT24_KIND = 5U,
+      INT32_KIND 	= 6U,
+      INT64_KIND 	= 7U,
+      INT80_KIND = 8U,
+      FLP32_KIND	= 9U,
+      FLP64_KIND	= 10U,
+      FLP128_KIND	= 11U,
+      FLP80X86_KIND  = 12U,
+      FLP128PPC_KIND = 13U,
+      ARRAY_KIND = 14U,
+      STRUCT_KIND = 15U,
+      VOID_KIND = 16U;
 
 const IID INV_IID = 0U;
 
@@ -91,40 +112,91 @@ struct kvalue_t {
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
 #define KVALUE kvalue_t
 
-/********************************************************************************/
-
-std::string IID_ToString(IID& iid);
-std::string PTR_ToString(PTR& ptr);
-std::string KVALUE_ToString(KVALUE* kv);
-int64_t KVALUE_ToIntValue(KVALUE* kv);
-std::string KIND_ToString(int kind);
-int KIND_GetSize(int kind);
-
+//
+// Inlined error functions
+//
 #define UNRECOVERABLE_ERROR 5
 
 #define safe_assert(cond) _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)  
 
+//
+// Definitions of commonly used functions 
+//
+
+/**
+ * Assert a condition and terminate the program in case of fail assertion.
+ *
+ * @param cond the condition to be checked
+ * @param func the current function 
+ * @param file the current file
+ * @param line the current line
+ */
 inline void _safe_assert(bool cond, const char* func, std::string file, int line) {
   if (!cond) {
-    printf("\nCounit: safe assert fail."); 
-    printf(" \n\tfunction: %s\n\tfile: %s\n\tline: %d\n", func, file.c_str(), line); 
+    cout << "Counit: safe assert fail." << endl;
+    cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line << endl;
     fflush(stdout); 
     _Exit(UNRECOVERABLE_ERROR); 
   }
 }
 
+/**
+ * Printing error messages on unimplemented code and terminate the program.
+ */
 inline void unimplemented() {
-  printf(" \n Executing unimplemented code in function: %s\n\tfile: %s\n\tline: %d\n", __PRETTY_FUNCTION__, __FILE__, __LINE__); 
+  cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << endl;
+  cout << "\tfile: " << __FILE__ << endl;
+  cout << "\tline: " << __LINE__ << endl;
   _Exit(UNRECOVERABLE_ERROR); 
 }
 
-template<typename T>
-std::string Generic_ToString(T x) {
-  std::stringstream s;
-  s << x;
-  return s.str();
-}
+/**
+ * Convert iid to a string.
+ *
+ * @param iid the idd to be converted.
+ * @return string representation of the idd.
+ */
+std::string IID_ToString(IID& iid);
 
-/********************************************************************************/
+/**
+ * Convert a pointer value to a string.
+ *
+ * @param ptr the pointer value to be converted.
+ * @return string representation of the pointer value.
+ */
+std::string PTR_ToString(PTR& ptr);
+
+/**
+ * Pretty printing for KVALUE.
+ *
+ * @param kv the kvalue to be printed.
+ * @return string representation of kvalue kv.
+ */
+std::string KVALUE_ToString(KVALUE* kv);
+
+/**
+ * Return int value for KVALUE depending on its type.
+ *
+ * @param kv the kvalue to get integer value from.
+ * @return integer value of kv.
+ */
+int64_t KVALUE_ToIntValue(KVALUE* kv);
+
+/**
+ * Pretty printing for KIND.
+ *
+ * @param kind the kind to be printed.
+ * @return string reprensetation of kind.
+ */
+std::string KIND_ToString(int kind);
+
+/**
+ * Get size of kind.
+ *
+ * @param kind the kind to get size from.
+ * @return size of kind.
+ */
+int KIND_GetSize(int kind);
+
 
 #endif /* COMMON_DEFS_H_ */

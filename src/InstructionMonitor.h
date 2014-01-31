@@ -1,3 +1,7 @@
+/**
+ * @file InstructionMonitor.h
+ * brief
+ */
 
 #ifndef INSTRUCTION_MONITOR_H_
 #define INSTRUCTION_MONITOR_H_
@@ -120,7 +124,7 @@ template<class T>
 class RegisterObserver {
 public:
 	RegisterObserver(std::string name) {
-		fprintf(stderr, ">>> Registering observer: %s\n", name.c_str());
+    DEBUG_STDERR(">>> Registering observer: " << name);
 
 		observers_.push_back(new T(name));
 	}

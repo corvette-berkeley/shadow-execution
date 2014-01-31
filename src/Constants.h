@@ -1,3 +1,8 @@
+/**
+ * @file Constants.h
+ * @brief Constants Declaration.
+ */
+
 #ifndef CONSTANTS_DEFS_H_
 #define CONSTANTS_DEFS_H_
 

@@ -1,3 +1,8 @@
+/**
+ * @file IValue.h
+ * @brief 
+ */
+
 #ifndef IVALUE_H_
 #define IVALUE_H_
 
@@ -8,17 +13,33 @@ using namespace std;
 class IValue {
 
   private:
-    KIND type; // see Common.h for definitions
-    VALUE value; // union type (use extension later on)
-    int64_t valueOffset; // used for pointers to calculate shadow pointer address
-    unsigned size; // size of data the pointer points to
-    int offset; // distance from base pointer to this object
-    int bitOffset; // to represent data smaller than a byte; value ranges from 0 to 7
-    unsigned index; // index of this object
-    unsigned firstByte; // the length in byte to the base pointer
-    unsigned length; // number of elements (only for pointers)
-    SCOPE scope; // defined in Constants.h
-    int lineNumber; // source line number
+    /**
+     * An IValue is value interpreted thorought our interpretation. Each IValue
+     * has a corresponding concrete value.
+     *
+     * Fields of an IValue object includes:
+     *  type: type of this object, e.g. int32, float, ptr, ...
+     *  value: value of this object, e.g. 10, 5.5, 0x3, ...
+     *  valueOffset: the differences between the IValue address and the
+     *    correspoinding concrete value address [used for pointer value only]
+     *  size: size of the data this pointer point to [used for pointer value only] 
+     *  offset: distance from the value to the base pointer [used for pointer value only]
+     *  bitOffset: to represent data not fiting to a byte, values range from 0 to 7
+     *  index: the current index of this object [used for array (pointer) only] 
+     *  firstByte: if this object is an element in an array, this is the
+     *    distance from its address to the base pointer [used for elements in an array]
+     *  length: number of elements in the array object [used for array (pointer) only]
+     *  scope: either a GLOBAL, LOCAL or REGISTER object
+     *  lineNumber: source code line number
+     *  flag: machine flag (currently unused)
+     *  shadow: pointer to shadow object
+     */
+    KIND type; 
+    VALUE value; 
+    int64_t valueOffset; 
+    unsigned size, index, firstByte, length; 
+    int offset, bitOffset, lineNumber; 
+    SCOPE scope; 
     MACHINEFLAG flag;
     void* shadow;
 
@@ -36,17 +57,17 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
   public:
- IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(s), lineNumber(0)  {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(s) {}
+      
+    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
- IValue(KIND t, VALUE v, unsigned f): type(t), value(v), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(f), length(0), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned e): type(t), value(v), valueOffset(-1), size(s), offset(o), bitOffset(0), index(i), firstByte(0), length(e), scope(REGISTER), lineNumber(0) {}
+    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
-    IValue(KIND t): type(t), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
-
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), offset(0), bitOffset(0), index(0), firstByte(0), length(0), scope(REGISTER), lineNumber(0) {}
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
     void setType(KIND t);
 
@@ -54,13 +75,7 @@ class IValue {
 
     void setValueOffset(int64_t v);
 
-    void setScope(SCOPE s);
-
     void setSize(unsigned int s);
-
-    void setOffset(int o);
-
-    void setBitOffset(int bo);
 
     void setIndex(unsigned i);
 
@@ -68,29 +83,21 @@ class IValue {
 
     void setLength(unsigned l);
 
-    void setInitialized();
+    void setOffset(int o);
+
+    void setBitOffset(int bo);
+
+    void setLineNumber(int l);
+
+    void setScope(SCOPE s);
 
     void setShadow(void* addr);
 
-    void setLineNumber(int l);
+    void setInitialized();
 
     KIND getType();
 
     VALUE getValue();
-
-    int64_t getValueOffset();
-
-    int64_t getIntValue();
-
-    void* getPtrValue();
-
-    double getFlpValue();
-
-    void* getIPtrValue();
-
-    SCOPE getScope();
-
-    bool isInitialized();
 
     unsigned getIndex();
 
@@ -100,16 +107,37 @@ class IValue {
 
     unsigned int getSize();
 
+    SCOPE getScope();
+
     int getOffset();
 
     int getBitOffset();
 
-    void* getShadow();
-
     int getLineNumber();
+
+    int64_t getValueOffset();
+
+    int64_t getIntValue();
+
+    void* getPtrValue();
+
+    long double getFlpValue();
+
+    void* getIPtrValue();
+
+    bool isInitialized();
+
+    void* getShadow();
 
     string toString();
 
+    /**
+     * Copy the content of this IValue to dest IValue.
+     *
+     * @note we do not copy the field firstByte
+     *
+     * @param dest the destination of the copy.
+     */
     void copy(IValue* dest);
 
     /**

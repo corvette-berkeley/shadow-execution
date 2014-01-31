@@ -1,3 +1,7 @@
+/**
+ * @file InstructionObserver.h"
+ * @brief
+ */
 
 #ifndef INSTRUCTION_OBSERVER_H_
 #define INSTRUCTION_OBSERVER_H_
@@ -5,8 +9,12 @@
 #include "Common.h"
 #define UNUSED __attribute__((__unused__))
 
-// interface/adapter for observers
-// all methods have default (empty) implementations, so no need to override all
+/**
+ * Interface for observers. 
+ *
+ * Method can be overrided to implement analysis of interest. All methods have
+ * default empty impelementations.
+ */
 class InstructionObserver {
 public:
 	InstructionObserver(std::string name) : name_(name) {}
