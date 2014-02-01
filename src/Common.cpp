@@ -40,6 +40,7 @@
 // Author: Cuong Nguyen and Cindy Rubio-Gonzalez
 
 #include "Common.h"
+
 #include <stdio.h>
 
 std::string IID_ToString(IID& iid) {
@@ -153,6 +154,7 @@ int64_t KVALUE_ToIntValue(KVALUE* kv) {
     case INT80_KIND:
       DEBUG_STDERR("Unsupported type INT80_KIND.");
       safe_assert(false);
+      return v64;
     default:
       return v64;
   }
@@ -161,20 +163,23 @@ int64_t KVALUE_ToIntValue(KVALUE* kv) {
   
 long double KVALUE_ToFlpValue(KVALUE* kv) {
   double v64;
-  double *v64Ptr;
 
   v64 = kv->value.as_flp;
-  v64Ptr = &v64;
 
   //
   // returning float value depending on type
   //
   switch (kv->kind) {
     case FLP32_KIND:
-      return *((float *) v64Ptr);
+      return (float) v64;
     case FLP64_KIND:
       return v64;
     case FLP80X86_KIND:
+      return v64;
+    case FLP128_KIND:
+    case FLP128PPC_KIND:
+      DEBUG_STDERR("Unsupported float type: " << kv->kind);
+      safe_assert(false);
       return v64;
     default:
       return v64;

@@ -37,16 +37,21 @@
  *
  */
 
-// Author: Cuong Nguyen and Cindy Rubio-Gonzalez
+// Author: Cuong Nguyen
 
 #ifndef CONSTANTS_DEFS_H_
 #define CONSTANTS_DEFS_H_
 
 typedef enum {
+  BITWISE_INVALID,
+  SHL, LSHR, ASHR, 
+  AND, OR, XOR
+} BITWISE;
+
+typedef enum {
   BINOP_INVALID,
   ADD, SUB, MUL, UDIV, SDIV, UREM, SREM,
-  FADD, FSUB, FMUL, FDIV, FREM,
-  SHL, LSHR, ASHR, AND, OR, XOR
+  FADD, FSUB, FMUL, FDIV, FREM
 } BINOP;
 
 typedef enum {

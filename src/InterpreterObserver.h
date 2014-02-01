@@ -87,8 +87,12 @@ class InterpreterObserver : public InstructionObserver {
   bool debug; // whether to print debugging information
 
   std::string BINOP_ToString(int binop); 
-  
+
+  std::string BITWISE_ToString(int bitwise);
+
   void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);
+
+  void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BITWISE op);
 
  public:
 

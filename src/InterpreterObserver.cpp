@@ -66,23 +66,24 @@ unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned
   low = 0;
   high = length - 1;
 
-  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Offset: " << offset << " Length: " << length);
+  DEBUG_STDOUT("\t" << "[findIndex] Offset: " << offset << " Length: " << length);
 
   //
   // search for the index using binary search
   // the IValue at the index should have the largest byteOffset that is less
   // than or equal to the offset
   //
+  index = -1;
   while(low < high){
 
     unsigned mid, firstByte;
     mid = (low + high) / 2;
 
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Mid index: " << mid);
+    DEBUG_STDOUT("\t" << "[findIndex] Mid index: " << mid);
 
     firstByte = array[mid].getFirstByte();
 
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Firstbyte: " << firstByte);
+    DEBUG_STDOUT("\t" << "[findIndex] Firstbyte: " << firstByte);
 
     if (firstByte == offset) {
       index = mid;
@@ -98,9 +99,9 @@ unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned
 
   }
 
-  index = high;
+  index = (index == -1) ? high : index;
 
-  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Returning index: " << index); 
+  DEBUG_STDOUT("\t" << "[findIndex] Returning index: " << index); 
 
   return index; 
 }
@@ -145,7 +146,36 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
       s << "FREM";
       break;
     default: 
-      DEBUG_STDERR(__PRETTY_FUNCTION__ << "Unsupport binary operator operand: " << binop);
+      DEBUG_STDERR("Unsupport binary operator operand: " << binop);
+      safe_assert(false);
+      break;
+  }
+  return s.str();
+}
+
+std::string InterpreterObserver::BITWISE_ToString(int bitwise) {
+  std::stringstream s;
+  switch(bitwise) {
+    case SHL:
+      s << "SHL";
+      break;
+    case LSHR:
+      s << "LSHR";
+      break;
+    case ASHR:
+      s << "ASHR";
+      break;
+    case AND:
+      s << "AND";
+      break;
+    case OR:
+      s << "OR";
+      break;
+    case XOR:
+      s << "XOR";
+      break;
+    default: 
+      DEBUG_STDERR("Unsupport bitwise operator operand: " << bitwise);
       safe_assert(false);
       break;
   }
@@ -154,6 +184,7 @@ std::string InterpreterObserver::BINOP_ToString(int binop) {
 
 /***************************** Interpretation *****************************/
 
+// *** Load and Store Operations *** //
 void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int file, int line, int inx) {
   int i, structSize;
   IValue* dest;
@@ -371,152 +402,98 @@ void InterpreterObserver::load(IID iid, KIND type, KVALUE* src, int file, int li
   return;
 }
 
+// **** Binary Operations *** //
 
-
-void InterpreterObserver::binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
-  if (debug) {
-    printf("<<<<< %s >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", 
-        BINOP_ToString(op).c_str(),
-        IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(),
-        inx);
-  }
+void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
 
   if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[getValueFromConstant] Unsupported INT80_KIND" << endl;
+    DEBUG_STDERR("Unsupported INT80_KIND");
     safe_assert(false);
-    return; // otherwise compiler warning
+    return; 
   }
 
   int64_t v1, v2;
   long double d1, d2;
+  VALUE result;
+  IValue* iResult;
+  KIND kind;
 
-  // get value of v1
+  //
+  // assertion: the two operands have the same type
+  //
+  safe_assert(op1->kind == op2->kind);
+
+  //
+  // Get values from two operands. They can be either integer or double so we
+  // need 4 variables.
+  //
   if (op1->iid == 0) { // constant
-    v1 = op1->value.as_int;
-    d1 = op1->value.as_flp;
+    v1 = KVALUE_ToIntValue(op1);
+    d1 = KVALUE_ToFlpValue(op1);
   } else { // register
-    IValue *loc1 = executionStack.top()[op1->inx];
+    IValue *loc1; 
+    
+    loc1 = executionStack.top()[op1->inx];
     v1 = loc1->getIntValue();
     d1 = loc1->getFlpValue();
   }
 
-  // get value of v2
   if (op2->iid == 0) { // constant
-    v2 = op2->value.as_int;
-    d2 = op2->value.as_flp;
+    v2 = KVALUE_ToIntValue(op2);
+    d2 = KVALUE_ToFlpValue(op2);
   } else { // register
-    IValue *loc2 = executionStack.top()[op2->inx];
+    IValue *loc2; 
+    
+    loc2 = executionStack.top()[op2->inx];
     v2 = loc2->getIntValue();
     d2 = loc2->getFlpValue();
   }
 
-  VALUE vresult;
-  if (debug) {
-    cout << (int64_t)v1 << " " << (int64_t)v2 << endl;
-    cout << (uint64_t)v1 << " " << (uint64_t)v2 << endl;
-    cout << (double)d1 << " " << (double)d2 << endl;
-  }
   switch (op) {
     case ADD:
-      vresult.as_int = (int64_t) v1 + (int64_t) v2;
+      result.as_int = v1 + v2;
       break;
     case SUB:
-      vresult.as_int = (int64_t) v1 - (int64_t) v2;
+      result.as_int = v1 - v2;
       break;
     case MUL:
-      vresult.as_int = (int64_t) v1 * (int64_t) v2;
-      break;
-    case UDIV:
-      vresult.as_int = (uint64_t) v1 / (uint64_t) v2;
+      result.as_int = v1 * v2;
       break;
     case SDIV:
-      vresult.as_int = (int64_t) v1 / (int64_t) v2;
-      break;
-    case UREM:
-      vresult.as_int = (uint64_t) v1 % (uint64_t) v2;
+      result.as_int = v1 / v2;
       break;
     case SREM:
-      vresult.as_int = (int64_t) v1 % (int64_t) v2;
+      result.as_int = v1 % v2;
+      break;
+    case UDIV:
+      result.as_int = (uint64_t) v1 / (uint64_t) v2;
+      break;
+    case UREM:
+      result.as_int = (uint64_t) v1 % (uint64_t) v2;
       break;
     case FADD:
-      switch(op1->kind) {
-        case FLP32_KIND: 
-          vresult.as_flp = (float) d1 + (float) d2;
-          break;
-        case FLP64_KIND:
-          vresult.as_flp = (double) d1 + (double) d2;
-          break;
-        case FLP80X86_KIND:
-          vresult.as_flp = d1 + d2;
-          break;
-        default:
-          cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
-          abort();
-      }
+      result.as_flp = d1 + d2;
       break;
     case FSUB:
-      switch(op1->kind) {
-        case FLP32_KIND: 
-          vresult.as_flp = (float) d1 - (float) d2;
-          break;
-        case FLP64_KIND:
-          vresult.as_flp = (double) d1 - (double) d2;
-          break;
-        case FLP80X86_KIND:
-          vresult.as_flp = d1 - d2;
-          break;
-        default:
-          cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
-          abort();
-      }
+      result.as_flp = d1 - d2;
       break;
     case FMUL:
-      switch(op1->kind) {
-        case FLP32_KIND: 
-          vresult.as_flp = (float) d1 * (float) d2;
-          break;
-        case FLP64_KIND:
-          vresult.as_flp = (double) d1 * (double) d2;
-          break;
-        case FLP80X86_KIND:
-          vresult.as_flp = d1 * d2;
-          break;
-        default:
-          cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
-          abort();
-      }
+      result.as_flp = d1 * d2;
       break;
     case FDIV:
-      switch(op1->kind) {
-        case FLP32_KIND: 
-          vresult.as_flp = (float) d1 / (float) d2;
-          break;
-        case FLP64_KIND:
-          vresult.as_flp = (double) d1 / (double) d2;
-          break;
-        case FLP80X86_KIND:
-          vresult.as_flp = d1 / d2;
-          break;
-        default:
-          cerr << "[InterpreterObserver::fadd] => Unsupported floating-point type " << op1->kind << "\n";
-          abort();
-      }
+      result.as_flp = d1 / d2;
       break;
     default:
-      cerr << "[InterpreterObserver::binop] => Unsupported bin op " << BINOP_ToString(op) << "\n";
-      abort();
+      DEBUG_STDERR("Unsupported binary operator: " << BINOP_ToString(op)); 
+      safe_assert(false);
   }
 
-  IValue *nloc = new IValue(op1->kind, vresult);
-  executionStack.top()[inx] = nloc;
-  if (debug) {
-    cout << nloc->toString() << "\n";
-    cout << nloc << endl;
-  }
+  kind = op1->kind;
+  iResult = new IValue(kind, result);
+
+  executionStack.top()[inx] = iResult;
+
+  DEBUG_STDOUT(iResult->toString());
 
   return;
 }
@@ -565,441 +542,277 @@ void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE*
   binop(iid, nuw, nsw, op1, op2, inx, SREM);
 }
 
-void InterpreterObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug)
-    printf("<<<<< FREM >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-
-  cerr << "[InterpreterObserver::frem] => Unsupported in C???\n";
-  abort();
+void InterpreterObserver::frem(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {
+  DEBUG_STDERR("UNSUPPORTED IN C???");
+  safe_assert(false);
 }
 
+// **** Bitwise Operations *** //
 
-// ***** Bitwise Binary Operations ***** //
-void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< SHL >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
+void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int inx, BITWISE op) {
+  int64_t v64_1, v64_2;
+  uint64_t uv64_1, uv64_2;
+  int32_t v32_1, v32_2;
+  uint32_t uv32_1, uv32_2;
+  int16_t v16_1, v16_2; 
+  uint16_t uv16_1, uv16_2;
+  int8_t v8_1, v8_2;
+  uint8_t uv8_1, uv8_2; 
+  KIND type;
 
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[shl] Unsupported INT80_KIND" << endl;
+  VALUE result;
+  IValue* iResult;
+
+  //
+  // assert: two operands must have the same type
+  //
+  safe_assert(op1->kind == op2->kind);
+  type = op1->kind;
+
+  //
+  // Unsupport for INT80_KIND right now
+  //
+  if (type == INT80_KIND) {
+    DEBUG_STDERR("Unsupported INT80.");
     safe_assert(false);
-    return; // otherwise compiler warning
+    return;
   }
 
-  uint64_t value1, value2;
+  //
+  // Get values of two operands
+  //
   if (op1->inx == -1) {
-    value1 = KVALUE_ToIntValue(op1);
-  }
-  else {
-    IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
-    value1 = loc1->getIntValue();
+    v64_1 = KVALUE_ToIntValue(op1); 
+  } else {
+    IValue* iOp1; 
+
+    iOp1 = op1->isGlobal ? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
+    v64_1 = iOp1->getIntValue();
   }
 
   if (op2->inx == -1) {
-    value2 = KVALUE_ToIntValue(op2);
-  }
-  else {
-    IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
-    value2 = loc2->getIntValue();
+    v64_2 = KVALUE_ToIntValue(op2); 
+  } else {
+    IValue* iOp2; 
+
+    iOp2 = op2->isGlobal ? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
+    v64_2 = iOp2->getIntValue();
   }
 
-  uint64_t result;
-  switch (op1->kind) {
-    case INT8_KIND:
-      result = (uint8_t)value1 << (uint8_t)value2;
+
+  //
+  // Initialize values for other integer variables depending on type
+  //
+  v8_1 = (int8_t) v64_1;
+  uv8_1 = (uint8_t) v8_1;
+  v8_2 = (int8_t) v64_2;
+  uv8_2 = (uint8_t) v8_2;
+  v16_1 = (int16_t) v64_1;
+  uv16_1 = (uint16_t) v16_1;
+  v16_2 = (int16_t) v64_2;
+  uv16_2 = (uint16_t) v16_2;
+  v32_1 = (int32_t) v64_1;
+  uv32_1 = (uint32_t) v32_1;
+  v32_2 = (int32_t) v64_2;
+  uv32_2 = (uint32_t) v32_2;
+  uv64_1 = (uint64_t) v64_1;
+  uv64_2 = (uint64_t) v64_2;
+
+  //
+  // Compute the result of the bitwise operator
+  //
+  switch (op) {
+    case SHL:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = uv8_1 << uv8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = uv16_1 << uv16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = uv32_1 << uv32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = uv64_1 << uv64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
       break;
-    case INT16_KIND:
-      result = (uint16_t)value1 << (uint16_t)value2;
+
+    case LSHR:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = uv8_1 >> uv8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = uv16_1 >> uv16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = uv32_1 >> uv32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = uv64_1 >> uv64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
       break;
-    case INT24_KIND:
-    case INT32_KIND:
-      result = (uint32_t)value1 << (uint32_t) value2;
+
+    case ASHR:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = uv8_1 >> uv8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = uv16_1 >> uv16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = uv32_1 >> uv32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = uv64_1 >> uv64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
       break;
-    case INT64_KIND:
-      result = value1 << value2;
+
+    case AND:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = v8_1 & v8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = v16_1 & v16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = v32_1 & v32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = v64_1 & v64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
       break;
+
+    case OR:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = v8_1 | v8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = v16_1 | v16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = v32_1 | v32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = v64_1 | v64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
+      break;
+
+   case XOR:
+      switch (type) {
+        case INT1_KIND:
+        case INT8_KIND:
+          result.as_int = v8_1 ^ v8_2;
+          break;
+        case INT16_KIND:
+          result.as_int = v16_1 ^ v16_2;
+          break;
+        case INT24_KIND:
+        case INT32_KIND:
+          result.as_int = v32_1 ^ v32_2;
+          break;
+        case INT64_KIND:
+          result.as_int = v64_1 ^ v64_2;
+          break;
+        default:
+          DEBUG_STDERR("Unsupport integer type: " << type);
+          safe_assert(false);
+          return;
+      }
+      break;
+
+
     default:
-      cout << "[SHL]: Operand type is not int8 or int16 or in24 or int32 or int64" << endl;
+      DEBUG_STDERR("Unsupport bitwise operator: " << BITWISE_ToString(op));
       safe_assert(false);
+      return;
   }
 
-  VALUE vresult;
-  vresult.as_int = result;
+  iResult = new IValue(type, result);
+  executionStack.top()[inx] = iResult;
 
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << value1 << " " << value2 << endl;
-    cout << nloc->toString() << endl;
-  }
+  DEBUG_STDOUT(iResult->toString());
 
   return;
+} 
+
+void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, inx, SHL);
 }
 
 void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< LSHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  // TODO: FIX THIS
-  // ADD CASES FOR GLOBAL VARIABLES
-  
-  uint64_t value1, value2;
-  if (op1->inx == -1) {
-    value1 = KVALUE_ToIntValue(op1);
-  }
-  else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
-  }
-
-  if (op2->inx == -1) {
-    value2 = op2->value.as_int;
-  }
-  else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
-  }
-
-
-  uint64_t result;
-  switch(op1->kind) {
-  case INT8_KIND:
-    result = (uint8_t)value1 >> (uint8_t)value2;
-    break;
-  case INT24_KIND:
-  case INT32_KIND:
-    result = (uint32_t)value1 >> (uint32_t)value2;
-    break;
-  case INT64_KIND:
-    result = value1 >> value2;
-    break;
-  default:
-    cout << "type: " << KIND_ToString(op1->kind) << endl;
-    cout << "[LSHR]: Unhandled integer type" << endl;
-    safe_assert(false);
-  }
-
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << value1 << " " << value2 << endl;
-    cout << nloc->toString() << endl;
-  }
-
-  return;
+  bitwise(iid, nuw, nsw, op1, op2, inx, LSHR);
 }
 
 void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< ASHR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[ashr] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return; // otherwise compiler warning
-  }
-
-  uint64_t value1, value2;
-  if (op1->inx == -1) {
-    value1 = op1->value.as_int;
-  }
-  else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
-  }
-
-  if (op2->inx == -1) {
-    value2 = op2->value.as_int;
-  }
-  else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
-  }
-
-
-  uint64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 >> value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (uint32_t)value1 >> (uint32_t)value2;
-  }
-  else {
-    cout << "[ASHR]: Operand type is not int32 or int64" << endl;
-    safe_assert(false);
-  }
-
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << value1 << " " << value2 << endl;
-    cout << nloc->toString() << endl;
-  }
-  return;
+  bitwise(iid, nuw, nsw, op1, op2, inx, ASHR);
 }
 
 void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< AND >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[and_] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return; // otherwise compiler warning
-  }
-
-  int64_t value1, value2;
-  if (op1->inx == -1) {
-    value1 = KVALUE_ToIntValue(op1);
-  }
-  else {
-    IValue *loc1 = op1->isGlobal? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
-    value1 = loc1->getIntValue();
-  }
-
-  if (op2->inx == -1) {
-    value2 = KVALUE_ToIntValue(op2);
-  }
-  else {
-    IValue *loc2 = op2->isGlobal? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
-    value2 = loc2->getIntValue();
-  }
-
-
-  int64_t result;
-  switch (op1->kind) {
-    case INT1_KIND:
-      result = (value1 == 1 && value2 == 1) ? 1 : 0;
-      break;
-    case INT8_KIND:
-      if (debug) cout << "Value 1: " << (int8_t) value1 << " Value 2: " << (int8_t) value2 << endl;
-      result = (int8_t)value1 & (int8_t)value2;
-      break;
-    case INT16_KIND:
-      if (debug) cout << "Value 1: " << (int16_t) value1 << " Value 2: " << (int16_t) value2 << endl;
-      result = (int16_t)value1 & (int16_t)value2;
-      break;
-    case INT24_KIND:
-    case INT32_KIND:
-      if (debug) cout << "Value 1: " << (int32_t) value1 << " Value 2: " << (int32_t) value2 << endl;
-      result = (int32_t)value1 & (int32_t)value2;
-      break;
-    case INT64_KIND:
-      if (debug) cout << "Value 1: " << (int64_t) value1 << " Value 2: " << (int64_t) value2 << endl;
-      result = value1 & value2;
-      break;
-    default:
-      cout << "[AND]: Operand type is not int8-64" << endl;
-      cout << KIND_ToString(op1->kind) << endl;
-      safe_assert(false);
-  }
-
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << nloc->toString() << endl;
-  }
-  return;
+  bitwise(iid, nuw, nsw, op1, op2, inx, AND);
 }
 
 void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< OR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[or_] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return; // otherwise compiler warning
-  }
-
-  int64_t value1, value2;
-  if (op1->inx == -1) {
-    value1 = KVALUE_ToIntValue(op1);
-  }
-  else {
-    IValue *loc1 = op1->isGlobal? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
-    value1 = loc1->getIntValue();
-  }
-
-  if (op2->inx == -1) {
-    value2 = KVALUE_ToIntValue(op2);
-  }
-  else {
-    IValue *loc2 = op2->isGlobal? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
-    value2 = loc2->getIntValue();
-  }
-
-  int64_t result;
-  switch (op1->kind) {
-    case INT1_KIND:
-      result = (value1 == 0 && value2 == 0) ? 0 : 1;
-      break;
-    case INT8_KIND:
-      result = (int8_t)value1 | (int8_t)value2;
-      break;
-    case INT16_KIND:
-      result = (int16_t)value1 | (int16_t)value2;
-      break;
-    case INT24_KIND:
-    case INT32_KIND:
-      result = (int32_t)value1 | (int32_t)value2;
-      break;
-    case INT64_KIND:
-      result = value1 | value2;
-      break;
-    default:
-      cout << "[OR]: Operand type is not int8-64" << endl;
-      cout << KIND_ToString(op1->kind) << endl;
-      safe_assert(false);
-  }
-
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << value1 << " " << value2 << endl;
-    cout << nloc->toString() << endl;
-  }
-  return;
+  bitwise(iid, nuw, nsw, op1, op2, inx, OR);
 }
 
 void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    cout << "========" << endl;
-    printf("<<<<< XOR >>>>> %s, nuw:%s, nsw:%s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        (nuw ? "1" : "0"),
-        (nsw ? "1" : "0"),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-    cout << "[xor_] Unsupported INT80_KIND" << endl;
-    safe_assert(false);
-    return; // otherwise compiler warning
-  }
-
-  int64_t value1, value2;
-  if (op1->inx == -1) {
-    value1 = op1->value.as_int;
-  }
-  else {
-    IValue *loc1 = executionStack.top()[op1->inx];
-    value1 = loc1->getValue().as_int;
-  }
-
-  if (op2->inx == -1) {
-    value2 = op2->value.as_int;
-  }
-  else {
-    IValue *loc2 = executionStack.top()[op2->inx];
-    value2 = loc2->getValue().as_int;
-  }
-
-  int64_t result;
-  if (op1->kind == INT64_KIND) {
-    result = value1 ^ value2;
-  }
-  else if (op1->kind == INT32_KIND) {
-    result = (int32_t)value1 ^ (int32_t)value2;
-  }
-  else {
-    result = (int32_t)value1 ^ (int32_t)value2;
-    //cout << "[XOR]: Operand type is not int32 or int64" << endl;
-    //safe_assert(false);
-  }
-
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(op1->kind, vresult);
-  nloc->setSize(KIND_GetSize(op1->kind));
-  executionStack.top()[inx] = nloc;
-
-  if (debug) {
-    cout << value1 << " " << value2 << endl;
-    cout << nloc->toString() << endl;
-  }
-  return;
+  bitwise(iid, nuw, nsw, op1, op2, inx, XOR);
 }
 
 // ***** Vector Operations ***** //
 
-void InterpreterObserver::extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< EXTRACTELEMENT >>>>> %s, vector:%s, index:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  cerr << "[InterpreterObserver::extractelement] => Unimplemented\n";
+void InterpreterObserver::extractelement(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {
+  DEBUG_STDOUT("Unimplemented function.");
   safe_assert(false);
 }
 
 void InterpreterObserver::insertelement() {
-  if (debug) {
-    printf("<<<<< INSERTELEMENT >>>>>\n");
-  }
-
-  cerr << "[InterpreterObserver::insertelement] => Unimplemented\n";
+  DEBUG_STDOUT("Unimplemented function.");
   safe_assert(false);
 }
 
 void InterpreterObserver::shufflevector() {
-  if (debug) {
-    printf("<<<<< SHUFFLEVECTOR >>>>>\n");
-  }
-
-  cerr << "[InterpreterObserver::shufflevector] => Unimplemented\n";
+  DEBUG_STDOUT("Unimplemented function.");
   safe_assert(false);
 }
 
@@ -1049,14 +862,8 @@ void InterpreterObserver::extractvalue(IID iid, int inx, int opinx) {
   return;
 }
 
-void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
-  if (debug) {
-    printf("<<<<< INSERTVALUE >>>>> %s, vector:%s, value:%s, [INX: %d]\n", IID_ToString(iid).c_str(),
-        KVALUE_ToString(op1).c_str(),
-        KVALUE_ToString(op2).c_str(), inx);
-  }
-
-  cerr << "[InterpreterObserver::insertvalue] => Unimplemented\n";
+void InterpreterObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {
+  DEBUG_STDOUT("Unimplemented function.");
   safe_assert(false);
 }
 
@@ -1065,7 +872,7 @@ void InterpreterObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx
 void InterpreterObserver::allocax(IID iid, KIND type, uint64_t size, int inx, int line, bool arg, KVALUE* actualAddress) {
   if (debug) {
     printf("<<<<< ALLOCA >>>>> %s, kind:%s, size:%ld, arg: %d, line: %d, [INX: %d], %s\n", 
-       IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
+        IID_ToString(iid).c_str(), KIND_ToString(type).c_str(), size, arg, line, inx, KVALUE_ToString(actualAddress).c_str());
   }
 
   IValue *ptrLocation, *location;
@@ -1124,7 +931,7 @@ void InterpreterObserver::allocax_array(IID iid, KIND type, uint64_t size, int i
   //
   uint64_t structSize = 1;
   if (type == STRUCT_KIND) {
-   structSize = structType.size(); 
+    structSize = structType.size(); 
   }
   KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
   if (type == STRUCT_KIND) {
@@ -1277,8 +1084,8 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int file, int line, int inx) {
   if (debug) {
     printf("<<<<< STORE >>>>> %s, %s, %s, file: %d, line: %d, [INX: %d]\n", IID_ToString(iid).c_str(),
-	   KVALUE_ToString(dest).c_str(), 
-	   KVALUE_ToString(src).c_str(), file, line, inx); 
+        KVALUE_ToString(dest).c_str(), 
+        KVALUE_ToString(src).c_str(), file, line, inx); 
   }
 
   if (dest->kind == INT80_KIND || src->kind == INT80_KIND) {
@@ -1370,7 +1177,7 @@ void InterpreterObserver::store(IID iid, KVALUE* dest, KVALUE* src, int file, in
 
   // NOTE: destLocation->getType() before
   IValue* writtenValue = new IValue(srcLocation->getType(),
-				    destPtrLocation->readValue(internalOffset, src->kind)); 
+      destPtrLocation->readValue(internalOffset, src->kind)); 
   writtenValue->setSize(destLocation->getSize());
   writtenValue->setIndex(destLocation->getIndex());
   writtenValue->setOffset(destLocation->getOffset());
@@ -1405,10 +1212,10 @@ void InterpreterObserver::fence() {
 void InterpreterObserver::cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx) {
   if (debug) {
     printf("<<<<< CMPXCHG >>>>> %s, %s, %s, %s, [INX: %d]\n", IID_ToString(iid).c_str(),
-	   PTR_ToString(addr).c_str(),
-	   KVALUE_ToString(kv1).c_str(),
-	   KVALUE_ToString(kv2).c_str(), 
-	   inx);
+        PTR_ToString(addr).c_str(),
+        KVALUE_ToString(kv1).c_str(),
+        KVALUE_ToString(kv2).c_str(), 
+        inx);
   }
 
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";

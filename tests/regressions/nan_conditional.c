@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <math.h>
 
 int main() {
   double a = 0;
   double b = 0;
-  double c = a / b;
+  double c = NAN;
   printf("c: %lf\n", c);
 
   printf("c < 0.0: %d\n", (c < 0.0));
