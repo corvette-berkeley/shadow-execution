@@ -6,7 +6,7 @@ int main() {
   double b = a;
   double c = b;
   
-  if () {
+  if (b < c) {
     a = NAN;
     b = a;
     c = b;

@@ -55,6 +55,8 @@ logf
 mainargs
 memcpy
 middle_offset
+nan_conditional
+nan_propagation
 or
 phinode
 pointer1
