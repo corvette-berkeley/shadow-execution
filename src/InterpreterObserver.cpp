@@ -2703,7 +2703,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case FLP32_KIND:
       cValueFloat = *((float*) concrete->value.as_ptr);
-      sync = ((float)iValue->getValue().as_flp != cValueFloat);
+      if (isnan((float)iValue->getValue().as_flp) && isnan(cValueFloat)) {
+	sync = false;
+      }
+      else {
+	sync = ((float)iValue->getValue().as_flp != cValueFloat);
+      }
       if (sync) {
         syncValue.as_flp = cValueFloat;
         iValue->setValue(syncValue);
@@ -2711,7 +2716,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case FLP64_KIND:
       cValueDouble = *((double*) concrete->value.as_ptr);
-      sync = ((double)iValue->getValue().as_flp != cValueDouble);
+      if (isnan((double)iValue->getValue().as_flp) && isnan(cValueDouble)) {
+	sync = false;
+      }
+      else {
+	sync = ((double)iValue->getValue().as_flp != cValueDouble);
+      }
       if (sync) {
         syncValue.as_flp = cValueDouble;
         iValue->setValue(syncValue);
@@ -2719,7 +2729,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       break;
     case FLP80X86_KIND:
       cValueLD = *((long double*) concrete->value.as_ptr);
-      sync = ((long double)iValue->getValue().as_flp != cValueLD);
+      if (isnan((long double)iValue->getValue().as_flp) && isnan(cValueLD)) {
+	sync = false;
+      }
+      else {
+	sync = ((long double)iValue->getValue().as_flp != cValueLD);
+      }
       if (sync) {
         syncValue.as_flp = cValueLD;
         iValue->setValue(syncValue);
