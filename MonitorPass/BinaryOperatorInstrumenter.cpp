@@ -8,7 +8,8 @@
 bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
   BinaryOperator* binInst = dyn_cast<BinaryOperator>(inst);
   BINOP binop = getBinOp(binInst);
-  if (binInst != NULL && getBinOp(binInst) != BINOP_INVALID) {
+  BITWISE bitwise = getBitWise(binInst);
+  if (binInst != NULL && (binop != BINOP_INVALID || bitwise != BITWISE_INVALID)) {
     safe_assert(parent_ != NULL);
 
     count_++;
@@ -70,23 +71,30 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
       case FREM:
         callback << "llvm_frem";
         break;
-      case SHL:
-        callback << "llvm_shl";
-        break;
-      case LSHR:
-        callback << "llvm_lshr";
-        break;
-      case ASHR:
-        callback << "llvm_ashr";
-        break;
-      case AND:
-        callback << "llvm_and_";
-        break;
-      case OR:
-        callback << "llvm_or_";
-        break;
-      case XOR:
-        callback << "llvm_xor_";
+      case BINOP_INVALID:
+        switch (bitwise) {
+          case SHL:
+            callback << "llvm_shl";
+            break;
+          case LSHR:
+            callback << "llvm_lshr";
+            break;
+          case ASHR:
+            callback << "llvm_ashr";
+            break;
+          case AND:
+            callback << "llvm_and_";
+            break;
+          case OR:
+            callback << "llvm_or_";
+            break;
+          case XOR:
+            callback << "llvm_xor_";
+            break;
+          default:
+            safe_assert(false);
+            return false; // this cannot happen
+        }
         break;
       default:
         safe_assert(false);
@@ -132,6 +140,17 @@ BINOP BinaryOperatorInstrumenter::getBinOp(BinaryOperator* binInst) {
         return FDIV;
       case Instruction::BinaryOps(Instruction::FRem): 
         return FREM;
+      default:
+        return BINOP_INVALID;
+    }
+  } else {
+    return BINOP_INVALID;
+  }
+}
+
+BITWISE BinaryOperatorInstrumenter::getBitWise(BinaryOperator* binInst) {
+  if (binInst != NULL) {
+    switch(binInst->getOpcode()) {
       case Instruction::BinaryOps(Instruction::Shl): 
         return SHL;
       case Instruction::BinaryOps(Instruction::LShr): 
@@ -145,9 +164,9 @@ BINOP BinaryOperatorInstrumenter::getBinOp(BinaryOperator* binInst) {
       case Instruction::BinaryOps(Instruction::Xor): 
         return XOR;
       default:
-        return BINOP_INVALID;
+        return BITWISE_INVALID;
     }
   } else {
-    return BINOP_INVALID;
+    return BITWISE_INVALID;
   }
 }

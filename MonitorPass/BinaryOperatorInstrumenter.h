@@ -65,6 +65,8 @@ class BinaryOperatorInstrumenter : public Instrumenter {
      * @return the BINOP value associated with the given instruction.
      */
     BINOP getBinOp(BinaryOperator* inst); 
+
+    BITWISE getBitWise(BinaryOperator* inst);
 };
 
 #endif /* BINARY_OPERATORS_INSTRUMENTER_H_ */
