@@ -264,13 +264,6 @@ void PrintObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
 
 void PrintObserver::invoke(IID iid, KVALUE* call_value, int inx) {
   DEBUG_STDOUT("<<<<< INVOKE >>>>> " << IID_ToString(iid) << ", call value:" << KVALUE_ToString(call_value) << " [INX: " << inx << "]");
-
-  while (!myStack.empty()) {
-    KVALUE* value = myStack.top();
-    DEBUG_STDOUT("\t arg: " << KVALUE_ToString(value));
-    myStack.pop();
-  }
-  
 }
 
 void PrintObserver::resume(IID iid, KVALUE* op1, int inx) {
@@ -385,13 +378,6 @@ void PrintObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
 
 void PrintObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   DEBUG_STDOUT("<<<<< CALL >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
-
-  while (!myStack.empty()) {
-    KVALUE* value = myStack.top();
-    DEBUG_STDOUT("\t arg: " << KVALUE_ToString(value));
-    myStack.pop();
-  }
-  
 }
 
 void PrintObserver::vaarg() {

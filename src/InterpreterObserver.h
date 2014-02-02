@@ -84,20 +84,21 @@ class InterpreterObserver : public InstructionObserver {
 
   long double getValueFromIValue(IValue* loc); 
 
-  bool debug; // whether to print debugging information
-
   std::string BINOP_ToString(int binop); 
 
   std::string BITWISE_ToString(int bitwise);
+
+  std::string CASTOP_ToString(int castop);
 
   void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);
 
   void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BITWISE op);
 
+  void castop(IID iid, KIND type, KVALUE* op1, uint64_t size, int inx, CASTOP op);
+  
  public:
 
   InterpreterObserver(std::string name) : InstructionObserver(name) {
-    debug =  true;
     isReturn = false;
   }
   

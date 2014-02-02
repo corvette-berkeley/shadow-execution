@@ -155,9 +155,11 @@ class IValue {
 
     int64_t getIntValue();
 
+    uint64_t getUIntValue();
+
     void* getPtrValue();
 
-    long double getFlpValue();
+    double getFlpValue();
 
     void* getIPtrValue();
 
@@ -175,6 +177,13 @@ class IValue {
      * @param dest the destination of the copy.
      */
     void copy(IValue* dest);
+
+    /**
+     * Copy the content of kValue to this IValue.
+     *
+     * @param kValue the kvalue to copy from.
+     */
+    void copyFrom(KVALUE* kValue);
 
     /**
      * Read a chunk of byte from a pointer value, given the offset to read from

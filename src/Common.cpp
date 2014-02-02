@@ -161,6 +161,36 @@ int64_t KVALUE_ToIntValue(KVALUE* kv) {
 
 }
   
+uint64_t KVALUE_ToUIntValue(KVALUE* kv) {
+  int64_t v64;
+
+  v64 = KVALUE_ToIntValue(kv);
+
+  //
+  // returning unsigned integer value depending on type
+  //
+  switch (kv->kind) {
+    case INT1_KIND:
+      return v64;
+    case INT8_KIND:
+      return (uint8_t) v64;
+    case INT16_KIND:
+      return (uint16_t) v64;
+    case INT24_KIND:
+    case INT32_KIND:
+      return (uint32_t) v64;
+    case INT64_KIND:
+      return (uint64_t) v64;
+    case INT80_KIND:
+      DEBUG_STDERR("Unsupported type INT80_KIND.");
+      safe_assert(false);
+      return v64;
+    default:
+      return v64;
+  }
+
+}
+  
 long double KVALUE_ToFlpValue(KVALUE* kv) {
   double v64;
 
@@ -186,7 +216,7 @@ long double KVALUE_ToFlpValue(KVALUE* kv) {
   }
 
 }
-  
+
 std::string KIND_ToString(int kind) {
   std::stringstream s;
   switch(kind) {

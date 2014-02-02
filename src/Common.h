@@ -219,6 +219,14 @@ std::string KVALUE_ToString(KVALUE* kv);
 int64_t KVALUE_ToIntValue(KVALUE* kv);
 
 /**
+ * Return unsigned int value for KVALUE depending on its type.
+ *
+ * @param kv the kvalue to get integer value from.
+ * @return unsigned integer value of kv.
+ */
+uint64_t KVALUE_ToUIntValue(KVALUE* kv);
+
+/**
  * Return float value for KVALUE depending on its type.
  *
  * @param kv the kvalue to get integer value from.

@@ -16,7 +16,7 @@ def main():
   executables = open(executables_name, 'r')
 
   logfile = "log-run.out"
-  log = open(logfile, "w") 
+  log = open(logfile, "a") 
 
   ############################################
   # running uninstrumented code
@@ -58,7 +58,7 @@ def main():
     # TODO: check for errno or other values
     if retval_uninstrumented <> retval_instrumented:
       log.write("[FAILED ERROR CODE MISMATCH]: " + command[0] + " with error codes: " + str(retval_uninstrumented) + " " + str(retval_instrumented) + "\n")
-    elif retval_instrumented <> 0:
+    elif retval_instrumented <> 0 and retval_instrumented <> 1 and retval_instrumented <> 125:
       log.write("[FAILED RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval_instrumented) + "\n")
     else:
       log.write("[SUCCESSFULLY RUNNING COMMAND]: " + command[0] + " with error code: " + str(retval_instrumented) + "\n")

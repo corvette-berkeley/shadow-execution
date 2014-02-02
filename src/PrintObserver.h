@@ -57,7 +57,6 @@ using namespace std;
 
 class PrintObserver : public InstructionObserver {
 public:
-  stack<KVALUE*> myStack;
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
 	virtual void load(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);

@@ -228,6 +228,11 @@ void IValue::copy(IValue *dest) {
   dest->setValueOffset(valueOffset);
 }
 
+void IValue::copyFrom(KVALUE* kValue) {
+  setType(kValue->kind);
+  setValue(kValue->value);
+}
+
 VALUE IValue::readValue(int offset, KIND type) {
 
   int byte;
@@ -487,8 +492,36 @@ int64_t IValue::getIntValue() {
 
 }
 
-long double IValue::getFlpValue() {
-  long double v = value.as_flp;
+uint64_t IValue::getUIntValue() {
+  int64_t v64 = getIntValue();
+
+  //
+  // returning integer value depending on type
+  //
+  switch (type) {
+    case INT1_KIND:
+      return v64;
+    case INT8_KIND:
+      return (uint8_t) v64;
+    case INT16_KIND:
+      return (uint16_t) v64;
+    case INT24_KIND:
+      return (uint32_t) v64;
+    case INT32_KIND:
+      return (uint32_t) v64;
+    case INT64_KIND:
+      return (uint64_t) v64;
+    case INT80_KIND:
+      DEBUG_STDERR("Unsupported type INT80.");
+      safe_assert(false);
+    default:
+      return v64;
+  }
+
+}
+
+double IValue::getFlpValue() {
+  double v = value.as_flp;
 
   //
   // return floating-point value depending on type
