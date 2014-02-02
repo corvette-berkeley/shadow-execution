@@ -132,10 +132,20 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       result = (dest->getValue().as_int == kv->value.as_int);
       break;
     case FLP32_KIND:
-      result = ((float)dest->getValue().as_flp) == ((float)kv->value.as_flp);
+      if (isnan((float)dest->getValue().as_flp) && isnan((float)kv->value.as_flp)) {
+	result = true;
+      }
+      else {
+	result = ((float)dest->getValue().as_flp) == ((float)kv->value.as_flp);
+      }
       break;
     case FLP64_KIND:
-      result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
+      if (isnan((double)dest->getValue().as_flp) && isnan((double)kv->value.as_flp)) {
+	result = true;
+      }
+      else {
+	result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
+      }
       break;
     case FLP80X86_KIND:
       result = dest->getValue().as_flp == kv->value.as_flp;
