@@ -422,6 +422,12 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, int file,
 
       // sync load
       sync = syncLoad(destLocation, src, type);
+
+      // if sync happens, update srcPtrLocation
+      if (sync) {
+        srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
+      }
+      
     } else {
 
       DEBUG_STDOUT("\tSource pointer is not initialized!");
