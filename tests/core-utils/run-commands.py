@@ -16,6 +16,12 @@ def main():
   executables = open(executables_name, 'r')
 
   logfile = "log-run.out"
+
+  try: 
+    os.remove(logfile)
+  except ValueError:
+    pass
+
   log = open(logfile, "a") 
 
   ############################################

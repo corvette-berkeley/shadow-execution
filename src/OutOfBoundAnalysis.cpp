@@ -42,7 +42,7 @@
 #include "OutOfBoundAnalysis.h"
 
 void OutOfBoundAnalysis::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base,
-    KVALUE* offset, KIND type UNUSED, uint64_t size, int line, int inx) {
+    KVALUE* offset, KIND type UNUSED, uint64_t size, bool loadGlobal UNUSED, int loadInx UNUSED, int line, int inx) {
 
   IValue* basePtrLocation = executionStack.top()[base->inx];
   IValue* ptrLocation;
@@ -159,7 +159,7 @@ void OutOfBoundAnalysis::getelementptr_struct(IID iid UNUSED, bool inbound UNUSE
 
 }
 
-void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int file UNUSED, int line, int inx) {
+void OutOfBoundAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line, int inx) {
   IValue* srcPtrLocation = src->isGlobal ? globalSymbolTable[src->inx] :
     executionStack.top()[src->inx];
 

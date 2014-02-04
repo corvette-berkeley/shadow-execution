@@ -239,8 +239,8 @@ VALUE IValue::readValue(int offset, KIND type) {
   VALUE value;
   IValue* valueArray;
 
-  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << " Reading from IValue object: " << toString());
-  DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << " Reading for type: " << KIND_ToString(type)); 
+  DEBUG_STDOUT("\t" << " Reading from IValue object: " << toString());
+  DEBUG_STDOUT("\t" << " Reading for type: " << KIND_ToString(type)); 
 
   valueArray = static_cast<IValue*>(getIPtrValue());
   byte = KIND_GetSize(type);
@@ -251,7 +251,7 @@ VALUE IValue::readValue(int offset, KIND type) {
     // trivial reading case
     //
     
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Trivial reading."); 
+    DEBUG_STDOUT("\t" << "Trivial reading."); 
     value = valueArray[index].getValue();
 
   } else {
@@ -260,7 +260,7 @@ VALUE IValue::readValue(int offset, KIND type) {
     // off the shelf reading case
     //
     
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Off the shelf reading."); 
+    DEBUG_STDOUT("\t" << "Off the shelf reading."); 
 
     unsigned nextIndex;
     int totalByte, tocInx, trcInx;
@@ -365,6 +365,11 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
 void IValue::writeValue(int offset, int byte, IValue* src) {
   int64_t valueOffset, length, bitOffset, newOffset;
   IValue* valueArray; 
+
+  DEBUG_STDOUT("\tWriting value");
+  DEBUG_STDOUT("\tInternal offset: " << offset);
+  DEBUG_STDOUT("\tNumber of bytes to write: " << byte);
+  DEBUG_STDOUT("\tGet value from: " << src->toString());
   
   valueArray = static_cast<IValue*>(getIPtrValue());
   valueOffset = src->getValueOffset();
@@ -378,7 +383,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     // trivial writing case
     //
     
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Trivial writing."); 
+    DEBUG_STDOUT("\t" << "Trivial writing."); 
     src->copy(&valueArray[index]);
 
   } else {
@@ -387,7 +392,7 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     // write off the shelf
     //
 
-    DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "Off the shelf writing."); 
+    DEBUG_STDOUT("\t" << "Off the shelf writing."); 
 
     VALUE srcValue; 
     uint8_t *srcContent, *content;
@@ -416,9 +421,9 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
       
       currentValue = &valueArray[currentIndex];
 
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== Ivalue: " << currentValue->toString());
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== current content: " << (int64_t) *content);
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== current value: " << currentValue->getValue().as_int );
+      DEBUG_STDOUT("\t" << "=== Ivalue: " << currentValue->toString());
+      DEBUG_STDOUT("\t" << "=== current content: " << (int64_t) *content);
+      DEBUG_STDOUT("\t" << "=== current value: " << currentValue->getValue().as_int );
 
       byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
       currentValue->setLength(length);
@@ -426,9 +431,9 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
       currentValue->setBitOffset(bitOffset);
       currentValue->setOffset(newOffset);
 
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== byteWrittens: " << byteWrittens);
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== current value after: " << currentValue->getValue().as_int );
-      DEBUG_STDOUT("\t" << __PRETTY_FUNCTION__ << "=== Ivalue after: " << currentValue->toString());
+      DEBUG_STDOUT("\t" << "=== byteWrittens: " << byteWrittens);
+      DEBUG_STDOUT("\t" << "=== current value after: " << currentValue->getValue().as_int );
+      DEBUG_STDOUT("\t" << "=== Ivalue after: " << currentValue->toString());
 
       content += byteWrittens - oldByteWrittens;
       newOffset = newOffset - byteWrittens;

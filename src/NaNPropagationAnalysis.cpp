@@ -4,9 +4,8 @@
 
 #include "NaNPropagationAnalysis.h"
 
-
-void NaNPropagationAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, int file, int line, int inx) {
-  InterpreterObserver::load(iid, type, src, file, line, inx);
+void NaNPropagationAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, bool loadGlobal, int loadInx, int file, int line, int inx) {
+  InterpreterObserver::load(iid, type, src, loadGlobal, loadInx, file, line, inx);
   IValue* loadValue = executionStack.top()[inx];
   
   if (type == FLP32_KIND || type == FLP64_KIND || type == FLP128_KIND) {

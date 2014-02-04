@@ -15,7 +15,20 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     Constant* CLine = INT32_CONSTANT(getLineNumber(loadInst), SIGNED);
 
+    Constant* loadGlobal = BOOL_CONSTANT(false);
+
+    Constant* loadInx = INT32_CONSTANT(-1, SIGNED);
+
     Constant* fileC = NULL;
+
+    if (LoadInst* parentLoadInst = dyn_cast<LoadInst>(loadInst->getPointerOperand())) {
+      Value *loadPtr; 
+
+      loadPtr = parentLoadInst->getPointerOperand(); 
+      loadGlobal = BOOL_CONSTANT(isa<GlobalVariable>(loadPtr));
+      loadInx = computeIndex(loadPtr);
+    }
+
     string filename = getFileName(loadInst);
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
@@ -66,7 +79,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       if (kind == INV_KIND) return false;
       Constant* kindC = KIND_CONSTANT(kind);
 
-      Instruction* call = CALL_IID_KIND_KVALUE_INT_INT_INT("llvm_load", iid, kindC, op, fileC, CLine, inx);
+      Instruction* call = CALL_IID_KIND_KVALUE_BOOL_INT_INT_INT_INT("llvm_load", iid, kindC, op, loadGlobal, loadInx, fileC, CLine, inx);
       instrs.push_back(call);
 
       InsertAllBefore(instrs, loadInst);

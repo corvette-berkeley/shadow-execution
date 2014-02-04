@@ -102,7 +102,7 @@ class InterpreterObserver : public InstructionObserver {
     isReturn = false;
   }
   
-  virtual void load(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
+  virtual void load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
   
   virtual void load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
 
@@ -172,7 +172,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void atomicrmw();
 
-  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size,int line, int inx);
+  virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx);
 
   virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx);
 

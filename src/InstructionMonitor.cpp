@@ -164,8 +164,8 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KV
   DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, line, arg, addr);
 }
 
-void llvm_load(IID iid, KIND kind, KVALUE* op, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, kind, op, file, line, inx);
+void llvm_load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, kind, op, loadGlobal, loadInx, file, line, inx);
 }
 
 void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx) {
@@ -188,8 +188,8 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, line, inx)
+void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, loadGlobal, loadInx, line, inx)
 }
 
 void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int elementSize, int inx) {

@@ -22,9 +22,22 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   Constant* inxC = computeIndex(gepInst);
 
+  Constant* loadInxC = INT32_CONSTANT(-1, SIGNED);
+
   Constant* inbound = BOOL_CONSTANT(gepInst->isInBounds());
 
+  Constant* loadGlobal = BOOL_CONSTANT(false);
+
   Value* ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+
+  if (LoadInst* loadInst = dyn_cast<LoadInst>(gepInst->getPointerOperand())) {
+    Value *loadPtr; 
+
+    loadPtr = loadInst->getPointerOperand(); 
+    loadGlobal = BOOL_CONSTANT(isa<GlobalVariable>(loadPtr));
+    loadInxC = computeIndex(loadPtr);
+  }
+
   if(ptrOp == NULL) return false;
 
   PointerType* T = (PointerType*) gepInst->getPointerOperandType();
@@ -149,7 +162,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* line = INT32_CONSTANT(getLineNumber(gepInst), SIGNED);
 
-    Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, line, inxC);
+    Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_BOOL_INT_INT_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, loadGlobal, loadInxC, line, inxC);
     instrs.push_back(call);
 
   }

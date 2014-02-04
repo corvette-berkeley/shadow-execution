@@ -45,14 +45,20 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KIND type, KVALUE* op, int file, int line, int inx) {
-  DEBUG_STDOUT("<<<<< LOAD >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " << KVALUE_ToString(op).c_str() 
-	       << ", file: " << file << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::load(IID iid, KIND type, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx) {
+  DEBUG_STDOUT("<<<<< LOAD >>>>> " << IID_ToString(iid).c_str() <<
+      ", kind:" << KIND_ToString(type).c_str() << ", " <<
+      KVALUE_ToString(op).c_str() << ", loadGlobal: " << loadGlobal
+      << ", loadInx: " << loadInx << ", file: " << file << ", line:"
+      << line << ", [INX: " << inx << "]");
 }
 
 void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int file, int line, int inx) {
-  DEBUG_STDOUT("<<<<< LOAD STRUCT >>>>> " << IID_ToString(iid).c_str() << ", kind:" << KIND_ToString(type).c_str() << ", " 
-	       << KVALUE_ToString(op).c_str() << ", file: " << file << ", line:" << line << ", [INX: " << inx << "]");
+  DEBUG_STDOUT("<<<<< LOAD STRUCT >>>>> " <<
+      IID_ToString(iid).c_str() << ", kind:" <<
+      KIND_ToString(type).c_str() << ", " <<
+      KVALUE_ToString(op).c_str() << ", file: " << file << ", line:"
+      << line << ", [INX: " << inx << "]");
 }
 
 // ***** Binary Operations ***** //
@@ -186,8 +192,8 @@ void PrintObserver::atomicrmw() {
   DEBUG_STDOUT("<<<<< ATOMICRMW >>>>>");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, int line, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", index:" << KVALUE_ToString(index) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", line:" << line << " [INX: " << inx << "]");
+void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", index:" << KVALUE_ToString(index) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
 }
 
 void PrintObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx) {

@@ -377,7 +377,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   return;
 }
 
-void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, int file, int line, int inx) {
+void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool loadGlobal, int loadInx, int file, int line, int inx) {
 
   bool isPointerConstant = false;
   bool sync = false;
@@ -385,7 +385,6 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, int file,
 
   // obtain source pointer value
   if (src->inx == -1) {
-    // cannot load using constant address
     isPointerConstant = true;
   } else if (src->isGlobal) {
     srcPtrLocation = globalSymbolTable[src->inx];
@@ -401,10 +400,10 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, int file,
     // creating new value
     IValue *destLocation = new IValue();    
     if (srcPtrLocation->isInitialized()) {
-      IValue *srcLocation = NULL;
+      IValue *srcLocation;
 
       // retrieving source
-      IValue* values = (IValue*)srcPtrLocation->getIPtrValue();
+      IValue *values = (IValue*)srcPtrLocation->getIPtrValue();
       unsigned valueIndex = srcPtrLocation->getIndex();
       unsigned currOffset = values[valueIndex].getFirstByte();
       srcLocation = values + valueIndex;
@@ -426,53 +425,93 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, int file,
 
       // copying src into dest
       srcLocation->copy(destLocation);
-      destLocation->setSize(KIND_GetSize(type));
       destLocation->setValue(value);
       destLocation->setType(type);
 
       // sync load
       sync = syncLoad(destLocation, src, type);
 
-      // if sync happens, update srcPtrLocation
+      // if sync happens, update srcPtrLocation if possible
       if (sync) {
-        srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
+        IValue *lastElement;
+
+        lastElement = values + srcPtrLocation->getLength() - 1;
+
+        if (srcOffset + KIND_GetSize(type) <= lastElement->getFirstByte() + KIND_GetSize(lastElement->getType())) {
+          srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
+        }
       }
       
     } else {
+
+      //
+      // Source pointer is not initialized.
+      //
 
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
       VALUE zeroValue;
       zeroValue.as_int = 0;
 
-      destLocation->setSize(KIND_GetSize(type));
       destLocation->setType(type);
       destLocation->setValue(zeroValue);
-      destLocation->setLength(0);
 
       // sync load
       sync = syncLoad(destLocation, src, type);
+
+      //
+      // initialized source pointer
+      //
+      DEBUG_STDOUT("\tInitializing source pointer.");
+      DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
+      srcPtrLocation->setLength(1);
+      srcPtrLocation->setSize(KIND_GetSize(type));
+      srcPtrLocation->setValueOffset((int64_t) destLocation - srcPtrLocation->getValue().as_int);
+      DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
+
+      //
+      // update load variable
+      //
+      if (loadInx != -1) {
+        IValue *elem, *values, *loadInst;
+
+        loadInst = loadGlobal ? globalSymbolTable[loadInx] : executionStack.top()[loadInx];
+
+        // retrieving source
+        values = (IValue*)loadInst->getIPtrValue();
+        elem = values + loadInst->getIndex();
+        elem->setLength(srcPtrLocation->getLength());
+        elem->setSize(srcPtrLocation->getSize());
+        elem->setValueOffset(srcPtrLocation->getValueOffset());
+      }
+
     }
 
     destLocation->setLineNumber(line);
 
     executionStack.top()[inx] = destLocation;
     DEBUG_STDOUT(destLocation->toString());
+
   }
   else {
     // NEW case for pointer constants
     // TODO: revise again
     DEBUG_STDOUT("[Load] => pointer constant.");
 
-    IValue* destLocation = new IValue();
-    destLocation->setSize(KIND_GetSize(type));
+    IValue* destLocation; 
+    VALUE zeroValue;
+
+    destLocation = new IValue();
+
+    zeroValue.as_int = 0;
+
     destLocation->setType(type);
-    destLocation->setLength(0);
+    destLocation->setValue(zeroValue);
+    destLocation->setLineNumber(line);
 
     // sync load
     sync = syncLoad(destLocation, src, type);
 
-    destLocation->setLineNumber(line);
     executionStack.top()[inx] = destLocation;
 
     DEBUG_STDOUT(destLocation->toString());
@@ -916,7 +955,7 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
       }
       break;
 
-   case XOR:
+    case XOR:
       switch (type) {
         case INT1_KIND:
         case INT8_KIND:
@@ -1002,7 +1041,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   int index, count; 
   IValue *aggIValue, *iResult;
   KVALUE *aggKValue;
-  
+
   //
   // We expect only one index in the getElementPtrIndexList.
   //
@@ -1215,10 +1254,10 @@ void InterpreterObserver::atomicrmw() {
   safe_assert(false);
 }
 
-void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, int line, int inx) {
+void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
 
   if (type == INT80_KIND) {
-    cout << "[getelementptr] Unsupported INT80_KIND" << endl;
+    DEBUG_STDERR("[getelementptr] Unsupported INT80_KIND");
     safe_assert(false);
     return; // otherwise compiler warning
   }
@@ -1227,6 +1266,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   IValue *basePtrLocation, *ptrLocation; 
   int index;
   int newOffset;
+  bool reInit;
 
   //
   // get base pointer operand
@@ -1257,15 +1297,135 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   DEBUG_STDOUT("\tIndex: " << index);
   DEBUG_STDOUT("\tnewOffset: " << newOffset);
 
+  //
+  // check whether the pointer need to be (re)initialized.
+  //
+  reInit = false;
   if (basePtrLocation->isInitialized()) {
-    unsigned index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset, basePtrLocation->getLength()); // TODO: revise offset, getValue().as_ptr
-    ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
+    IValue *array; 
+    int length;
+
+    array = (IValue*) basePtrLocation->getIPtrValue();
+    length = basePtrLocation->getLength();
+    // newOffset can be negative in case of negative index
+    if (newOffset < 0 || newOffset + size/8 > array[length-1].getFirstByte() +
+        KIND_GetSize(array[length-1].getType())) {
+      reInit = true;
+    }
   } else {
-    DEBUG_STDOUT("\tPointer is not initialized!");
-    VALUE newPtrValue;
-    newPtrValue.as_int = basePtrLocation->getValue().as_int + newOffset;
-    ptrLocation = new IValue(PTR_KIND, newPtrValue, size/8, 0, 0, 0);
+    reInit = true;
   }
+
+  //
+  // compute index, (re)initialized the pointer if neccessary
+  //
+  if (reInit) {
+    DEBUG_STDOUT("\tPointer is re-initialized!");
+    IValue *array, *newArray, *loadInst;
+    int length, newLength, i, extraBytes;
+
+    length = basePtrLocation->getLength();
+    array = (IValue*) basePtrLocation->getIPtrValue();
+    if (newOffset >= 0) { // newOffset is positive
+      if (basePtrLocation->isInitialized()) {
+        extraBytes = newOffset + size/8 -
+          array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()); 
+      } else {
+        extraBytes = newOffset + size/8;
+      }
+    } else { // newOffset is negative
+      DEBUG_STDOUT("New offset is negative.");
+      extraBytes = abs(newOffset);
+    }
+
+    DEBUG_STDOUT("Extra bytes: " << extraBytes);
+
+    newLength = length + ceil((double)extraBytes/(double)(size/8));
+
+    DEBUG_STDOUT("Old length: " << length);
+    DEBUG_STDOUT("New length: " << newLength);
+
+    newArray = (IValue *) malloc(newLength * sizeof(IValue));
+    array = (IValue*) basePtrLocation->getIPtrValue();
+
+    for (i = 0; i < newLength; i++) {
+      IValue oldElement; 
+      IValue *newElement; 
+      VALUE value;
+
+      value.as_int = 0;
+
+      if (newOffset < 0) { // newOffset is negative, append at the beginning at the array new elements
+        if (i < newLength - length) {
+          newElement = new IValue(type, value);
+          if (i == 0) {
+            newElement->setFirstByte(0);
+          } else {
+            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+                KIND_GetSize(newArray[i-1].getType()));
+          }
+        } else {
+          newElement = new IValue();
+          oldElement = array[i];
+          oldElement.copy(newElement);
+          if (i == 0) {
+            newElement->setFirstByte(0);
+          } else {
+            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+                KIND_GetSize(newArray[i-1].getType()));
+          }
+        }
+      } else { // newOffset is positive, append at the end of the array new element
+        if (i < length) {
+          newElement = new IValue();
+          oldElement = array[i];
+          oldElement.copy(newElement);
+          newElement->setFirstByte(oldElement.getFirstByte());
+        } else {
+          newElement = new IValue(type, value);
+          if (i == 0) {
+            newElement->setFirstByte(0);
+          } else {
+            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+                KIND_GetSize(newArray[i-1].getType()));
+          }
+        }
+      }
+
+      DEBUG_STDOUT("\tNew element at index " << i << " is: " <<
+          newElement->toString());
+
+      newArray[i] = *newElement;
+    } 
+
+    newOffset = newOffset < 0 ? 0 : newOffset;
+
+    basePtrLocation->setLength(newLength);
+    basePtrLocation->setSize(size/8);
+    basePtrLocation->setValueOffset((int64_t) newArray - basePtrLocation->getValue().as_int);
+
+    //
+    // update load variable
+    //
+    if (loadInx != -1) {
+      IValue *elem, *values;
+
+      // TODO: load can also be a global variable
+      loadInst = loadGlobal ? globalSymbolTable[loadInx] : executionStack.top()[loadInx];
+
+      // retrieving source
+      values = (IValue*)loadInst->getIPtrValue();
+      elem = values + loadInst->getIndex();
+      elem->setLength(basePtrLocation->getLength());
+      elem->setSize(basePtrLocation->getSize());
+      elem->setValueOffset(basePtrLocation->getValueOffset());
+    }
+  } 
+
+  index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
+      basePtrLocation->getLength()); 
+
+  ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
 
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
   ptrLocation->setLineNumber(line);
@@ -1312,7 +1472,7 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     // compute the index for flatten array representation of
     // the program's multi-dimensional array
     //
-    
+
     arrayDim = arraySize.size();
 
     DEBUG_STDOUT("arrayDim " << arrayDim);
@@ -1373,11 +1533,11 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     //
     // compute the index for the casted fatten array
     //
-    
+
     if (ptrArray->isInitialized()) {
       index = findIndex((IValue*) ptrArray->getIPtrValue(), newOffset, ptrArray->getLength()); 
     }
-    
+
     DEBUG_STDOUT("\tIndex: " << index);
 
     // TODO: revisit this
@@ -1581,6 +1741,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
         case INT16_KIND:
           result.as_int = v32 & 0x0000FFFF;
           break;
+        case INT24_KIND:
         case INT32_KIND:
           result.as_int = v32;
           break;
@@ -1886,11 +2047,11 @@ void InterpreterObserver::indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx
 
 void InterpreterObserver::invoke(IID iid UNUSED, KVALUE* call_value UNUSED, int inx UNUSED) {
   int count; 
-  
+
   count = 0;
   while (!myStack.empty()) {
     KVALUE* argument; 
-    
+
     argument = myStack.top();
     DEBUG_STDOUT("\t Argument " << count << ": " << KVALUE_ToString(argument));
     myStack.pop();
@@ -2014,9 +2175,9 @@ void InterpreterObserver::unreachable() {
 
 void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
   if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
-      cout << "[icmp] Unsupported INT80_KIND" << endl;
-      safe_assert(false);
-      return;
+    cout << "[icmp] Unsupported INT80_KIND" << endl;
+    safe_assert(false);
+    return;
   }
 
   int64_t v1, v2;

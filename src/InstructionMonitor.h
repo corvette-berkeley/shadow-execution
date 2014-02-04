@@ -85,13 +85,13 @@ extern "C" {
   void llvm_allocax(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, KVALUE* result);
   void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, KVALUE* addr);
   void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg, KVALUE* addr);
-  void llvm_load(IID iid, KIND kind, KVALUE* op, int file, int line, int x);
+  void llvm_load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int x);
   void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int x);
   void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int x);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
-  void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, int line, int x);
+  void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int x);
   void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int elementSize, int x);
   void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
 

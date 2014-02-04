@@ -91,14 +91,14 @@ public:
 	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* result UNUSED) {};
 	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
-	virtual void load(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void load(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};
 	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KVALUE* index UNUSED, KIND kind UNUSED, 
-				   uint64_t size UNUSED, int line UNUSED, int inx UNUSED) {};
+				   uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {};
   virtual void getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, int elementSize UNUSED, int inx UNUSED) {};
   virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
 
