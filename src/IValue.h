@@ -92,16 +92,19 @@ class IValue {
      */
     int setValue(int offset, int byte, uint8_t* content);
 
-  public:
+ public:
     IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(s) {}
       
     IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
     IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), bitOffset(0), lineNumber(0), scope(REGISTER) {}
-
-    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), 
+      bitOffset(0), lineNumber(0), scope(REGISTER) {}
+    
+    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {
+      value.as_int = 0;
+    }
 
     IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
 
