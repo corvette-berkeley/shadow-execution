@@ -80,6 +80,7 @@ plugin = env.SharedLibrary(
     'PHINodeInstrumenter.cpp',
     'ExtractValueInstrumenter.cpp',
     'SelectInstrumenter.cpp',
+    'MoveAllocaInst.cpp',
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
