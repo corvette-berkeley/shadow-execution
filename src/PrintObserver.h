@@ -198,6 +198,8 @@ public:
 
 	virtual void landingpad();
 
+  void push_string(int c);
+
 	void push_stack(KVALUE* value);
 
 	void push_phinode_value(int valId, int blockId);

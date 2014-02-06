@@ -309,6 +309,10 @@ void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx)
   DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue, inx)
 }
 
+void llvm_push_string(int c) {
+  DISPATCH_TO_OBSERVERS(push_string, c);
+}
+
 void llvm_push_stack(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_stack, value)
 }

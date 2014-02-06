@@ -314,6 +314,10 @@ void PrintObserver::select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue
   DEBUG_STDOUT("<<<<< SELECT >>>>> " << IID_ToString(iid) << ", condition:" << KVALUE_ToString(cond) << ", true value:" << KVALUE_ToString(tvalue) << ", false value:" << KVALUE_ToString(fvalue) << " [INX: " << inx << "]");
 }
 
+void PrintObserver::push_string(int c) {
+  DEBUG_STDOUT("<<<<< PUSH STRING >>>>> character: " << (char)(((int)'0')+c));
+}
+
 void PrintObserver::push_stack(KVALUE* value) {
   DEBUG_STDOUT("<<<<< PUSH VALUE >>>>> value: " << KVALUE_ToString(value));
 }

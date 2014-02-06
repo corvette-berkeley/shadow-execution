@@ -37,7 +37,7 @@ def main():
     print command
 
     # revert list.txt
-    revert_command = ["cp", "all-utilities.txt", "list.txt"]
+    revert_command = ["cp", "small-input.txt", "list.txt"]
     call(revert_command, stdin=None, stdout=None, stderr=None)
 
     # running command
@@ -55,7 +55,7 @@ def main():
     print command
 
     # revert list.txt
-    revert_command = ["cp", "all-utilities.txt", "list.txt"]
+    revert_command = ["cp", "small-input.txt", "list.txt"]
     call(revert_command, stdin=None, stdout=None, stderr=None)
 
     # running command

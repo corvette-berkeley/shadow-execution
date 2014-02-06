@@ -1,0 +1,383 @@
+<<<<< CREATE SYMBOL TABLE >>>>> size: 0
+<<<<< CREATE STACK >>>>> size: 43
+<<<<< RECORD BLOCK ID >>>> id:1
+<<<<< ALLOCA >>>>> [IID: 27766648], kind:[INT32], size:0, arg:0, line:0, result:[IID: 27766648 [INX: 4 PTR: 0x7fff5b4b5000]], [INX: 4]
+LOCAL alloca
+actual address: 0x7fff5b4b5000
+location0x17b31a0
+Location: REGISTER => [INT32: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700199520
+<<<<< ALLOCA >>>>> [IID: 27766776], kind:[INT32], size:0, arg:1, line:0, result:[IID: 27766776 [INX: 5 PTR: 0x7fff5b4b4fd0]], [INX: 5]
+LOCAL alloca
+actual address: 0x7fff5b4b4fd0
+location0x17b09b0
+Location: REGISTER => [INT32: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700209696
+<<<<< ALLOCA >>>>> [IID: 27766904], kind:[PTR], size:0, arg:1, line:0, result:[IID: 27766904 [INX: 6 PTR: 0x7fff5b4b4fa0]], [INX: 6]
+LOCAL alloca
+actual address: 0x7fff5b4b4fa0
+location0x17ba060
+Location: REGISTER => [PTR: 0x2c], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700171072
+<<<<< ALLOCA >>>>> [IID: 27754520], kind:[INT8], size:0, arg:0, line:0, result:[IID: 27754520 [INX: 7 PTR: 0x7fff5b4b4f70]], [INX: 7]
+LOCAL alloca
+actual address: 0x7fff5b4b4f70
+location0x17ba100
+Location: REGISTER => [INT8: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700170864
+<<<<< ALLOCA >>>>> [IID: 27754648], kind:[INT32], size:0, arg:0, line:0, result:[IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], [INX: 8]
+LOCAL alloca
+actual address: 0x7fff5b4b4f40
+location0x17b1f40
+Location: REGISTER => [INT32: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700204032
+<<<<< STORE >>>>> [IID: 27754800], source:[IID: 27766648 [INX: 4 PTR: 0x7fff5b4b5000]], destination:[IID: 0 [INX: -1 INT32: 0]], file: 0, line: 0, [INX: 9]
+	DestPtr: LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700199520
+	Destination pointer location is not initialized
+	Initialized destPtr: LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204064
+	Src: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	destPtrOffset: 0
+	valueIndex: 0 currOffset: 0 Other offset: 0
+	internalOffset: 0 Size: 4
+	Dest: REGISTER => [INT32: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling writeValue with offset: 0, size: 4
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 4
+	Get value from: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Trivial writing.
+	Updated Dest: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 size: 4
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204064
+	 Reading for type: [INT32]
+	Trivial reading.
+	writtenValue: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< STORE >>>>> [IID: 27824784], source:[IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], destination:[IID: 0 [INX: -1 INT32: 0]], file: 1, line: 13, [INX: 16]
+	DestPtr: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700204032
+	Destination pointer location is not initialized
+	Initialized destPtr: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	Src: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	destPtrOffset: 0
+	valueIndex: 0 currOffset: 0 Other offset: 0
+	internalOffset: 0 Size: 4
+	Dest: REGISTER => [INT32: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling writeValue with offset: 0, size: 4
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 4
+	Get value from: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Trivial writing.
+	Updated Dest: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 size: 4
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+	writtenValue: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< BRANCH [GOTO] >>>>> [IID: 27824904], cond:0 [INX: 17]
+<<<<< RECORD BLOCK ID >>>> id:2
+<<<<< LOAD >>>>> [IID: 27825032], kind:[INT32], [IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], loadInx: -1, file: 1, line:13, [INX: 18]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27825160], kind:[INT32], [IID: 27766776 [INX: 5 PTR: 0x7fff5b4b4fd0]], loadInx: -1, file: 1, line:13, [INX: 19]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700209696
+	Source pointer is not initialized!
+	 SYNCING AT LOAD DUE TO MISMATCH
+	 REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Initializing source pointer.
+	Source pointer location: LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700209696
+	Source pointer location: LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199712
+REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< ICMP >>>>> [IID: 27825312], operand 1:[IID: 27825032 [INX: 18 INT32: 0]], operand 2:[IID: 27825160 [INX: 19 INT32: 1]], predicate:40 [INX: 20]
+=============0
+=============1
+PRED = ICMP_SLT
+REGISTER => [INT1: 1] , bitOffset: 0, Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< BRANCH >>>>> [IID: 27825480], cond:1, condition value:[IID: 27825312 [INX: 20 INT1: 1]] [INX: 21]
+<<<<< RECORD BLOCK ID >>>> id:3
+<<<<< LOAD >>>>> [IID: 27825608], kind:[INT32], [IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], loadInx: -1, file: 1, line:14, [INX: 22]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< SEXT >>>>> [IID: 27825736], kind:[INT64], operand:[IID: 27825608 [INX: 22 INT32: 0]], size:0 [INX: 23]
+REGISTER => [INT64: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27825864], kind:[PTR], [IID: 27766904 [INX: 6 PTR: 0x7fff5b4b4fa0]], loadInx: -1, file: 1, line:14, [INX: 24]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700171072
+	Source pointer is not initialized!
+	 SYNCING AT LOAD DUE TO MISMATCH
+	 REGISTER => [PTR: 0x7fff5b4b52e8], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Initializing source pointer.
+	Source pointer location: LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700171072
+	Source pointer location: LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198144
+REGISTER => [PTR: 0x7fff5b4b52e8], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+<<<<< GETELEMENTPTR >>>>> [IID: 27826016], inbound1, pointer value:[IID: 27825864 [INX: 24 PTR: 0x7fff5b4b52e8]], index:[IID: 27825736 [INX: 23 INT64: 0]], kind:[PTR], size:64, loadInx:6, line:14 [INX: 25]
+	Pointer operand REGISTER => [PTR: 0x7fff5b4b52e8], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Size: 64
+	Base Offset: 0
+	Index: 0
+	newOffset: 0
+	Pointer is re-initialized!
+Extra bytes: 8
+Old length: 0
+New length: 1
+	New element at index 0 is: REGISTER => [PTR: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	[findIndex] Offset: 0 Length: 1
+	[findIndex] Returning index: 0
+REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+<<<<< LOAD >>>>> [IID: 27826136], kind:[PTR], [IID: 27826016 [INX: 25 PTR: 0x7fff5b4b52e8]], loadInx: -1, file: 1, line:14, [INX: 26]
+	srcPtrLocation: REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	 Reading from IValue object: REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	 Reading for type: [PTR]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [PTR: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 8
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+	 SYNCING AT LOAD DUE TO MISMATCH
+	 REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 8
+	Get value from: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Trivial writing.
+REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27826264], kind:[INT8], [IID: 27826136 [INX: 26 PTR: 0x7fff5b4b67fb]], loadInx: 26, file: 1, line:14, [INX: 27]
+	srcPtrLocation: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Source pointer is not initialized!
+	 SYNCING AT LOAD DUE TO MISMATCH
+	 REGISTER => [INT8: 46], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Initializing source pointer.
+	Source pointer location: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Source pointer location: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+<<<<< STORE >>>>> [IID: 27826416], source:[IID: 27754520 [INX: 7 PTR: 0x7fff5b4b4f70]], destination:[IID: 27826264 [INX: 27 INT8: 46]], file: 1, line: 14, [INX: 28]
+	DestPtr: LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -140734700170864
+	Destination pointer location is not initialized
+	Initialized destPtr: LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198016
+	Src: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+	destPtrOffset: 0
+	valueIndex: 0 currOffset: 0 Other offset: 0
+	internalOffset: 0 Size: 1
+	Dest: REGISTER => [INT8: 44], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling writeValue with offset: 0, size: 1
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 1
+	Get value from: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+	Trivial writing.
+	Updated Dest: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+	Calling readValue with internal offset: 0 size: 1
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198016
+	 Reading for type: [INT8]
+	Trivial reading.
+	writtenValue: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	srcLocation: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+<<<<< LOAD >>>>> [IID: 27826536], kind:[INT32], [IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], loadInx: -1, file: 1, line:15, [INX: 29]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< SEXT >>>>> [IID: 27826664], kind:[INT64], operand:[IID: 27826536 [INX: 29 INT32: 0]], size:0 [INX: 30]
+REGISTER => [INT64: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27826792], kind:[PTR], [IID: 27766904 [INX: 6 PTR: 0x7fff5b4b4fa0]], loadInx: -1, file: 1, line:15, [INX: 31]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198144
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4fa0], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198144
+	 Reading for type: [PTR]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 14, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	Calling readValue with internal offset: 0 and size: 8
+		VALUE returned (float): 6.95322e-310
+		VALUE returned (int): 140734725051112
+REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+<<<<< GETELEMENTPTR >>>>> [IID: 27826944], inbound1, pointer value:[IID: 27826792 [INX: 31 PTR: 0x7fff5b4b52e8]], index:[IID: 27826664 [INX: 30 INT64: 0]], kind:[PTR], size:64, loadInx:6, line:15 [INX: 32]
+	Pointer operand REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	Size: 64
+	Base Offset: 0
+	Index: 0
+	newOffset: 0
+	[findIndex] Offset: 0 Length: 1
+	[findIndex] Returning index: 0
+REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+<<<<< LOAD >>>>> [IID: 27827064], kind:[PTR], [IID: 27826944 [INX: 32 PTR: 0x7fff5b4b52e8]], loadInx: -1, file: 1, line:15, [INX: 33]
+	srcPtrLocation: REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	 Reading from IValue object: REGISTER => [PTR: 0x7fff5b4b52e8], Size: 8, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199544
+	 Reading for type: [PTR]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 8
+		VALUE returned (float): 6.95322e-310
+		VALUE returned (int): 140734725056507
+REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27827192], kind:[INT8], [IID: 27827064 [INX: 33 PTR: 0x7fff5b4b67fb]], loadInx: 33, file: 1, line:15, [INX: 34]
+	srcPtrLocation: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Source pointer is not initialized!
+	 SYNCING AT LOAD DUE TO MISMATCH
+	 REGISTER => [INT8: 46], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Initializing source pointer.
+	Source pointer location: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 0, Initialized: 0, ValueOffset: -1
+	Source pointer location: REGISTER => [PTR: 0x7fff5b4b67fb], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+<<<<< STORE >>>>> [IID: 27827344], source:[IID: 27754520 [INX: 7 PTR: 0x7fff5b4b4f70]], destination:[IID: 27827192 [INX: 34 INT8: 46]], file: 1, line: 15, [INX: 35]
+	DestPtr: LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198016
+	Src: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+	destPtrOffset: 0
+	valueIndex: 0 currOffset: 0 Other offset: 0
+	internalOffset: 0 Size: 1
+	Dest: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204555
+	Calling writeValue with offset: 0, size: 1
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 1
+	Get value from: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+	Trivial writing.
+	Updated Dest: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+	Calling readValue with internal offset: 0 size: 1
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f70], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198016
+	 Reading for type: [INT8]
+	Trivial reading.
+	writtenValue: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	srcLocation: REGISTER => [INT8: 46], Size: 1, Offset: 0, BitOffset: 0, Index: 0, Line: 15, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700205179
+<<<<< BRANCH [GOTO] >>>>> [IID: 27827464], cond:0 [INX: 36]
+<<<<< RECORD BLOCK ID >>>> id:4
+<<<<< LOAD >>>>> [IID: 27827592], kind:[INT32], [IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], loadInx: -1, file: 1, line:13, [INX: 37]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< ADD >>>>>[IID: 27827744], nuw: 0, nsw: 1, [IID: 27827592 [INX: 37 INT32: 0]], [IID: 0 [INX: -1 INT32: 1]], [INX: 38]
+REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< STORE >>>>> [IID: 27827888], source:[IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], destination:[IID: 27827744 [INX: 38 INT32: 1]], file: 1, line: 13, [INX: 39]
+	DestPtr: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	Src: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	destPtrOffset: 0
+	valueIndex: 0 currOffset: 0 Other offset: 0
+	internalOffset: 0 Size: 4
+	Dest: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling writeValue with offset: 0, size: 4
+	Writing value
+	Internal offset: 0
+	Number of bytes to write: 4
+	Get value from: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Trivial writing.
+	Updated Dest: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 size: 4
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+	writtenValue: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	srcLocation: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< BRANCH [GOTO] >>>>> [IID: 27828008], cond:0 [INX: 40]
+<<<<< RECORD BLOCK ID >>>> id:2
+<<<<< LOAD >>>>> [IID: 27825032], kind:[INT32], [IID: 27754648 [INX: 8 PTR: 0x7fff5b4b4f40]], loadInx: -1, file: 1, line:13, [INX: 18]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4f40], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700198688
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 4.94066e-324
+		VALUE returned (int): 1
+REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< LOAD >>>>> [IID: 27825160], kind:[INT32], [IID: 27766776 [INX: 5 PTR: 0x7fff5b4b4fd0]], loadInx: -1, file: 1, line:13, [INX: 19]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199712
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b4fd0], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700199712
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 4.94066e-324
+		VALUE returned (int): 1
+REGISTER => [INT32: 1], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 13, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< ICMP >>>>> [IID: 27825312], operand 1:[IID: 27825032 [INX: 18 INT32: 1]], operand 2:[IID: 27825160 [INX: 19 INT32: 1]], predicate:40 [INX: 20]
+=============1
+=============1
+PRED = ICMP_SLT
+REGISTER => [INT1: 0] , bitOffset: 0, Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< BRANCH >>>>> [IID: 27825480], cond:1, condition value:[IID: 27825312 [INX: 20 INT1: 0]] [INX: 21]
+<<<<< RECORD BLOCK ID >>>> id:5
+<<<<< LOAD >>>>> [IID: 27828136], kind:[INT32], [IID: 27766648 [INX: 4 PTR: 0x7fff5b4b5000]], loadInx: -1, file: 1, line:17, [INX: 41]
+	srcPtrLocation: LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204064
+	 Reading from IValue object: LOCAL    => [PTR: 0x7fff5b4b5000], Size: 4, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 1, Initialized: 1, ValueOffset: -140734700204064
+	 Reading for type: [INT32]
+	Trivial reading.
+		valueIndex: 0
+		srcOffset: 0
+		currOffset: 0
+		srcOffset0
+		internal offset: 0
+	srcLocation: REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 0, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+	Calling readValue with internal offset: 0 and size: 4
+		VALUE returned (float): 0
+		VALUE returned (int): 0
+REGISTER => [INT32: 0], Size: 0, Offset: 0, BitOffset: 0, Index: 0, Line: 17, FirstByte: 0, Length: 0, Initialized: 1, ValueOffset: -1
+<<<<< RETURN >>>>> [IID: 27828264], return value:[IID: 27828136 [INX: 41 INT32: 0]] [INX: 42]
+The execution stack is empty.

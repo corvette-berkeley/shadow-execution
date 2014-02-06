@@ -133,6 +133,7 @@ public:
 	virtual void fcmp(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, PRED pred UNUSED, int inx UNUSED) {};
 	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
+  virtual void push_string(int c UNUSED){};
 	virtual void push_stack(KVALUE* value UNUSED) {};
 	virtual void push_phinode_value(int valId UNUSED, int blockId UNUSED) {};
 	virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};

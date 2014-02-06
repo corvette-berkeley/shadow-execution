@@ -64,6 +64,8 @@ class InterpreterObserver : public InstructionObserver {
   stack< vector< IValue* > > executionStack;
   vector< IValue* > globalSymbolTable;
 
+  stack<char> logName;
+
   stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
@@ -241,6 +243,8 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void landingpad();
   
+  void push_string(int c);
+
   void push_stack(KVALUE* value);
 
   void push_return_struct(KVALUE* value);

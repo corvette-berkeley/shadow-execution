@@ -5,7 +5,7 @@ export CC=$LPATH"/clang -use-gold-plugin"
 export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib"
 
 # instrument the bitcode file
-$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$1-metadata.txt -f -o tmppass.bc $1.bc
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$1-metadata.txt --includedFunctions $1-include.txt --logfile $1 -f -o tmppass.bc $1.bc
 
 # create executable 
 $CC tmppass.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog

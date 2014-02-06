@@ -58,7 +58,7 @@ unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned
   //
   // assert: offset cannot larger than the size of the array itself (int byte)
   //
-  safe_assert(offset <= array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()));
+  // safe_assert(offset <= array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()));
 
   //
   // initializing lowerbound and upperbound of the index
@@ -111,6 +111,12 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 
   switch(kv->kind) {
     case PTR_KIND:
+
+      DEBUG_STDOUT("\t Destination value: " << (int64_t) dest->getValue().as_ptr);
+      DEBUG_STDOUT("\t Destination value plus offset: " << (int64_t)
+          dest->getValue().as_ptr + dest->getOffset());
+      DEBUG_STDOUT("\t Concrete value: " << (int64_t) kv->value.as_ptr);
+
       result = ((int64_t)dest->getValue().as_ptr + dest->getOffset() == (int64_t)kv->value.as_ptr);
       break;
     case INT1_KIND:
@@ -288,6 +294,8 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   int i, structSize;
   IValue* dest;
 
+  LOG(INFO) << "[LOAD STRUCT] Performing load at " << file << ":" << line << endl; 
+
   structSize = returnStruct.size();
   dest = (IValue*) malloc(structSize*sizeof(IValue));
 
@@ -383,6 +391,8 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
   bool sync = false;
   IValue* srcPtrLocation;
 
+  LOG(INFO) << "[LOAD] Performing load at " << file << ":" << line << endl; 
+
   // obtain source pointer value
   if (src->inx == -1) {
     isPointerConstant = true;
@@ -451,6 +461,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
       VALUE zeroValue;
+      IValue* elem;
       zeroValue.as_int = 0;
 
       destLocation->setType(type);
@@ -464,9 +475,11 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
       //
       DEBUG_STDOUT("\tInitializing source pointer.");
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
+      elem = new IValue();
+      destLocation->copy(elem);
       srcPtrLocation->setLength(1);
       srcPtrLocation->setSize(KIND_GetSize(type));
-      srcPtrLocation->setValueOffset((int64_t) destLocation - srcPtrLocation->getValue().as_int);
+      srcPtrLocation->setValueOffset((int64_t) elem - srcPtrLocation->getValue().as_int);
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
 
       //
@@ -654,6 +667,8 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
     loc1 = executionStack.top()[op1->inx];
     v1 = loc1->getIntValue();
     d1 = loc1->getFlpValue();
+
+    DEBUG_STDOUT("\tOperand 01: " << loc1->toString());
   }
 
   if (op2->iid == 0) { // constant
@@ -665,6 +680,8 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
     loc2 = executionStack.top()[op2->inx];
     v2 = loc2->getIntValue();
     d2 = loc2->getFlpValue();
+
+    DEBUG_STDOUT("\tOperand 02: " << loc2->toString());
   }
 
   switch (op) {
@@ -1117,6 +1134,7 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   DEBUG_STDOUT("location" << location);
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
+  ptrLocation->setLength(1);
   ptrLocation->setLineNumber(line);
   executionStack.top()[inx] = ptrLocation;
 
@@ -1475,13 +1493,13 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
 
     arrayDim = arraySize.size();
 
+    getIndexNo = getElementPtrIndexList.size() - 1;
+
     DEBUG_STDOUT("arrayDim " << arrayDim);
 
-    arraySizeVec = (int*) malloc(arrayDim * sizeof(int));
-
-    getIndexNo = getElementPtrIndexList.size();
-
     DEBUG_STDOUT("getIndexNo " << getIndexNo);
+
+    arraySizeVec = (int*) malloc(getIndexNo * sizeof(int));
 
     indexVec = (int*) malloc(getIndexNo * sizeof(int));
 
@@ -1491,16 +1509,18 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     arraySize.pop(); 
     i = 0;
     while (!arraySize.empty()) {
-      arraySizeVec[i] = arraySize.front();
+      if (i < getIndexNo) {
+        arraySizeVec[i] = arraySize.front();
+      }
       arraySize.pop();
       i++;
     }
     safe_assert(arraySize.empty());
 
-    arraySizeVec[arrayDim-1] = 1; 
+    arraySizeVec[getIndexNo-1] = 1; 
 
-    for (i = 0; i < arrayDim - 1; i++) {
-      for (j = i+1; j < getIndexNo - 1; j++) {
+    for (i = 0; i < getIndexNo; i++) {
+      for (j = i+1; j < getIndexNo; j++) {
         arraySizeVec[i] *= arraySizeVec[j]; 
       }
     }
@@ -1519,7 +1539,7 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     safe_assert(getElementPtrIndexList.empty());
 
     index = 0;
-    for (i = 0; i < getIndexNo - 1; i++) {
+    for (i = 0; i < getIndexNo; i++) {
       index += indexVec[i] * arraySizeVec[i];
     }
 
@@ -2425,6 +2445,11 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
   return;
 }
 
+void InterpreterObserver::push_string(int diff) {
+  char c = (char)(((int)'0') + diff);
+  logName.push(c);
+}
+
 void InterpreterObserver::push_stack(KVALUE* value) {
 
   myStack.push(value);
@@ -2593,8 +2618,24 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::create_global_symbol_table(int size) {
 
+  //
+  // get log name
+  //
+  int length, i;
+  char* log;
+
+  length = logName.size();
+  log = (char*) malloc(sizeof(char) * (length+1));
+
+  for (i = 0; i < length; i++) {
+    log[length-i-1] = logName.top();
+    logName.pop();
+  }
+
+  log[length] = '\0';
+
   // initialize logger
-  google::InitGoogleLogging("main");
+  google::InitGoogleLogging(log);
   LOG(INFO) << "Initialized logger" << endl;
 
   for (int i = 0; i < size; i++) {
@@ -2619,13 +2660,14 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   // allocate object
   IValue* location;
   location = new IValue(initializer->kind, initializer->value, GLOBAL); // GLOBAL?
-  location->setLength(0);
 
   VALUE value;
   value.as_ptr = kvalue->value.as_ptr;
   IValue* ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
   ptrLocation->setSize(KIND_GetSize(initializer->kind)); // put in constructor
-  ptrLocation->setLength(0);
+  if (location->getType() != PTR_KIND) {
+    ptrLocation->setLength(1);
+  }
   ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
   // store it in globalSymbolTable
