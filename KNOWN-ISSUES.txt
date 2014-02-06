@@ -163,6 +163,18 @@ lu.A.x [SEG FAULT]
 mg.A.x [SEG FAULT]
 sp.A.x [SEG FAULT]
 
+SMALL INPUTS.
+BT: equality.
+CG: getelementptr_array assertion.
+DC: out of memory.
+EP: out of memory.
+IS: out of memory.
+LU: store assertion.
+MG: findIndex assertion.
+SP: store assertion.
+
+
+
 GSL Programs
 =========
 
