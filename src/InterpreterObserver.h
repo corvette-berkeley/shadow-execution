@@ -103,6 +103,8 @@ class InterpreterObserver : public InstructionObserver {
   InterpreterObserver(std::string name) : InstructionObserver(name) {
     isReturn = false;
   }
+
+  void copy(IValue* src, IValue* dest);
   
   virtual void load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
   

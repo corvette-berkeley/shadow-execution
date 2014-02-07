@@ -226,6 +226,7 @@ void IValue::copy(IValue *dest) {
   dest->setIndex(index);
   dest->setLength(length);
   dest->setValueOffset(valueOffset);
+  dest->setShadow(shadow);
 }
 
 void IValue::copyFrom(KVALUE* kValue) {
@@ -362,7 +363,7 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
   return byte;
 } 
 
-void IValue::writeValue(int offset, int byte, IValue* src) {
+bool IValue::writeValue(int offset, int byte, IValue* src) {
   int64_t valueOffset, length, bitOffset, newOffset;
   IValue* valueArray; 
 
@@ -385,6 +386,8 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
     
     DEBUG_STDOUT("\t" << "Trivial writing."); 
     src->copy(&valueArray[index]);
+
+    return true;
 
   } else {
 
@@ -441,11 +444,28 @@ void IValue::writeValue(int offset, int byte, IValue* src) {
       currentIndex++;
       offset = 0;
     }
+
+    return false;
   }
 }
 
 bool IValue::isInitialized() {
   return type != PTR_KIND || length > 0;
+}
+
+bool IValue::isIntValue() {
+  return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND || type
+    == INT24_KIND || type == INT32_KIND || type == INT64_KIND || type ==
+    INT80_KIND;
+}
+
+bool IValue::isFlpValue() {
+  return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND ||
+    type == FLP128_KIND || type == FLP128PPC_KIND;
+}
+
+bool IValue::isPtrValue() {
+  return type == PTR_KIND;
 }
 
 void IValue::setInitialized() {

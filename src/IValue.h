@@ -93,20 +93,20 @@ class IValue {
     int setValue(int offset, int byte, uint8_t* content);
 
  public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(s) {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(s), shadow(NULL) {}
       
-    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
+    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
-    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
+    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
     IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), 
-      bitOffset(0), lineNumber(0), scope(REGISTER) {}
+      bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
     
-    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {
+    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
       value.as_int = 0;
     }
 
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER) {}
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
     void setType(KIND t);
 
@@ -166,9 +166,15 @@ class IValue {
 
     void* getIPtrValue();
 
+    void* getShadow();
+
     bool isInitialized();
 
-    void* getShadow();
+    bool isIntValue();
+
+    bool isFlpValue();
+
+    bool isPtrValue();
 
     string toString();
 
@@ -212,8 +218,10 @@ class IValue {
      * @param offset the offset to start writing to.
      * @param byte the number of bytes to write.
      * @param src the source to get value form.
+     *
+     * @return true if this is a trivial write; false otherwise
      */
-    void writeValue(int offset, int byte, IValue* src);
+    bool writeValue(int offset, int byte, IValue* src);
 
     /**
      * Check whether this is an IValue by comparing its type with its expected
