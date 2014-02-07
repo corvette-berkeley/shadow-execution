@@ -13,6 +13,8 @@ DONE: Modelling phi instruction
 KNOW ISSUES:
   Padding make concrete and shadow memory model inconsistent.
 
+  Global variable of pointer is not initialized correctly.
+
 TESTING:
   Checking at store
   Checking for branch divergence
@@ -33,11 +35,11 @@ ptrtoint.
 check in example (example + foo).
 re-run everything.
 
-CORE UTILITIES (95/100).
+CORE UTILITIES (97/100).
 
 Latest run on 1/30/2014 at 9:59am.
 
-=== 94 programs passing ===
+=== 97 programs passing ===
 
 base64 list.txt
 basename list.txt   
@@ -134,6 +136,9 @@ tsort list.txt
 du -h 
 tail -10 list.txt
 head -10 list.txt
+comm list.txt list.txt
+vdir
+expr  linux : lin 
 
 **************
 FAILING (5)
@@ -143,12 +148,6 @@ INTERPRETATION:
     ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
-
-FAIL AGAIN IN LAST RUN:
-  comm list.txt list.txt
-  vdir
-  expr  linux : lin 
-
 
 NAS Parallel Benchmarks
 ================

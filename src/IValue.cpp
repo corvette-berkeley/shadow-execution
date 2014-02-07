@@ -191,7 +191,7 @@ string IValue::toString() {
       s << "[FLP64: " << (double) value.as_flp << "]";
       break;
     case FLP80X86_KIND:
-      s << "[FLP80X86: " << (long double) value.as_flp << "]";
+      s << "[FLP80X86: " << (double) value.as_flp << "]";
       break;
     case VOID_KIND:
       s << "[VOID]";

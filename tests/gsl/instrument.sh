@@ -1,14 +1,19 @@
 #!/bin/bash
 
 LPATH=$GOLD_LLVM_BIN
+
 export CC=$LPATH"/clang -use-gold-plugin"
-export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib"
+export RANLIB="/bin/true"
+export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib" 
 
-# instrument the bitcode file
-$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $1-metadata.txt -f -o tmppass.bc $1.bc
+llvm-dis $1.bc
 
-# create executable 
-$CC tmppass.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f --file $GLOG_log_dir/$1-metadata.txt --includedFunctions $1-include.txt -o tmppass.bc $1.bc
 
-# create executable for uninstrumented bitcode
-#$CC $1.bc -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
+
+llvm-dis tmppass.bc
+llvm-dis tmppass-allocas.bc
+
+$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog 
+

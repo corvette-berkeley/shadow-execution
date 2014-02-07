@@ -16,5 +16,6 @@ int main() {
 
   for (i = 0; i < 3; i++) {
     c = a[i]; // three syncs here
+    c = a[i]; // no syncs here
   }
 }

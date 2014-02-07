@@ -82,9 +82,9 @@ class InterpreterObserver : public InstructionObserver {
 
   bool isReturn; // whether return instruction is just executed
 
-  long double getValueFromConstant(KVALUE* op); 
+  double getValueFromConstant(KVALUE* op); 
 
-  long double getValueFromIValue(IValue* loc); 
+  double getValueFromIValue(IValue* loc); 
 
   std::string BINOP_ToString(int binop); 
 

@@ -147,10 +147,14 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       break;
     case FLP64_KIND:
       if (isnan((double)dest->getValue().as_flp) && isnan((double)kv->value.as_flp)) {
-	result = true;
+        result = true;
       }
       else {
-	result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
+        result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
+        if (!result) {
+          cout << dest->getValue().as_ptr << endl;
+          cout << kv->value.as_ptr << endl;
+        }
       }
       break;
     case FLP80X86_KIND:
@@ -623,6 +627,7 @@ void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int f
   DEBUG_STDOUT("\twrittenValue: " << writtenValue->toString());
 
   if (!checkStore(writtenValue, src)) { // destLocation
+    DEBUG_STDERR("\twrittenValue: " << writtenValue->toString());
     DEBUG_STDERR("\tKVALUE: " << KVALUE_ToString(src));
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
@@ -644,7 +649,7 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
   }
 
   int64_t v1, v2;
-  long double d1, d2;
+  double d1, d2;
   VALUE result;
   IValue* iResult;
   KIND kind;
@@ -1526,8 +1531,8 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     }
 
     // the first index is for the pointer operand;
-    // it must be zero
-    safe_assert(getElementPtrIndexList.front() == 0);
+    safe_assert(!getElementPtrIndexList.empty());
+    array = array + getElementPtrIndexList.front();
     getElementPtrIndexList.pop(); 
 
     i = 0;
@@ -1827,7 +1832,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
           result.as_flp = (double) opFlpValue;
           break;
         case FLP80X86_KIND:
-          result.as_flp = (long double) opFlpValue;
+          result.as_flp = (double) opFlpValue;
           break;
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
@@ -1848,7 +1853,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
           result.as_flp = (double) opFlpValue;
           break;
         case FLP80X86_KIND:
-          result.as_flp = (long double) opFlpValue;
+          result.as_flp = (double) opFlpValue;
           break;
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
@@ -1912,7 +1917,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
           result.as_flp = (double) opUIntValue;
           break;
         case FLP80X86_KIND:
-          result.as_flp = (long double) opUIntValue;
+          result.as_flp = (double) opUIntValue;
           break;
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
@@ -1930,7 +1935,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
           result.as_flp = (double) opIntValue;
           break;
         case FLP80X86_KIND:
-          result.as_flp = (long double) opIntValue;
+          result.as_flp = (double) opIntValue;
           break;
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
@@ -2284,7 +2289,7 @@ void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
 }
 
 void InterpreterObserver::fcmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  long double v1, v2;
+  double v1, v2;
 
   // get value of v1
   if (op1->iid == 0) { // constant
@@ -2834,7 +2839,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
   int64_t cValueInt64;
   float cValueFloat;
   double cValueDouble;
-  long double cValueLD;
+  double cValueLD;
 
   switch (type) {
     case PTR_KIND:
@@ -2931,12 +2936,12 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
       }
       break;
     case FLP80X86_KIND:
-      cValueLD = *((long double*) concrete->value.as_ptr);
-      if (isnan((long double)iValue->getValue().as_flp) && isnan(cValueLD)) {
+      cValueLD = *((double*) concrete->value.as_ptr);
+      if (isnan((double)iValue->getValue().as_flp) && isnan(cValueLD)) {
 	sync = false;
       }
       else {
-	sync = ((long double)iValue->getValue().as_flp != cValueLD);
+	sync = ((double)iValue->getValue().as_flp != cValueLD);
       }
       if (sync) {
         syncValue.as_flp = cValueLD;
