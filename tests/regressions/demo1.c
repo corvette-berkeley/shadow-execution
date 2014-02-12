@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * This example covers:
@@ -11,37 +12,24 @@
  * 5. Call to uninterpreted function printf.
  */
 
-#define N 3
-
-double array_sum(double *array) {
-  int i;
-  double sum = 0.0;
-
-  for(i = 0; i < N; i++) {
-    sum += array[i];
-  }
-  return sum;
+double getelement(double *array, int i) {
+  return array[i];
 }
 
 int main() {
-  double *array = malloc(sizeof(double)*N);
-  double result, sum;
-  int i;
-
-  for(i = 0; i < 2*N; i++) {
-    array[i] = i + 0.5;
-  }
-
-  sum = array_sum(array);
-  result = sqrt(sum);
+  double array[3] = {1.5, 2.5, 3.5};
+  double result; 
+  
+  result = getelement(array, 2);
+  result = sqrt(result);
   
   /* More advanced operations (casting and pointer arithmetic) */
   float *farray = (float *)(array + 1);
   float fresult = farray[1];
 
   /* Even more advanced operations (uninterpreted functions require syncing) */
-  float *anotherFArray = malloc(sizeof(float)*N);
-  memcpy(anotherFArray, farray, sizeof(float)*N);
+  float *anotherFArray = malloc(sizeof(float)*3);
+  memcpy(anotherFArray, farray, sizeof(float)*3);
   float fAnotherResult = anotherFArray[1];
 
   /* Flatten representation of multiple dimensional array and struct */
@@ -50,7 +38,7 @@ int main() {
     double y[2];
   } p;
 
-  p->y[1] = 5.0;
+  p.y[1] = 5.0;
 
   return 0;
 }
