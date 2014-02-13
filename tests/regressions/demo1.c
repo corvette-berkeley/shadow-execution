@@ -19,26 +19,27 @@ double getelement(double *array, int i) {
 int main() {
   double array[3] = {1.5, 2.5, 3.5};
   double result; 
-  
-  result = getelement(array, 2);
+
+  result = getelement(array, 1);
   result = sqrt(result);
   
-  /* More advanced operations (casting and pointer arithmetic) */
+  /*
+  // More advanced operations (casting and pointer arithmetic)
   float *farray = (float *)(array + 1);
   float fresult = farray[1];
 
-  /* Even more advanced operations (uninterpreted functions require syncing) */
+  // Even more advanced operations (uninterpreted functions require syncing)
   float *anotherFArray = malloc(sizeof(float)*3);
   memcpy(anotherFArray, farray, sizeof(float)*3);
   float fAnotherResult = anotherFArray[1];
 
-  /* Flatten representation of multiple dimensional array and struct */
+  // Flatten representation of multiple dimensional array and struct
   struct point {
     int x;
     double y[2];
   } p;
 
   p.y[1] = 5.0;
-
+  */
   return 0;
 }
