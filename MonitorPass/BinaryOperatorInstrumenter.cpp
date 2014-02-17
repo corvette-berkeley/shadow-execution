@@ -28,6 +28,7 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* iid = IID_CONSTANT(binInst);
     Constant* inx = computeIndex(binInst);
+    Constant* CLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
 
     Constant* nuw = BOOL_CONSTANT(binInst->hasNoUnsignedWrap());
     Constant* nsw = BOOL_CONSTANT(binInst->hasNoSignedWrap());
@@ -101,7 +102,7 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
         return false; // this cannot happen
     }
 
-    Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(callback.str().c_str(), iid, nuw, nsw, lop, rop, inx);
+    Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT_INT(callback.str().c_str(), iid, nuw, nsw, lop, rop, CLine, inx);
     instrs.push_back(call);
 
     // instrument

@@ -92,7 +92,7 @@ class InterpreterObserver : public InstructionObserver {
 
   std::string CASTOP_ToString(int castop);
 
-  void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);
+  void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op);
 
   void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BITWISE op);
 
@@ -104,37 +104,35 @@ class InterpreterObserver : public InstructionObserver {
     isReturn = false;
   }
 
-  void copy(IValue* src, IValue* dest);
-  
   virtual void load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
   
   virtual void load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
 
   // ***** Binary Operations ***** //
   
-  virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
   // ***** Bitwise Binary Operations ***** //
   virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
@@ -273,7 +271,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void create_stack_frame(int size);
   
-  void create_global_symbol_table(int size);
+  virtual void create_global_symbol_table(int size);
 
   void record_block_id(int id);
 
@@ -300,6 +298,7 @@ class InterpreterObserver : public InstructionObserver {
    */
   unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 
+  static void copyShadow(IValue* src, IValue* dest);
 };
 
 

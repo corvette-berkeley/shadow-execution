@@ -63,52 +63,52 @@ void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int file, int li
 
 // ***** Binary Operations ***** //
 
-void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< ADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< ADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< FADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< SUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< FSUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FSUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< MUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< MUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< FMUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FMUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< UDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< UDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< SDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< FDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< UREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< UREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< SREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< FREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
 }
 
 

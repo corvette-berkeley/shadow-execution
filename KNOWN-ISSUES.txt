@@ -15,6 +15,10 @@ KNOW ISSUES:
 
   Global variable of pointer is not initialized correctly.
 
+  Implementation of copyShadow. Because we implement it as a static function
+  pointer and assign it as create_global_symbol_table, we cannot enable
+  multiple anlaysis at once. Prefer to use inheritance in some way.
+
 TESTING:
   Checking at store
   Checking for branch divergence

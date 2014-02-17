@@ -398,13 +398,13 @@ REGISTER_INSTRUMENTER(OrInstrumenter, "or_") //done
 REGISTER_INSTRUMENTER(XorInstrumenter, "xor_") //done
 
 // ***** Vector Operations ***** //
-REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement") // not in C
-REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") // not in C
-REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") // not in C
+// REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement") 
+// REGISTER_INSTRUMENTER(InsertElementInstrumenter, "insertelement") 
+// REGISTER_INSTRUMENTER(ShuffleVectorInstrumenter, "shufflevector") 
 
 // ***** Aggregate Operations ***** //
-REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue") // not in C
-REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue") // not in C
+REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue") 
+REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue") 
 
 // ***** Memory Access and Addressing Operations ***** //
 REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax") //done
@@ -413,7 +413,7 @@ REGISTER_INSTRUMENTER(StoreInstrumenter, "store") //done
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence") 
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw") 
-REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
+// REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
 REGISTER_INSTRUMENTER(BranchInstrumenter, "branch") // done

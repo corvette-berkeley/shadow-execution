@@ -235,6 +235,30 @@ uint64_t KVALUE_ToUIntValue(KVALUE* kv);
 long double KVALUE_ToFlpValue(KVALUE* kv);
 
 /**
+ * Return whether KVALUE is of floating-point type.
+ *
+ * @param kv the kvalue under check
+ * @return true if kv has floating-point type; false otherwise.
+ */
+bool KVALUE_IsFlpValue(KVALUE* kv);
+
+/**
+ * Return whether KVALUE is of integer type.
+ *
+ * @param kv the kvalue under check
+ * @return true if kv has integer type; false otherwise.
+ */
+bool KVALUE_IsIntValue(KVALUE* kv);
+
+/**
+ * Return whether KVALUE is of pointer type.
+ *
+ * @param kv the kvalue under check
+ * @return true if kv has pointer type; false otherwise.
+ */
+bool KVALUE_IsPtrValue(KVALUE* kv);
+
+/**
  * Pretty printing for KIND.
  *
  * @param kind the kind to be printed.

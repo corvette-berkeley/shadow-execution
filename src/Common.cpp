@@ -217,6 +217,23 @@ long double KVALUE_ToFlpValue(KVALUE* kv) {
 
 }
 
+bool KVALUE_IsFlpValue(KVALUE *kv) {
+  unsigned kind = kv->kind;
+  return kind == FLP32_KIND || kind == FLP64_KIND || FLP80X86_KIND
+    || FLP128_KIND || FLP128PPC_KIND;
+}
+
+bool KVALUE_IsIntValue(KVALUE *kv) {
+  unsigned kind = kv->kind;
+  return kind == INT1_KIND || INT8_KIND || INT16_KIND || INT24_KIND
+    || INT32_KIND || INT64_KIND || INT80_KIND;
+}
+
+bool KVALUE_IsPtrValue(KVALUE *kv) {
+  unsigned kind = kv->kind;
+  return kind == PTR_KIND;
+}
+
 std::string KIND_ToString(int kind) {
   std::stringstream s;
   switch(kind) {

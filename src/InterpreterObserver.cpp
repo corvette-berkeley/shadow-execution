@@ -167,8 +167,9 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
   return result;
 }
 
-void InterpreterObserver::copy(IValue* src, IValue* dest) {
-  src->copy(dest);
+void InterpreterObserver::copyShadow(IValue* src UNUSED, IValue* dest UNUSED) {
+  // done nothing
+  // shadow value is not used in the core interpreter
 }
 
 std::string InterpreterObserver::BINOP_ToString(int binop) {
@@ -363,7 +364,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       concreteStructElem = returnStruct.front();
 
       structElem = new IValue();
-      copy(&structSrc[i], structElem);
+      structSrc[i].copy(structElem);
       type = structElem->getType();
 
       //
@@ -442,7 +443,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
       DEBUG_STDOUT("\t\tVALUE returned (int): " << value.as_int);
 
       // copying src into dest
-      copy(srcLocation, destLocation);
+      srcLocation->copy(destLocation);
       destLocation->setValue(value);
       destLocation->setType(type);
 
@@ -484,7 +485,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
       DEBUG_STDOUT("\tInitializing source pointer.");
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
       elem = new IValue();
-      copy(destLocation, elem);
+      destLocation->copy(elem);
       srcPtrLocation->setLength(1);
       srcPtrLocation->setSize(KIND_GetSize(type));
       srcPtrLocation->setValueOffset((int64_t) elem - srcPtrLocation->getValue().as_int);
@@ -613,7 +614,7 @@ void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int f
 
   // writing src into dest
   if (destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation)) {
-    copy(srcLocation, destLocation);
+    srcLocation->copy(destLocation);
   }
   destPtrLocation->setInitialized();
 
@@ -646,7 +647,7 @@ void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int f
 
 // **** Binary Operations *** //
 
-void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int inx, BINOP op) {
+void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op) {
 
   if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
@@ -736,6 +737,7 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
 
   kind = op1->kind;
   iResult = new IValue(kind, result);
+  iResult->setLineNumber(line);
 
   executionStack.top()[inx] = iResult;
 
@@ -744,51 +746,51 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
   return;
 }
 
-void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, ADD);
+void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, ADD);
 }
 
-void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FADD);
+void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, FADD);
 }
 
-void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SUB);
+void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, SUB);
 }
 
-void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FSUB);
+void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, FSUB);
 }
 
-void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, MUL);
+void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, MUL);
 }
 
-void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FMUL);
+void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, FMUL);
 }
 
-void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, UDIV);
+void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, UDIV);
 }
 
-void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SDIV);
+void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, SDIV);
 }
 
-void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, FDIV);
+void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, FDIV);
 }
 
-void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, UREM);
+void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, UREM);
 }
 
-void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  binop(iid, nuw, nsw, op1, op2, inx, SREM);
+void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  binop(iid, nuw, nsw, op1, op2, line, inx, SREM);
 }
 
-void InterpreterObserver::frem(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {
+void InterpreterObserver::frem(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int line UNUSED, int inx UNUSED) {
   DEBUG_STDERR("UNSUPPORTED IN C???");
   safe_assert(false);
 }
@@ -1107,7 +1109,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   iResult = new IValue();
   if (aggIValue != NULL) { 
     aggIValue += index;
-    copy(aggIValue, iResult);
+    aggIValue->copy(iResult);
   } else { // constant struct, use KVALUE to create iResult
     iResult->setType(aggKValue->kind);
     iResult->setValue(aggKValue->value);
@@ -1396,7 +1398,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
         } else {
           newElement = new IValue();
           oldElement = array[i];
-          copy(&oldElement, newElement);
+          oldElement.copy(newElement);
           if (i == 0) {
             newElement->setFirstByte(0);
           } else {
@@ -1408,7 +1410,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
         if (i < length) {
           newElement = new IValue();
           oldElement = array[i];
-          copy(&oldElement, newElement);
+          oldElement.copy(newElement);
           newElement->setFirstByte(oldElement.getFirstByte());
         } else {
           newElement = new IValue(type, value);
@@ -1994,7 +1996,7 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
       iResult->setType(type);
     } else {
       iResult = new IValue();
-      copy(iOp, iResult);
+      iOp->copy(iResult);
       iResult->setSize(size/8);
       iResult->setType(type);
     }
@@ -2112,7 +2114,7 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
       executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
       executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
     } else {
-      copy(returnValue, executionStack.top()[callerVarIndex.top()]);
+      returnValue->copy(executionStack.top()[callerVarIndex.top()]);
     }
     DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()]->toString());
 
@@ -2169,7 +2171,7 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
         iValue->setLength(0);
       } else {
         iValue = new IValue();
-        copy(returnValue, iValue);
+        returnValue->copy(iValue);
         returnValue++;
       }
 
@@ -2407,7 +2409,7 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
     safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
     IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
     phiNode = new IValue();
-    copy(inValue, phiNode);
+    inValue->copy(phiNode);
   }
 
   phinodeConstantValues.clear();
@@ -2437,8 +2439,9 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
       result = new IValue(tvalue->kind, tvalue->value, REGISTER);
     } else {
       result = new IValue();
-      trueValue = tvalue->isGlobal ? globalSymbolTable[tvalue->inx] : executionStack.top()[tvalue->inx];
-      copy(trueValue, result);
+      trueValue = tvalue->isGlobal ? globalSymbolTable[tvalue->inx] :
+        executionStack.top()[tvalue->inx];
+      trueValue->copy(result);
     }
   } else {
     if (fvalue->inx == -1) {
@@ -2446,7 +2449,7 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
     } else {
       result = new IValue();
       falseValue = fvalue->isGlobal ? globalSymbolTable[fvalue->inx] : executionStack.top()[fvalue->inx];
-      copy(falseValue, result);
+      falseValue->copy(result);
     }
   }
 
@@ -2630,6 +2633,11 @@ void InterpreterObserver::create_stack_frame(int size) {
 void InterpreterObserver::create_global_symbol_table(int size) {
 
   //
+  // instantiate copyShadow
+  //
+  IValue::setCopyShadow(&copyShadow);
+
+  //
   // get log name
   //
   int length, i;
@@ -2701,7 +2709,7 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
         executionStack.top()[value->inx];
       safe_assert(arg);
       argCopy = new IValue();
-      copy(arg, argCopy);
+      arg->copy(argCopy);
     } else {
       // argument is a constant
       argCopy = new IValue(value->kind, value->value, LOCAL);

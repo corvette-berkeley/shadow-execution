@@ -821,13 +821,14 @@ int KIND_GetSize(int kind) {
   }
 
   /*******************************************************************************************/
-  Instruction* CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* b1, Value* b2, Value* kvalue1, Value* kvalue2, Value* inx) {
+  Instruction* CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT_INT(const char* func, Value* iid, Value* b1, Value* b2, Value* kvalue1, Value* kvalue2, Value* line, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
     ArgTypes.push_back(BOOL_TYPE());
     ArgTypes.push_back(BOOL_TYPE());
     ArgTypes.push_back(KVALUEPTR_TYPE());
     ArgTypes.push_back(KVALUEPTR_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
 
     ValuePtrVector Args;
@@ -836,6 +837,7 @@ int KIND_GetSize(int kind) {
     Args.push_back(b2);
     Args.push_back(kvalue1);
     Args.push_back(kvalue2);
+    Args.push_back(line);
     Args.push_back(inx);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);

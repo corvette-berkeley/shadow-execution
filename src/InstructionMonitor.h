@@ -51,18 +51,18 @@
 extern "C" {
 
   // ***** Binary Operations ***** //
-  void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
+  void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
 
   // ***** Bitwise Binary Operations ***** //
   void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);

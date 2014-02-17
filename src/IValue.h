@@ -80,6 +80,14 @@ class IValue {
     void* shadow;
 
     /**
+     * Define how to copy shadow values. This varies analysis by analysis.
+     *
+     * @param IValue the source IValue to get shadow value from.
+     * @param IValue the destination IValue to copy shadow value to.
+     */
+    static void (*copyShadow)(IValue*, IValue*);
+
+    /**
      * Write a chunk of byte to value. This functions returns the actual number
      * of byte written.
      *
@@ -99,14 +107,14 @@ class IValue {
 
     IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), 
-      bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
     
     IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
       value.as_int = 0;
     }
 
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+    }
 
     void setType(KIND t);
 
@@ -131,6 +139,8 @@ class IValue {
     void setScope(SCOPE s);
 
     void setShadow(void* addr);
+
+    static void setCopyShadow(void (*cs)(IValue*, IValue*));
 
     void setInitialized();
 

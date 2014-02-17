@@ -41,8 +41,14 @@
 
 #include "IValue.h"
 
+void (*IValue::copyShadow)(IValue*,IValue*) = NULL;
+
 void IValue::setShadow(void* addr) {
   shadow = addr;
+}
+
+void IValue::setCopyShadow(void (*cs)(IValue*, IValue*)) {
+  copyShadow = cs;
 }
 
 void IValue::setLineNumber(int l) {
@@ -226,7 +232,9 @@ void IValue::copy(IValue *dest) {
   dest->setIndex(index);
   dest->setLength(length);
   dest->setValueOffset(valueOffset);
-  dest->setShadow(shadow);
+  if (copyShadow != NULL) {
+    copyShadow(this, dest);
+  }
 }
 
 void IValue::copyFrom(KVALUE* kValue) {

@@ -52,27 +52,56 @@ class FPInstabilityAnalysis : public InterpreterObserver {
   public:
     FPInstabilityAnalysis(std::string name) : InterpreterObserver(name) {}
 
-    virtual void copy(IValue* src, IValue* dest);
+    virtual void fbinop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op);  
 
-    virtual void fbinop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BINOP op);  
+    virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-    virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+    virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-    virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+    virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-    virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+    virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-    virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+    virtual void create_global_symbol_table(int size);
 
-    virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
+  private:
+    /**
+     * Copy shadow value (long double value) from the source IValue to the
+     * destination IValue.
+     */
+    static void copyShadow(IValue *src, IValue *dest);
 
-    virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+    /**
+     * Return long double shadow value for the given KVALUE.
+     *
+     * @note kv must has floating-point type.
+     * @param kv the KVALUE to get shadow value from.
+     * @return long double shadow value.
+     */
+    long double getShadowValue(KVALUE *kv);
 
-    virtual void fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+    long double getConcreteValue(KVALUE *kv);
 
-    virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+    int getLineNumber(KVALUE *kv);
 
-    virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+    int getEBits(long double v1, long double v2);
+
+    int getExponent(double v);
+
+    /*
+     * not used in PLDI12 Benz Paper
+     virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
+
+     virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+
+     virtual void fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+
+     virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+
+     virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
+
+      */
+
 
 };
 

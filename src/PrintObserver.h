@@ -65,29 +65,29 @@ public:
 
 	// ***** Binary Operations ***** //
 
-	virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
-	virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+	virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
 
 	// ***** Bitwise Binary Operations ***** //
 	virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);

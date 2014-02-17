@@ -55,52 +55,52 @@
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
-void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(add, iid, nuw, nsw, op1, op2, inx)
+void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(add, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(fadd, iid, nuw, nsw, op1, op2, inx)
+void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fadd, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2, inx)
+void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(fsub, iid, nuw, nsw, op1, op2, inx)
+void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fsub, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(mul, iid, nuw, nsw, op1, op2, inx)
+void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(mul, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx){
-	DISPATCH_TO_OBSERVERS(fmul, iid, nuw, nsw, op1, op2, inx)
+void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx){
+	DISPATCH_TO_OBSERVERS(fmul, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(udiv, iid, nuw, nsw, op1, op2, inx)
+void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(udiv, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(sdiv, iid, nuw, nsw, op1, op2, inx)
+void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(sdiv, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(fdiv, iid, nuw, nsw, op1, op2, inx)
+void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2,int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fdiv, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(urem, iid, nuw, nsw, op1, op2, inx)
+void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(urem, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(srem, iid, nuw, nsw, op1, op2, inx)
+void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(srem, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(frem, iid, nuw, nsw, op1, op2, inx)
+void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(frem, iid, nuw, nsw, op1, op2, line, inx)
 }
 
 // ***** Bitwise Binary Operations ***** //
@@ -413,7 +413,7 @@ ObserverPtrList observers_;
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
 // REGISTER_OBSERVER(InterpreterObserver, "interpreter")
-REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
+// REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 
