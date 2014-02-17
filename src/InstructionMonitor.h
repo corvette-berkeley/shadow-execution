@@ -65,12 +65,12 @@ extern "C" {
   void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
 
   // ***** Bitwise Binary Operations ***** //
-  void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
-  void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int x);
+  void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
 
   // ***** Vector Operations ***** //
   void llvm_extractelement(IID iid, KVALUE* op1, KVALUE* op2, int x);

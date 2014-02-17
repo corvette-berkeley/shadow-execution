@@ -2,7 +2,6 @@ base64 list.txt
 basename list.txt   
 cat list.txt
 chcon -R --type=ssh_home_t
-chgrp staff /usr/local
 chmod +x temp.txt
 chown root temp.txt
 chroot

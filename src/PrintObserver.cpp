@@ -113,28 +113,28 @@ void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, 
 
 
 // ***** Bitwise Binary Operations ***** //
-void PrintObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< SHL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SHL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< LSHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< LSHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< ASHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< ASHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< AND >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< AND >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< OR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< OR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  DEBUG_STDOUT("<<<<< XOR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", [INX: " << inx << "]");
+void PrintObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  DEBUG_STDOUT("<<<<< XOR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
 }
 
 // ***** Vector Operations ***** //

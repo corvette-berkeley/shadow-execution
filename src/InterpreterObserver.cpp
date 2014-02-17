@@ -797,7 +797,7 @@ void InterpreterObserver::frem(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED,
 
 // **** Bitwise Operations *** //
 
-void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int inx, BITWISE op) {
+void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int line UNUSED, int inx, BITWISE op) {
   int64_t v64_1, v64_2;
   uint64_t uv64_1, uv64_2;
   int32_t v32_1, v32_2;
@@ -1023,28 +1023,28 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
   return;
 } 
 
-void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, SHL);
+void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, SHL);
 }
 
-void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, LSHR);
+void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, LSHR);
 }
 
-void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, ASHR);
+void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, ASHR);
 }
 
-void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, AND);
+void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, AND);
 }
 
-void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, OR);
+void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, OR);
 }
 
-void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, inx, XOR);
+void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+  bitwise(iid, nuw, nsw, op1, op2, line, inx, XOR);
 }
 
 // ***** Vector Operations ***** //

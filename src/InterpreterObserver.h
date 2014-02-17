@@ -94,7 +94,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op);
 
-  void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx, BITWISE op);
+  void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BITWISE op);
 
   void castop(IID iid, KIND type, KVALUE* op1, uint64_t size, int inx, CASTOP op);
   
@@ -135,17 +135,17 @@ class InterpreterObserver : public InstructionObserver {
   virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
   // ***** Bitwise Binary Operations ***** //
-  virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
-  virtual void xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx);
+  virtual void xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
   
   // ***** Vector Operations ***** //
   virtual void extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx);

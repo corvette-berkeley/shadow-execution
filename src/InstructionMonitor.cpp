@@ -104,28 +104,28 @@ void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, 
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(shl, iid, nuw, nsw, op1, op2, inx)
+void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(shl, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(lshr, iid, nuw, nsw, op1, op2, inx)
+void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(lshr, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(ashr, iid, nuw, nsw, op1, op2, inx)
+void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(ashr, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(and_, iid, nuw, nsw, op1, op2, inx)
+void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(and_, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(or_, iid, nuw, nsw, op1, op2, inx)
+void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(or_, iid, nuw, nsw, op1, op2, line, inx)
 }
 
-void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int inx) {
-	DISPATCH_TO_OBSERVERS(xor_, iid, nuw, nsw, op1, op2, inx)
+void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(xor_, iid, nuw, nsw, op1, op2, line, inx)
 }
 
 // ****** Vector Operations ****** //
@@ -412,7 +412,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
