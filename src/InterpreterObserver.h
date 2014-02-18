@@ -92,9 +92,9 @@ class InterpreterObserver : public InstructionObserver {
 
   std::string CASTOP_ToString(int castop);
 
-  void binop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op);
+  void binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);
 
-  void bitwise(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BITWISE op);
+  void bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BITWISE op);
 
   void castop(IID iid, KIND type, KVALUE* op1, uint64_t size, int inx, CASTOP op);
   
@@ -110,42 +110,42 @@ class InterpreterObserver : public InstructionObserver {
 
   // ***** Binary Operations ***** //
   
-  virtual void add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
   // ***** Bitwise Binary Operations ***** //
-  virtual void shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
-  virtual void xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx);
+  virtual void xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
   
   // ***** Vector Operations ***** //
   virtual void extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx);

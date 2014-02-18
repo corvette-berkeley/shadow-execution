@@ -583,7 +583,7 @@ void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int f
   int internalOffset = 0;
 
   // retrieve source
-  if (src->iid == 0) {
+  if (src->inx == -1) {
     srcLocation = new IValue(src->kind, src->value);
     srcLocation->setLength(0); // uninitialized constant pointer 
     if (src->kind == INT1_KIND) {
@@ -646,10 +646,9 @@ void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int f
 }
 
 // **** Binary Operations *** //
+void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
 
-void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op) {
-
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+  if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
     safe_assert(false);
     return; 
@@ -659,37 +658,37 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
   double d1, d2;
   VALUE result;
   IValue* iResult;
-  KIND kind;
-
-  //
-  // assertion: the two operands have the same type
-  //
-  safe_assert(op1->kind == op2->kind);
 
   //
   // Get values from two operands. They can be either integer or double so we
   // need 4 variables.
   //
-  if (op1->iid == 0) { // constant
-    v1 = KVALUE_ToIntValue(op1);
-    d1 = KVALUE_ToFlpValue(op1);
+  if (lScope == CONSTANT) { // constant
+    double *ptr;
+
+    v1 = lValue;
+    ptr = (double *) &lValue;
+    d1 = *ptr;
   } else { // register
     IValue *loc1; 
 
-    loc1 = executionStack.top()[op1->inx];
+    loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
     v1 = loc1->getIntValue();
     d1 = loc1->getFlpValue();
 
     DEBUG_STDOUT("\tOperand 01: " << loc1->toString());
   }
 
-  if (op2->iid == 0) { // constant
-    v2 = KVALUE_ToIntValue(op2);
-    d2 = KVALUE_ToFlpValue(op2);
+  if (rScope == CONSTANT) { // constant
+    double *ptr;
+
+    v2 = rValue;
+    ptr = (double *) &rValue;
+    d2 = *ptr;
   } else { // register
     IValue *loc2; 
 
-    loc2 = executionStack.top()[op2->inx];
+    loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
     v2 = loc2->getIntValue();
     d2 = loc2->getFlpValue();
 
@@ -735,8 +734,7 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
       safe_assert(false);
   }
 
-  kind = op1->kind;
-  iResult = new IValue(kind, result);
+  iResult = new IValue(type, result);
   iResult->setLineNumber(line);
 
   executionStack.top()[inx] = iResult;
@@ -746,58 +744,58 @@ void InterpreterObserver::binop(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED
   return;
 }
 
-void InterpreterObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, ADD);
+void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, ADD);
 }
 
-void InterpreterObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, FADD);
+void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
 }
 
-void InterpreterObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, SUB);
+void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, SUB);
 }
 
-void InterpreterObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, FSUB);
+void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
 }
 
-void InterpreterObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, MUL);
+void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, MUL);
 }
 
-void InterpreterObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, FMUL);
+void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
 }
 
-void InterpreterObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, UDIV);
+void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, UDIV);
 }
 
-void InterpreterObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, SDIV);
+void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, SDIV);
 }
 
-void InterpreterObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, FDIV);
+void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
 
-void InterpreterObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, UREM);
+void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, UREM);
 }
 
-void InterpreterObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  binop(iid, nuw, nsw, op1, op2, line, inx, SREM);
+void InterpreterObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, line, inx, SREM);
 }
 
-void InterpreterObserver::frem(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int line UNUSED, int inx UNUSED) {
+void InterpreterObserver::frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {
   DEBUG_STDERR("UNSUPPORTED IN C???");
   safe_assert(false);
 }
 
 // **** Bitwise Operations *** //
 
-void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUSED, KVALUE* op1, KVALUE* op2, int line UNUSED, int inx, BITWISE op) {
+void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BITWISE op) {
   int64_t v64_1, v64_2;
   uint64_t uv64_1, uv64_2;
   int32_t v32_1, v32_2;
@@ -806,16 +804,9 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
   uint16_t uv16_1, uv16_2;
   int8_t v8_1, v8_2;
   uint8_t uv8_1, uv8_2; 
-  KIND type;
 
   VALUE result;
   IValue* iResult;
-
-  //
-  // assert: two operands must have the same type
-  //
-  safe_assert(op1->kind == op2->kind);
-  type = op1->kind;
 
   //
   // Unsupport for INT80_KIND right now
@@ -829,21 +820,21 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
   //
   // Get values of two operands
   //
-  if (op1->inx == -1) {
-    v64_1 = KVALUE_ToIntValue(op1); 
+  if (lScope == CONSTANT) {
+    v64_1 = lValue;
   } else {
     IValue* iOp1; 
 
-    iOp1 = op1->isGlobal ? globalSymbolTable[op1->inx] : executionStack.top()[op1->inx];
+    iOp1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
     v64_1 = iOp1->getIntValue();
   }
 
-  if (op2->inx == -1) {
-    v64_2 = KVALUE_ToIntValue(op2); 
+  if (rScope == CONSTANT) {
+    v64_2 = rValue;
   } else {
     IValue* iOp2; 
 
-    iOp2 = op2->isGlobal ? globalSymbolTable[op2->inx] : executionStack.top()[op2->inx];
+    iOp2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
     v64_2 = iOp2->getIntValue();
   }
 
@@ -1016,6 +1007,7 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
   }
 
   iResult = new IValue(type, result);
+  iResult->setLineNumber(line);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1023,28 +1015,28 @@ void InterpreterObserver::bitwise(IID iid UNUSED, bool nuw UNUSED, bool nsw UNUS
   return;
 } 
 
-void InterpreterObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, SHL);
+void InterpreterObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, SHL);
 }
 
-void InterpreterObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, LSHR);
+void InterpreterObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, LSHR);
 }
 
-void InterpreterObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, ASHR);
+void InterpreterObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, ASHR);
 }
 
-void InterpreterObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, AND);
+void InterpreterObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, AND);
 }
 
-void InterpreterObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, OR);
+void InterpreterObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, OR);
 }
 
-void InterpreterObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  bitwise(iid, nuw, nsw, op1, op2, line, inx, XOR);
+void InterpreterObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, line, inx, XOR);
 }
 
 // ***** Vector Operations ***** //
@@ -1479,7 +1471,7 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
   elemFlattenSize = elemFlattenSize == 0 ? 1 : elemFlattenSize;
   DEBUG_STDOUT("\tStruct element flatten size: " << elemFlattenSize);
 
-  if (op->iid == 0) {
+  if (op->inx == -1) {
     // TODO: review this
     // constant pointer
     // return a dummy object
@@ -2300,7 +2292,7 @@ void InterpreterObserver::fcmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   double v1, v2;
 
   // get value of v1
-  if (op1->iid == 0) { // constant
+  if (op1->inx == -1) { // constant
     v1 = KVALUE_ToFlpValue(op1);
   } else {
     IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
@@ -2309,7 +2301,7 @@ void InterpreterObserver::fcmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   } 
 
   // get value of v2
-  if (op2->iid == 0) { // constant
+  if (op2->inx == -1) { // constant
     v2 = KVALUE_ToFlpValue(op2);
   } else {
     IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] :

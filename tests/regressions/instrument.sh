@@ -14,8 +14,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -
 
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
 
-llvm-dis tmppass.bc
-llvm-dis tmppass-allocas.bc
+llvm-dis tmppass-allocas.bc -o $1-inst.ll
 
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog 
 

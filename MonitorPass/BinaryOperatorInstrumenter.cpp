@@ -6,32 +6,35 @@
 #include "BinaryOperatorInstrumenter.h"
 
 bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
-  BinaryOperator* binInst = dyn_cast<BinaryOperator>(inst);
-  BINOP binop = getBinOp(binInst);
-  BITWISE bitwise = getBitWise(binInst);
+  BinaryOperator* binInst; 
+  BINOP binop; 
+  BITWISE bitwise;
+
+  binInst = dyn_cast<BinaryOperator>(inst);
+  binop = getBinOp(binInst);
+  bitwise = getBitWise(binInst);
+
   if (binInst != NULL && (binop != BINOP_INVALID || bitwise != BITWISE_INVALID)) {
     safe_assert(parent_ != NULL);
 
     count_++;
 
-    bool isSigned = true;    
-    if (binInst->getOperand(0)->getType()->isIntegerTy(1)) {
-      isSigned = false;
-    }
-
     InstrPtrVector instrs;
-    Value* lop = KVALUE_VALUE(binInst->getOperand(0), instrs, isSigned);
-    if (lop == NULL) return false;
+    Value *lValue, *rValue;
+    Constant *cInx, *cLine, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
 
-    Value *rop = KVALUE_VALUE(binInst->getOperand(1), instrs, isSigned);
-    if (rop == NULL) return false;
+    lValue = binInst->getOperand(0);
+    rValue = binInst->getOperand(1);
 
-    Constant* iid = IID_CONSTANT(binInst);
-    Constant* inx = computeIndex(binInst);
-    Constant* CLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
+    cInx = computeIndex(binInst);
+    cLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
+    cType = KIND_CONSTANT(TypeToKind(binInst->getType()));
 
-    Constant* nuw = BOOL_CONSTANT(binInst->hasNoUnsignedWrap());
-    Constant* nsw = BOOL_CONSTANT(binInst->hasNoSignedWrap());
+    cLScope = INT32_CONSTANT(getScope(lValue), SIGNED);
+    cRScope = INT32_CONSTANT(getScope(rValue), SIGNED);
+
+    cLValue = getValueOrIndex(lValue);
+    cRValue = getValueOrIndex(rValue);
 
     std::stringstream callback;
 
@@ -102,7 +105,10 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
         return false; // this cannot happen
     }
 
-    Instruction* call = CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT_INT(callback.str().c_str(), iid, nuw, nsw, lop, rop, CLine, inx);
+    Instruction *call =
+      CALL_INT_INT_INT64_INT64_KIND_INT_INT(callback.str().c_str(), cLScope,
+          cRScope, cLValue, cRValue, cType, cLine, cInx);
+
     instrs.push_back(call);
 
     // instrument
@@ -170,4 +176,57 @@ BITWISE BinaryOperatorInstrumenter::getBitWise(BinaryOperator* binInst) {
   } else {
     return BITWISE_INVALID;
   }
+}
+
+SCOPE BinaryOperatorInstrumenter::getScope(Value *value) {
+  if (isa<GlobalVariable>(value)) {
+    return GLOBAL;
+  } else if (isa<Constant>(value)) {
+    return CONSTANT;
+  } else {
+    safe_assert(isa<Instruction>(value) || isa<Argument>(value));
+    return LOCAL;
+  }
+}
+
+Constant* BinaryOperatorInstrumenter::getValueOrIndex(Value *value) {
+  Constant *c;
+
+  if (isa<Constant>(value)) {
+    if (isa<ConstantInt>(value)) {
+      ConstantInt *cInt;
+      int64_t v;
+
+      cInt = dyn_cast<ConstantInt>(value);
+      v = cInt->getSExtValue();
+
+      c = INT64_CONSTANT(v, SIGNED);
+    } else if (isa<ConstantFP>(value)) {
+      ConstantFP *cFlp;
+      int64_t *ptr;
+      int64_t v;
+      double dv;
+
+      cFlp = dyn_cast<ConstantFP>(value);
+      dv = cFlp->getValueAPF().convertToDouble();
+
+      ptr = (int64_t*) &dv;
+      v = *ptr;
+
+      c = INT64_CONSTANT(v, SIGNED);
+    } else {
+      safe_assert(isa<ConstantExpr>(value));
+      c = (Constant *) value;
+    }
+  } else {
+    ConstantInt *cInt; 
+    int64_t v;
+    
+    cInt = (ConstantInt *) computeIndex(value);
+    v = cInt->getSExtValue();
+
+    c = INT64_CONSTANT(v, SIGNED);
+  }
+
+  return c;
 }

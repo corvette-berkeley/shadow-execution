@@ -55,12 +55,36 @@ std::string PTR_ToString(PTR& ptr) {
 	return s.str();
 }
 
+std::string SCOPE_ToString(SCOPE scope) {
+  
+  std::stringstream s;
+
+  switch (scope) {
+    case GLOBAL:
+      s << "GLOBAL";
+      break;
+    case LOCAL:
+      s << "LOCAL";
+      break;
+    case CONSTANT:
+      s << "CONSTANT";
+      break;
+    case REGISTER:
+      s << "REGISTER";
+      break;
+    default:
+      DEBUG_STDERR("Unsupport scope: " << scope); 
+      safe_assert(false);
+  }
+
+  return s.str();
+}
+
 std::string KVALUE_ToString(KVALUE* kv) {
 
   std::stringstream s;
 
   if (kv) {
-    s << "[IID: " << kv->iid << " ";  
     s << "[INX: " << kv->inx << " ";
     
     switch(kv->kind) {

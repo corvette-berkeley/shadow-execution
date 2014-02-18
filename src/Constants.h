@@ -79,6 +79,7 @@ typedef enum {
 
 typedef enum {
   REGISTER,
+  CONSTANT,
   LOCAL,
   GLOBAL
 } SCOPE;

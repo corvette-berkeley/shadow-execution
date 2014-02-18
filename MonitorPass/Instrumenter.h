@@ -61,10 +61,8 @@ public:
 
 	inline StructType* KVALUE_TYPE()	{
 		TypePtrVector typeList;
-		typeList.push_back(IID_TYPE());
 		typeList.push_back(INT32_TYPE()); // index type
 		typeList.push_back(BOOL_TYPE()); // isGlobal
-		typeList.push_back(BOOL_TYPE()); // isArgument
 		typeList.push_back(KIND_TYPE());
 		typeList.push_back(VALUE_TYPE());
 
@@ -268,26 +266,14 @@ int KIND_GetSize(int kind) {
       return NULL;
     }
 
-    Constant* C_iid = NULL;
     Constant* C_inx = NULL;
     Constant* C_global = NULL;
     Instruction* I_cast = NULL;
-
-    if (isa<GlobalVariable>(v)) {
-      C_iid = IID_CONSTANT(v);
-    } else if (isa<Constant>(v)) {
-      C_iid = INV_IID_CONSTANT();
-    } else { // not constant, but an instruction
-      safe_assert(isa<Instruction>(v) || isa<Argument>(v));
-      C_iid = IID_CONSTANT(v);
-    }
 
     C_inx = computeIndex(v);
 
     bool isGlobal = isa<GlobalVariable>(v);
     C_global = BOOL_CONSTANT(isGlobal);
-    bool isArgument = isa<Argument>(v);
-    Constant* C_argument = BOOL_CONSTANT(isArgument);
 
     if(T->isIntegerTy()) {
       I_cast = INTMAX_CAST_INSTR(v, isSigned);
@@ -308,10 +294,8 @@ int KIND_GetSize(int kind) {
     Instrs.push_back(I_cast);
 
     ValuePtrVector fields;
-    fields.push_back(C_iid);
     fields.push_back(C_inx);
     fields.push_back(C_global);
-    fields.push_back(C_argument);
     fields.push_back(KIND_CONSTANT(kind));
     fields.push_back(I_cast);
 
@@ -777,6 +761,31 @@ int KIND_GetSize(int kind) {
     ValuePtrVector Args;
     Args.push_back(inx);
     Args.push_back(inx2);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_INT64_INT64_KIND_INT_INT(const char* func, Value
+      *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, Value *kind, Value
+      *line, Value *inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i32_1);
+    Args.push_back(i32_2);
+    Args.push_back(i64_1);
+    Args.push_back(i64_2);
+    Args.push_back(kind);
+    Args.push_back(line);
+    Args.push_back(inx);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

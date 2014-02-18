@@ -51,26 +51,26 @@
 extern "C" {
 
   // ***** Binary Operations ***** //
-  void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
   // ***** Bitwise Binary Operations ***** //
-  void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
-  void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int x);
+  void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+  void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
   // ***** Vector Operations ***** //
   void llvm_extractelement(IID iid, KVALUE* op1, KVALUE* op2, int x);

@@ -237,11 +237,11 @@ void OutOfBoundAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int fi
   if (!isOutOfBound(destPtrLocation)) {
 
     unsigned destPtrOffset = destPtrLocation->getOffset();
-    IValue *srcLocation = src->iid == 0 ? new IValue(src->kind, src->value) :
+    IValue *srcLocation = src->inx == -1 ? new IValue(src->kind, src->value) :
       executionStack.top()[src->inx];
     int internalOffset = 0;
 
-    if (src->iid != 0) {
+    if (src->inx != -1) {
       destPtrLocation->setShadow(srcLocation->getShadow());
       destPtrLocation->setLineNumber(srcLocation->getLineNumber());
     }

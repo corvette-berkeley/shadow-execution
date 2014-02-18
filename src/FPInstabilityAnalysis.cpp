@@ -60,84 +60,52 @@ void FPInstabilityAnalysis::copyShadow(IValue *src, IValue *dest) {
   }
 }
 
-long double FPInstabilityAnalysis::getShadowValue(KVALUE *kv) {
+long double FPInstabilityAnalysis::getShadowValue(SCOPE scope, int64_t value) {
   long double result;
 
-  if (KVALUE_IsFlpValue(kv)) {
-    if (kv->inx == -1) {
-      // 
-      // kv is a constant
-      //
-      result = (long double) KVALUE_ToFlpValue(kv);
-    } else {
-      //
-      // kv is either a local or global variable
-      //
-      IValue *iv;
+  if (scope == CONSTANT) {
+    double *ptr;
 
-      iv = kv->isGlobal ? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
-      result = iv->getShadow() == NULL ? (long double) iv->getFlpValue() :
-        ((FPInstabilityShadowObject*) iv->getShadow())->getValue();
-    }
+    ptr = (double *) &value;
+    result = *ptr;
   } else {
-    //
-    // kv is not a floating-point type
-    // throw exception as this violates the function precondition
-    //
-    result = -1;
-    DEBUG_STDERR("[FPInstabilityAnalysis] Get shadow value of a non-floating-point value.");
-    safe_assert(false);
-  }
-
-  return result;
-}
-
-long double FPInstabilityAnalysis::getConcreteValue(KVALUE *kv) {
-  long double result;
-
-  if (KVALUE_IsFlpValue(kv)) {
-    if (kv->inx == -1) {
-      // 
-      // kv is a constant
-      //
-      result = (long double) KVALUE_ToFlpValue(kv);
-    } else {
-      //
-      // kv is either a local or global variable
-      //
-      IValue *iv;
-
-      iv = kv->isGlobal ? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
-      result = iv->getFlpValue();
-    }
-  } else {
-    //
-    // kv is not a floating-point type
-    // throw exception as this violates the function precondition
-    //
-    result = -1;
-    DEBUG_STDERR("[FPInstabilityAnalysis] Get shadow value of a non-floating-point value.");
-    safe_assert(false);
-  }
-
-  return result;
-}
-
-int FPInstabilityAnalysis::getLineNumber(KVALUE *kv) {
-  int line;
-
-  if (kv->inx == -1) {
-    // 
-    // kv is a constant
-    //
-    line = -1;
-  } else {
-    //
-    // kv is either a local or global variable
-    //
     IValue *iv;
 
-    iv = kv->isGlobal ? globalSymbolTable[kv->inx] : executionStack.top()[kv->inx];
+    iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
+    result = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : 
+        ((FPInstabilityShadowObject*) iv->getShadow())->getValue();
+  }
+
+  return result;
+}
+
+long double FPInstabilityAnalysis::getConcreteValue(SCOPE scope, int64_t value) {
+  long double result;
+
+  if (scope == CONSTANT) {
+    double *ptr;
+
+    ptr = (double *) &value;
+    result = *ptr;
+  } else {
+    IValue *iv;
+
+    iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
+    result = iv->getFlpValue();
+  }
+
+  return result;
+}
+
+int FPInstabilityAnalysis::getLineNumber(SCOPE scope, int64_t value) {
+  int line;
+
+  if (scope == CONSTANT) {
+    line = -1;
+  } else {
+    IValue *iv;
+
+    iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
     line = iv->getLineNumber();
   }
 
@@ -180,8 +148,8 @@ int FPInstabilityAnalysis::getExponent(double v) {
 
 /******** ANALYSIS FUNCTIONS **********/
 
-void FPInstabilityAnalysis::fbinop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx, BINOP op) {
-  InterpreterObserver::binop(iid, nuw, nsw, op1, op2, line, inx, op);
+void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
+  InterpreterObserver::binop(lScope, rScope, lValue, rValue, type, line, inx, op);
 
   long double v1, v2, sv1, sv2, sresult, result;
   FPInstabilityShadowObject *fpISO;
@@ -189,14 +157,20 @@ void FPInstabilityAnalysis::fbinop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVA
   int l1, l2, e1, e2, e3, cbits, cbad;
 
   //
+  // assert: type is a floating-point type.
+  //
+  safe_assert(type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND
+      || type == FLP128_KIND || type == FLP128PPC_KIND);
+
+  //
   // Obtain shadow value (long double value) from the two operands.
   //
-  v1 = getConcreteValue(op1);
-  v2 = getConcreteValue(op2);
-  sv1 = getShadowValue(op1);
-  sv2 = getShadowValue(op2);
-  l1 = op1->inx == -1 ? line : getLineNumber(op1);
-  l2 = op2->inx == -1 ? line : getLineNumber(op2);
+  v1 = getConcreteValue(lScope, lValue);
+  v2 = getConcreteValue(rScope, rValue);
+  sv1 = getShadowValue(lScope, lValue);
+  sv2 = getShadowValue(rScope, rValue);
+  l1 = (lScope == CONSTANT) ? line : getLineNumber(lScope, lValue);
+  l2 = (rScope == CONSTANT) ? line : getLineNumber(rScope, rValue);
 
   //
   // Compute the operation for two shadow values.
@@ -270,20 +244,20 @@ void FPInstabilityAnalysis::fbinop(IID iid, bool nuw, bool nsw, KVALUE* op1, KVA
   executionStack.top()[inx]->setShadow(fpISO);
 }
 
-void FPInstabilityAnalysis::fadd(IID id, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  fbinop(id, nuw, nsw, op1, op2, line, inx, FADD);
+void FPInstabilityAnalysis::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
 }
 
-void FPInstabilityAnalysis::fsub(IID id, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  fbinop(id, nuw, nsw, op1, op2, line, inx, FSUB);
+void FPInstabilityAnalysis::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
 }
 
-void FPInstabilityAnalysis::fmul(IID id, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  fbinop(id, nuw, nsw, op1, op2, line, inx, FMUL);
+void FPInstabilityAnalysis::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
 }
 
-void FPInstabilityAnalysis::fdiv(IID id, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  fbinop(id, nuw, nsw, op1, op2, line, inx, FDIV);
+void FPInstabilityAnalysis::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
 
 void FPInstabilityAnalysis::create_global_symbol_table(int size) {

@@ -41,11 +41,11 @@
 
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
+#include "PrintObserver.h"
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
-#include "OutOfBoundAnalysis.h"
-#include "PrintObserver.h"
 #include "FPInstabilityAnalysis.h"
+// j#include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
 #define DISPATCH_TO_OBSERVERS(func, ...) \
@@ -55,77 +55,77 @@
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
-void llvm_add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(add, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(add, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(fadd, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fadd, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(sub, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(sub, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(fsub, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fsub, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(mul, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(mul, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx){
-	DISPATCH_TO_OBSERVERS(fmul, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx){
+	DISPATCH_TO_OBSERVERS(fmul, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(udiv, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(udiv, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(sdiv, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(sdiv, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2,int line, int inx) {
-	DISPATCH_TO_OBSERVERS(fdiv, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(fdiv, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(urem, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(urem, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(srem, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(srem, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(frem, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(frem, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(shl, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(lshr, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(ashr, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(and_, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(or_, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
-void llvm_xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-	DISPATCH_TO_OBSERVERS(xor_, iid, nuw, nsw, op1, op2, line, inx)
+void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+	DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, line, inx)
 }
 
 // ****** Vector Operations ****** //
@@ -412,7 +412,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")

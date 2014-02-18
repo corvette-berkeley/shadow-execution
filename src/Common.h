@@ -139,10 +139,8 @@ const IID INV_IID = 0U;
 #define KVALUE_ALIGNMENT	4
 
 struct kvalue_t {
-  IID	iid;
   INT32 inx;
   BOOL  isGlobal;
-  BOOL isArgument;
   KIND	kind;
   VALUE	value;
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
@@ -209,6 +207,8 @@ std::string PTR_ToString(PTR& ptr);
  * @return string representation of kvalue kv.
  */
 std::string KVALUE_ToString(KVALUE* kv);
+
+std::string SCOPE_ToString(SCOPE scope);
 
 /**
  * Return int value for KVALUE depending on its type.

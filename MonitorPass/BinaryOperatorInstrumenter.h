@@ -67,6 +67,10 @@ class BinaryOperatorInstrumenter : public Instrumenter {
     BINOP getBinOp(BinaryOperator* inst); 
 
     BITWISE getBitWise(BinaryOperator* inst);
+
+    SCOPE getScope(Value *value);
+
+    Constant* getValueOrIndex(Value *value);
 };
 
 #endif /* BINARY_OPERATORS_INSTRUMENTER_H_ */

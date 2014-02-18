@@ -63,78 +63,77 @@ void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int file, int li
 
 // ***** Binary Operations ***** //
 
-void PrintObserver::add(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< ADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< ADD >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fadd(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FADD >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FADD >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::sub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< SUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SUB >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fsub(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FSUB >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FSUB >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::mul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< MUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< MUL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fmul(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FMUL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FMUL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::udiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< UDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< UDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::sdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< SDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fdiv(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FDIV >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::urem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< UREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< UREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::srem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< SREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::frem(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FREM >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
-
 
 // ***** Bitwise Binary Operations ***** //
-void PrintObserver::shl(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< SHL >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< SHL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::lshr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< LSHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< LSHR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::ashr(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< ASHR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< ASHR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::and_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< AND >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< AND >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::or_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< OR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< OR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::xor_(IID iid, bool nuw, bool nsw, KVALUE* op1, KVALUE* op2, int line, int inx) {
-  DEBUG_STDOUT("<<<<< XOR >>>>>" << IID_ToString(iid).c_str() << ", nuw: " << (nuw ? "1" : "0") << ", nsw: " << (nsw ? "1" : "0") << ", " << KVALUE_ToString(op1).c_str() << ", " << KVALUE_ToString(op2).c_str() << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  DEBUG_STDOUT("<<<<< XOR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
 // ***** Vector Operations ***** //
