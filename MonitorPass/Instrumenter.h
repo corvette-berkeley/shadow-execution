@@ -225,96 +225,148 @@ int KIND_GetSize(int kind) {
     return INT32_CONSTANT(inx, SIGNED);
   }
 
-	/*******************************************************************************************/
-
-  int getLineNumber(Instruction* inst) {
-    if (MDNode* node = inst->getMetadata("dbg")) {
-      DILocation loc(node);
-      return loc.getLineNumber();
-    }
-    return 0;
+SCOPE getScope(Value *value) {
+  if (isa<GlobalVariable>(value)) {
+    return GLOBAL;
+  } else if (isa<Constant>(value)) {
+    return CONSTANT;
+  } else {
+    safe_assert(isa<Instruction>(value) || isa<Argument>(value));
+    return LOCAL;
   }
+}
 
-  string getFileName(Instruction* inst) {
-    if (MDNode* node = inst->getMetadata("dbg")) {
-      DILocation loc(node);
-      return loc.getFilename().str();
-    }
-    return "n/a";
-  }
+Constant* getValueOrIndex(Value *value) {
+  Constant *c;
 
-  /*******************************************************************************************/
+  if (isa<Constant>(value)) {
+    if (isa<ConstantInt>(value)) {
+      ConstantInt *cInt;
+      int64_t v;
 
-  Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
-    safe_assert(v != NULL);
+      cInt = dyn_cast<ConstantInt>(value);
+      v = cInt->getSExtValue();
 
-    // easier to fix here
-    if (v->getType()->isIntegerTy(1)) {
-      isSigned = false;
-    }
+      c = INT64_CONSTANT(v, SIGNED);
+    } else if (isa<ConstantFP>(value)) {
+      ConstantFP *cFlp;
+      int64_t *ptr;
+      int64_t v;
+      double dv;
 
-    // TODO(elmas): what else is OK?
-    if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
-      return NULL;
-    }
+      cFlp = dyn_cast<ConstantFP>(value);
+      dv = cFlp->getValueAPF().convertToDouble();
 
-    Type* T = v->getType();
+      ptr = (int64_t*) &dv;
+      v = *ptr;
 
-    KIND kind = TypeToKind(T);
-    // if unsupported kind, return NULL
-    if(kind == INV_KIND) {
-      return NULL;
-    }
-
-    Constant* C_inx = NULL;
-    Constant* C_global = NULL;
-    Instruction* I_cast = NULL;
-
-    C_inx = computeIndex(v);
-
-    bool isGlobal = isa<GlobalVariable>(v);
-    C_global = BOOL_CONSTANT(isGlobal);
-
-    if(T->isIntegerTy()) {
-      I_cast = INTMAX_CAST_INSTR(v, isSigned);
-    } else if(T->isFloatingPointTy()) {
-      I_cast = FLPMAX_CAST_INSTR(v);
-    } else if(T->isPointerTy()) {
-      I_cast = PTRTOINT_CAST_INSTR(v);
+      c = INT64_CONSTANT(v, SIGNED);
     } else {
-      printf("Unsupported KVALUE type\n");
-      T->dump();
+      safe_assert(isa<ConstantExpr>(value));
+      c = (Constant *) value;
     }
+  } else {
+    ConstantInt *cInt; 
+    int64_t v;
+    
+    cInt = (ConstantInt *) computeIndex(value);
+    v = cInt->getSExtValue();
 
-    safe_assert(I_cast != NULL);
-    Instrs.push_back(I_cast);
-
-    // bitcast to the value type in the KVALUE struct
-    I_cast = VALUE_CAST_INSTR(I_cast);
-    Instrs.push_back(I_cast);
-
-    ValuePtrVector fields;
-    fields.push_back(C_inx);
-    fields.push_back(C_global);
-    fields.push_back(KIND_CONSTANT(kind));
-    fields.push_back(I_cast);
-
-    return AllocateStruct(KVALUE_TYPE(), fields, Instrs, KVALUE_ALIGNMENT);
+    c = INT64_CONSTANT(v, SIGNED);
   }
 
-  /*******************************************************************************************/
+  return c;
+}
+/*******************************************************************************************/
 
-  /**
-   * Pass a struct value to call backs.
-   *
-   * @param value struct value to be passed
-   * @param instrs accumulation of instructions to be instrumented
-   */
-  void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
-    safe_assert(value->getType()->isStructTy());
-    StructType* structType = (StructType*) value->getType();
-    uint64_t size = structType->getNumElements();
-    for (uint64_t i = 0 ; i < size; i++) {
+int getLineNumber(Instruction* inst) {
+  if (MDNode* node = inst->getMetadata("dbg")) {
+    DILocation loc(node);
+    return loc.getLineNumber();
+  }
+  return 0;
+}
+
+string getFileName(Instruction* inst) {
+  if (MDNode* node = inst->getMetadata("dbg")) {
+    DILocation loc(node);
+    return loc.getFilename().str();
+  }
+  return "n/a";
+}
+
+/*******************************************************************************************/
+
+Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
+  safe_assert(v != NULL);
+
+  // easier to fix here
+  if (v->getType()->isIntegerTy(1)) {
+    isSigned = false;
+  }
+
+  // TODO(elmas): what else is OK?
+  if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
+    return NULL;
+  }
+
+  Type* T = v->getType();
+
+  KIND kind = TypeToKind(T);
+  // if unsupported kind, return NULL
+  if(kind == INV_KIND) {
+    return NULL;
+  }
+
+  Constant* C_inx = NULL;
+  Constant* C_global = NULL;
+  Instruction* I_cast = NULL;
+
+  C_inx = computeIndex(v);
+
+  bool isGlobal = isa<GlobalVariable>(v);
+  C_global = BOOL_CONSTANT(isGlobal);
+
+  if(T->isIntegerTy()) {
+    I_cast = INTMAX_CAST_INSTR(v, isSigned);
+  } else if(T->isFloatingPointTy()) {
+    I_cast = FLPMAX_CAST_INSTR(v);
+  } else if(T->isPointerTy()) {
+    I_cast = PTRTOINT_CAST_INSTR(v);
+  } else {
+    printf("Unsupported KVALUE type\n");
+    T->dump();
+  }
+
+  safe_assert(I_cast != NULL);
+  Instrs.push_back(I_cast);
+
+  // bitcast to the value type in the KVALUE struct
+  I_cast = VALUE_CAST_INSTR(I_cast);
+  Instrs.push_back(I_cast);
+
+  ValuePtrVector fields;
+  fields.push_back(C_inx);
+  fields.push_back(C_global);
+  fields.push_back(KIND_CONSTANT(kind));
+  fields.push_back(I_cast);
+
+  return AllocateStruct(KVALUE_TYPE(), fields, Instrs, KVALUE_ALIGNMENT);
+}
+
+/*******************************************************************************************/
+
+/**
+ * Pass a struct value to call backs.
+ *
+ * @param value struct value to be passed
+ * @param instrs accumulation of instructions to be instrumented
+ */
+void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
+  safe_assert(value->getType()->isStructTy());
+  StructType* structType = (StructType*) value->getType();
+  uint64_t size = structType->getNumElements();
+  for (uint64_t i = 0 ; i < size; i++) {
       // TODO: use extract value
       std::vector<unsigned> idxList;
       idxList.push_back(i);
@@ -591,6 +643,27 @@ int KIND_GetSize(int kind) {
   }
 
   /*******************************************************************************************/
+  Instruction* CALL_INT64_INT_KIND_KIND_INT_INT(const char* func, Value *i64_0, Value *i32_0, Value *kind_0, Value *kind_1, Value *i32_1, Value *i32_2) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i64_0);
+    Args.push_back(i32_0);
+    Args.push_back(kind_0);
+    Args.push_back(kind_1);
+    Args.push_back(i32_1);
+    Args.push_back(i32_2);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
   Instruction* CALL_KIND(const char* func, Value* value) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(KIND_TYPE());
@@ -761,6 +834,27 @@ int KIND_GetSize(int kind) {
     ValuePtrVector Args;
     Args.push_back(inx);
     Args.push_back(inx2);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_KVALUE_INT_INT_INT(const char* func, Value *i32_0, Value *i32_1, Value* kv, Value *i32_2, Value *i32_3, Value *i32_4) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KVALUEPTR_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i32_0);
+    Args.push_back(i32_1);
+    Args.push_back(kv);
+    Args.push_back(i32_2);
+    Args.push_back(i32_3);
+    Args.push_back(i32_4);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

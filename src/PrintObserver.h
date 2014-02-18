@@ -122,7 +122,7 @@ public:
 
 	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
 
-	virtual void store(IID iid, KVALUE* op, KVALUE* kv, int file, int line, int inx);
+	virtual void store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx);
 
 	virtual void fence();
 
@@ -136,31 +136,30 @@ public:
 
 	virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx); 
 
-	// ***** Conversion Operations ***** //
-	virtual void trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-	virtual void bitcast(IID iid, KIND type, KVALUE* op,  uint64_t size, int inx);
-
+  // ***** Conversion Operations ***** //
+  virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  
+  virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 
 	// ***** TerminatorInst ***** //
 	virtual void branch(IID iid, bool conditional, KVALUE* op1, int inx);

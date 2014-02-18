@@ -175,8 +175,8 @@ void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bo
   DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", address:" << KVALUE_ToString(addr) << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::store(IID iid, KVALUE* dest, KVALUE* src, int file, int line, int inx) {
-  DEBUG_STDOUT("<<<<< STORE >>>>> " << IID_ToString(iid) << ", destination:" << KVALUE_ToString(dest) << ", source:" << KVALUE_ToString(src) << ", file: " << file << ", line: " << line << ", [INX: " << inx << "]");
+void PrintObserver::store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx) {
+  DEBUG_STDOUT("<<<<< STORE >>>>> pInx:" << pInx << ", pScope:" << SCOPE_ToString(pScope) << ", op:" << KVALUE_ToString(op) << ", file:" << file << ", line:" << line << ", [INX: " << inx << "]");
 }
 
 void PrintObserver::fence() {
@@ -205,54 +205,53 @@ void PrintObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND
 
 // ***** Conversion Operations ***** //
 
-void PrintObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< TRUNC >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< TRUNC >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< ZEXT >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< ZEXT >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< SEXT >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< SEXT >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< FPTRUNC >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< FPTRUNC >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< FPEXT >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< FPEXT >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< FPTOUIT >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< FPTOUI >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< FPTOSI >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< FPTOSI >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< UITOFP >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< UITOFP >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< SITOFP >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< SITOFP >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< PTRTOINT >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< PTRTOINT >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< INTOTPTR >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< INTTOPTR >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::bitcast(IID iid, KIND type, KVALUE* op,  uint64_t size, int inx) {
-  DEBUG_STDOUT("<<<<< BITCAST >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(type) << ", operand:" << KVALUE_ToString(op) << ", size:" << size << " [INX: " << inx << "]");
+void PrintObserver::bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DEBUG_STDOUT("<<<<< BITCAST >>>>> op:" << op << ", scope:" << SCOPE_ToString(opScope) << ", opKind:" << KIND_ToString(opKind) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", [INX: " << inx << "]");
 }
-
 
 // ***** TerminatorInst ***** //
 void PrintObserver::branch(IID iid, bool conditional, KVALUE* op1, int inx) {

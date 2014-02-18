@@ -16,8 +16,8 @@ void NaNPropagationAnalysis::load(IID iid UNUSED, KIND type, KVALUE* src, bool l
   return;
 }
 
-void NaNPropagationAnalysis::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int file, int line, int inx) {
-  InterpreterObserver::store(iid, dest, src, file, line, inx);
+void NaNPropagationAnalysis::store(int pInx, SCOPE pScope, KVALUE *src, int file, int line, int inx) {
+  InterpreterObserver::store(pInx, pScope, src, file, line, inx);
 
   // TODO: storing nan constant
   if (src->inx != -1) {

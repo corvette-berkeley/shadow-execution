@@ -7,50 +7,39 @@
 
 bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
 
-  CastInst* castInst = dyn_cast<CastInst>(inst);
+  CastInst* castInst; 
+  
+  castInst = dyn_cast<CastInst>(inst);
 
   if (castInst != NULL) {
     safe_assert(parent_ != NULL);
 
+    InstrPtrVector instrs;
+    Value *op; 
+    Constant *cOp, *cOpScope, *cOpKind, *cKind, *cSize, *cInx;
+    Instruction* call;
+    std::stringstream callback;
+
+    if (PointerType* dest = dyn_cast<PointerType>(castInst->getDestTy())) {
+      cSize = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits()/8, false);
+    } else {
+      cSize = INT32_CONSTANT(0, false);
+    }
+
     count_++;
 
-    InstrPtrVector instrs;
+    op = castInst->getOperand(0U);
 
-    Value* op; 
-    if (getCastOp(castInst) == FPTOSI) {
-      op = KVALUE_VALUE(castInst->getOperand(0U), instrs, SIGNED);
-    } else {
-      op = KVALUE_VALUE(castInst->getOperand(0U), instrs, NOSIGN);
-    }
-    if(op == NULL) return false;
+    cOp = getValueOrIndex(op);
+    cOpScope = INT32_CONSTANT(getScope(op), SIGNED);
+    cOpKind = KIND_CONSTANT(TypeToKind(op->getType()));
+    cKind = KIND_CONSTANT(TypeToKind(castInst->getType()));
+    cInx = computeIndex(castInst);
 
-    //castInst->getDestTy()->dump();
-
-    Value* size;
-    if (PointerType* dest = dyn_cast<PointerType>(castInst->getDestTy())) {
-      size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
-    }
-    else {
-      size = INT32_CONSTANT(0, false);
-    }
-
-    Type *type = castInst->getType();
-    if (!type) return false;
-
-    KIND kind = TypeToKind(type);
-    if(kind == INV_KIND) return false;
-
-    Constant* kindC = KIND_CONSTANT(kind);
-
-    Constant* iidC = IID_CONSTANT(castInst);
-
-    Constant* inxC = computeIndex(castInst);
-
-    std::stringstream callback;
     callback << "llvm_";
     callback << Instruction::getOpcodeName(castInst->getOpcode());
 
-    Instruction* call = CALL_IID_KIND_KVALUE_INT_INT(callback.str().c_str(), iidC, kindC, op, size, inxC);
+    call = CALL_INT64_INT_KIND_KIND_INT_INT(callback.str().c_str(), cOp, cOpScope, cOpKind, cKind, cSize, cInx);
 
     instrs.push_back(call);
 
@@ -58,8 +47,11 @@ bool CastInstructionInstrumenter::CheckAndInstrument(Instruction* inst) {
     InsertAllBefore(instrs, castInst);
     
     return true;
+
   } else {
+
     return false;
+
   }
 }
 

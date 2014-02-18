@@ -15,6 +15,8 @@ class StoreInstrumenter : public Instrumenter {
       Instrumenter(name, instrumentation) {};
 
     bool CheckAndInstrument(Instruction* inst);
+
+    SCOPE getScope(Value *value);
 };
 
 #endif /* STORE_INSTRUMENTER_H_ */

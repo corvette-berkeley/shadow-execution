@@ -173,8 +173,8 @@ void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int in
   DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, file, line, inx);
 }
 
-void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(store, iid, op, value, file, line, inx)
+void llvm_store(int pInx, SCOPE pScope, KVALUE* op, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(store, pInx, pScope, op, file, line, inx)
 }
 
 void llvm_fence() {
@@ -202,52 +202,52 @@ void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind1,
 }
 
 // ***** Conversion Operations ***** //
-void llvm_trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(trunc, iid, type, op, size, inx);
+void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(trunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(zext, iid, type, op, size, inx);
+void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(zext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(sext, iid, type, op, size, inx);
+void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(sext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptrunc, iid, type, op, size, inx);
+void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptrunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(fpext, iid, type, op, size, inx);
+void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(fpext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptoui, iid, type, op, size, inx);
+void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptoui, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptosi, iid, type, op, size, inx);
+void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(fptosi, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(uitofp, iid, type, op, size, inx);
+void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(uitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(sitofp, iid, type, op, size, inx);
+void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(sitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(ptrtoint, iid, type, op, size, inx);
+void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(ptrtoint, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(inttoptr, iid, type, op, size, inx);
+void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(inttoptr, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  DISPATCH_TO_OBSERVERS(bitcast, iid, type, op, size, inx);
+void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  DISPATCH_TO_OBSERVERS(bitcast, op, opScope, opKind, kind, size, inx);
 }
 
 
@@ -412,7 +412,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")

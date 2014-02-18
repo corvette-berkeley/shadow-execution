@@ -93,7 +93,7 @@ public:
 	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void load(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void store(IID iid UNUSED, KVALUE* op UNUSED, KVALUE* value UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void store(int pInx UNUSED, SCOPE pScope UNUSED, KVALUE *op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};
@@ -103,18 +103,18 @@ public:
   virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
-	virtual void trunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void zext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void sext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void fptrunc(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void fpext(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void fptoui(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void fptosi(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void uitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void sitofp(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void ptrtoint(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void inttoptr(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
-	virtual void bitcast(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, uint64_t size UNUSED, int inx UNUSED) {};
+	virtual void trunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void zext(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void sext(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void fptrunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void fpext(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void fptoui(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void fptosi(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void uitofp(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void sitofp(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void ptrtoint(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void inttoptr(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+	virtual void bitcast(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
 
 	// ***** Terminator Instructions *****/
 	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED, int inx UNUSED) {};

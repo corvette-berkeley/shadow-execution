@@ -87,7 +87,7 @@ extern "C" {
   void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg, KVALUE* addr);
   void llvm_load(IID iid, KIND kind, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int x);
   void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int x);
-  void llvm_store(IID iid, KVALUE* op, KVALUE* value, int file, int line, int x);
+  void llvm_store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int x);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
@@ -96,18 +96,18 @@ extern "C" {
   void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
 
   // ***** Conversion Operations ***** //
-  void llvm_trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_zext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_sext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
-  void llvm_bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int x);
+  void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+  void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 
   // ***** Terminator Instructions ***** //
   void llvm_branch(IID iid, bool conditional, KVALUE* op1, int x);

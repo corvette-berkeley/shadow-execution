@@ -6,11 +6,23 @@
 #include "StoreInstrumenter.h"
 
 bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
-  StoreInst* storeInst = dyn_cast<StoreInst>(inst);
-
+  StoreInst* storeInst; 
+  
+  storeInst = dyn_cast<StoreInst>(inst);
   if (storeInst != NULL) {
+    safe_assert(parent_ != NULL);
 
-    // skip stores from main if operands are arguments
+    InstrPtrVector instrs;
+    Value *valueOp;
+    Constant *cPointerInx, *cScope, *cInx, *cLine, *cFile;
+    string filename;
+    Instruction *call;
+
+    count_++;
+
+    //
+    // skip stores in main if operands are arguments
+    //
     if (BasicBlock *basicBlock = storeInst->getParent()) {
       if (Function *function = basicBlock->getParent()) {
         if (function->getName() == "main") {
@@ -21,39 +33,30 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
       }
     }
 
-    safe_assert(parent_ != NULL);
-
-    count_++;
-
     parent_->AS_ = storeInst->getPointerAddressSpace();
 
-    InstrPtrVector instrs;
-    Value* valueOp = KVALUE_VALUE(storeInst->getValueOperand(),
+    valueOp = KVALUE_VALUE(storeInst->getValueOperand(),
         instrs, SIGNED);
     if(valueOp == NULL) return false; 
 
-    Value* pointerOp = KVALUE_VALUE(storeInst->getPointerOperand(),
-        instrs, NOSIGN);
-    if(pointerOp == NULL) return false; 
+    Value* pointerOp = storeInst->getPointerOperand();
 
-    Constant* iidC = IID_CONSTANT(storeInst);
+    cPointerInx = computeIndex(pointerOp);
+    cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
+    cInx = computeIndex(storeInst);
+    cLine = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
 
-    Constant* inxC = computeIndex(storeInst);
-
-    Constant* lineC = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
-
-    Constant* fileC = NULL;
-    string filename = getFileName(storeInst);
+    filename = getFileName(storeInst);
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
-      fileC = INT32_CONSTANT(parent_->fileCount, SIGNED);
+      cFile = INT32_CONSTANT(parent_->fileCount, SIGNED);
       parent_->fileCount++;
     }
     else {
-      fileC = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
+      cFile = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
     }
 
-    Instruction* call = CALL_IID_KVALUE_KVALUE_INT_INT_INT("llvm_store", iidC, pointerOp, valueOp, fileC, lineC, inxC);
+    call = CALL_INT_INT_KVALUE_INT_INT_INT("llvm_store", cPointerInx, cScope, valueOp, cFile, cLine, cInx);
     instrs.push_back(call);
 
     // instrument
@@ -65,5 +68,16 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     return false;
 
+  }
+}
+
+SCOPE StoreInstrumenter::getScope(Value *value) {
+  if (isa<GlobalVariable>(value)) {
+    return GLOBAL;
+  } else if (isa<Constant>(value)) {
+    return CONSTANT;
+  } else {
+    safe_assert(isa<Instruction>(value) || isa<Argument>(value));
+    return LOCAL;
   }
 }

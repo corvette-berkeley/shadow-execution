@@ -546,23 +546,27 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
   return;
 }
 
-void InterpreterObserver::store(IID iid UNUSED, KVALUE* dest, KVALUE* src, int file UNUSED, int line UNUSED, int inx UNUSED) {
+void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int file UNUSED, int line UNUSED, int inx UNUSED) {
 
-  if (dest->kind == INT80_KIND || src->kind == INT80_KIND) {
+  if (src->kind == INT80_KIND) {
     cout << "[store] Unsupported INT80_KIND" << endl;
     safe_assert(false);
     return; // otherwise compiler warning
   }
 
+  //
   // pointer constant; we simply ignore this case
-  if (dest->inx == -1) {
+  //
+  if (destScope == CONSTANT) {
     DEBUG_STDOUT("\tIgnoring pointer constant.");
     return; 
   }
 
+  //
   // retrieve destination pointer operand
-  IValue* destPtrLocation = dest->isGlobal? globalSymbolTable[dest->inx] :
-    executionStack.top()[dest->inx];
+  //
+  IValue* destPtrLocation = (destScope == GLOBAL) ? globalSymbolTable[destInx] :
+    executionStack.top()[destInx];
 
   DEBUG_STDOUT("\tDestPtr: " << destPtrLocation->toString());
 
@@ -1701,7 +1705,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
 
 // ***** Conversion Operations ***** //
 
-void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_t size UNUSED, int inx, CASTOP op) {
+void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND type, int size, int inx, CASTOP op) {
   VALUE result;
   IValue *iOp, *iResult;
   int64_t v64, opIntValue, opPtrValue;
@@ -1709,12 +1713,11 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
   int64_t *v64Ptr;
   int32_t v32, sign;
   double opFlpValue;
-  KIND opType;
 
   //
   // assert: we do not support INT80 yet.
   //
-  if (type == INT80_KIND) {
+  if (type == INT80_KIND || opType == INT80_KIND) {
     DEBUG_STDERR("Do not support INT80 type yet.");
     safe_assert(false);
   }
@@ -1722,21 +1725,26 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
   //
   // Obtain value and type of the operand.
   //
-  if (op1->inx == -1) {
-    iOp = new IValue(); // just to dump compiler warning
-    opIntValue = KVALUE_ToIntValue(op1); 
-    opUIntValue = KVALUE_ToUIntValue(op1);
-    opFlpValue = KVALUE_ToFlpValue(op1);
-    opPtrValue = op1->value.as_int;
-    opType = op1->kind;
+  if (opScope == CONSTANT) {
+    double *ptr;
+
+    iOp = NULL; // compiler warning without this
+    ptr = (double *)&op;
+
+    opIntValue = op;
+    opUIntValue = op;
+    opFlpValue = *ptr;
+    opPtrValue = op;
+
   } else {
-    iOp = op1->isGlobal ? globalSymbolTable[op1->inx] :
-      executionStack.top()[op1->inx];
+
+    iOp = (opScope == GLOBAL) ? globalSymbolTable[opVal] :
+      executionStack.top()[opVal];
     opIntValue = iOp->getIntValue();
     opUIntValue = iOp->getUIntValue();
     opFlpValue = iOp->getFlpValue();
     opPtrValue = iOp->getValue().as_int + iOp->getOffset();
-    opType = iOp->getType();
+
   }
 
   //
@@ -1981,9 +1989,12 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
   } 
 
   if (op == BITCAST) {
-    if (op1->inx == -1) {
+    if (opScope == CONSTANT) {
+      VALUE val;
+
       iResult = new IValue();
-      iResult->copyFrom(op1);
+      val.as_int = op;
+      iResult->setValue(val);
       iResult->setSize(size/8);
       iResult->setType(type);
     } else {
@@ -2002,52 +2013,52 @@ void InterpreterObserver::castop(IID iid UNUSED, KIND type, KVALUE* op1, uint64_
   return;
 }
 
-void InterpreterObserver::trunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, TRUNC);
+void InterpreterObserver::trunc(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, TRUNC);
 }
 
-void InterpreterObserver::zext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, ZEXT);
+void InterpreterObserver::zext(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, ZEXT);
 }
 
-void InterpreterObserver::sext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, SEXT); 
+void InterpreterObserver::sext(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, SEXT);
 }
 
-void InterpreterObserver::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, FPTRUNC);
+void InterpreterObserver::fptrunc(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, FPTRUNC);
 }
 
-void InterpreterObserver::fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, FPEXT);
+void InterpreterObserver::fpext(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, FPEXT);
 }
 
-void InterpreterObserver::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, FPTOUI);
+void InterpreterObserver::fptoui(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, FPTOUI);
 }
 
-void InterpreterObserver::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, FPTOSI);
+void InterpreterObserver::fptosi(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, FPTOSI);
 }
 
-void InterpreterObserver::uitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, UITOFP);
+void InterpreterObserver::uitofp(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, UITOFP);
 }
 
-void InterpreterObserver::sitofp(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, SITOFP);
+void InterpreterObserver::sitofp(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, SITOFP);
 }
 
-void InterpreterObserver::ptrtoint(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, PTRTOINT);
+void InterpreterObserver::ptrtoint(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, PTRTOINT);
 }
 
-void InterpreterObserver::inttoptr(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, INTTOPTR);
+void InterpreterObserver::inttoptr(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, INTTOPTR);
 }
 
-void InterpreterObserver::bitcast(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  castop(iid, type, op, size, inx, BITCAST);
+void InterpreterObserver::bitcast(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  castop(opVal, opScope, opKind, kind, size, inx, BITCAST);
 }
 
 // ***** TerminatorInst ***** //
