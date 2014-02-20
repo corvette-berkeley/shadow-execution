@@ -199,7 +199,9 @@ public:
 
   void push_string(int c);
 
-	void push_stack(KVALUE* value);
+	void push_stack_constant_exp(KVALUE *value);
+
+	void push_stack(SCOPE scope, int64_t value, KIND type);
 
 	void push_phinode_value(int valId, int blockId);
 

@@ -62,6 +62,10 @@ class FPInstabilityAnalysis : public InterpreterObserver {
 
     virtual void fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
+    virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
+
+    virtual void fpext(int64_t opVal, SCOPE opScope, KIND opType, KIND type, int size, int inx);
+
     virtual void create_global_symbol_table(int size);
 
   private:
@@ -90,7 +94,6 @@ class FPInstabilityAnalysis : public InterpreterObserver {
 
     /*
      * not used in PLDI12 Benz Paper
-     virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
 
      virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
@@ -98,7 +101,6 @@ class FPInstabilityAnalysis : public InterpreterObserver {
 
      virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
-     virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
 
       */
 

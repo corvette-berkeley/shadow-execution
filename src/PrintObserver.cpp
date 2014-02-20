@@ -316,8 +316,12 @@ void PrintObserver::push_string(int c) {
   DEBUG_STDOUT("<<<<< PUSH STRING >>>>> character: " << (char)(((int)'0')+c));
 }
 
-void PrintObserver::push_stack(KVALUE* value) {
-  DEBUG_STDOUT("<<<<< PUSH VALUE >>>>> value: " << KVALUE_ToString(value));
+void PrintObserver::push_stack(SCOPE scope, int64_t value, KIND type) {
+  DEBUG_STDOUT("<<<<< PUSH VALUE >>>>> scope: " << SCOPE_ToString(scope) << ", value:" << value << ", type:" << KIND_ToString(type));
+}
+
+void PrintObserver::push_stack_constant_exp(KVALUE *value) {
+  DEBUG_STDOUT("<<<<< PUSH VALUE CONSTANT EXPRESSION>>>>> value: " << KVALUE_ToString(value));
 }
 
 void PrintObserver::push_phinode_constant_value(KVALUE* value, int blockId) {

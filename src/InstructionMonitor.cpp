@@ -314,8 +314,12 @@ void llvm_push_string(int c) {
   DISPATCH_TO_OBSERVERS(push_string, c);
 }
 
-void llvm_push_stack(KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(push_stack, value)
+void llvm_push_stack_constant_exp(KVALUE *value) {
+	DISPATCH_TO_OBSERVERS(push_stack_constant_exp, value);
+}
+
+void llvm_push_stack(SCOPE scope, int64_t value, KIND type) {
+	DISPATCH_TO_OBSERVERS(push_stack, scope, value, type)
 }
 
 void llvm_push_phinode_constant_value(KVALUE* value, int blockId) {
@@ -412,7 +416,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
