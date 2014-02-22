@@ -7,6 +7,7 @@
 #define INSTRUMENTER_H_
 
 #include <iostream>
+#include <queue>
 #include "Common.h"
 #include "Instrumentation.h"
 
@@ -627,6 +628,37 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     ValuePtrVector Args;
     Args.push_back(kvalue);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64(const
+      char* func, Value *i1, Value *i2, Value *i3, Value *i4, Value *i5, Value
+      *i64_1, Value *i64_2, Value *i64_3, Value *i64_4, Value *i64_5) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i1);
+    Args.push_back(i2);
+    Args.push_back(i3);
+    Args.push_back(i4);
+    Args.push_back(i5);
+    Args.push_back(i64_1);
+    Args.push_back(i64_2);
+    Args.push_back(i64_3);
+    Args.push_back(i64_4);
+    Args.push_back(i64_5);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

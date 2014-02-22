@@ -1460,15 +1460,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, int elementSize, int inx) {
 
   IValue* arrayElemPtr;
-  int elemFlattenSize, newOffset;
-
-  elemFlattenSize = 0;
-  while (!structElementSize.empty()) {
-    elemFlattenSize += structElementSize.front();
-    structElementSize.pop();
-  }
-  elemFlattenSize = elemFlattenSize == 0 ? 1 : elemFlattenSize;
-  DEBUG_STDOUT("\tStruct element flatten size: " << elemFlattenSize);
+  int newOffset;
 
   if (op->inx == -1) {
     // TODO: review this
@@ -2497,6 +2489,47 @@ void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
 
   getElementPtrIndexList.push(idx);
 }
+
+int InterpreterObserver::actualValueToIntValue(int scope, int64_t vori) {
+  switch (scope) {
+    case CONSTANT:
+      return vori;
+    case LOCAL:
+      return executionStack.top()[vori]->getIntValue();
+    case GLOBAL:
+      return globalSymbolTable[vori]->getIntValue();
+    default:
+      return -1;
+  }
+}
+
+void InterpreterObserver::push_getelementptr_inx5(int scope01, int scope02, int
+    scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t
+    vori03, int64_t vori04, int64_t vori05) {
+  int v1, v2, v3, v4, v5;
+
+  v1 = actualValueToIntValue(scope01, vori01);
+  v2 = actualValueToIntValue(scope02, vori02);
+  v3 = actualValueToIntValue(scope03, vori03);
+  v4 = actualValueToIntValue(scope04, vori04);
+  v5 = actualValueToIntValue(scope05, vori05);
+
+  if (scope01 != SCOPE_INVALID) {
+    getElementPtrIndexList.push(v1);
+    if (scope02 != SCOPE_INVALID) {
+      getElementPtrIndexList.push(v2);
+      if (scope03 != SCOPE_INVALID) {
+        getElementPtrIndexList.push(v3);
+        if (scope04 != SCOPE_INVALID) {
+          getElementPtrIndexList.push(v4);
+          if (scope05 != SCOPE_INVALID) {
+            getElementPtrIndexList.push(v5);
+          }
+        }
+      }
+    }
+  }
+};
 
 void InterpreterObserver::push_getelementptr_inx2(int int_value) {
   int idx = int_value;

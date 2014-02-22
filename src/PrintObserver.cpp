@@ -344,6 +344,10 @@ void PrintObserver::push_getelementptr_inx(KVALUE* value) {
   DEBUG_STDOUT("<<<<< PUSH GETELEMENTPTR INX >>>>> value: " << KVALUE_ToString(value));
 }
 
+void PrintObserver::push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05) {
+  DEBUG_STDOUT("<<<<< PUSH GETELEMENTPTR INX 5 >>>>> scope: [" << scope01 << ", " << scope02 << ", " << scope03 << ", " << scope04 << ", " << scope05 << ", value or index: [" << vori01 << ", " << vori02 << ", " << vori03 << ", " << vori04 << ", " << vori05);
+}
+
 void PrintObserver::push_getelementptr_inx2(int value) {
   DEBUG_STDOUT("<<<<< PUSH GETELEMENTPTR INX  2>>>>> value: " << value);
 }

@@ -6,8 +6,14 @@
 #include "GetElementPtrInstrumenter.h"
 
 bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
-  GetElementPtrInst* gepInst = dyn_cast<GetElementPtrInst>(inst);
+  GetElementPtrInst* gepInst; 
+  InstrPtrVector instrs;
+  Constant *iidC, *inxC, *loadInxC, *inbound, *loadGlobal;
+  Value *ptrOp;
+  PointerType *T;
+  Type *elemT;
 
+  gepInst = dyn_cast<GetElementPtrInst>(inst);
   if (gepInst == NULL) {
     return false;
   }
@@ -16,19 +22,15 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   count_++;
 
-  InstrPtrVector instrs;
-
-  Constant* iidC = IID_CONSTANT(gepInst);
-
-  Constant* inxC = computeIndex(gepInst);
-
-  Constant* loadInxC = INT32_CONSTANT(-1, SIGNED);
-
-  Constant* inbound = BOOL_CONSTANT(gepInst->isInBounds());
-
-  Constant* loadGlobal = BOOL_CONSTANT(false);
-
-  Value* ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+  iidC = IID_CONSTANT(gepInst);
+  inxC = computeIndex(gepInst);
+  loadInxC = INT32_CONSTANT(-1, SIGNED);
+  inbound = BOOL_CONSTANT(gepInst->isInBounds());
+  loadGlobal = BOOL_CONSTANT(false);
+  ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+  if (ptrOp == NULL) {
+    return false;
+  }
 
   if (LoadInst* loadInst = dyn_cast<LoadInst>(gepInst->getPointerOperand())) {
     Value *loadPtr; 
@@ -38,19 +40,65 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     loadInxC = computeIndex(loadPtr);
   }
 
-  if(ptrOp == NULL) return false;
-
-  PointerType* T = (PointerType*) gepInst->getPointerOperandType();
-  Type* elemT = T->getElementType();
+  T = (PointerType*) gepInst->getPointerOperandType();
+  elemT = T->getElementType();
 
   if (elemT->isArrayTy()) {
+    //
     // this branch is the case for local array
+    //
     
+    Type *gepInstType;
+    KIND kind;
+    Constant *kindC, *elementSizeC;
+    Instruction *call;
+    int elementSize;
+    queue < Value* > arrIndices;
+     queue < int64_t > arrSize;
+    
+    //
+    // Collect all array indices
+    //
     for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
-      Value* idxOp = KVALUE_VALUE(idx->get(), instrs, NOSIGN);
-      Instruction* call = CALL_KVALUE("llvm_push_getelementptr_inx", idxOp);
+      arrIndices.push((Value*) idx->get());
+    } 
+
+    //
+    // Callbacks for array indices
+    //
+    while (!arrIndices.empty()){
+      Constant *scope[5], *valOrInx[5];
+      Instruction *call;
+      int i; 
+
+      for (i = 0; i < 5; i++) {
+        if (!arrIndices.empty()) {
+          Value *value;
+          ActualValue av;
+
+          value = arrIndices.front();
+          av = getActualValue(value);
+          scope[i] = INT32_CONSTANT(av.scope, SIGNED);
+          valOrInx[i] = av.valOrInx;
+          arrIndices.pop();
+        } else {
+          scope[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
+          valOrInx[i] = INT64_CONSTANT(-1, SIGNED);
+        }
+      }
+
+      call =
+        CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64("llvm_push_getelementptr_inx5",
+            scope[0], scope[1], scope[2], scope[3], scope[4], valOrInx[0],
+            valOrInx[1], valOrInx[2], valOrInx[3], valOrInx[4]);
       instrs.push_back(call);
     } 
+
+    /*
+    while (dyn_cast<ArrayType>(elemT)) {
+      arrSize.push(((ArrayType *)elemT)->getNumELements());
+    }
+    */
 
     while (dyn_cast<ArrayType>(elemT)) {
       Constant* size = INT64_CONSTANT(((ArrayType*)elemT)->getNumElements(), UNSIGNED);
@@ -59,15 +107,10 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       elemT = ((ArrayType*)elemT)->getElementType();
     }
 
-    if (TypeToKind(elemT) == STRUCT_KIND) {
-      pushStructElementSize((StructType*) elemT, instrs);
-    } 
+    gepInstType = ((PointerType*) gepInst->getType())->getElementType();
+    kind = TypeToKind(gepInstType);
+    kindC = KIND_CONSTANT(kind);
 
-    Type* gepInstType = ((PointerType*) gepInst->getType())->getElementType();
-    KIND kind = TypeToKind(gepInstType);
-    Constant* kindC = KIND_CONSTANT(kind);
-
-    int elementSize;
     if (kind == ARRAY_KIND) {
       elementSize = getFlatSize((ArrayType*) gepInstType);
     } else if (kind == STRUCT_KIND) {
@@ -76,9 +119,9 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       elementSize = KIND_GetSize(kind);
     }
 
-    Constant* elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
+    elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
      
-    Instruction* call = CALL_IID_BOOL_KVALUE_KIND_INT_INT("llvm_getelementptr_array", iidC, inbound, ptrOp, kindC, elementSizeC, inxC);
+    call = CALL_IID_BOOL_KVALUE_KIND_INT_INT("llvm_getelementptr_array", iidC, inbound, ptrOp, kindC, elementSizeC, inxC);
 
     instrs.push_back(call);
 
@@ -368,4 +411,18 @@ uint64_t GetElementPtrInstrumenter::pushStructType(StructType* structType, Instr
   }
 
   return allocation;
+}
+
+GetElementPtrInstrumenter::ActualValue GetElementPtrInstrumenter::getActualValue(Value *value) {
+  SCOPE scope;
+  Constant* valOrInx;
+  ActualValue av;
+
+  scope = getScope(value);
+  valOrInx = getValueOrIndex(value);
+
+  av.scope = scope;
+  av.valOrInx = valOrInx;
+
+  return av;
 }

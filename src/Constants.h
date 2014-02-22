@@ -74,6 +74,7 @@ typedef enum {
 } MACHINEFLAG;
 
 typedef enum {
+  SCOPE_INVALID,
   REGISTER,
   CONSTANT,
   LOCAL,

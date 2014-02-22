@@ -13,7 +13,8 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f
 llvm-dis tmppass-allocas.bc -o $1-inst.ll
 
 # create executable 
-$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog -lprofiler
+$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog # -lprofiler
+$CC $1.bc -o $1-original.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog 
 
 # create executable for uninstrumented bitcode
 #$CC $1.bc -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog

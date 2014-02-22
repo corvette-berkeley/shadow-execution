@@ -22,15 +22,15 @@ Need to do:
 - Remove the push calls as much as possible
 - Remove fields in KVALUE as much as possible
      
-Program |    Binary time | Instrumented time v1 | Instrumented v2 |
-LU.S |  0.14s | 24.99s | 
+Program |    Binary time | Instrumented time v1 | Note | Instrumented v2 |
+LU.S |  0.14s | 24.99s | 22.49 | Reduce the number of push_getelementptr_inx with push_getelementptr_inx5. |
 LU.A | 1m 27s
-CG.S | 0.18s | 14.13s | 
-EP.S | 3.02s | 42.33s |
+CG.S | 0.18s | 14.13s | 13.85 |
+EP.S | 3.02s | 42.33s | 42.31 | Seems that array is not dominant here.
 EP.A
-MG.S | 0.05s | 2.78s |
+MG.S | 0.05s | 2.78s | 2.77
 MG.A | 6.13s | 
-IS.S | 0.04s | 1s 
+IS.S | 0.04s | 1s | 0.93
 IS.A
 
 Optimizations/Usability for Interpretation/Analysis:

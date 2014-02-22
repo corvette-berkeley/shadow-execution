@@ -334,6 +334,10 @@ void llvm_push_getelementptr_inx(KVALUE* value) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
 }
 
+void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05) {
+  DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03, scope04, scope05, vori01, vori02, vori03, vori04, vori05);
+}
+
 void llvm_push_getelementptr_inx2(int value) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx2, value)
 }
@@ -412,7 +416,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")

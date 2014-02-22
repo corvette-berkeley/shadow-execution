@@ -259,6 +259,8 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_getelementptr_inx(KVALUE* int_value);
 
+	void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
+
   void push_getelementptr_inx2(int int_value);
 
   void push_array_size(uint64_t size);
@@ -299,6 +301,8 @@ class InterpreterObserver : public InstructionObserver {
   unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 
   static void copyShadow(IValue* src, IValue* dest);
+
+  int actualValueToIntValue(int scope, int64_t vori);
 };
 
 

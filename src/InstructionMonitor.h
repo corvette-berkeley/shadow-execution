@@ -134,6 +134,7 @@ extern "C" {
   void llvm_push_struct_type(KIND kind);
   void llvm_push_struct_element_size(uint64_t s);
   void llvm_push_getelementptr_inx(KVALUE* value);
+  void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
   void llvm_push_getelementptr_inx2(int value);
   void llvm_push_array_size(uint64_t i);
   void llvm_construct_array_type(uint64_t i);

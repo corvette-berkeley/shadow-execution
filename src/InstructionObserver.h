@@ -141,6 +141,7 @@ public:
 	virtual void push_struct_type(KIND kind UNUSED) {};
   virtual void push_struct_element_size(uint64_t s UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
+	virtual void push_getelementptr_inx5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED, int64_t vori01 UNUSED, int64_t vori02 UNUSED, int64_t vori03 UNUSED, int64_t vori04 UNUSED, int64_t vori05 UNUSED) {};
 	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void construct_array_type(uint64_t i UNUSED) {};
