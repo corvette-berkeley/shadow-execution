@@ -1,23 +1,46 @@
 
-Global variables: arrays and structs.
+Issues:
+Global variable of pointer is not initialized correctly.
 String constants (see string.c).
-Loading struct pointer (struct-return, ls).
-Alloca creating bit failing (size returned is zero). To reproduce: sum.bc.
 Unimplemented interpretation for instructions such as landingpad. It does not happen to execute because it is executed only in the case of an exception.  
-DONE: Upgrade to LLVM 3.3.
-DONE: New bitcode utilities with clang 3.3.
-DONE: Function pointers. 
-DONE: Intrinsic functions with side effects (e.g., llvm.copy) 
-DONE: Modelling phi instruction 
+Padding make concrete and shadow memory model inconsistent.
 
-KNOW ISSUES:
-  Padding make concrete and shadow memory model inconsistent.
+Notes:
+Implementation of copyShadow. Because we implement it as a static function
+pointer and assign it as create_global_symbol_table, we cannot enable
+multiple anlaysis at once. Prefer to use inheritance in some way.
 
-  Global variable of pointer is not initialized correctly.
+Optimizations for Instrumentation:
 
-  Implementation of copyShadow. Because we implement it as a static function
-  pointer and assign it as create_global_symbol_table, we cannot enable
-  multiple anlaysis at once. Prefer to use inheritance in some way.
+- Remove KVALUE for binary operations
+- Remove KVALUE for bitwise operations
+- Remove use of push_array in allocax
+
+Need to do:
+- Remove KVALUE for casting operations
+- Remove KVALUE for store
+- Remove the push calls as much as possible
+- Remove fields in KVALUE as much as possible
+     
+Program |    Binary time | Instrumented time v1 | Instrumented v2 |
+LU.S |  0.14s | 24.99s | 
+LU.A | 1m 27s
+CG.S | 0.18s | 14.13s | 
+EP.S | 3.02s | 42.33s |
+EP.A
+MG.S | 0.05s | 2.78s |
+MG.A | 6.13s | 
+IS.S | 0.04s | 1s 
+IS.A
+
+Optimizations/Usability for Interpretation/Analysis:
+
+- Index accessing for array
+- Free memory
+- Design pattern
+
+
+
 
 TESTING:
   Checking at store
