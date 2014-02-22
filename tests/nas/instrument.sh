@@ -2,7 +2,7 @@
 
 LPATH=$GOLD_LLVM_BIN
 export CC=$LPATH"/clang -use-gold-plugin"
-export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib"
+export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib -L/home/eecs/nacuong/tools/build/lib"
 
 # instrument the bitcode file
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$1-metadata.txt -f -o tmppass.bc $1.bc
@@ -13,7 +13,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f
 llvm-dis tmppass-allocas.bc -o $1-inst.ll
 
 # create executable 
-$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog
+$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog -lprofiler
 
 # create executable for uninstrumented bitcode
 #$CC $1.bc -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog

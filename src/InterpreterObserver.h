@@ -60,18 +60,13 @@ class InterpreterObserver : public InstructionObserver {
 
  protected:
   typedef uint64_t IID;
-  typedef struct {
-    SCOPE scope;
-    int64_t value;
-    KIND type;
-  } ShadowIndex;
 
   stack< vector< IValue* > > executionStack;
   vector< IValue* > globalSymbolTable;
 
   stack<char> logName;
 
-  stack<ShadowIndex> myStack; // store arguments of call instruction
+  stack<KVALUE*> myStack; // store arguments of call instruction
   queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
   queue<KIND> structType; // store struct type
@@ -250,9 +245,7 @@ class InterpreterObserver : public InstructionObserver {
   
   void push_string(int c);
 
-  void push_stack(SCOPE scope, int64_t value, KIND type);
-
-  void push_stack_constant_exp(KVALUE *value);
+  void push_stack(KVALUE* value);
 
   void push_return_struct(KVALUE* value);
 

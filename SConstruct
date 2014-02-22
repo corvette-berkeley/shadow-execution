@@ -21,7 +21,7 @@ def pathIsExecutable(key, val, env):
         raise SCons.Errors.UserError('Path for option %s is not executable: %s' % (key, val))
 
 opts = Variables(['.scons-options'], ARGUMENTS)
-opts.Add(BoolVariable('DEBUG', 'Compile with extra information for debugging', False))
+opts.Add(BoolVariable('DEBUG', 'Compile with extra information for debugging', True))
 opts.Add(BoolVariable('OPTIMIZE', 'Compile with optimization', False))
 opts.Add(BoolVariable('NATIVECAML', 'Use the native-code OCaml compiler', True))
 opts.Add(BoolVariable('PROFILE', 'Turn on performance profiling', False))

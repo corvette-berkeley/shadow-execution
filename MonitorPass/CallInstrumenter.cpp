@@ -60,24 +60,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   // push each arguments to the argument stack
   for (i = 0; i < numArgs; i++) {
-    Value *arg;
-    Constant *argScope, *argValue, *argType;
-    Instruction *call;
-
-    arg = callInst->getArgOperand(i);
-    argScope = INT32_CONSTANT(getScope(arg), SIGNED);
-    argType = KIND_CONSTANT(TypeToKind(arg->getType()));
-
-    if ((isa<Constant>(arg) && !isa<ConstantInt>(arg) && !isa<ConstantFP>(arg))
-        || TypeToKind(arg->getType()) == FLP80X86_KIND) {
-      Value *argKValue;
-
-      argKValue = KVALUE_VALUE(arg, instrs, NOSIGN);
-      call = CALL_KVALUE("llvm_push_stack_constant_exp", argKValue);
-    } else {
-      argValue = getValueOrIndex(arg);
-      call = CALL_INT_INT64_KIND("llvm_push_stack", argScope, argValue, argType); 
-    }
+    Value* arg = KVALUE_VALUE(callInst->getArgOperand(i), instrs, NOSIGN);
+    Instruction* call = CALL_KVALUE("llvm_push_stack", arg);
     instrs.push_back(call);
   }
 

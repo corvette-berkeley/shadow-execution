@@ -45,24 +45,45 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN);
     
     if (type->isArrayTy()) {
+      //
       // alloca for array type
+      //
       
-      Type* elemType = type;
+      Constant *cElemKind, *cSize;
+      Type* elemType; 
+      KIND elemKind;
+      int size;
+      
+      //
+      // Computing the overall flatten size of the array
+      //
+      elemType = type;
+      size = 1;
       while (dyn_cast<ArrayType>(elemType)) {
-        Constant* size = INT64_CONSTANT(((ArrayType*)elemType)->getNumElements(), UNSIGNED);
-        Instruction* call = CALL_INT64("llvm_push_array_size", size);
-        instrs.push_back(call);
-        elemType = ((ArrayType*)elemType)->getElementType();
+        ArrayType *aryType;
+
+        aryType = (ArrayType *) elemType;
+
+        size = size * aryType->getNumElements();
+        elemType = aryType->getElementType();
       }
 
-      KIND elemKind = TypeToKind(elemType);
-      if (elemKind == INV_KIND) return false;
+      //
+      // Push all struct flatten type if element is truct
+      //
+      elemKind = TypeToKind(elemType);
+      safe_assert(elemKind != INV_KIND);
+      if (elemKind == STRUCT_KIND)  {
+        pushStructType((StructType*) elemType, instrs); 
+      }
 
-      if (elemKind == STRUCT_KIND) pushStructType((StructType*) elemType, instrs);
+      //
+      // Generate constant arguments for call back
+      //
+      cElemKind = KIND_CONSTANT(elemKind);
+      cSize = INT64_CONSTANT(size, UNSIGNED);
 
-      Constant* elemKindC = KIND_CONSTANT(elemKind);
-
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_array", iidC, elemKindC, INT64_CONSTANT(0, UNSIGNED), inxC, lineC, isArgumentC, allocaAddress);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_array", iidC, cElemKind, cSize, inxC, lineC, isArgumentC, allocaAddress);
       instrs.push_back(call);
 
     } else if (type->isStructTy()) {

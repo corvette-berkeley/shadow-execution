@@ -235,14 +235,10 @@ void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, i
 
   if (cbad > 0) {
     cerr << "[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad << endl;
-    cerr << "\t operator:" << BINOP_ToString(op) << endl;
-    cerr << "\t value 1:" << v1 << ", shadow value 1:" << sv1 << endl;
-    cerr << "\t value 2:" << v2 << ", shadow value 2:" << sv2 << endl;
-    cerr << "\t result:" << result << ", shadow result:" << sresult << endl;
-    cerr << "\t cancellation source: " << fpISO->getMaxCBadSource() << endl;
-    cerr << "\t maximal relative error:" << fpISO->getMaxRelErr() << endl; 
-    cerr << "\t maximal relative error source:" << fpISO->getMaxRelErrSource(0)
-      << " and " << fpISO->getMaxRelErrSource(1) << endl; 
+    cerr << "\t binop:" << BINOP_ToString(op) << endl;
+    cerr << "\t v1:" << v1 << ", sv1:" << sv1 << endl;
+    cerr << "\t v2:" << v2 << ", sv2:" << sv2 << endl;
+    cerr << "\t result:" << result << ", sresult:" << sresult << endl;
   }
 
   executionStack.top()[inx]->setShadow(fpISO);
@@ -264,6 +260,62 @@ void FPInstabilityAnalysis::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int
   fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
 
+void FPInstabilityAnalysis::create_global_symbol_table(int size) {
+  InterpreterObserver::create_global_symbol_table(size);
+
+  //
+  // instantiate copyShadow
+  //
+  IValue::setCopyShadow(&copyShadow);
+}
+
+/*
+
+void FPInstabilityAnalysis::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  InterpreterObserver::fptoui(iid, type, op, size, inx);
+
+  long double sv;
+  int64_t sresult;
+
+  if (op->inx == -1) {
+    sv = (long double) op->value.as_flp;
+  } else {
+    IValue* iv;
+
+    iv = op->isGlobal ? globalSymbolTable[op->inx] :
+      executionStack.top()[op->inx];
+    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
+          double*) iv->getShadow());
+  }
+
+  switch (type) {
+    case INT1_KIND:
+      sresult = (bool) sv;
+      break;
+    case INT8_KIND:
+      sresult = (uint8_t) sv;
+      break;
+    case INT16_KIND:
+      sresult = (uint16_t) sv;
+      break;
+    case INT24_KIND:
+    case INT32_KIND:
+      sresult = (uint32_t) sv;
+      break;
+    case INT64_KIND:
+      sresult = (uint64_t) sv;
+      break;
+    default:
+      sresult = 0;
+      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(type));
+      safe_assert(false);
+  }
+
+  if (sresult != executionStack.top()[inx]->getIntValue()) {
+    cerr << "[FPInstabilityAnalysis] Concrete difference at FPTOUI." << endl; 
+  }
+}
+
 void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
   InterpreterObserver::fcmp(iid, op1, op2, pred, inx);
 
@@ -277,8 +329,8 @@ void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, i
 
     iv1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
       executionStack.top()[op1->inx];
-    sv1 = iv1->getShadow() == NULL ? (long double) iv1->getFlpValue() :
-      ((FPInstabilityShadowObject *) iv1->getShadow())->getValue();
+    sv1 = iv1->getShadow() == NULL ? (long double) iv1->getFlpValue() : *((long
+          double*) iv1->getShadow());
   }
 
   if (op2->inx == -1) {
@@ -288,8 +340,8 @@ void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, i
 
     iv2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
       executionStack.top()[op2->inx];
-    sv2 = iv2->getShadow() == NULL ? (long double) iv2->getFlpValue() :
-      ((FPInstabilityShadowObject *) iv2->getShadow())->getValue();
+    sv2 = iv2->getShadow() == NULL ? (long double) iv2->getFlpValue() : *((long
+          double*) iv2->getShadow());
   }
 
   switch(pred) {
@@ -347,104 +399,6 @@ void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, i
   }
 }
 
-void FPInstabilityAnalysis::fpext(int64_t opVal, SCOPE opScope, KIND opType, KIND type, int size, int inx) {
-  InterpreterObserver::fpext(opVal, opScope, opType, type, size, inx);
-
-  long double sv;
-  long double sresult;
-  FPInstabilityShadowObject *shadow;
-
-  if (opScope == CONSTANT) {
-    double *ptr;
-    ptr = (double *)&opVal;
-
-    sv = *ptr;
-  } else {
-    IValue* iv;
-
-    iv = (opScope == GLOBAL) ? globalSymbolTable[opVal] :
-      executionStack.top()[opVal];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() :
-      ((FPInstabilityShadowObject *) iv)->getValue();
-  }
-
-  switch (type) {
-    case FLP32_KIND:
-      sresult = (float) sv;
-      break;
-    case FLP64_KIND:
-      sresult = (double) sv;
-      break;
-    case FLP80X86_KIND:
-      sresult = (long double) sv;
-      break;
-    default:
-      sresult = 0;
-      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
-      safe_assert(false);
-  }
-
-  shadow = new FPInstabilityShadowObject(sresult, 0); 
-  executionStack.top()[inx]->setShadow(shadow);
-}
-
-void FPInstabilityAnalysis::create_global_symbol_table(int size) {
-  InterpreterObserver::create_global_symbol_table(size);
-
-  //
-  // instantiate copyShadow
-  //
-  IValue::setCopyShadow(&copyShadow);
-}
-
-
-
-/*
-void FPInstabilityAnalysis::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  InterpreterObserver::fptoui(iid, type, op, size, inx);
-
-  long double sv;
-  int64_t sresult;
-
-  if (op->inx == -1) {
-    sv = (long double) op->value.as_flp;
-  } else {
-    IValue* iv;
-
-    iv = op->isGlobal ? globalSymbolTable[op->inx] :
-      executionStack.top()[op->inx];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
-          double*) iv->getShadow());
-  }
-
-  switch (type) {
-    case INT1_KIND:
-      sresult = (bool) sv;
-      break;
-    case INT8_KIND:
-      sresult = (uint8_t) sv;
-      break;
-    case INT16_KIND:
-      sresult = (uint16_t) sv;
-      break;
-    case INT24_KIND:
-    case INT32_KIND:
-      sresult = (uint32_t) sv;
-      break;
-    case INT64_KIND:
-      sresult = (uint64_t) sv;
-      break;
-    default:
-      sresult = 0;
-      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(type));
-      safe_assert(false);
-  }
-
-  if (sresult != executionStack.top()[inx]->getIntValue()) {
-    cerr << "[FPInstabilityAnalysis] Concrete difference at FPTOUI." << endl; 
-  }
-}
-
 void FPInstabilityAnalysis::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   InterpreterObserver::fptosi(iid, type, op, size, inx);
 
@@ -492,6 +446,45 @@ void FPInstabilityAnalysis::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size
 
 void FPInstabilityAnalysis::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
   InterpreterObserver::fptrunc(iid, type, op, size, inx);
+
+  long double sv;
+  long double sresult;
+  long double *shadow;
+
+  if (op->inx == -1) {
+    sv = (long double) op->value.as_flp;
+  } else {
+    IValue* iv;
+
+    iv = op->isGlobal ? globalSymbolTable[op->inx] :
+      executionStack.top()[op->inx];
+    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
+          double*) iv->getShadow());
+  }
+
+  switch (type) {
+    case FLP32_KIND:
+      sresult = (float) sv;
+      break;
+    case FLP64_KIND:
+      sresult = (double) sv;
+      break;
+    case FLP80X86_KIND:
+      sresult = (long double) sv;
+      break;
+    default:
+      sresult = 0;
+      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
+      safe_assert(false);
+  }
+
+  shadow = (long double *) malloc(sizeof(long double));
+  shadow[0] = sresult;
+  executionStack.top()[inx]->setShadow(shadow);
+}
+
+void FPInstabilityAnalysis::fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
+  InterpreterObserver::fpext(iid, type, op, size, inx);
 
   long double sv;
   long double sresult;
