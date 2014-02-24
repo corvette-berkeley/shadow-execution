@@ -396,7 +396,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   return;
 }
 
-void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool loadGlobal, int loadInx, int file, int line, int inx) {
+void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, KVALUE* src, bool loadGlobal, int loadInx, int file, int line, int inx) {
 
   bool isPointerConstant = false;
   bool sync = false;
@@ -406,10 +406,15 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, KVALUE* src, bool load
 
   // obtain source pointer value
   if (src->inx == -1) {
+    safe_assert(opScope == CONSTANT);
     isPointerConstant = true;
   } else if (src->isGlobal) {
+    safe_assert(opScope == GLOBAL);
+    safe_assert(opInx == src->inx);
     srcPtrLocation = globalSymbolTable[src->inx];
   } else {
+    safe_assert(opScope == LOCAL);
+    safe_assert(opInx == src->inx);
     srcPtrLocation = executionStack.top()[src->inx];
   }
 

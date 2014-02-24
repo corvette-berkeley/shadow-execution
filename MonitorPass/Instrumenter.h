@@ -894,6 +894,36 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
+
+  /*******************************************************************************************/
+  Instruction* CALL_IID_KIND_INT_INT_KVALUE_BOOL_INT_INT_INT_INT(const char* func, Value* iid, Value* kind, Value *scope, Value *opInx, Value* kvalue1, Value* loadGlobal,  
+						  Value* loadInx, Value* file, Value* line, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KVALUEPTR_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(kind);
+    Args.push_back(scope);
+    Args.push_back(opInx);
+    Args.push_back(kvalue1);
+    Args.push_back(loadGlobal);
+    Args.push_back(loadInx);
+    Args.push_back(file);
+    Args.push_back(line);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
   /*******************************************************************************************/
   Instruction* CALL_IID_BOOL_INT(const char* func, Value* iid, Value* b1, Value* inx) {
     TypePtrVector ArgTypes;

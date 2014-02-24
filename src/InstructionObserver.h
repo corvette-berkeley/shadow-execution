@@ -91,7 +91,7 @@ public:
 	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* result UNUSED) {};
 	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
-	virtual void load(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void load(IID iid UNUSED, KIND kind UNUSED, SCOPE opScope UNUSED, int opInx UNUSED,  KVALUE* op UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void store(int pInx UNUSED, SCOPE pScope UNUSED, KVALUE *op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void fence() {};

@@ -75,11 +75,21 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
        * Load for non-struct. 
        */
 
-      KIND kind = TypeToKind(type);
-      if (kind == INV_KIND) return false;
-      Constant* kindC = KIND_CONSTANT(kind);
+      KIND kind;
+      Constant *kindC, *cScope, *cOpInx;
+      Value *ptrOp;
 
-      Instruction* call = CALL_IID_KIND_KVALUE_BOOL_INT_INT_INT_INT("llvm_load", iid, kindC, op, loadGlobal, loadInx, fileC, CLine, inx);
+      ptrOp = loadInst->getPointerOperand();
+      cScope = INT32_CONSTANT(getScope(ptrOp), SIGNED);
+      cOpInx = computeIndex(ptrOp);
+
+      kind = TypeToKind(type);
+      if (kind == INV_KIND) return false;
+      kindC = KIND_CONSTANT(kind);
+
+      Instruction* call =
+        CALL_IID_KIND_INT_INT_KVALUE_BOOL_INT_INT_INT_INT("llvm_load", iid,
+            kindC, cScope, cOpInx, op, loadGlobal, loadInx, fileC, CLine, inx);
       instrs.push_back(call);
 
       InsertAllBefore(instrs, loadInst);
