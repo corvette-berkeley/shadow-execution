@@ -50,11 +50,11 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     
     Type *gepInstType;
     KIND kind;
-    Constant *kindC, *elementSizeC;
+    Constant *kindC, *elementSizeC, *scopeInx[3], *valOrInxInx[3], *sizeC[2];
     Instruction *call;
-    int elementSize;
+    int elementSize, i;
     queue < Value* > arrIndices;
-     queue < int64_t > arrSize;
+    queue < int64_t > arrSize;
     
     //
     // Collect all array indices
@@ -64,7 +64,31 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     } 
 
     //
-    // Callbacks for array indices
+    // Create constants for array indices. Because array is usually up to size
+    // 2, getelementptr usually has indices up to size 3. We cover this usual case,
+    // and put array indices as arguments to the callback for
+    // getelementptr_array. If the array is of dimension greater than two,
+    // push_getelementptr_in and push_array_size will be used to push the remain indices
+    // and sizes
+    //
+    for (i = 0; i < 3; i++) {
+      if (!arrIndices.empty()) {
+        Value *value;
+        ActualValue av;
+
+        value = arrIndices.front();
+        av = getActualValue(value);
+        scopeInx[i] = INT32_CONSTANT(av.scope, SIGNED);
+        valOrInxInx[i] = av.valOrInx;
+        arrIndices.pop();
+      } else {
+        scopeInx[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
+        valOrInxInx[i] = INT64_CONSTANT(-1, SIGNED);
+      }
+    }
+
+    //
+    // Callbacks for pushing array indices
     //
     while (!arrIndices.empty()){
       Constant *scope[5], *valOrInx[5];
@@ -94,17 +118,50 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     } 
 
-    /*
+    //
+    // Collect all array sizes
+    //
     while (dyn_cast<ArrayType>(elemT)) {
-      arrSize.push(((ArrayType *)elemT)->getNumELements());
+      arrSize.push(((ArrayType *)elemT)->getNumElements());
+      elemT = ((ArrayType *)elemT)->getElementType();
     }
-    */
 
-    while (dyn_cast<ArrayType>(elemT)) {
-      Constant* size = INT64_CONSTANT(((ArrayType*)elemT)->getNumElements(), UNSIGNED);
-      Instruction* call = CALL_INT64("llvm_push_array_size", size);
+    //
+    // Create constants for array sizes. Array is usually up to two dimensions. We cover this usual case,
+    // and put array sizes as arguments to the callback for
+    // getelementptr_array. If the array is of dimension greater than two,
+    // push_getelementptr_in and push_array_size will be used to push the
+    // remain indices and sizes
+    //
+    for (i = 0; i < 2; i++) {
+      if (!arrSize.empty()) {
+        sizeC[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
+        arrSize.pop();
+      } else {
+        sizeC[i] = INT32_CONSTANT(-1, SIGNED);
+      }
+    }
+
+    //
+    // Callbacks for pushing array sizes
+    //
+    while (!arrSize.empty()) {
+      Constant *size[5];
+      Instruction *call;
+      int i; 
+
+      for (i = 0; i < 5; i++) {
+        if (!arrSize.empty()) {
+          size[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
+          arrSize.pop();
+        } else {
+          size[i] = INT32_CONSTANT(-1, SIGNED);
+        }
+      } 
+
+      call = CALL_INT_INT_INT_INT_INT("llvm_push_array_size5", size[0],
+          size[1], size[2], size[3], size[4]);
       instrs.push_back(call);
-      elemT = ((ArrayType*)elemT)->getElementType();
     }
 
     gepInstType = ((PointerType*) gepInst->getType())->getElementType();
@@ -121,7 +178,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
      
-    call = CALL_IID_BOOL_KVALUE_KIND_INT_INT("llvm_getelementptr_array", iidC, inbound, ptrOp, kindC, elementSizeC, inxC);
+    call = CALL_KVALUE_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", ptrOp, kindC, elementSizeC, scopeInx[0], scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
 
     instrs.push_back(call);
 

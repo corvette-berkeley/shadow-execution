@@ -92,7 +92,9 @@ extern "C" {
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
   void llvm_getelementptr(IID iid, bool inbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int x);
-  void llvm_getelementptr_array(IID iid, bool inbound, KVALUE* value, KIND kind, int elementSize, int x);
+  void llvm_getelementptr_array(KVALUE* value, KIND kind, int elementSize, int
+      scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t
+      valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
   void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
 
   // ***** Conversion Operations ***** //
@@ -137,6 +139,7 @@ extern "C" {
   void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
   void llvm_push_getelementptr_inx2(int value);
   void llvm_push_array_size(uint64_t i);
+  void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
   void llvm_construct_array_type(uint64_t i);
   void llvm_after_call(KVALUE* value);
   void llvm_after_void_call();

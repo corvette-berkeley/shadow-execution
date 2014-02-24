@@ -99,7 +99,11 @@ public:
 	virtual void atomicrmw() {};
 	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KVALUE* index UNUSED, KIND kind UNUSED, 
 				   uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {};
-  virtual void getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, int elementSize UNUSED, int inx UNUSED) {};
+  virtual void getelementptr_array(KVALUE* value UNUSED, KIND kind UNUSED, int
+      elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, int
+      scopeInx03 UNUSED, int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED,
+      int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx
+      UNUSED) {};
   virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
@@ -144,6 +148,7 @@ public:
 	virtual void push_getelementptr_inx5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED, int64_t vori01 UNUSED, int64_t vori02 UNUSED, int64_t vori03 UNUSED, int64_t vori04 UNUSED, int64_t vori05 UNUSED) {};
 	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};
+	virtual void push_array_size5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED) {}; 
 	virtual void construct_array_type(uint64_t i UNUSED) {};
 	virtual void after_call(KVALUE* value UNUSED) {};
 	virtual void after_void_call() {};

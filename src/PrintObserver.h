@@ -132,7 +132,7 @@ public:
 
 	virtual void getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx);
 
-	virtual void getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx); 
+  virtual void getelementptr_array(KVALUE* value, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
 
 	virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx); 
 
@@ -215,9 +215,11 @@ public:
 
 	void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
 
-	void push_getelementptr_inx2(int value);
-
 	void push_array_size(uint64_t size);
+
+	void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
+
+	void push_getelementptr_inx2(int value);
 
 	void construct_array_type(uint64_t i);
 	

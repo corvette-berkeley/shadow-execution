@@ -1457,7 +1457,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   return;
 }
 
-void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, int elementSize, int inx) {
+void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
 
   IValue* arrayElemPtr;
   int newOffset;
@@ -1467,10 +1467,11 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     // constant pointer
     // return a dummy object
     arrayElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
-    getElementPtrIndexList.pop();
-    if (!getElementPtrIndexList.empty()) {
+    while (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
-      safe_assert(getElementPtrIndexList.empty());
+    }
+    while (!arraySize.empty()) {
+      arraySize.pop();
     }
   } else {
     IValue *ptrArray, *array;
@@ -1486,14 +1487,24 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     // compute the index for flatten array representation of
     // the program's multi-dimensional array
     //
+    arrayDim = (size02 != -1) ? arraySize.size() + 2 : 1;
 
-    arrayDim = arraySize.size();
-
-    getIndexNo = getElementPtrIndexList.size() - 1;
+    if (scopeInx02 == SCOPE_INVALID) {
+      scopeInx02 = CONSTANT;
+      valOrInx02 = 0;
+    } 
+    
+    if (scopeInx03 == SCOPE_INVALID) {
+      getIndexNo = 1;
+    } else {
+      getIndexNo = getElementPtrIndexList.size() + 2;
+    }
 
     DEBUG_STDOUT("arrayDim " << arrayDim);
 
     DEBUG_STDOUT("getIndexNo " << getIndexNo);
+
+    safe_assert(getIndexNo != 0);
 
     arraySizeVec = (int*) malloc(getIndexNo * sizeof(int));
 
@@ -1501,17 +1512,18 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
 
     // the size of out-most dimension; 
     // we do not need this to compute the index
-    safe_assert(!arraySize.empty());
-    arraySize.pop(); 
-    i = 0;
-    while (!arraySize.empty()) {
-      if (i < getIndexNo) {
-        arraySizeVec[i] = arraySize.front();
+    if (size02 != -1) {
+      arraySizeVec[0] = size02;
+      i = 1;
+      while (!arraySize.empty()) {
+        if (i < getIndexNo) {
+          arraySizeVec[i] = arraySize.front();
+        }
+        arraySize.pop();
+        i++;
       }
-      arraySize.pop();
-      i++;
+      safe_assert(arraySize.empty());
     }
-    safe_assert(arraySize.empty());
 
     arraySizeVec[getIndexNo-1] = 1; 
 
@@ -1522,17 +1534,20 @@ void InterpreterObserver::getelementptr_array(IID iid UNUSED, bool inbound UNUSE
     }
 
     // the first index is for the pointer operand;
-    safe_assert(!getElementPtrIndexList.empty());
-    array = array + getElementPtrIndexList.front();
-    getElementPtrIndexList.pop(); 
+    array = array + actualValueToIntValue(scopeInx01, valOrInx01);
+    safe_assert(scopeInx01 != SCOPE_INVALID);
+    indexVec[0] = actualValueToIntValue(scopeInx02, valOrInx02);
 
-    i = 0;
-    while (!getElementPtrIndexList.empty()) {
-      indexVec[i] = getElementPtrIndexList.front();
-      getElementPtrIndexList.pop();
-      i++;
+    if (scopeInx03 != SCOPE_INVALID) {
+      indexVec[1] = actualValueToIntValue(scopeInx03, valOrInx03);
+      i = 2;
+      while (!getElementPtrIndexList.empty()) {
+        indexVec[i] = getElementPtrIndexList.front();
+        getElementPtrIndexList.pop();
+        i++;
+      }
+      safe_assert(getElementPtrIndexList.empty());
     }
-    safe_assert(getElementPtrIndexList.empty());
 
     index = 0;
     for (i = 0; i < getIndexNo; i++) {
@@ -2540,6 +2555,24 @@ void InterpreterObserver::push_getelementptr_inx2(int int_value) {
 void InterpreterObserver::push_array_size(uint64_t size) {
 
   arraySize.push(size);
+}
+
+void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s5) {
+  if (s1 != -1) {
+    arraySize.push(s1);
+    if (s2 != -1) {
+      arraySize.push(s2);
+      if (s3 != -1) {
+        arraySize.push(s3);
+        if (s4 != -1) {
+          arraySize.push(s4);
+          if (s5 != -1) {
+            arraySize.push(s5);
+          }
+        }
+      }
+    }
+  }
 }
 
 void InterpreterObserver::after_call(KVALUE* kvalue) {

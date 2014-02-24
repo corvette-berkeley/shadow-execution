@@ -193,8 +193,8 @@ void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIN
   DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, loadGlobal, loadInx, line, inx)
 }
 
-void llvm_getelementptr_array(IID iid, bool isbound, KVALUE* value, KIND kind, int elementSize, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_array, iid, isbound, value, kind, elementSize, inx)
+void llvm_getelementptr_array(KVALUE* value, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_array, value, kind, elementSize, scopeInx01, scopeInx02, scopeInx03, valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
 }
 
 void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind1, KIND kind2, int inx) {
@@ -336,6 +336,10 @@ void llvm_push_getelementptr_inx(KVALUE* value) {
 
 void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03, scope04, scope05, vori01, vori02, vori03, vori04, vori05);
+}
+
+void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05) { 
+  DISPATCH_TO_OBSERVERS(push_array_size5, scope01, scope02, scope03, scope04, scope05);
 }
 
 void llvm_push_getelementptr_inx2(int value) {

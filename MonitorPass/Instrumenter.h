@@ -470,6 +470,39 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
+  Instruction* CALL_KVALUE_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT(const char* func, Value* kvalue, Value *kind, Value *i0, Value *i1, Value *i2, Value *i3, Value *i64_0, Value *i64_1, Value *i64_2, Value *i4, Value *i5, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(KVALUEPTR_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(kvalue);
+    Args.push_back(kind);
+    Args.push_back(i0);
+    Args.push_back(i1);
+    Args.push_back(i2);
+    Args.push_back(i3);
+    Args.push_back(i64_0);
+    Args.push_back(i64_1);
+    Args.push_back(i64_2);
+    Args.push_back(i4);
+    Args.push_back(i5);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
   Instruction* CALL_IID_BOOL_KVALUE_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
@@ -628,6 +661,25 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     ValuePtrVector Args;
     Args.push_back(kvalue);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_INT_INT_INT(const char* func, Value *i1, Value *i2, Value *i3, Value *i4, Value *i5) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i1);
+    Args.push_back(i2);
+    Args.push_back(i3);
+    Args.push_back(i4);
+    Args.push_back(i5);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

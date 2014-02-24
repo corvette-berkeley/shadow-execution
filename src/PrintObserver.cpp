@@ -195,8 +195,8 @@ void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* ind
   DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", index:" << KVALUE_ToString(index) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
 }
 
-void PrintObserver::getelementptr_array(IID iid, bool inbound, KVALUE* op, KIND kind, int elementSize, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", elementSize:" << elementSize <<  ", kind:" << KIND_ToString(kind) << " [INX: " << inx << "]");
+void PrintObserver::getelementptr_array(KVALUE* op, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> pointer value:" << KVALUE_ToString(op) << ", elementSize:" << elementSize <<  ", kind:" << KIND_ToString(kind) << ", scopeInx01:" << scopeInx01 << ", scopeInx02:" << scopeInx02 << ", scopeInx03:" << scopeInx03 << ", valOrInx01:" << valOrInx01 << ", valOrInx02:" << valOrInx02 << ", valOrInx03:" << valOrInx03 << ", size01:" << size01 << ", size02:" << size02 << " [INX: " << inx << "]");
 }
 
 void PrintObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx) {
@@ -354,6 +354,10 @@ void PrintObserver::push_getelementptr_inx2(int value) {
 
 void PrintObserver::push_array_size(uint64_t i) {
   DEBUG_STDOUT("<<<<< PUSH ARRAY SIZE >>>>> size: " << i);
+}
+
+void PrintObserver::push_array_size5(int s1, int s2, int s3, int s4, int s5){
+  DEBUG_STDOUT("<<<<< PUSH ARRAY SIZE  5 >>>>> size: [" << s1 << ", " << s2 << ", " << s3 << ", " << s4 << ", " << s5 << "]");
 }
 
 void PrintObserver::construct_array_type(uint64_t i) {
