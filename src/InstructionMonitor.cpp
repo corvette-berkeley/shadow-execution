@@ -420,7 +420,7 @@ ObserverPtrList observers_;
 
 // active observers
 REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")

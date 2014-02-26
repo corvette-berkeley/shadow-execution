@@ -41,9 +41,6 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     InstrPtrVector instrs;
 
-    Value* op = KVALUE_VALUE(loadInst->getPointerOperand(), instrs, NOSIGN);
-    if(op == NULL) return false;
-
     Type *type = loadInst->getType();
     if (!type) return false;
 
@@ -52,6 +49,9 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       /*
        * Load for struct is treated separately.
        */
+
+      Value* op = KVALUE_VALUE(loadInst->getPointerOperand(), instrs, NOSIGN);
+      if(op == NULL) return false;
 
       KVALUE_STRUCTVALUE(loadInst, instrs);
 

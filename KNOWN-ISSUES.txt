@@ -15,22 +15,21 @@ Optimizations for Instrumentation:
 - Remove KVALUE for binary operations
 - Remove KVALUE for bitwise operations
 - Remove use of push_array in allocax
+- Remove KVALUE for load instruction
 
 Need to do:
-- Remove KVALUE for casting operations
-- Remove KVALUE for store
 - Remove the push calls as much as possible
 - Remove fields in KVALUE as much as possible
      
 Program |    Binary time | Inst time v1 | Note | Inst v2 |
-LU.S |  0.14s | 24.99s | 22.49 | Reduce the number of push_getelementptr_inx with push_getelementptr_inx5. | 19.63 | Reduce the number of push_array_size with push_array_size5. | 15.79 | Get rid of push_getelementptr_inx and push_array_size for common cases |
+LU.S |  0.14s | 24.99s | 22.49 | Reduce the number of push_getelementptr_inx with push_getelementptr_inx5. | 19.63 | Reduce the number of push_array_size with push_array_size5. | 15.79 | Get rid of push_getelementptr_inx and push_array_size for common cases | 15.91 | Get rid of KVALUE for load instruction |
 LU.A | 1m 27s
-CG.S | 0.18s | 14.13s | 13.85 | 13.66 | 13.08
-EP.S | 3.02s | 42.33s | 42.31 | 40.07 | Seems that array is not dominant here.
+CG.S | 0.18s | 14.13s | 13.85 | 13.66 | 13.08 | 13.14
+EP.S | 3.02s | 42.33s | 42.31 | 40.07 | 39.48 | Seems that array is not dominant here.
 EP.A
-MG.S | 0.05s | 2.78s | 2.77 | 2.69 | 2.67
+MG.S | 0.05s | 2.78s | 2.77 | 2.69 | 2.67 | 2.67
 MG.A | 6.13s | 
-IS.S | 0.04s | 1s | 0.93 | 0.81 | 0.85
+IS.S | 0.04s | 1s | 0.93 | 0.81 | 0.85 | 0.89
 IS.A
 
 Optimizations/Usability for Interpretation/Analysis:
