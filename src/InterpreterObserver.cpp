@@ -106,6 +106,69 @@ unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned
   return index; 
 }
 
+bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValue) {
+  bool result; 
+  double dpValue;
+  double *dpPtr;
+
+  result = false;
+  dpPtr = (double *) &srcValue; 
+  dpValue = *dpPtr;
+
+  switch(srcKind) {
+    case PTR_KIND:
+
+      DEBUG_STDOUT("\t Destination value: " << (int64_t) dest->getValue().as_ptr);
+      DEBUG_STDOUT("\t Destination value plus offset: " << (int64_t)
+          dest->getValue().as_ptr + dest->getOffset());
+      DEBUG_STDOUT("\t Concrete value: " << (int64_t) srcValue);
+
+      result = ((int64_t)dest->getValue().as_ptr + dest->getOffset() == srcValue);
+      break;
+    case INT1_KIND:
+      result = ((bool)dest->getValue().as_int == (bool)srcValue);
+      break;
+    case INT8_KIND: 
+      result = ((int8_t)dest->getValue().as_int == (int8_t)srcValue);
+      break;
+    case INT16_KIND: 
+      result = ((int16_t)dest->getValue().as_int == (int16_t)srcValue);
+      break;
+    case INT24_KIND:
+      result = (dest->getIntValue() == srcValue);
+      break;
+    case INT32_KIND: 
+      result = ((int32_t)dest->getValue().as_int == (int32_t)srcValue);
+      break;
+    case INT64_KIND:
+      result = (dest->getValue().as_int == srcValue);
+      break;
+    case FLP32_KIND:
+      if (isnan((float)dest->getValue().as_flp) && isnan((float)dpValue)) {
+        result = true;
+      }
+      else {
+        result = ((float)dest->getValue().as_flp) == ((float)dpValue);
+      }
+      break;
+    case FLP64_KIND:
+      if (isnan((double)dest->getValue().as_flp) && isnan((double)dpValue)) {
+        result = true;
+      }
+      else {
+        result = ((double)dest->getValue().as_flp) == ((double)dpValue);
+      }
+      break;
+    case FLP80X86_KIND:
+      result = dest->getValue().as_flp == dpValue;
+      break;
+    default: //safe_assert(false);
+      break;
+  }
+
+  return result;
+}
+
 bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
   bool result = false;
 
@@ -139,10 +202,10 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       break;
     case FLP32_KIND:
       if (isnan((float)dest->getValue().as_flp) && isnan((float)kv->value.as_flp)) {
-	result = true;
+        result = true;
       }
       else {
-	result = ((float)dest->getValue().as_flp) == ((float)kv->value.as_flp);
+        result = ((float)dest->getValue().as_flp) == ((float)kv->value.as_flp);
       }
       break;
     case FLP64_KIND:
@@ -548,9 +611,9 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   return;
 }
 
-void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int file UNUSED, int line UNUSED, int inx UNUSED) {
+void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file UNUSED, int line UNUSED, int inx UNUSED) {
 
-  if (src->kind == INT80_KIND) {
+  if (srcKind == INT80_KIND) {
     cout << "[store] Unsupported INT80_KIND" << endl;
     safe_assert(false);
     return; // otherwise compiler warning
@@ -576,7 +639,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int f
   // initialize with an empty IValue object
   if (!destPtrLocation->isInitialized()) {
     DEBUG_STDOUT("\tDestination pointer location is not initialized");
-    IValue* iValue = new IValue(src->kind);
+    IValue* iValue = new IValue(srcKind);
     iValue->setLength(0);
     destPtrLocation->setValueOffset( (int64_t)iValue - (int64_t)destPtrLocation->getPtrValue() ); 
     destPtrLocation->setInitialized();
@@ -589,18 +652,19 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int f
   int internalOffset = 0;
 
   // retrieve source
-  if (src->inx == -1) {
-    srcLocation = new IValue(src->kind, src->value);
+  if (srcScope == CONSTANT) {
+    VALUE value;
+    value.as_int = srcValue;
+
+    srcLocation = new IValue(srcKind, value);
     srcLocation->setLength(0); // uninitialized constant pointer 
-    if (src->kind == INT1_KIND) {
+    if (srcKind == INT1_KIND) {
       srcLocation->setBitOffset(1);
     }
+  } else if (srcScope == GLOBAL) {
+      srcLocation = globalSymbolTable[srcInx];
   } else {
-    if (src->isGlobal) {
-      srcLocation = globalSymbolTable[src->inx];
-    } else {
-      srcLocation = executionStack.top()[src->inx];
-    }
+    srcLocation = executionStack.top()[srcInx];
   }
 
   DEBUG_STDOUT("\tSrc: " << srcLocation->toString());
@@ -619,7 +683,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int f
   DEBUG_STDOUT("\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize());
 
   // writing src into dest
-  if (destPtrLocation->writeValue(internalOffset, KIND_GetSize(src->kind), srcLocation)) {
+  if (destPtrLocation->writeValue(internalOffset, KIND_GetSize(srcKind), srcLocation)) {
     srcLocation->copy(destLocation);
   }
   destPtrLocation->setInitialized();
@@ -631,7 +695,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int f
 
   // NOTE: destLocation->getType() before
   IValue* writtenValue = new IValue(srcLocation->getType(),
-      destPtrLocation->readValue(internalOffset, src->kind)); 
+      destPtrLocation->readValue(internalOffset, srcKind)); 
   writtenValue->setSize(destLocation->getSize());
   writtenValue->setIndex(destLocation->getIndex());
   writtenValue->setOffset(destLocation->getOffset());
@@ -639,9 +703,10 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KVALUE* src, int f
 
   DEBUG_STDOUT("\twrittenValue: " << writtenValue->toString());
 
-  if (!checkStore(writtenValue, src)) { // destLocation
+  if (!checkStore(writtenValue, srcKind, srcValue)) { // destLocation
     DEBUG_STDERR("\twrittenValue: " << writtenValue->toString());
-    DEBUG_STDERR("\tKVALUE: " << KVALUE_ToString(src));
+    DEBUG_STDERR("\tconcreteType: " << KIND_ToString(srcKind));
+    DEBUG_STDERR("\tconcreteValue: " << srcValue);
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
   }

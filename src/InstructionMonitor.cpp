@@ -173,8 +173,8 @@ void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int in
   DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, file, line, inx);
 }
 
-void llvm_store(int pInx, SCOPE pScope, KVALUE* op, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(store, pInx, pScope, op, file, line, inx)
+void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(store, pInx, pScope, srcKind, srcScope, srcInx, srcValue, file, line, inx)
 }
 
 void llvm_fence() {
@@ -419,8 +419,8 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-REGISTER_OBSERVER(PrintObserver, "print")
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(PrintObserver, "print")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")

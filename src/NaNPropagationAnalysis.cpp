@@ -16,12 +16,12 @@ void NaNPropagationAnalysis::load(IID iid UNUSED, KIND type, SCOPE opScope, int 
   return;
 }
 
-void NaNPropagationAnalysis::store(int pInx, SCOPE pScope, KVALUE *src, int file, int line, int inx) {
-  InterpreterObserver::store(pInx, pScope, src, file, line, inx);
+void NaNPropagationAnalysis::store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx) {
+  InterpreterObserver::store(pInx, pScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
   // TODO: storing nan constant
-  if (src->inx != -1) {
-    IValue* srcValue = executionStack.top()[src->inx];
+  if (srcScope != CONSTANT) {
+    IValue* srcValue = executionStack.top()[srcInx];
     
     if (srcValue->getType() == FLP32_KIND || srcValue->getType() == FLP64_KIND || srcValue->getType() == FLP128_KIND) {
       if (isnan(srcValue->getFlpValue())) {

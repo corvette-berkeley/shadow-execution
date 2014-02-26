@@ -122,7 +122,7 @@ public:
 
 	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
 
-	virtual void store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx);
+	virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
 
 	virtual void fence();
 

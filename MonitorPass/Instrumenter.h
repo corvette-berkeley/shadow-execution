@@ -953,6 +953,33 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
+  Instruction* CALL_INT_INT_KIND_INT_INT_INT64_INT_INT_INT(const char* func, Value *i32_0, Value *i32_1, Value* kind, Value *scope, Value *srcInx, Value *i64_1, Value *i32_2, Value *i32_3, Value *i32_4) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i32_0);
+    Args.push_back(i32_1);
+    Args.push_back(kind);
+    Args.push_back(scope);
+    Args.push_back(srcInx);
+    Args.push_back(i64_1);
+    Args.push_back(i32_2);
+    Args.push_back(i32_3);
+    Args.push_back(i32_4);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
   Instruction* CALL_INT_INT_KVALUE_INT_INT_INT(const char* func, Value *i32_0, Value *i32_1, Value* kv, Value *i32_2, Value *i32_3, Value *i32_4) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(INT32_TYPE());

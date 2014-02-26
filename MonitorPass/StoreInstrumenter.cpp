@@ -13,8 +13,10 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     safe_assert(parent_ != NULL);
 
     InstrPtrVector instrs;
-    Value *valueOp;
-    Constant *cPointerInx, *cScope, *cInx, *cLine, *cFile;
+    Value *valueOp, *pointerOp;
+    Type *valueOpType;
+    Constant *cPointerInx, *cScope, *cInx, *cLine, *cFile, *cSrcType, *cSrcScope, *cSrcInx; 
+    Instruction* cSrcValue;
     string filename;
     Instruction *call;
 
@@ -35,17 +37,45 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     parent_->AS_ = storeInst->getPointerAddressSpace();
 
-    valueOp = KVALUE_VALUE(storeInst->getValueOperand(),
-        instrs, SIGNED);
-    if(valueOp == NULL) return false; 
+    valueOp = storeInst->getValueOperand();
+    pointerOp = storeInst->getPointerOperand();
+    valueOpType = valueOp->getType();
 
-    Value* pointerOp = storeInst->getPointerOperand();
-
+    cSrcType = KIND_CONSTANT(TypeToKind(valueOpType));
+    cSrcScope = INT32_CONSTANT(getScope(valueOp), SIGNED);
+    cSrcInx = computeIndex(valueOp);
     cPointerInx = computeIndex(pointerOp);
     cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
     cInx = computeIndex(storeInst);
     cLine = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
 
+    //
+    // Obtain source value
+    //
+    if (valueOpType->isIntegerTy()) {
+
+      cSrcValue = INTMAX_CAST_INSTR(valueOp, true);
+      instrs.push_back(cSrcValue);
+
+    } else if (valueOpType->isFloatingPointTy()) {
+
+      Instruction *flpCast;
+
+      flpCast = FLPMAX_CAST_INSTR(valueOp);
+      cSrcValue = VALUE_CAST_INSTR(flpCast);
+
+      instrs.push_back(flpCast);
+      instrs.push_back(cSrcValue);
+      
+    } else if (valueOpType->isPointerTy()) {
+      cSrcValue = PTRTOINT_CAST_INSTR(valueOp);
+
+      instrs.push_back(cSrcValue);
+    }
+
+    //
+    // Obtain file name
+    //
     filename = getFileName(storeInst);
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
@@ -56,7 +86,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
       cFile = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
     }
 
-    call = CALL_INT_INT_KVALUE_INT_INT_INT("llvm_store", cPointerInx, cScope, valueOp, cFile, cLine, cInx);
+    call = CALL_INT_INT_KIND_INT_INT_INT64_INT_INT_INT("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue, cFile, cLine, cInx);
     instrs.push_back(call);
 
     // instrument

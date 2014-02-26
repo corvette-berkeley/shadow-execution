@@ -174,8 +174,8 @@ void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bo
   DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", address:" << KVALUE_ToString(addr) << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx) {
-  DEBUG_STDOUT("<<<<< STORE >>>>> pInx:" << pInx << ", pScope:" << SCOPE_ToString(pScope) << ", op:" << KVALUE_ToString(op) << ", file:" << file << ", line:" << line << ", [INX: " << inx << "]");
+void PrintObserver::store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue,  int file, int line, int inx) {
+  DEBUG_STDOUT("<<<<< STORE >>>>> pInx:" << pInx << ", pScope:" << SCOPE_ToString(pScope) << ", srcKind:" << KIND_ToString(srcKind) << ", srcScope:" << SCOPE_ToString(srcScope) << ", srcInx:" << srcInx << ", srcValue:" << srcValue << ", file:" << file << ", line:" << line << ", [INX: " << inx << "]");
 }
 
 void PrintObserver::fence() {

@@ -19,7 +19,7 @@ class NaNPropagationAnalysis : public InterpreterObserver {
   
   virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx);
   
-  virtual void store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx);
+  virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
 
  private:
   //bool isOutOfBound(IValue* pointer);
