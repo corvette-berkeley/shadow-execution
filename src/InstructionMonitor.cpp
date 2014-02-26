@@ -165,8 +165,8 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KV
   DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, line, arg, addr);
 }
 
-void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, op, loadGlobal, loadInx, file, line, inx);
+void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
 }
 
 void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx) {
@@ -419,7 +419,7 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-// REGISTER_OBSERVER(PrintObserver, "print")
+REGISTER_OBSERVER(PrintObserver, "print")
 REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")

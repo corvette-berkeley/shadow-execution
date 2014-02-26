@@ -896,14 +896,14 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
-  Instruction* CALL_IID_KIND_INT_INT_KVALUE_BOOL_INT_INT_INT_INT(const char* func, Value* iid, Value* kind, Value *scope, Value *opInx, Value* kvalue1, Value* loadGlobal,  
+  Instruction* CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT_INT_INT(const char* func, Value* iid, Value* kind, Value *scope, Value *opInx, Value *opAddr, Value* loadGlobal,  
 						  Value* loadInx, Value* file, Value* line, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
     ArgTypes.push_back(KIND_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
-    ArgTypes.push_back(KVALUEPTR_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
     ArgTypes.push_back(BOOL_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
@@ -915,7 +915,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(kind);
     Args.push_back(scope);
     Args.push_back(opInx);
-    Args.push_back(kvalue1);
+    Args.push_back(opAddr);
     Args.push_back(loadGlobal);
     Args.push_back(loadInx);
     Args.push_back(file);

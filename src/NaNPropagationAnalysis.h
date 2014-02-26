@@ -17,7 +17,7 @@ class NaNPropagationAnalysis : public InterpreterObserver {
  public:
   NaNPropagationAnalysis(std::string name) : InterpreterObserver(name) {}
   
-  virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
+  virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx);
   
   virtual void store(int pInx, SCOPE pScope, KVALUE *op, int file, int line, int inx);
 

@@ -45,10 +45,9 @@
 
 using namespace std;
 	
-void PrintObserver::load(IID iid, KIND type, SCOPE opScope, int opInx, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx) {
+void PrintObserver::load(IID iid, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
   DEBUG_STDOUT("<<<<< LOAD >>>>> " << IID_ToString(iid).c_str() <<
-      ", kind:" << KIND_ToString(type).c_str() << ", opScope:" << SCOPE_ToString(opScope) << ", opInx:" << opInx <<
-      KVALUE_ToString(op).c_str() << ", loadGlobal: " << loadGlobal
+      ", kind:" << KIND_ToString(type).c_str() << ", opScope:" << SCOPE_ToString(opScope) << ", opInx:" << opInx << ", opAddr:" << opAddr << ", loadGlobal: " << loadGlobal
       << ", loadInx: " << loadInx << ", file: " << file << ", line:"
       << line << ", [INX: " << inx << "]");
 }

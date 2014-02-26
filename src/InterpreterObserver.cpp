@@ -396,7 +396,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   return;
 }
 
-void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, KVALUE* src, bool loadGlobal, int loadInx, int file, int line, int inx) {
+void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
 
   bool isPointerConstant = false;
   bool sync = false;
@@ -405,17 +405,12 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   LOG(INFO) << "[LOAD] Performing load at " << file << ":" << line << endl; 
 
   // obtain source pointer value
-  if (src->inx == -1) {
-    safe_assert(opScope == CONSTANT);
+  if (opScope == CONSTANT) {
     isPointerConstant = true;
-  } else if (src->isGlobal) {
-    safe_assert(opScope == GLOBAL);
-    safe_assert(opInx == src->inx);
-    srcPtrLocation = globalSymbolTable[src->inx];
+  } else if (opScope == GLOBAL) {
+    srcPtrLocation = globalSymbolTable[opInx];
   } else {
-    safe_assert(opScope == LOCAL);
-    safe_assert(opInx == src->inx);
-    srcPtrLocation = executionStack.top()[src->inx];
+    srcPtrLocation = executionStack.top()[opInx];
   }
 
   // perform load
@@ -455,7 +450,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       destLocation->setType(type);
 
       // sync load
-      sync = syncLoad(destLocation, src, type);
+      sync = syncLoad(destLocation, opAddr, type);
 
       // if sync happens, update srcPtrLocation if possible
       if (sync) {
@@ -484,7 +479,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       destLocation->setValue(zeroValue);
 
       // sync load
-      sync = syncLoad(destLocation, src, type);
+      sync = syncLoad(destLocation, opAddr, type);
 
       //
       // initialized source pointer
@@ -539,7 +534,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     destLocation->setLineNumber(line);
 
     // sync load
-    sync = syncLoad(destLocation, src, type);
+    sync = syncLoad(destLocation, opAddr, type);
 
     executionStack.top()[inx] = destLocation;
 
@@ -3031,6 +3026,142 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
         iValue->setValue(syncValue);
       }
       break;
+    default: 
+      cout << "Should not reach here!" << endl;
+      safe_assert(false);
+      break;
+  }
+
+  if (sync) {
+    DEBUG_STDOUT("\t SYNCING AT LOAD DUE TO MISMATCH");
+    DEBUG_STDOUT("\t " << iValue->toString());
+  }
+
+  return sync;
+}
+
+bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND type) { 
+  bool sync = false;
+  VALUE syncValue;
+  int64_t cValueVoid;
+  int16_t cValueInt16;
+  int32_t cValueInt32;
+  int32_t* cValueInt32Arr;
+  int64_t cValueInt64;
+  float cValueFloat;
+  double cValueDouble;
+  double cValueLD;
+
+  void *concreteValue;
+
+  concreteValue = (void *) concreteAddr;
+
+  switch (type) {
+    case PTR_KIND:
+      // TODO: we use int64_t to represent a void* here
+      // might not work on 32 bit machine
+      cValueVoid = *((int64_t*) concreteValue);
+
+      sync = (iValue->getValue().as_int + iValue->getOffset() != cValueVoid);
+      if (sync) {
+        syncValue.as_int = cValueVoid;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT1_KIND: 
+    case INT8_KIND: 
+      cValueInt32 = *((int8_t*) concreteValue);
+
+      sync = (((int8_t) iValue->getIntValue()) != cValueInt32);
+      if (sync) {
+        syncValue.as_int = cValueInt32;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT16_KIND: 
+      {
+        cValueInt16 = *((int16_t*) concreteValue);
+        sync = (((int16_t) iValue->getIntValue()) != cValueInt16);
+        if (sync) {
+          syncValue.as_int = cValueInt16;
+          iValue->setValue(syncValue);
+        }
+        break;
+      }
+    case INT24_KIND:
+      cValueInt32 = *((int32_t*) concreteValue);
+      cValueInt32 = cValueInt32 & 0x00FFFFFF;
+      sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
+      if (sync) {
+        cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
+        cValueInt32Arr[0] = cValueInt32; 
+        syncValue.as_int = *((int32_t*) cValueInt32Arr);
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT32_KIND: 
+      cValueInt32 = *((int32_t*) concreteValue);
+      sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
+      if (sync) {
+        cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
+        cValueInt32Arr[0] = cValueInt32; 
+        syncValue.as_int = *((int32_t*) cValueInt32Arr);
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT64_KIND:
+      cValueInt64 = *((int64_t*) concreteValue);
+      sync = (iValue->getValue().as_int != cValueInt64);
+      if (sync) {
+        syncValue.as_int = cValueInt64;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case INT80_KIND:
+      cout << "[syncload] Unsupported INT80_KIND" << endl;
+      safe_assert(false);
+      break;
+    case FLP32_KIND:
+      cValueFloat = *((float*) concreteValue);
+      if (isnan((float)iValue->getValue().as_flp) && isnan(cValueFloat)) {
+        sync = false;
+      }
+      else {
+        sync = ((float)iValue->getValue().as_flp != cValueFloat);
+      }
+      if (sync) {
+        syncValue.as_flp = cValueFloat;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case FLP64_KIND:
+      cValueDouble = *((double*) concreteValue);
+      if (isnan((double)iValue->getValue().as_flp) && isnan(cValueDouble)) {
+        sync = false;
+      }
+      else {
+        sync = ((double)iValue->getValue().as_flp != cValueDouble);
+      }
+      if (sync) {
+        syncValue.as_flp = cValueDouble;
+        iValue->setValue(syncValue);
+      }
+      break;
+    case FLP80X86_KIND:
+      {
+        cValueLD = *((long double*) concreteValue);
+        if (isnan((double)iValue->getValue().as_flp) && isnan(cValueLD)) {
+          sync = false;
+        }
+        else {
+          sync = ((double)iValue->getValue().as_flp != cValueLD);
+        }
+        if (sync) {
+          syncValue.as_flp = cValueLD;
+          iValue->setValue(syncValue);
+        }
+        break;
+      }
     default: 
       cout << "Should not reach here!" << endl;
       safe_assert(false);

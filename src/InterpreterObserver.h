@@ -104,7 +104,7 @@ class InterpreterObserver : public InstructionObserver {
     isReturn = false;
   }
 
-  virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
+  virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx);
   
   virtual void load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
 
@@ -284,6 +284,8 @@ class InterpreterObserver : public InstructionObserver {
   void printCurrentFrame();
 
   bool syncLoad(IValue* iValue, KVALUE* concrete, KIND type);
+
+  bool syncLoad(IValue* iValue, uint64_t opAddr, KIND type);
 
   bool checkStore(IValue *dest, KVALUE *kv);
 

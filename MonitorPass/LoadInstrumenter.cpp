@@ -78,6 +78,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       KIND kind;
       Constant *kindC, *cScope, *cOpInx;
       Value *ptrOp;
+      Instruction *ptrOpCast, *call;
 
       ptrOp = loadInst->getPointerOperand();
       cScope = INT32_CONSTANT(getScope(ptrOp), SIGNED);
@@ -87,9 +88,12 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       if (kind == INV_KIND) return false;
       kindC = KIND_CONSTANT(kind);
 
-      Instruction* call =
-        CALL_IID_KIND_INT_INT_KVALUE_BOOL_INT_INT_INT_INT("llvm_load", iid,
-            kindC, cScope, cOpInx, op, loadGlobal, loadInx, fileC, CLine, inx);
+      ptrOpCast = PTRTOINT_CAST_INSTR(ptrOp);
+      instrs.push_back(ptrOpCast);
+
+      call =
+        CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT_INT_INT("llvm_load", iid,
+            kindC, cScope, cOpInx, ptrOpCast, loadGlobal, loadInx, fileC, CLine, inx);
       instrs.push_back(call);
 
       InsertAllBefore(instrs, loadInst);

@@ -59,7 +59,7 @@ class PrintObserver : public InstructionObserver {
 public:
 	DEFAULT_CONSTRUCTOR(PrintObserver);
 	
-	virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, KVALUE* op, bool loadGlobal, int loadInx, int file, int line, int inx);
+	virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx);
 
 	virtual void load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
 
