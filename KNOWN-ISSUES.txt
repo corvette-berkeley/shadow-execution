@@ -50,10 +50,12 @@ when debugging on after ~50min.
 
 CG: runs out of memory after 5min.
 
+LU: YES! We can interpret. ~30min, 30% memory.
+
 DC: out of memory.
 EP: out of memory.
 IS: out of memory.
-LU: store assertion.
+
 MG: findIndex assertion.
 SP: store assertion.
 
