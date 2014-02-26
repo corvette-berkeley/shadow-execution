@@ -3043,10 +3043,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
 bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND type) { 
   bool sync = false;
   VALUE syncValue;
-  int64_t cValueVoid;
-  int16_t cValueInt16;
-  int32_t cValueInt32;
-  int32_t* cValueInt32Arr;
+  int cValueInt32;
   int64_t cValueInt64;
   float cValueFloat;
   double cValueDouble;
@@ -3060,11 +3057,11 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
     case PTR_KIND:
       // TODO: we use int64_t to represent a void* here
       // might not work on 32 bit machine
-      cValueVoid = *((int64_t*) concreteValue);
+      cValueInt64 = *((int64_t*) concreteValue);
 
-      sync = (iValue->getValue().as_int + iValue->getOffset() != cValueVoid);
+      sync = (iValue->getValue().as_int + iValue->getOffset() != cValueInt64);
       if (sync) {
-        syncValue.as_int = cValueVoid;
+        syncValue.as_int = cValueInt64;
         iValue->setValue(syncValue);
       }
       break;
@@ -3080,10 +3077,10 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
       break;
     case INT16_KIND: 
       {
-        cValueInt16 = *((int16_t*) concreteValue);
-        sync = (((int16_t) iValue->getIntValue()) != cValueInt16);
+        cValueInt32 = *((int16_t*) concreteValue);
+        sync = (((int16_t) iValue->getIntValue()) != cValueInt32);
         if (sync) {
-          syncValue.as_int = cValueInt16;
+          syncValue.as_int = cValueInt32;
           iValue->setValue(syncValue);
         }
         break;
@@ -3093,9 +3090,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
       cValueInt32 = cValueInt32 & 0x00FFFFFF;
       sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
-        cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
-        cValueInt32Arr[0] = cValueInt32; 
-        syncValue.as_int = *((int32_t*) cValueInt32Arr);
+        syncValue.as_int = cValueInt32;
         iValue->setValue(syncValue);
       }
       break;
@@ -3103,9 +3098,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
       cValueInt32 = *((int32_t*) concreteValue);
       sync = (((int32_t) iValue->getIntValue()) != cValueInt32);
       if (sync) {
-        cValueInt32Arr = (int32_t*) calloc(2, sizeof(int32_t));
-        cValueInt32Arr[0] = cValueInt32; 
-        syncValue.as_int = *((int32_t*) cValueInt32Arr);
+        syncValue.as_int = cValueInt32;
         iValue->setValue(syncValue);
       }
       break;
@@ -3125,8 +3118,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
       cValueFloat = *((float*) concreteValue);
       if (isnan((float)iValue->getValue().as_flp) && isnan(cValueFloat)) {
         sync = false;
-      }
-      else {
+      } else {
         sync = ((float)iValue->getValue().as_flp != cValueFloat);
       }
       if (sync) {
@@ -3138,8 +3130,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
       cValueDouble = *((double*) concreteValue);
       if (isnan((double)iValue->getValue().as_flp) && isnan(cValueDouble)) {
         sync = false;
-      }
-      else {
+      } else {
         sync = ((double)iValue->getValue().as_flp != cValueDouble);
       }
       if (sync) {
@@ -3152,8 +3143,7 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
         cValueLD = *((long double*) concreteValue);
         if (isnan((double)iValue->getValue().as_flp) && isnan(cValueLD)) {
           sync = false;
-        }
-        else {
+        } else {
           sync = ((double)iValue->getValue().as_flp != cValueLD);
         }
         if (sync) {
