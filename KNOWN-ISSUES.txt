@@ -40,6 +40,36 @@ Optimizations/Usability for Interpretation/Analysis:
 - Design pattern
 
 
+NAS Parallel Benchmarks (Interpretation)
+==========================
+Setup: Debugging information off.
+
+SMALL INPUTS.
+BT: assertion failure at store after 1min. We do not reach failure
+when debugging on after ~50min.
+
+CG: runs out of memory after 5min.
+
+DC: out of memory.
+EP: out of memory.
+IS: out of memory.
+LU: store assertion.
+MG: findIndex assertion.
+SP: store assertion.
+
+INPUTS CLASS A.
+bt.A.x [SEG FAULT]
+bt.S.x [SEG FAULT]
+cg.A.x [SEG FAULT]
+dc.A.x [BRANCH DIVERGE]
+ep.A.x [SEG FAULT]
+ft.A.x [SEG FAULT]
+lu.A.x [SEG FAULT]
+mg.A.x [SEG FAULT]
+sp.A.x [SEG FAULT]
+
+
+
 
 
 TESTING:
@@ -176,28 +206,6 @@ INTERPRETATION:
     ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
     ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
 
-NAS Parallel Benchmarks
-================
-
-bt.A.x [SEG FAULT]
-bt.S.x [SEG FAULT]
-cg.A.x [SEG FAULT]
-dc.A.x [BRANCH DIVERGE]
-ep.A.x [SEG FAULT]
-ft.A.x [SEG FAULT]
-lu.A.x [SEG FAULT]
-mg.A.x [SEG FAULT]
-sp.A.x [SEG FAULT]
-
-SMALL INPUTS.
-BT: equality.
-CG: getelementptr_array assertion.
-DC: out of memory.
-EP: out of memory.
-IS: out of memory.
-LU: store assertion.
-MG: findIndex assertion.
-SP: store assertion.
 
 
 
