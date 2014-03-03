@@ -47,16 +47,18 @@ SMALL INPUTS.
 BT: assertion failure at store after 1min. We do not reach failure
 when debugging on after ~50min.
 
-CG: runs out of memory after 5min.
+CG: out of memory after ~5min.
+MG: out of memory after ~5min.
 
-LU: YES! We can interpret. ~30min, 30% memory.
+LU: YES! We can interpret. ~30min, 30% memory usage.
+SP: store assertion.
 
 DC: out of memory.
 EP: out of memory.
 IS: out of memory.
 
-MG: findIndex assertion.
-SP: store assertion.
+
+
 
 INPUTS CLASS A.
 bt.A.x [SEG FAULT]
