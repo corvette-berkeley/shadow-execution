@@ -1510,6 +1510,11 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
       elem->setSize(basePtrLocation->getSize());
       elem->setValueOffset(basePtrLocation->getValueOffset());
     }
+
+    // delete here
+    for(i = length - 1; i >= 0; i--) {
+      array[i].IValue::~IValue();
+    }
   }
 
   index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,

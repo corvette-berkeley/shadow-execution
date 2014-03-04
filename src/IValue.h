@@ -116,6 +116,9 @@ class IValue {
     IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
     }
 
+    ~IValue() {
+    }
+
     void setType(KIND t);
 
     void setValue(VALUE v);
