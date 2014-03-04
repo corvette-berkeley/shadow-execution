@@ -124,8 +124,8 @@ extern "C" {
   void llvm_unreachable();
 
   // ***** Other Operations ***** //
-  void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int x);
-  void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int x);
+  void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+  void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
   void llvm_phinode(IID iid, int inx);
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(KVALUE* value);

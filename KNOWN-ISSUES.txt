@@ -16,6 +16,7 @@ Optimizations for Instrumentation:
 - Remove KVALUE for bitwise operations
 - Remove use of push_array in allocax
 - Remove KVALUE for load instruction
+- Remove KVALUE for store instruction
 
 Need to do:
 - Remove the push calls as much as possible
@@ -31,6 +32,8 @@ MG.S | 0.05s | 2.78s | 2.77 | 2.69 | 2.67 | 2.67
 MG.A | 6.13s | 
 IS.S | 0.04s | 1s | 0.93 | 0.81 | 0.85 | 0.89
 IS.A
+BT.S | 0.43s | 52.4s
+DC.S
 
 Optimizations/Usability for Interpretation/Analysis:
 

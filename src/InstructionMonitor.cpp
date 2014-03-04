@@ -294,12 +294,12 @@ void llvm_unreachable() {
 
 
 // ***** Other Operations ***** //
-void llvm_icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  DISPATCH_TO_OBSERVERS(icmp, iid, op1, op2, pred, inx)
+void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(icmp, lScope, rScope, lValue, rValue, type, pred, line, inx);
 }
 
-void llvm_fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  DISPATCH_TO_OBSERVERS(fcmp, iid, op1, op2, pred, inx)
+void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(fcmp, lScope, rScope, lValue, rValue, type, pred, line, inx);
 }
 
 void llvm_phinode(IID iid, int inx) {
@@ -419,7 +419,7 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
-// REGISTER_OBSERVER(PrintObserver, "print")
+REGISTER_OBSERVER(PrintObserver, "print")
 REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 // REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")

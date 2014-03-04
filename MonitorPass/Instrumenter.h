@@ -227,10 +227,10 @@ int KIND_GetSize(int kind) {
   }
 
 SCOPE getScope(Value *value) {
-  if (isa<GlobalVariable>(value)) {
-    return GLOBAL;
-  } else if (isa<Constant>(value)) {
+  if (isa<Constant>(value)) {
     return CONSTANT;
+  } else if (isa<GlobalVariable>(value)) {
+    return GLOBAL;
   } else {
     safe_assert(isa<Instruction>(value) || isa<Argument>(value));
     return LOCAL;
@@ -256,12 +256,20 @@ Constant* getValueOrIndex(Value *value) {
       double dv;
 
       cFlp = dyn_cast<ConstantFP>(value);
-      dv = cFlp->getValueAPF().convertToDouble();
+      if (TypeToKind(cFlp->getType()) == FLP32_KIND) {
+        dv = cFlp->getValueAPF().convertToFloat();
+      } else if (TypeToKind(cFlp->getType()) == FLP64_KIND) {
+        dv = cFlp->getValueAPF().convertToDouble();
+      }  else {
+        safe_assert(false);
+      }
 
       ptr = (int64_t*) &dv;
       v = *ptr;
 
       c = INT64_CONSTANT(v, SIGNED);
+    } else if (isa<ConstantPointerNull>(value)) {
+      c = INT64_CONSTANT(0, SIGNED);
     } else {
       safe_assert(isa<ConstantExpr>(value));
       c = (Constant *) value;
@@ -996,6 +1004,33 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(i32_2);
     Args.push_back(i32_3);
     Args.push_back(i32_4);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_INT64_INT64_KIND_PRED_INT_INT(const char* func, Value
+      *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, Value *kind, Value *pred, Value
+      *line, Value *inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(PRED_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(i32_1);
+    Args.push_back(i32_2);
+    Args.push_back(i64_1);
+    Args.push_back(i64_2);
+    Args.push_back(kind);
+    Args.push_back(pred);
+    Args.push_back(line);
+    Args.push_back(inx);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

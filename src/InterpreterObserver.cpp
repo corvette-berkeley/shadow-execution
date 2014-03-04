@@ -2290,8 +2290,8 @@ void InterpreterObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  if (op1->kind == INT80_KIND || op2->kind == INT80_KIND) {
+void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+  if (type == INT80_KIND) {
     cout << "[icmp] Unsupported INT80_KIND" << endl;
     safe_assert(false);
     return;
@@ -2300,21 +2300,21 @@ void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   int64_t v1, v2;
 
   // get value of v1
-  if (op1->inx == -1) { // constant
-    v1 = op1->value.as_int;
+  if (lScope == CONSTANT) { // constant
+    v1 = lValue;
   } else {
-    IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
-      executionStack.top()[op1->inx];
+    IValue *loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] :
+      executionStack.top()[lValue];
     v1 = loc1->getType() == PTR_KIND ? loc1->getIntValue() + loc1->getOffset()
       : loc1->getIntValue();
   }
 
   // get value of v2
-  if (op2->inx == -1) { // constant
-    v2 = op2->value.as_int;
+  if (rScope == CONSTANT) { // constant
+    v2 = rValue;
   } else {
-    IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
-      executionStack.top()[op2->inx];
+    IValue *loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] :
+      executionStack.top()[rValue];
     v2 = loc2->getType() == PTR_KIND ? loc2->getIntValue() + loc2->getOffset()
       : loc2->getIntValue();
   } 
@@ -2374,6 +2374,7 @@ void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setSize(KIND_GetSize(INT1_KIND));
+  nloc->setLineNumber(line);
 
   delete(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
@@ -2381,24 +2382,30 @@ void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   return;
 }
 
-void InterpreterObserver::fcmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
+void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int line, int inx) {
   double v1, v2;
 
   // get value of v1
-  if (op1->inx == -1) { // constant
-    v1 = KVALUE_ToFlpValue(op1);
+  if (lScope == CONSTANT) { // constant
+    double *ptr;
+
+    ptr = (double *) &lValue;
+    v1 = *ptr;
   } else {
-    IValue *loc1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
-      executionStack.top()[op1->inx];
+    IValue *loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] :
+      executionStack.top()[lValue];
     v1 = loc1->getFlpValue();
   } 
 
   // get value of v2
-  if (op2->inx == -1) { // constant
-    v2 = KVALUE_ToFlpValue(op2);
+  if (rScope == CONSTANT) { // constant
+    double *ptr;
+
+    ptr = (double *) &rValue;
+    v2 = *ptr;
   } else {
-    IValue *loc2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
-      executionStack.top()[op2->inx];
+    IValue *loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] :
+      executionStack.top()[rValue];
     v2 = loc2->getFlpValue();
   } 
 
@@ -2474,6 +2481,7 @@ void InterpreterObserver::fcmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   vresult.as_int = result;
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
+  nloc->setLineNumber(line);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
 

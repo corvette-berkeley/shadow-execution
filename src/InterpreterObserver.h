@@ -227,9 +227,9 @@ class InterpreterObserver : public InstructionObserver {
   virtual void unreachable();
   
   // ***** Other Operations ***** //
-  virtual void icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
+  virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
   
-  virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
+  virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
   
   virtual void phinode(IID iid, int inx);
   

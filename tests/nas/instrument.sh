@@ -20,7 +20,7 @@ llvm-dis tmppass-allocas.bc -o $1-inst.ll
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER
 
 # create executable for uninstrumented bitcode
-#$CC $1.bc -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog
+$CC $1.bc -o $1.out2 -L$GLOG_PATH/lib -lpthread -lm -lrt -lglog
 
 # inspect profiling information
 # pprof --text file.out a.prof

@@ -295,12 +295,12 @@ void PrintObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void PrintObserver::icmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  DEBUG_STDOUT("<<<<< ICMP >>>>> " << IID_ToString(iid) << ", operand 1:" << KVALUE_ToString(op1) << ", operand 2:" << KVALUE_ToString(op2) << ", predicate:" << pred << " [INX: " << inx << "]");
+void PrintObserver::icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+  DEBUG_STDOUT("<<<<< ICMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << ", line:" << line << " [INX: " << inx << "]");
 }
 
-void PrintObserver::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  DEBUG_STDOUT("<<<<< FCMP >>>>> " << IID_ToString(iid) << ", operand 1:" << KVALUE_ToString(op1) << ", operand 2:" << KVALUE_ToString(op2) << ", predicate:" << pred << " [INX: " << inx << "]");
+void PrintObserver::fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+  DEBUG_STDOUT("<<<<< FCMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << ", line:" << line << " [INX: " << inx << "]");
 }
 
 void PrintObserver::phinode(IID iid, int inx) {
