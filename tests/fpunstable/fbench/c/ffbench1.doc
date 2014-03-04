@@ -1,0 +1,116 @@
+
+
+As Voyager bears down on Neptune, so do the Nineteen Nineties, the
+Gilded Age of Computing, thunder down the tracks toward our products
+and company.  To celebrate, I'm rolling out a new floating point
+benchmark, not to replace the venerable FBENCH (now nine years old),
+but to provide a different perspective on the floating point
+performance to be had from a machine.
+
+The original FBENCH, derived from a program that performs geometric
+ray tracing for lens design (as opposed to ray tracing as done for
+photorealistic rendering), relies heavily on trigonometric functions
+and thus provides a good metric for trig function performance.  Its
+ability to evaluate trig functions in-line with series approximations
+permits comparison of four-function floating point performance from
+compiler generated code with library or hardware implemented floating
+point.  FBENCH has proved, over time, to provide a much better
+estimate of the relative performance of AutoCAD generation time on a
+given machine than it has any right to do.
+
+FBENCH is representative of much code that "does geometry"--it
+consists of many calculation statements, numerous conditionals, and
+frequent function calls.  As such, it does not accurately reflect the
+performance on bulk number crunching to be had from pipeline, or
+MIDA/MIPC (multiple instruction dispatch architecture / multiple
+instruction per cycle) lite-parallel architectures.  As Autodesk
+products come to incorporate more matrix operations and other heavy
+number-crunching algorithms there is a growing need to characterise
+machine performance on such tasks as it can differ substantially from
+relative figures of merit obtained on algorithms such as FBENCH.
+
+I am now rolling out FFBENCH.C, a contender for this new role.  While
+it differs from FBENCH in many ways, its raison d' etre is the
+same--it's a benchmark we control ourselves, which we can easily run
+on machines we encounter, whose results we can learn, over time, to
+interpret in the light of their correlation with the performance of
+our several products on actual machines.  Like FBENCH at its
+introduction, FFBENCH is at present immature and untested.  Only as we
+gain familiarity with its results will it become a useful tool.
+Perhaps it will prove unrepresentative and be replaced.  Regardless,
+there is a need for a benchmark to characterise loop-intensive
+floating point performance.
+
+Like FBENCH, FFBENCH makes no attempt to compete with time-proven
+benchmarks such as Whetstone, LINPACK, or Dhrystone.  Its value is
+that it is portable, ours, runnable under controlled conditions on
+short notice, does something real (and hence isn't subject to
+benchmark-loading compiler optimisations), and checks for the right
+answers (an aspect of the old FBENCH that has embarrassed several
+vendors).
+
+So what is it?  FFBENCH is a C language program which initialises a
+256 by 256 array of double precision complex numbers to known values
+then executes twenty iterations through a loop, each iteration
+computing the two dimensional Fourier transform of the data in the
+matrix, then applying the inverse transform to recover the original
+data.  The results of each loop iteration are input to the next.
+Upon exit from the the loop, values in the matrix are compared against
+the original pattern stored there--any discrepancies are reported as
+errors.
+
+The Fourier transform and its inverse are computed with an algorithm
+derived from that given in "Numerical Recipes in C" by Press et al.
+This is an N-dimensional generalisation of the fast Fourier transform,
+At the heart of an FFT algorithm are three nested FOR loops with
+problem code only in the innermost loop.  To the extent these loops
+can be collapsed into vector operations, subscript calculations
+replaced by progressive indexing, and expressions within the loop
+compiled into operations executed in parallel, the execution time will
+dramatically be reduced.
+
+As FBENCH reflected the contemporary community standards of memory
+capacity and CPU performance at the time of its creation, so does
+FFBENCH embody the unvoiced premises of the Gilded Age of
+Computing--which is to say that it's a memory and CPU hawg.  To be
+precise, FFBENCH requires more than one megabyte of memory,
+dynamically allocates a buffer more than one megabyte in length and
+addresses it as a single array of doubles, and performs on the order
+of 360 million floating point operations in the course of its
+execution.  In addition, the code presumes that the C "int" type is 32
+bits or more.  In short, we're talking workstations here.  If you want
+to run it on lesser machines, you'll have to tweak the code and
+prepare to be patient.  Well...yes, and I had to be patient to get the
+FBENCH numbers for the Commodore 128.
+
+The source code for FFBENCH is available in the directory:
+
+        ~kelvin/releases/fbench/ffbench.c
+
+on Megalon, and for a LIMITED TIME, BLUE LIGHT SPECIAL, as:
+
+        acad!~uucp/ffbench.c
+
+To date, this benchmark has been run only on the Sun 3/260 and, thanks
+to Kern Sibbald, on the Intel i860.  The timing results so far are:
+
+        Time (seconds)              System
+
+            2393.93       Sun 3/260, C, "-f68881 -O".
+
+              98.0        Intel i860 experimental environment,
+                          OS/2, data caching disabled.
+
+In these heady early days, we aren't being as hard nosed as we've been
+with FBENCH results.  I welcome your reports of the execution time of
+this benchmark on your weapon of choice.  On Unix-like machines,
+reports of User time from the "time" program are fine, and on other
+machines hand-timed run reports will serve.  We'll tighten up the
+numbers as they become more important.
+
+I will tabulate all the numbers you report and circulate a summary to
+all involved.
+
+
+                                                John Walker
+                                                April 24th, 1989

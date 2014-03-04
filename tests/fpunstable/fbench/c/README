@@ -1,0 +1,22 @@
+
+This directory contains two versions of the main floating point benchmark:
+fbench.c and fbench_ansi.c.  Fbench was developed in the 1980s, when ANSI
+C was just beginning to be supported by C compilers.  To maximise portability,
+it was written in "classic" K&R (Kernighan and Ritchie) C.  This dialect of C
+is still supported by most contemporary compilers, but the original code may
+result in warning messages when compiled.
+
+The fbench_ansi.c program is functionally identical, but expressed in ANSI C,
+adhering to Fourmilab's present day coding standards (which, for example,
+never omit braces on conditional or loop statements, even if the language
+allows it).  This implementation of fbench compiles without warnings on
+GCC 4.5.2 with the -Wall option.  The fbench_ansi.c source code uses ANSI
+const declarations to document declarations of constants and is careful
+that the values it returns (or doesn't) from functions match their
+declarations.
+
+In a rational universe fbench.c and fbench_ansi.c should run at precisely
+the same speed, but since most of the archival runs of fbench were made
+with fbench.c, it remains available for comparison in case the migration
+to ANSI syntax should affect performance.
+

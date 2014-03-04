@@ -1,0 +1,63 @@
+
+This directory contains a Pascal implementation of the floating
+point benchmark program.  Three editions are provided,
+conforming to different dialects of Pascal:
+
+    fbench_7185.p
+        "Classic" Pascal, ISO 7185:1990.
+
+    fbench_10206.p
+        Extended Pascal, ISO 10206:1990.
+
+    fbench_borland.p
+        Borland Pascal extensions, compatible with
+        Free Pascal (http://www.freepascal.org/)
+        and GNU Pascal (http://www.gnu-pascal.de/).
+
+The actual code which is timed in the benchmark is
+identical in all three additions, apart from changes
+in identifier names which make no difference in the
+generated code.  All of these programs compile without
+warnings on:
+
+    GNU Pascal 2.1 (20020510)
+    Free Pascal 2.2.0
+
+The fbench_borland.p program is considered the reference.
+
+The fbench_10206.p program is derived from fbench_borland.p by:
+    *  Moving the const section of the main program
+       above the type section, as this is the classic
+       style and required for ISO 7185 compatibility.
+    *  Replacing the constant initialised array
+       declarations with assignment statement
+       initialisations in a new initialise
+       procedure--constant structured types is a
+       Borland extension.
+
+The fbench_7185.p program is derived from fbench_10206.p by
+replacing all of the underscores in variable names with upper
+case "X" characters; classic Pascal does not permit underscores
+in identifiers.
+
+The included Makefile builds each of the source versions with
+both GNU Pascal and Free Pascal; modify the Makefile accordingly
+for the compilers installed on your system.
+
+The results.txt file contains the expected results from running the
+program with output redirected to a file.  For example, to run the
+Classic Pascal version compiled with GNU Pascal, time the run and
+compare the results with those expected, you could use the following:
+    echo -e "\n" | time -p ./fbench_7185_gpc >/tmp/fbench_pascal.txt
+    diff /tmp/fbench_pascal.txt results.txt
+This assumes GNU/Linux utilities; on other systems you may need
+different options on the echo and time command or other commands
+entirely to accomplish the same thing.
+
+When making formal timing tests, you should adjust the OUTER and
+INNER constants within the Pascal programs so that the benchmark
+runs for about five minutes (300 seconds).  The product of these
+values controls the number of passes through the main
+computational loop.  A product of two numbers is used to avoid
+integer range limits in some picky compilers which remember
+16-bit days of yore.

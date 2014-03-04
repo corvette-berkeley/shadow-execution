@@ -1,0 +1,99 @@
+
+              COBOL Floating Point Benchmark
+
+This directory contains a port of the floating point benchmark to the
+COBOL language (specifically the COBOL-85 standard).  It has been
+tested with OpenCobol version 1.1.0 and compiles with no errors or
+warnings from the -Wall option.  The program is written in classic
+fixed-column format and contains no in-line ("*>") comments.  Two
+versions of the program are supplied, which differ only in how
+quantities which are double precision floating point in other
+programming languages are declared in the data division.
+
+In fbench.cob, these quantities are declared as "computational-2",
+which in many modern COBOL implementations is IEEE 64 bit double
+precision floating point.  In fbench_dec.cob, they are declared
+as decimal fixed-point computational fields, for example:
+        30 index-of-refraction usage is computational
+                picture is S99V9(16) value is 1.6164.
+with sufficient decimal places (constrained by the limit of 18
+digits) for the computation.
+
+I do not report OpenCobol results on the main:
+        http://www.fourmilab.ch/fbench/fbench.html
+Web page because when either version of the benchmark is compiled
+with OpenCobol, the results produced differ from those produced by
+the reference benchmark.  The results from the computational-2
+and decimal versions of the program also differ from one another.
+The discrepancies are typically in the sixth decimal place or
+greater, but all reported benchmarks agree to the eleventh
+decimal place.  Results from running the benchmarks are presented
+in the files:
+        results_comp-2.txt          computational-2
+        results_dec.txt             fixed point decimal
+with the correct digits interpolated between the lines of results.
+
+I then transferred the source code to a Windows 7 machine and built 
+with Micro Focus Visual COBOL 2010 R4 Version 1.3.00046.  I had to 
+disable the OpenCobol access to the command line and the trim 
+function, which are not supported by Micro Focus.  In addition, the 
+Micro Focus compiler spotted an error in a redefines clause in the 
+data division, which I corrected.  Micro focus requires a space 
+after a unary minus in expressions: all right; happy to oblige.
+
+The initial run of the benchmark produced results correct up to the
+last digit of the edited results.  This was due to our not having
+specified explicit rounding when transferring the computational
+result into a display field.  I rewrote the display-evaluation
+procedure to force rounding with statements like:
+    add objdist of d-marginal-ray to zero
+        giving objdist of marginal-ray-report rounded.
+(why on Earth you can't do a move corresponding from a computational
+field to a display field with rounding escapes me).  Anyway, now
+the results are correct.
+
+Next, I ported the fbench_dec (decimal variable) version of the 
+benchmark, using the procedure division of the already ported 
+fbench.  It built and ran, also with correct results to the last 
+digit displayed.
+
+Now it's time to, well, time things.
+
+Tuning run time for about five minutes, we get, for execution of 
+13,974,015 iterations of fbench, a run time in seconds of:
+	300.06
+	299.53
+	299.10
+for a mean time of 299.56, and a time per 1000 iterations of:
+    0.0214370
+    
+Now we do the same exercise for the fixed decimal version of the 
+program. We expect this to be slower and it doesn't disappoint.  
+Running for 3,766,478 iterations, we get run times of:
+    300.34
+    299.61
+    301.19
+with a mean of 300.38 and a scaled time per 1000 iterations of:
+	0.079761
+	
+Finally, we build the C benchmark on Microsoft Visual C++ 2010 
+Express version 10.0.30319.1 RTMRel for comparison.  The program was 
+built as a Win32 console application with native code in "Release" 
+mode. To get around a five minute run time we settle on 174,415,222 
+iterations, with run times as follows:
+	299.65
+	299.93
+	300.97
+with a mean of 300.183 and a scaled time per 1000 iterations of
+	0.001721
+
+and thus the relative time of Micro Focus COBOL with computational-2 
+is 12.456 times slower than C, and the same compiler, using fixed 
+decimal variables, produces a program which runs 46.346 times 
+slower.  Still, it gets the right answers, to the last decimal 
+place, and that is impressive for a language in which such precision 
+is rarely required and trigonometry scarcely ever figures in 
+applications.
+
+John Walker
+September 30th, 2012

@@ -1,0 +1,211 @@
+
+                Haskell Floating Point Benchmark
+                        Development Notes
+                       September 22nd, 2012
+
+Benchmarking in a purely functional language with lazy evaluation
+like Haskell presents formidable challenges and requires some
+judgement calls which do not occur in benchmarks of procedural
+languages (although similar situations may arise in procedural
+languages with strong optimisation of invariant results).
+
+Due to Haskell's lazy evaluation, a straightforward port of the
+floating point benchmark code from a procedural language (I started
+with the Ada implementation for this project, since I considered it
+the cleanest and best documented, using data types much in the
+spirit of Haskell), will result in a benchmark program which runs in
+essentially constant time.  Since only the last result of the many
+iterations through the benchmark computation actually contributes to
+output visible to the outside world, all of the earlier computations
+go ker-thunk into the memory hole and are never actually performed.
+"If they can't see it, why do it?" is the Haskell motto.  I've had
+employees who work that way.
+
+A wise manager once told me, "People don't do what you expect, but
+what you inspect."  So it is with Haskell.  In order to get a fair
+benchmark against a procedural language, we must arrange that each
+of the requested iterations in the benchmark run actually be fully
+calculated.  In the main fbench.hs, we accomplish this by two
+ruses.  First of all, for all but the final ray trace we vary the
+clear aperture of the design by adding a pseudorandom value to it.
+(Since the ray tracing algorithm runs in constant time regardless of
+this parameter [or the rest of the design, for that matter], this
+does not affect the timing result.)  Each ray trace is then forced
+to be evaluated by applying the "deepseq" function to its ultimate
+result.  (You may have to install the deepseq package into your
+Haskell environment--it is not, for example, installed by default on
+Ubuntu Linux when you install the compiler, ghc.)  Since all we care
+about is ensuring the clear aperture is different on each successive
+ray trace, we use a pseudorandom generator with a constant seed.
+
+Reference results are produced by compiling fbench.hs into a binary
+executable (see the Makefile for details) and then running it with
+an iteration count (specified by the first argument on the command
+line) which results in a run time of around five minutes.  If a
+positive iteration count is specified, a classic fbench run which
+expects manual timing will be done.  If the iteration count is
+negative, the run will be in batch mode, intended to be timed by
+running under the Unix "time" utility or equivalent.
+
+But note that we're doing additional work by generating the
+pseudorandom numbers and the clanking recursion machinery and
+consequent garbage collections.  Haskell's default pseudorandom
+generator is famously slow, so we must be careful that we're
+measuring Haskell's performance on our own code, rather than the
+wrapper which invokes the generator. This is accomplished by the
+fbench_baseline.hs program.  This uses precisely the same logic to
+run the benchmark, but performs a null computation in place of the
+ray trace.  (I've left all the ray trace code in this program, in
+case you want to experiment with switching all or part of it back
+on.)  To calculate the "true" run time of the benchmark on the ray
+tracing code, we take the run time of fbench.hs and subtract that of
+fbench_baseline.hs for the same number of iterations. In comparing
+this with the run time of procedural languages, we assume that the
+loop overhead of those languages wrapping iterations of the
+benchmark is negligible; this is almost always the case, but it is
+not so in Haskell, hence the need for this correction.
+
+Haskell purists may object to this whole exercise and contend that
+the fairest benchmark is a straight port of the C, FORTRAN, etc.
+code, measuring it against those languages.  I am sympathetic to
+this argument--after all, if one of the main design goals of the
+language is to allow factoring out redundant computations, isn't
+that worthy of being measured in a benchmark?  On the other hand,
+the mission of fbench, since its origin in the 1980s, has been to
+measure the performance of trigonometric function intense code, and
+one hardly accomplishes that by running code where all but the last
+iteration of the benchmark is optimised out by the compiler.
+Understand--I am extremely impressed, if not in awe, of Haskell's
+optimisation, but I also want to get a result which people can
+compare against realistic code, not a contrived benchmark like this
+one which (in procedural language implementations) simply does the
+same computation over and over.  If you want to experience the magic
+of lazy evaluation, build the fbench_pure.hs program. It eschews
+randomisation of the design being ray traced and forcing evaluation
+of the results, and consequently runs in near-constant time
+regardless of the iteration count requested.  If you wish to explore
+other strategies for fairly benchmarking Haskell, it's probably best
+to start with fbench_pure.hs, to which you can add your own code to
+force evaluation as appropriate.
+
+Finally, let me note that this is the first Haskell program I have
+ever written (I developed a deep appreciation for the language in
+the process, and I trust it shall not be my last).  I have tried to
+do things "the Haskell way", but I may have committed any number of
+beginner blunders which elicit gnashville sounds from the teeth of
+those fluent in the language.  If so, please chastise me and offer
+suggestions as to how I might remedy the shortcomings you perceive
+in this code.
+
+Special thanks are due to Don Stewart (http://donsbot.wordpress.com/about/),
+who analysed my original code and recommended a simple change (using
+strict fields for primitive types) which almost doubled its speed.
+
+Analysis of Results
+-------------------
+
+The key number I report from this benchmark is the relative speed of the
+Haskell program compared to the reference C implementation.  I ran this
+test on an ASUS Eee PC "netbook" running Ubuntu Linux 11.04:
+
+    $ uname -a
+    Linux ragnar 2.6.38-16-generic #67-Ubuntu SMP
+        Thu Sep 6 18:00:43 UTC 2012 i686 i686 i386 GNU/Linux
+
+with:
+    $ gcc --version
+    gcc (Ubuntu/Linaro 4.5.2-8ubuntu4) 4.5.2
+
+and:
+    $ ghc --version
+    The Glorious Glasgow Haskell Compilation System, version 7.4.1
+
+By experiment, I determined that 8,545,941 iterations of the compiled
+fbench.hs ran about five minutes, so I ran three tests with:
+    su
+    nice -n -10 \
+        /usr/bin/time -p ./fbench -8545941
+        
+The CPU times from these tests were (in seconds):
+    295.61
+    296.33
+    295.23
+for a mean of 295.72.
+
+Now we must subtract out the overhead of the benchmark wrapper, including
+the pseudorandom generator.  This is done by running the fbench_baseline
+program as above, which yields:
+     94.35
+     94.17
+     94.09
+with a mean of 94.20.
+
+Thus we have an effective total time for 8,545,941 iterations of
+    295.72 - 94.20 seconds
+or
+    201.52 seconds.
+
+Normalising by the factor of 8546 due to the iteration count, we get a
+time of:
+    0.023581
+seconds per 1000 iterations.
+
+Now we must time the C reference implementation for comparison.  In the
+c directory, we do a make and then:
+
+    su
+    /usr/bin/nice -n -10 /usr/bin/time -p ./fbench 15500000
+
+with the iteration count empirically determined to yield a run time around
+five minutes.  Running this three times yields CPU times of:
+    299.57
+    300.33
+    296.94
+with a mean of 298.95.
+
+We normalise the C result by the scale factor of 15500 to get a time
+of:
+    0.019287
+
+for 1000 iterations and hence the relative speed of C native code
+compared to Haskell in this benchmark is:
+
+    0.023581 / 0.019287 = 1.223
+
+This is an impressive figure, considering that a purely functional
+language like Haskell will necessarily create and discard many
+values during the computation which must be dealt with by the
+garbage collector.  (In a purely functional language, one cannot
+replace the value of an existing variable with another.  Every
+change must create a new value, orphaning the old one and leaving it
+to the garbage collector to dispose of.)  Here are the runtime
+statistics of the reference run of fbench.hs (collected with the
+"+RTS -sstderr" runtime options--note that you must compile the
+program with the -rtsopts option in order to display these
+statistics):
+
+      12,169,671,964 bytes allocated in the heap
+           3,414,144 bytes copied during GC
+              50,156 bytes maximum residency (1 sample(s))
+              26,416 bytes maximum slop
+                   1 MB total memory in use (0 MB lost due to fragmentation)
+    
+                                        Tot time (elapsed)  Avg pause  Max pause
+      Gen  0     23478 colls,     0 par    0.74s    0.84s     0.0000s    0.0005s
+      Gen  1         1 colls,     0 par    0.00s    0.00s     0.0010s    0.0010s
+    
+      INIT    time    0.00s  (  0.00s elapsed)
+      MUT     time  297.43s  (298.75s elapsed)
+      GC      time    0.74s  (  0.85s elapsed)
+      EXIT    time    0.00s  (  0.00s elapsed)
+      Total   time  298.17s  (299.59s elapsed)
+    
+      %GC     time       0.2%  (0.3% elapsed)
+    
+      Alloc rate    40,916,007 bytes per MUT second
+    
+      Productivity  99.8% of total user, 99.3% of total elapsed
+
+As you can see from this, garbage collection accounted for only 0.2%
+of execution time and hence is negligible in the difference in speed
+between C and Haskell implementations of the benchmark.

@@ -1,0 +1,25 @@
+This directory contains a version of the floating point benchmark
+in Google's Go language.  It was ported from the C version by
+John Nagle (http://www.animats.com/) in July 2013.
+
+It has been tested with:
+    go version go1.1.1 linux/amd64
+under Ubuntu Linux:
+    Linux hayek 2.6.38-16-generic #67-Ubuntu SMP Thu Sep 6 17:58:38 UTC 2012 x86_64 x86_64 x86_64 GNU/Linux
+and produces the same results as the reference C implementation.
+
+You can build ann executable with:
+    make
+and then run a timing test with:
+    make time
+or manually run a timing test with:
+    ./fbench <number_of_iterations>
+If the iteration count is negative, the test will run in batch
+mode, otherwise it will pause to allow you to start and stop
+an external timer.
+
+Reference runs should adjust the number of iterations so the
+benchmark runs around five minutes.
+
+The code includes internal timing and checking of the numerical
+results.
