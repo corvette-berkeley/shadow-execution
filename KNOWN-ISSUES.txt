@@ -49,10 +49,10 @@ Setup: Debugging information off. Logging disabled.
 SMALL INPUTS.
 
 CG:
-real	3m12.020s
-user	3m1.483s
-sys	0m4.276s
-.
+real	3m1.812s
+user	2m57.807s
+sys	0m3.368s
+
 EP:
 real	9m9.546s
 user	8m31.500s
