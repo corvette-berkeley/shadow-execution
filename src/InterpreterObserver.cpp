@@ -452,6 +452,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
   dest->setLineNumber(line);
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = dest;
 
   DEBUG_STDOUT("Destination result: " << dest->toString());
@@ -576,6 +577,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     destLocation->setLineNumber(line);
 
+    delete(executionStack.top()[inx]);
     executionStack.top()[inx] = destLocation;
     DEBUG_STDOUT(destLocation->toString());
 
@@ -599,6 +601,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
 
+    delete(executionStack.top()[inx]);
     executionStack.top()[inx] = destLocation;
 
     DEBUG_STDOUT(destLocation->toString());
@@ -1080,6 +1083,8 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
 
   iResult = new IValue(type, result);
   iResult->setLineNumber(line);
+
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1179,6 +1184,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
     iResult->setValue(aggKValue->value);
   }
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1280,6 +1286,8 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
   locArrPtr->setLineNumber(line);
+
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = locArrPtr;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -1316,6 +1324,7 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   structPtrVar->setLength(length);
   structPtrVar->setLineNumber(line);
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = structPtrVar;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -1663,6 +1672,8 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
   }
 
   safe_assert(getElementPtrIndexList.empty());
+
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = arrayElemPtr;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
 }
@@ -1774,6 +1785,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
     structElemPtr->setValueOffset((int64_t)structElemPtr - structElemPtr->getValue().as_int);
   }
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = structElemPtr;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -2082,6 +2094,8 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
   } else {
     iResult = new IValue(type, result);
   }
+
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -2487,6 +2501,7 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setLineNumber(line);
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
 
@@ -2513,6 +2528,7 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
   phinodeConstantValues.clear();
   phinodeValues.clear();
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = phiNode;
   DEBUG_STDOUT(phiNode->toString());
 
@@ -2551,6 +2567,7 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
     }
   }
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = result;
 
   DEBUG_STDOUT("Result is " << result->toString());
@@ -2881,6 +2898,8 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
 
   IValue* callValue = new IValue(type);
   callValue->setLength(0);
+
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = callValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -2970,6 +2989,7 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
 
+    delete(executionStack.top()[inx]);
     executionStack.top()[inx] = structPtrVar;
     DEBUG_STDOUT(structPtrVar->toString());
   }
