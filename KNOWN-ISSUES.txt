@@ -44,23 +44,42 @@ Optimizations/Usability for Interpretation/Analysis:
 
 NAS Parallel Benchmarks (Interpretation)
 ==========================
-Setup: Debugging information off.
+Setup: Debugging information off. Logging disabled.
 
 SMALL INPUTS.
-BT: assertion failure at store after 1min. We do not reach failure
-when debugging on after ~50min.
 
-CG: out of memory after ~5min.
-MG: out of memory after ~5min.
+CG:
+real	3m12.020s
+user	3m1.483s
+sys	0m4.276s
+.
+EP:
+real	9m9.546s
+user	8m31.500s
+sys	0m33.738s
 
-LU: YES! We can interpret. ~30min, 30% memory usage.
-SP: store assertion.
+IS: 
+real	0m29.933s
+user	0m20.125s
+sys	0m9.005s
 
-DC: out of memory.
-EP: out of memory.
-IS: out of memory.
+LU:
+real	3m6.812s
+user	2m55.447s
+sys	0m10.061s
 
+SP:
+eal	5m29.824s
+user	5m11.547s
+sys	0m16.149s
 
+Assertion at store.
+BT
+DC
+
+Out of memory:
+FFT
+MG
 
 
 INPUTS CLASS A.
