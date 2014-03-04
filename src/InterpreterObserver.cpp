@@ -808,6 +808,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   iResult = new IValue(type, result);
   iResult->setLineNumber(line);
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1416,7 +1417,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
     if (newOffset >= 0) { // newOffset is positive
       if (basePtrLocation->isInitialized()) {
         extraBytes = newOffset + size/8 -
-          array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()); 
+          array[length-1].getFirstByte() - KIND_GetSize(array[length-1].getType()); 
       } else {
         extraBytes = newOffset + size/8;
       }
@@ -1427,7 +1428,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 
     DEBUG_STDOUT("Extra bytes: " << extraBytes);
 
-    newLength = length + ceil((double)extraBytes/(double)(size/8));
+    newLength = 2*(length + ceil((double)extraBytes/(double)(size/8)));
 
     DEBUG_STDOUT("Old length: " << length);
     DEBUG_STDOUT("New length: " << newLength);
@@ -1455,6 +1456,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
           newElement = new IValue();
           oldElement = array[i];
           oldElement.copy(newElement);
+	  //delete(&array[i]);
           if (i == 0) {
             newElement->setFirstByte(0);
           } else {
@@ -1467,6 +1469,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
           newElement = new IValue();
           oldElement = array[i];
           oldElement.copy(newElement);
+	  //delete(&array[i]);
           newElement->setFirstByte(oldElement.getFirstByte());
         } else {
           newElement = new IValue(type, value);
@@ -1483,7 +1486,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
           newElement->toString());
 
       newArray[i] = *newElement;
-    } 
+    }
 
     newOffset = newOffset < 0 ? 0 : newOffset;
 
@@ -1507,7 +1510,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
       elem->setSize(basePtrLocation->getSize());
       elem->setValueOffset(basePtrLocation->getValueOffset());
     }
-  } 
+  }
 
   index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
       basePtrLocation->getLength()); 
@@ -1517,6 +1520,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
   ptrLocation->setLineNumber(line);
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = ptrLocation;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
   return;
@@ -2172,6 +2176,9 @@ void InterpreterObserver::resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNU
 void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
   safe_assert(!executionStack.empty());
 
+  std::vector< IValue* > iValues;
+  iValues = executionStack.top();
+
   IValue* returnValue = op1->inx == -1 ? NULL : executionStack.top()[op1->inx];
 
   executionStack.pop();
@@ -2191,6 +2198,13 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
     callerVarIndex.pop();
   } else {
     cout << "The execution stack is empty.\n";
+  }
+
+  //
+  // free memory
+  //
+  for (std::vector< IValue* >::iterator it = iValues.begin(); it != iValues.end(); ++it) {
+    delete((IValue *)(*it));
   }
 
   isReturn = true;
@@ -2361,6 +2375,7 @@ void InterpreterObserver::icmp(IID iid UNUSED, KVALUE* op1, KVALUE* op2, PRED pr
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setSize(KIND_GetSize(INT1_KIND));
 
+  delete(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
   return;
@@ -2863,6 +2878,7 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
 
 
 void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, int size, int inx, KVALUE* mallocAddress) {
+  cout << "call_malloc" << endl;
 
   // retrieving original number of bytes
   KVALUE* argValue = myStack.top();
