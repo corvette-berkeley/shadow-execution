@@ -215,8 +215,8 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
       else {
         result = ((double)dest->getValue().as_flp) == ((double)kv->value.as_flp);
         if (!result) {
-          cout << dest->getValue().as_ptr << endl;
-          cout << kv->value.as_ptr << endl;
+          DEBUG_STDOUT(dest->getValue().as_ptr);
+          DEBUG_STDOUT(kv->value.as_ptr);
         }
       }
       break;
@@ -366,7 +366,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   int i, structSize;
   IValue* dest;
 
-  LOG(INFO) << "[LOAD STRUCT] Performing load at " << file << ":" << line << endl; 
+  DEBUG_LOG("[LOAD STRUCT] Performing load at " << file << ":" << line); 
 
   structSize = returnStruct.size();
   dest = new IValue [structSize];
@@ -440,7 +440,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE));
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
       if (syncLoad(structElem, concreteStructElemPtr, type)) {
-        LOG(INFO) << "[LOAD STRUCT] Syncing load at " << file << ":" << line << endl; 
+        DEBUG_LOG("[LOAD STRUCT] Syncing load at " << file << ":" << line);
       }
 
       dest[i] = *structElem;
@@ -465,7 +465,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   bool sync = false;
   IValue* srcPtrLocation;
 
-  LOG(INFO) << "[LOAD] Performing load at " << file << ":" << line << endl; 
+  DEBUG_LOG("[LOAD] Performing load at " << file << ":" << line);
 
   // obtain source pointer value
   if (opScope == CONSTANT) {
@@ -605,7 +605,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   }
 
   if (sync) {
-    LOG(INFO) << "[LOAD] Syncing load at " << file << ":" << line << endl;
+    DEBUG_LOG("[LOAD] Syncing load at " << file << ":" << line);
   }
 
   return;
@@ -2812,7 +2812,7 @@ void InterpreterObserver::create_global_symbol_table(int size) {
 
   // initialize logger
   google::InitGoogleLogging(log);
-  LOG(INFO) << "Initialized logger" << endl;
+  DEBUG_LOG("Initialized logger");
 
   for (int i = 0; i < size; i++) {
     IValue* value = new IValue();
@@ -2891,7 +2891,6 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
 
 
 void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, int size, int inx, KVALUE* mallocAddress) {
-  cout << "call_malloc" << endl;
 
   // retrieving original number of bytes
   KVALUE* argValue = myStack.top();
