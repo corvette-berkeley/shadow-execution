@@ -110,6 +110,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValu
   bool result; 
   double dpValue;
   double *dpPtr;
+  int32_t srcValue32;
 
   result = false;
   dpPtr = (double *) &srcValue; 
@@ -135,7 +136,9 @@ bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValu
       result = ((int16_t)dest->getValue().as_int == (int16_t)srcValue);
       break;
     case INT24_KIND:
-      result = (dest->getIntValue() == srcValue);
+      srcValue32 = srcValue;
+      srcValue32 = srcValue32 & 0x00FFFFFF;
+      result = (dest->getIntValue() == srcValue32);
       break;
     case INT32_KIND: 
       result = ((int32_t)dest->getValue().as_int == (int32_t)srcValue);
@@ -1015,6 +1018,8 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
           result.as_int = v16_1 & v16_2;
           break;
         case INT24_KIND:
+          result.as_int = v32_1 & v32_2;
+          result.as_int = result.as_int & 0x00FFFFFF;
         case INT32_KIND:
           result.as_int = v32_1 & v32_2;
           break;
@@ -1359,8 +1364,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
     return; // otherwise compiler warning
   }
 
-
-  IValue *basePtrLocation, *ptrLocation; 
+  IValue *basePtrLocation, *ptrLocation, *array; 
   int index;
   int newOffset;
   bool reInit;
@@ -1437,7 +1441,12 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 
     DEBUG_STDOUT("Extra bytes: " << extraBytes);
 
-    newLength = 2*(length + ceil((double)extraBytes/(double)(size/8)));
+    newLength = length + ceil((double)extraBytes/(double)(size/8));
+    //
+    // optimization: allocate twice more space than required to reduce future
+    // allocation overhead
+    //
+    newLength = index >= 0 ? 2 * newLength : newLength;
 
     DEBUG_STDOUT("Old length: " << length);
     DEBUG_STDOUT("New length: " << newLength);
@@ -1463,9 +1472,8 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
           }
         } else {
           newElement = new IValue();
-          oldElement = array[i];
+          oldElement = array[i + length - newLength];
           oldElement.copy(newElement);
-	  //delete(&array[i]);
           if (i == 0) {
             newElement->setFirstByte(0);
           } else {
@@ -1478,7 +1486,6 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
           newElement = new IValue();
           oldElement = array[i];
           oldElement.copy(newElement);
-	  //delete(&array[i]);
           newElement->setFirstByte(oldElement.getFirstByte());
         } else {
           newElement = new IValue(type, value);
@@ -1497,7 +1504,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
       newArray[i] = *newElement;
     }
 
-    newOffset = newOffset < 0 ? 0 : newOffset;
+//    newOffset = newOffset < 0 ? 0 : newOffset;
 
     basePtrLocation->setLength(newLength);
     basePtrLocation->setSize(size/8);
@@ -1526,8 +1533,19 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
     }
   }
 
-  index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
-      basePtrLocation->getLength()); 
+  //
+  // optimization for common case, array is original without casting
+  // check if array is cast (using firstByte and type size); if it is,
+  // use find index to get index
+  //
+  array = (IValue*) basePtrLocation->getIPtrValue();
+  index = index + basePtrLocation->getIndex();
+
+  safe_assert(index < (int) basePtrLocation->getLength());
+  if (index < 0 || (int) array[index].getFirstByte() != index*size/8 || KIND_GetSize(array[index].getType()) != (int) size/8) {
+    index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
+        basePtrLocation->getLength()); 
+  } 
 
   ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
 
@@ -1576,7 +1594,7 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
       scopeInx02 = CONSTANT;
       valOrInx02 = 0;
     } 
-    
+
     if (scopeInx03 == SCOPE_INVALID) {
       getIndexNo = 1;
     } else {
@@ -3103,10 +3121,10 @@ bool InterpreterObserver::syncLoad(IValue* iValue, KVALUE* concrete, KIND type) 
     case FLP32_KIND:
       cValueFloat = *((float*) concrete->value.as_ptr);
       if (isnan((float)iValue->getValue().as_flp) && isnan(cValueFloat)) {
-	sync = false;
+        sync = false;
       }
       else {
-	sync = ((float)iValue->getValue().as_flp != cValueFloat);
+        sync = ((float)iValue->getValue().as_flp != cValueFloat);
       }
       if (sync) {
         syncValue.as_flp = cValueFloat;
