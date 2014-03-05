@@ -29,7 +29,19 @@ def main():
   for executable in executables:
       executable = executable.strip()
       print executable
-      
+
+      ##########################################
+      # remove constant geps
+      ngepbitcodefile = executable + '-ngep.bc'
+      ngepbitcode = open(ngepbitcodefile, 'w')
+
+      command = [llvm + '/opt', '-load', monitorpass, '--break-constgeps', '-f', '-o', ngepbitcodefile, executable + '.bc']
+      retval = call(command, stdin=None, stdout=None, stderr=None)
+       # return -1 if running LLVM passes fails
+      if retval <> 0:
+        log.write("[FAILED REMOVING CONSTANT GEPS]: " + executable + "-ngep.bc\n")
+        continue 
+
       ##########################################
       # instrumented bitcode file
       ibitcodefile = 'i_' + executable + '.bc' 

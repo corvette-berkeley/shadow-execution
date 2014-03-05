@@ -179,9 +179,11 @@ static Instruction * convertExpression (ConstantExpr * CE, Instruction * InsertP
 bool
 BreakConstantGEPs::runOnFunction (Function & F) {
   bool modified = false;
+  bool first = false;
 
   // Worklist of values to check for constant GEP expressions
   std::vector<Instruction *> Worklist;
+  Instruction *firstI = 0;
 
   //
   // Initialize the worklist by finding all instructions that have one or more
@@ -194,9 +196,12 @@ BreakConstantGEPs::runOnFunction (Function & F) {
       // expression GEP, insert an instruction GEP before the instruction.
       //
       Instruction * I = i;
+      if (!first) {
+        firstI = I;
+        first = true;
+      }
       for (unsigned index = 0; index < I->getNumOperands(); ++index) {
-        if (ConstantExpr * CE = hasConstantGEP (I->getOperand(index))) {
-          CE->dump();
+        if (hasConstantGEP (I->getOperand(index))) {
           Worklist.push_back (I);
         }
       }
@@ -233,9 +238,10 @@ BreakConstantGEPs::runOnFunction (Function & F) {
         // incoming basic block listed multiple times; this seems okay as long
         // the same value is listed for the incoming block.
         //
-        Instruction * InsertPt = PHI->getIncomingBlock(index)->getTerminator();
+//        Instruction * InsertPt = PHI->getIncomingBlock(index)->getTerminator();
         if (ConstantExpr * CE = hasConstantGEP (PHI->getIncomingValue(index))) {
-          Instruction * NewInst = convertExpression (CE, InsertPt);
+//          Instruction * NewInst = convertExpression (CE, InsertPt);
+          Instruction * NewInst = convertExpression (CE, firstI);
           for (unsigned i2 = index; i2 < PHI->getNumIncomingValues(); ++i2) {
             if ((PHI->getIncomingBlock (i2)) == PHI->getIncomingBlock (index))
               PHI->setIncomingValue (i2, NewInst);
@@ -251,7 +257,8 @@ BreakConstantGEPs::runOnFunction (Function & F) {
         // constant expression.
         //
         if (ConstantExpr * CE = hasConstantGEP (I->getOperand(index))) {
-          Instruction * NewInst = convertExpression (CE, I);
+//          Instruction * NewInst = convertExpression (CE, I);
+          Instruction *NewInst = convertExpression(CE, firstI);
           I->replaceUsesOfWith (CE, NewInst);
           Worklist.push_back (NewInst);
         }
