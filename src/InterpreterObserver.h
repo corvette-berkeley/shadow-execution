@@ -281,6 +281,8 @@ class InterpreterObserver : public InstructionObserver {
 
   void create_global(KVALUE* value, KVALUE* initializer);
 
+  void create_global_array(KVALUE *value, uint32_t size, KIND type);
+
   void printCurrentFrame();
 
   bool syncLoad(IValue* iValue, KVALUE* concrete, KIND type);

@@ -237,35 +237,88 @@ namespace {
       // call back to create each global
       for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
         //if (GlobalValue::isPrivateLinkage(i->getLinkage())) {
-        i->dump();
+        // i->dump();
+        // i->getType()->dump();
 
         InstrPtrVector instrs;
         ValuePtrVector args;
+        Type *elemType;
+        KIND kind;
+        bool aryOfPrim; 
+
         Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
         args.push_back(global);
 
-        if (i->hasInitializer()) {
-          KIND initKind = instrumenter->TypeToKind(i->getInitializer()->getType());
-          if (initKind != ARRAY_KIND && initKind != STRUCT_KIND) {
-            Value* initializer = instrumenter->KVALUE_VALUE(i->getInitializer(), instrs, NOSIGN);
-            args.push_back(initializer);
+        //
+        // Case for global of array of primitive type
+        //
+        elemType = i->getType();
+        kind = instrumenter->TypeToKind(elemType);
+
+        aryOfPrim = false;
+        if (kind == PTR_KIND) {
+          PointerType *ptrType = (PointerType*) elemType;
+          elemType = ptrType->getElementType();
+          elemType->dump();
+          cout << "" << endl;
+          kind = instrumenter->TypeToKind(elemType);
+
+          if (kind == ARRAY_KIND) {
+            int size = 1;
+            while (dyn_cast<ArrayType>(elemType)) {
+              ArrayType *aryType = (ArrayType*) elemType;
+              size = size * aryType->getNumElements();
+              elemType = aryType->getElementType();
+            }
+
+            kind = instrumenter->TypeToKind(elemType);
+            if (kind != STRUCT_KIND) {
+              aryOfPrim = true;
+              Constant *sizeC = instrumenter->INT32_CONSTANT(size, false); // no sign
+              Constant *kindC = instrumenter->KIND_CONSTANT(kind);
+              args.push_back(sizeC);
+              args.push_back(kindC);
+
+              TypePtrVector argTypes;
+              argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
+              argTypes.push_back(instrumenter->INT32_TYPE());
+              argTypes.push_back(instrumenter->KIND_TYPE());
+
+              Instruction *call = instrumenter->CALL_INSTR("llvm_create_global_array", instrumenter->VOID_FUNC_TYPE(argTypes), args);
+              instrs.push_back(call);
+            } 
+          }
+        }
+
+        //
+        // Case for global of other types
+        //
+        if (!aryOfPrim) {
+          if (i->hasInitializer()) {
+            KIND initKind = instrumenter->TypeToKind(i->getInitializer()->getType());
+            if (initKind != ARRAY_KIND && initKind != STRUCT_KIND) {
+              Value* initializer = instrumenter->KVALUE_VALUE(i->getInitializer(), instrs, NOSIGN);
+              args.push_back(initializer);
+            }
+            else {
+              // TODO: this is wrong
+              // for now
+              args.push_back(global);
+            }
           }
           else {
+            // TODO: this is wrong
             // for now
             args.push_back(global);
           }
-        }
-        else {
-          // for now
-          args.push_back(global);
-        }
 
-        TypePtrVector argTypes;
-        argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
-        argTypes.push_back(instrumenter->KVALUEPTR_TYPE());	
+          TypePtrVector argTypes;
+          argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
+          argTypes.push_back(instrumenter->KVALUEPTR_TYPE());	
 
-        Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args);
-        instrs.push_back(call);
+          Instruction* call = instrumenter->CALL_INSTR("llvm_create_global", instrumenter->VOID_FUNC_TYPE(argTypes), args);
+          instrs.push_back(call);
+        }
 
         instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
         //} // isPrivateLinkage

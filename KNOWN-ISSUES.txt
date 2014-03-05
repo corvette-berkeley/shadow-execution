@@ -17,6 +17,8 @@ Optimizations for Instrumentation:
 - Remove use of push_array in allocax
 - Remove KVALUE for load instruction
 - Remove KVALUE for store instruction
+- Fix error in initialization of global array
+- Wrote pass to remove constantGEP 
 
 Need to do:
 - Remove the push calls as much as possible
@@ -69,12 +71,16 @@ user	2m55.447s
 sys	0m10.061s
 
 SP:
-eal	5m29.824s
+real	5m29.824s
 user	5m11.547s
 sys	0m16.149s
 
+BT:
+real 11m55.393s
+user  10m35.896s
+sys 1m12.657s
+
 Assertion at store.
-BT
 DC
 
 Out of memory:

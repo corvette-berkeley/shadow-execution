@@ -390,6 +390,10 @@ void llvm_create_global(KVALUE* value, KVALUE* initializer) {
   DISPATCH_TO_OBSERVERS(create_global, value, initializer)
 }
 
+void llvm_create_global_array(KVALUE *value, uint32_t size, KIND type) {
+  DISPATCH_TO_OBSERVERS(create_global_array, value, size, type)
+}
+
 void llvm_call(IID iid, bool nounwind, KIND type, int inx) {
   DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, inx)
 }

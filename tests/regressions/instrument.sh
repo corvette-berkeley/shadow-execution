@@ -15,8 +15,12 @@ export CPUPROFILE="a.prof"
 $CC -c -fpack-struct -emit-llvm -g -pg $1.c -o $1.bc $PROFILER
 llvm-dis $1.bc
 
+# remove constant geps
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --break-constgeps -f -o $1-ngep.bc $1.bc
+llvm-dis $1-ngep.bc
+
 # instrumenting bitcode file
-$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f --file $GLOG_log_dir/$1-metadata.txt --includedFunctions $1-include.txt -o tmppass.bc $1.bc
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f --file $GLOG_log_dir/$1-metadata.txt --includedFunctions $1-include.txt -o tmppass.bc $1-ngep.bc
 
 # removing alloca instructions to top of functions
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc

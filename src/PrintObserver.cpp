@@ -391,6 +391,10 @@ void PrintObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   DEBUG_STDOUT("<<<<< CREATE GLOBAL >>>>> value:" << KVALUE_ToString(kvalue) << ", initializer:" << KVALUE_ToString(initializer));
 }
 
+void PrintObserver::create_global_array(KVALUE *value, uint32_t size, KIND type) {
+  DEBUG_STDOUT("<<<<< CREATE GLOBAL ARRAY >>>>> value:" << KVALUE_ToString(value) << ", size:" << size<< ", type:" << KIND_ToString(type));
+}
+
 void PrintObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   DEBUG_STDOUT("<<<<< CALL >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
 }

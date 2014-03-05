@@ -148,6 +148,7 @@ extern "C" {
   void llvm_create_global_symbol_table(int size);
   void llvm_record_block_id(int id);
   void llvm_create_global(KVALUE* value, KVALUE* initializer);
+  void llvm_create_global_array(KVALUE* value, uint32_t size, KIND type);
   void llvm_call(IID iid, bool nounwind, KIND type, int x);
   void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int x, KVALUE* mallocAddress);
   void llvm_vaarg();

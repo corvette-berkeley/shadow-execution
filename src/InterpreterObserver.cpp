@@ -1421,6 +1421,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   // compute index, (re)initialized the pointer if neccessary
   //
   if (reInit) {
+    DEBUG_STDERR("\tPointer is re-initialized!");
     DEBUG_STDOUT("\tPointer is re-initialized!");
     IValue *array, *newArray, *loadInst;
     int length, newLength, i, extraBytes;
@@ -1503,8 +1504,6 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 
       newArray[i] = *newElement;
     }
-
-//    newOffset = newOffset < 0 ? 0 : newOffset;
 
     basePtrLocation->setLength(newLength);
     basePtrLocation->setSize(size/8);
@@ -2864,6 +2863,32 @@ void InterpreterObserver::record_block_id(int id) {
     recentBlock.pop();
     recentBlock.push(id);
   }
+}
+
+void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIND type) {
+  IValue *location = new IValue[size];
+  uint32_t i, elemSize;
+  VALUE zero, value;
+
+  //
+  // initialize the array
+  //
+  elemSize = KIND_GetSize(type);
+  zero.as_int = 0;
+  for (i = 0; i < size; i++) {
+    IValue *elem = new IValue(type, zero, REGISTER);
+    elem->setFirstByte(i*elemSize);
+    location[i] = *elem;
+  } 
+
+  value.as_ptr = kvalue->value.as_ptr;
+  IValue *ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
+  ptrLocation->setSize(KIND_GetSize(type));
+  ptrLocation->setLength(size);
+  ptrLocation->setValueOffset((int64_t)location - value.as_int);
+
+  globalSymbolTable[kvalue->inx] = ptrLocation;
+  DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
 }
 
 void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
