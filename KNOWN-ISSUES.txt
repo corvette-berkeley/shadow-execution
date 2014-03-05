@@ -50,41 +50,50 @@ Setup: Debugging information off. Logging disabled.
 
 SMALL INPUTS.
 
-CG:
-real	3m1.812s
-user	2m57.807s
-sys	0m3.368s
+CG: (0.211s) (955X)
+real  3m3.505s
+user  2m59.515s
+sys 0m3.280s
 
-EP:
-real	9m9.546s
-user	8m31.500s
-sys	0m33.738s
+EP: (3.05s) (175X)
+real  8m55.631s
+user  8m27.932s
+sys 0m23.777s
 
-IS: 
-real	0m29.933s
-user	0m20.125s
-sys	0m9.005s
+IS: (0.059s) (526X)
+real  0m31.051s
+user  0m21.081s
+sys 0m9.141s
 
-LU:
+LU: (0.180s) (3750X)
+real  11m15.448s
+user  10m31.947s
+sys 0m38.342s
+== Disble BreakConstantGEPS
 real	3m6.812s
 user	2m55.447s
 sys	0m10.061s
+==
 
-SP:
-real	5m29.824s
-user	5m11.547s
-sys	0m16.149s
+SP: (0.223s) (1677X)
+real  6m14.328s
+user  5m57.350s
+sys 0m14.553s
 
-BT:
-real 11m55.393s
-user  10m35.896s
-sys 1m12.657s
+BT: (0.350s) (2002X)
+real  11m41.712s
+user  10m31.343s
+sys 1m3.300s
+
+FT: (0.606s) (1509X)
+real  15m15.198s
+user  14m30.802s
+sys 0m38.038s
 
 Assertion at store.
 DC
 
 Out of memory:
-FFT
 MG
 
 
