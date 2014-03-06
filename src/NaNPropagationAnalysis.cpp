@@ -4,34 +4,28 @@
 
 #include "NaNPropagationAnalysis.h"
 
-void NaNPropagationAnalysis::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
-  InterpreterObserver::load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
+void NaNPropagationAnalysis::post_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool loadGlobal UNUSED, 
+				       int loadInx UNUSED, int file, int line, int inx) {
   IValue* loadValue = executionStack.top()[inx];
-  
+
   if (type == FLP32_KIND || type == FLP64_KIND || type == FLP128_KIND) {
     if (isnan(loadValue->getFlpValue())) {
-      LOG(INFO) << file << ":" << line << ": WARNING Loading a NAN value " << endl;
+      cout << file << ":" << line << ": WARNING Loading a NAN value " << endl;
     }
   }
   return;
 }
 
-void NaNPropagationAnalysis::store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx) {
-  InterpreterObserver::store(pInx, pScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
+void NaNPropagationAnalysis::post_store(int pInx, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED,
+					int file, int line, int inx UNUSED) {
 
-  // TODO: storing nan constant
-  if (srcScope != CONSTANT) {
-    IValue* srcValue = executionStack.top()[srcInx];
-    
-    if (srcValue->getType() == FLP32_KIND || srcValue->getType() == FLP64_KIND || srcValue->getType() == FLP128_KIND) {
-      if (isnan(srcValue->getFlpValue())) {
-	LOG(INFO) << file << ":" << line << ": WARNING Storing a NAN Value " << endl;
-      }
+  IValue* ptrResult = executionStack.top()[pInx];
+  IValue* result = (IValue*)ptrResult->getIPtrValue();
+  
+  if (result->getType() == FLP32_KIND || result->getType() == FLP64_KIND || result->getType() == FLP128_KIND) {
+    if (isnan(result->getFlpValue())) {
+      cout << file << ":" << line << ": WARNING Storing a NAN Value " << endl;
     }
   }
-
-  // case overwriting a NaN
-
   return;
 }
-

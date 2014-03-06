@@ -465,6 +465,8 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
 void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
 
+  pre_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
+
   bool isPointerConstant = false;
   bool sync = false;
   IValue* srcPtrLocation;
@@ -614,10 +616,14 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     DEBUG_LOG("[LOAD] Syncing load at " << file << ":" << line);
   }
 
+  post_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
+
   return;
 }
 
 void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file UNUSED, int line UNUSED, int inx UNUSED) {
+
+  pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
   if (srcKind == INT80_KIND) {
     cout << "[store] Unsupported INT80_KIND" << endl;
@@ -719,6 +725,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
 
+  post_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
   return;
 }
 
@@ -827,7 +834,9 @@ void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_
 }
 
 void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  pre_fadd(lScope, rScope, lValue, rValue, type, line, inx);
   binop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+  post_fadd(lScope, rScope, lValue, rValue, type, line, inx);
 }
 
 void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
@@ -835,7 +844,9 @@ void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_
 }
 
 void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  pre_fsub(lScope, rScope, lValue, rValue, type, line, inx);
   binop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+  post_fsub(lScope, rScope, lValue, rValue, type, line, inx);
 }
 
 void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
@@ -843,7 +854,9 @@ void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_
 }
 
 void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  pre_fmul(lScope, rScope, lValue, rValue, type, line, inx);
   binop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+  post_fmul(lScope, rScope, lValue, rValue, type, line, inx);
 }
 
 void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
@@ -855,7 +868,9 @@ void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 }
 
 void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  pre_fdiv(lScope, rScope, lValue, rValue, type, line, inx);
   binop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
+  post_fdiv(lScope, rScope, lValue, rValue, type, line, inx);
 }
 
 void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
@@ -1206,6 +1221,8 @@ void InterpreterObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE
 
 void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, KVALUE* actualAddress) {
 
+  pre_allocax(iid, type, size, inx, line, arg, actualAddress);
+
   IValue *ptrLocation, *location;
 
   DEBUG_STDOUT("LOCAL alloca");
@@ -1230,6 +1247,8 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   DEBUG_STDOUT(ptrLocation->toString());
 
   safe_assert(ptrLocation->getValueOffset() != -1);
+
+  post_allocax(iid, type, size, inx, line, arg, actualAddress);
   return;
 }
 
@@ -2823,6 +2842,7 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::create_global_symbol_table(int size) {
 
+  pre_create_global_symbol_table();
   //
   // instantiate copyShadow
   //
@@ -2852,6 +2872,8 @@ void InterpreterObserver::create_global_symbol_table(int size) {
     IValue* value = new IValue();
     globalSymbolTable.push_back(value);
   }
+
+  post_create_global_symbol_table();
   return;
 }
 
@@ -3321,3 +3343,48 @@ bool InterpreterObserver::syncLoad(IValue* iValue, uint64_t concreteAddr, KIND t
 
   return sync;
 }
+
+
+void InterpreterObserver::pre_allocax(IID iid UNUSED, KIND type UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* actualAddress UNUSED) {}
+
+void InterpreterObserver::post_allocax(IID iid UNUSED, KIND type UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* actualAddress UNUSED) {}
+
+void InterpreterObserver::pre_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
+				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
+ 
+void InterpreterObserver::post_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
+				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
+				    int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
+				     int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::post_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void InterpreterObserver::pre_create_global_symbol_table() {}
+
+void InterpreterObserver::post_create_global_symbol_table() {}
+
+void InterpreterObserver::pre_fbinop() {}
+
+void InterpreterObserver::post_fbinop() {}

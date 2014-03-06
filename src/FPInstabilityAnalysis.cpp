@@ -149,7 +149,6 @@ int FPInstabilityAnalysis::getExponent(double v) {
 /******** ANALYSIS FUNCTIONS **********/
 
 void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
-  InterpreterObserver::binop(lScope, rScope, lValue, rValue, type, line, inx, op);
 
   long double v1, v2, sv1, sv2, sresult, result;
   FPInstabilityShadowObject *fpISO;
@@ -244,25 +243,23 @@ void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, i
   executionStack.top()[inx]->setShadow(fpISO);
 }
 
-void FPInstabilityAnalysis::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+void FPInstabilityAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
   fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
 }
 
-void FPInstabilityAnalysis::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+void FPInstabilityAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
   fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
 }
 
-void FPInstabilityAnalysis::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+void FPInstabilityAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
   fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
 }
 
-void FPInstabilityAnalysis::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+void FPInstabilityAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
   fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
 
-void FPInstabilityAnalysis::create_global_symbol_table(int size) {
-  InterpreterObserver::create_global_symbol_table(size);
-
+void FPInstabilityAnalysis::post_create_global_symbol_table() {
   //
   // instantiate copyShadow
   //

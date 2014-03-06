@@ -242,6 +242,52 @@ class InterpreterObserver : public InstructionObserver {
   virtual void vaarg();
   
   virtual void landingpad();
+
+
+  //***** Analysis Functions ****//
+
+  virtual void pre_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result);
+
+  virtual void post_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result);
+
+  virtual void pre_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int in);
+
+  virtual void post_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int in);
+
+  virtual void pre_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
+
+  virtual void post_load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
+
+  virtual void pre_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
+
+  virtual void post_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
+
+  virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void pre_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void pre_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void pre_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+  virtual void pre_create_global_symbol_table();
+
+  virtual void post_create_global_symbol_table();
+
+  virtual void pre_fbinop();
+
+  virtual void post_fbinop();
+
+
+  //****  Other Functions ****//
   
   void push_string(int c);
 
@@ -259,13 +305,13 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_getelementptr_inx(KVALUE* int_value);
 
-	void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
+  void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
 
   void push_getelementptr_inx2(int int_value);
 
   void push_array_size(uint64_t size);
 
-	void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
+  void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
 
   void after_call(KVALUE* value);
 
@@ -275,7 +321,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void create_stack_frame(int size);
   
-  virtual void create_global_symbol_table(int size);
+  void create_global_symbol_table(int size);
 
   void record_block_id(int id);
 

@@ -52,17 +52,15 @@ class FPInstabilityAnalysis : public InterpreterObserver {
   public:
     FPInstabilityAnalysis(std::string name) : InterpreterObserver(name) {}
 
-    virtual void fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);  
+    virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
-    virtual void fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+    virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
-    virtual void fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+    virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
-    virtual void fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+    virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
-    virtual void fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
-
-    virtual void create_global_symbol_table(int size);
+    virtual void post_create_global_symbol_table();
 
   private:
     /**
@@ -87,6 +85,8 @@ class FPInstabilityAnalysis : public InterpreterObserver {
     int getEBits(long double v1, long double v2);
 
     int getExponent(double v);
+
+    void fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);
 
     /*
      * not used in PLDI12 Benz Paper
