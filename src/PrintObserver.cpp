@@ -363,8 +363,8 @@ void PrintObserver::construct_array_type(uint64_t i) {
   DEBUG_STDOUT("<<<<< CONSTRUCT ARRAY TYPE >>>>> size: " << i);
 }
 
-void PrintObserver::after_call(KVALUE* value) {
-  DEBUG_STDOUT("<<<<< AFTER CALL >>>>> value: " << KVALUE_ToString(value));
+void PrintObserver::after_call(KVALUE* value, int line) {
+  DEBUG_STDOUT("<<<<< AFTER CALL >>>>> value: " << KVALUE_ToString(value) << ", line: " << line);
 }
 
 void PrintObserver::after_void_call() {

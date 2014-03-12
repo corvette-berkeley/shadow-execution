@@ -68,9 +68,6 @@ class BinaryOperatorInstrumenter : public Instrumenter {
 
     BITWISE getBitWise(BinaryOperator* inst);
 
-    SCOPE getScope(Value *value);
-
-    Constant* getValueOrIndex(Value *value);
 };
 
 #endif /* BINARY_OPERATORS_INSTRUMENTER_H_ */

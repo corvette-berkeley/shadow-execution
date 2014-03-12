@@ -3,6 +3,7 @@
  * @brief
  */
 
+
 /*
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
@@ -41,7 +42,14 @@
 
 #include "FPInstabilityAnalysis.h"
 #include "FPInstabilityShadowObject.h"
+#include <math.h>
+#include <queue>
+#include <stack>
 #include <llvm/IR/InstrTypes.h>
+
+/******** INITIALIZE ANALYSIS CONFIGURATIONS **********/
+int FPInstabilityAnalysis::source = 10;
+double FPInstabilityAnalysis::epsilon = -10;
 
 /******** HELPER FUNCTIONS **********/
 
@@ -49,14 +57,18 @@ void FPInstabilityAnalysis::copyShadow(IValue *src, IValue *dest) {
   //
   // copy shadow value from src to dest
   //
-  if (src->isFlpValue() && dest->isFlpValue() && src->getShadow() != NULL) {
-    FPInstabilityShadowObject *fpISOSrc, *fpISODest; 
-    
-    fpISOSrc = (FPInstabilityShadowObject *) src->getShadow();
-    fpISODest = new FPInstabilityShadowObject(0,0);
-    fpISOSrc->copyTo(fpISODest);
+  if (src->isFlpValue() && dest->isFlpValue()) {
+    if (src->getShadow() != NULL) {
+      FPInstabilityShadowObject<HIGHPRECISION> *fpISOSrc, *fpISODest; 
 
-    dest->setShadow(fpISODest);
+      fpISOSrc = (FPInstabilityShadowObject<HIGHPRECISION> *) src->getShadow();
+      fpISODest = new FPInstabilityShadowObject<HIGHPRECISION>(0,0);
+      fpISOSrc->copyTo(fpISODest);
+
+      dest->setShadow(fpISODest);
+    } else {
+      dest->setShadow(NULL);
+    }
   }
 }
 
@@ -73,7 +85,7 @@ long double FPInstabilityAnalysis::getShadowValue(SCOPE scope, int64_t value) {
 
     iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
     result = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : 
-        ((FPInstabilityShadowObject*) iv->getShadow())->getValue();
+        ((FPInstabilityShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue();
   }
 
   return result;
@@ -106,7 +118,11 @@ int FPInstabilityAnalysis::getLineNumber(SCOPE scope, int64_t value) {
     IValue *iv;
 
     iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
-    line = iv->getLineNumber();
+    if (iv->getShadow() != NULL) {
+      line = ((FPInstabilityShadowObject<HIGHPRECISION>*) iv->getShadow())->getPC();
+    } else {
+      line = iv->getLineNumber();
+    }
   }
 
   return line;
@@ -148,10 +164,59 @@ int FPInstabilityAnalysis::getExponent(double v) {
 
 /******** ANALYSIS FUNCTIONS **********/
 
-void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
+void FPInstabilityAnalysis::pre_analysis(int inx) {
+  if (executionStack.top()[inx]->getShadow() != NULL) {
+    preFpISO = (FPInstabilityShadowObject<HIGHPRECISION>*) executionStack.top()[inx]->getShadow();
+  } else {
+    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+  }
+}
+
+void FPInstabilityAnalysis::pre_sync_call(int inx UNUSED, int line UNUSED) {
+  if (executionStack.top()[inx]->isFlpValue()) {
+    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0, line);
+    preFpISO->setMaxRelErr(pow(10, epsilon));
+    if (executionStack.top()[inx]->getShadow() != NULL) {
+      preFpISO->setSumRelErr(pow(10, epsilon) +
+          ((FPInstabilityShadowObject<HIGHPRECISION>*)
+           executionStack.top()[inx]->getShadow())->getSumRelErr());
+    }
+
+    stack<IValue*> params (callArgs);
+    int paramCnt = 0;
+
+    while (!params.empty() && paramCnt < 2) {
+      IValue *iValue = params.top();
+      params.pop();
+
+      if (iValue->isFlpValue() && iValue->getShadow() != NULL) {
+        preFpISO->setMaxRelErrSource(paramCnt, ((FPInstabilityShadowObject<HIGHPRECISION>*) iValue->getShadow())->getPC());
+        paramCnt++;
+      }
+    }
+  }
+}
+
+void FPInstabilityAnalysis::post_sync_call(int inx UNUSED, int line UNUSED) {
+  if (executionStack.top()[inx]->isFlpValue()) {
+    FPInstabilityShadowObject<HIGHPRECISION> *shadow = new FPInstabilityShadowObject<HIGHPRECISION>(*preFpISO);
+    shadow->setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::SYNC);
+    shadow->setValue(executionStack.top()[inx]->getFlpValue());
+    delete(preFpISO);
+    preFpISO = NULL;
+    executionStack.top()[inx]->setShadow(shadow);
+
+    //
+    // Assume that syncing always incurs high relative error
+    //
+    analysisTable[line] = *shadow;
+  }
+}
+
+void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
 
   long double v1, v2, sv1, sv2, sresult, result;
-  FPInstabilityShadowObject *fpISO;
+  FPInstabilityShadowObject<HIGHPRECISION> *fpISO;
   long double rerr, d;
   int l1, l2, e1, e2, e3, cbits, cbad;
 
@@ -196,9 +261,9 @@ void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, i
   // Construct shadow value for the result shadow object. 
   //
   if (executionStack.top()[inx]->getShadow() == NULL) {
-    fpISO = new FPInstabilityShadowObject(sresult, line);
+    fpISO = new FPInstabilityShadowObject<HIGHPRECISION>(sresult, line);
   } else {
-    fpISO = (FPInstabilityShadowObject*) executionStack.top()[inx]->getShadow();
+    fpISO = (FPInstabilityShadowObject<HIGHPRECISION>*) executionStack.top()[inx]->getShadow();
   }
 
   //
@@ -210,9 +275,9 @@ void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, i
   d = sresult != 0 ? sresult : 10e-10;
   rerr = abs((long double)((sresult - result)/d));
 
-  fpISO->setSumRelErr(fpISO->getSumRelErr() + rerr);
+  fpISO->setSumRelErr(preFpISO->getSumRelErr() + rerr);
 
-  if (rerr > fpISO->getMaxRelErr()) {
+  if (rerr > preFpISO->getMaxRelErr()) {
     fpISO->setMaxRelErr(rerr);
     fpISO->setMaxRelErrSource(0, l1);
     fpISO->setMaxRelErrSource(1, l2);
@@ -223,40 +288,87 @@ void FPInstabilityAnalysis::fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, i
   e3 = getExponent(result);
   cbits = max(e1, e2) - e3;
   cbad = max(0, 1 + cbits - min(getEBits(sv1, v1), getEBits(sv2, v2)));
-  fpISO->setSumCBad(fpISO->getSumCBad() + cbad);
-  if (cbad > fpISO->getMaxCBad()) {
+  fpISO->setSumCBad(preFpISO->getSumCBad() + cbad);
+  if (cbad > preFpISO->getMaxCBad()) {
     fpISO->setMaxCBad(cbad);
     fpISO->setMaxCBadSource(line);
+  } else {
+    fpISO->setMaxCBad(preFpISO->getMaxCBad());
+    fpISO->setMaxCBadSource(preFpISO->getMaxCBadSource());
   }
 
   fpISO->setValue(sresult);
   fpISO->setPC(line);
 
-  if (cbad > 0) {
+  delete(preFpISO);
+  preFpISO = NULL;
+
+  //
+  // record analysis information
+  //
+  // if (fpISO->getMaxRelErr() > 0.7 && cbad > 5) {
+  if (fpISO->getMaxRelErr() > pow(10, epsilon)) {
+    fpISO->setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION);
+    analysisTable[line] = *fpISO;
+    DEBUG_STDERR("[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad);
+    DEBUG_STDERR("\t sum relative error: " << fpISO->getSumRelErr());
+    DEBUG_STDERR("\t max relative error: " << fpISO->getMaxRelErr());
+    DEBUG_STDERR("\t max relative error source: " << fpISO->getMaxRelErrSource(0) << ":" << fpISO->getMaxRelErrSource(1));
+    DEBUG_STDERR("\t max cbad: " << fpISO->getMaxCBad());
+    DEBUG_STDERR("\t max cbad source: " << fpISO->getMaxCBadSource());
+    DEBUG_STDERR("\t binop:" << BINOP_ToString(op));
+    DEBUG_STDERR("\t v1:" << v1 << ", sv1:" << sv1);
+    DEBUG_STDERR("\t v2:" << v2 << ", sv2:" << sv2);
+    DEBUG_STDERR("\t result:" << result << ", sresult:" << sresult);
+
+    /*
     cerr << "[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad << endl;
+    cerr << "\t sum relative error: " << fpISO->getSumRelErr() << endl;
+    cerr << "\t max relative error: " << fpISO->getMaxRelErr() << endl;
+    cerr << "\t max relative error source: " << fpISO->getMaxRelErrSource(0) << ":" << fpISO->getMaxRelErrSource(1) << endl;
+    cerr << "\t max cbad: " << fpISO->getMaxCBad() << endl;
+    cerr << "\t max cbad source: " << fpISO->getMaxCBadSource() << endl;
     cerr << "\t binop:" << BINOP_ToString(op) << endl;
     cerr << "\t v1:" << v1 << ", sv1:" << sv1 << endl;
     cerr << "\t v2:" << v2 << ", sv2:" << sv2 << endl;
     cerr << "\t result:" << result << ", sresult:" << sresult << endl;
+    */
   }
 
   executionStack.top()[inx]->setShadow(fpISO);
+
+}
+
+void FPInstabilityAnalysis::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_analysis(inx);
+}
+
+void FPInstabilityAnalysis::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_analysis(inx);
+}
+
+void FPInstabilityAnalysis::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_analysis(inx);
+}
+
+void FPInstabilityAnalysis::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_analysis(inx);
 }
 
 void FPInstabilityAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
 }
 
 void FPInstabilityAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
 }
 
 void FPInstabilityAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
 }
 
 void FPInstabilityAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
 
 void FPInstabilityAnalysis::post_create_global_symbol_table() {
@@ -266,26 +378,22 @@ void FPInstabilityAnalysis::post_create_global_symbol_table() {
   IValue::setCopyShadow(&copyShadow);
 }
 
-/*
+void FPInstabilityAnalysis::pre_fptoui(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {
+  if (opScope != CONSTANT) {
+    pre_analysis(op);
+  }
+}
 
-void FPInstabilityAnalysis::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  InterpreterObserver::fptoui(iid, type, op, size, inx);
+void FPInstabilityAnalysis::post_fptoui(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind, int size UNUSED, int inx) {
 
-  long double sv;
+  double sv, cv; 
   int64_t sresult;
 
-  if (op->inx == -1) {
-    sv = (long double) op->value.as_flp;
-  } else {
-    IValue* iv;
 
-    iv = op->isGlobal ? globalSymbolTable[op->inx] :
-      executionStack.top()[op->inx];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
-          double*) iv->getShadow());
-  }
+  cv = getConcreteValue(opScope, op);
+  sv = getShadowValue(opScope, op);
 
-  switch (type) {
+  switch (kind) {
     case INT1_KIND:
       sresult = (bool) sv;
       break;
@@ -304,42 +412,38 @@ void FPInstabilityAnalysis::fptoui(IID iid, KIND type, KVALUE* op, uint64_t size
       break;
     default:
       sresult = 0;
-      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(type));
+      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(kind));
       safe_assert(false);
   }
 
   if (sresult != executionStack.top()[inx]->getIntValue()) {
-    cerr << "[FPInstabilityAnalysis] Concrete difference at FPTOUI." << endl; 
+    DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FPTOUI.");
+    DEBUG_STDERR("\tshadow operand = " << sv << ", concrete operand = " << cv);
+    DEBUG_STDERR("\tshadow result = " << sresult << ", result = " << executionStack.top()[inx]->getIntValue());
+    if (preFpISO != NULL) {
+      FPInstabilityShadowObject<HIGHPRECISION> fpISO(*preFpISO);
+      fpISO.setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE);
+      // TODO: add fpISO to analysis table
+      DEBUG_STDERR("\t sum relative error: " << preFpISO->getSumRelErr());
+      DEBUG_STDERR("\t max relative error: " << preFpISO->getMaxRelErr());
+      DEBUG_STDERR("\t max relative error source: " << preFpISO->getMaxRelErrSource(0) << ":" << preFpISO->getMaxRelErrSource(1));
+    }
   }
 }
 
-void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx) {
-  InterpreterObserver::fcmp(iid, op1, op2, pred, inx);
+void FPInstabilityAnalysis::pre_fcmp(SCOPE lScope, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {
+  if (lScope != CONSTANT) {
+    pre_analysis(lValue);
+  }
+}
+
+void FPInstabilityAnalysis::post_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int line, int inx) {
 
   long double sv1, sv2; 
   bool sresult;
 
-  if (op1->inx == -1) {
-    sv1 = (long double) KVALUE_ToFlpValue(op1);
-  } else {
-    IValue* iv1;
-
-    iv1 = op1->isGlobal ? globalSymbolTable[op1->inx] :
-      executionStack.top()[op1->inx];
-    sv1 = iv1->getShadow() == NULL ? (long double) iv1->getFlpValue() : *((long
-          double*) iv1->getShadow());
-  }
-
-  if (op2->inx == -1) {
-    sv2 = (long double) KVALUE_ToFlpValue(op2);
-  } else {
-    IValue* iv2;
-
-    iv2 = op2->isGlobal ? globalSymbolTable[op2->inx] :
-      executionStack.top()[op2->inx];
-    sv2 = iv2->getShadow() == NULL ? (long double) iv2->getFlpValue() : *((long
-          double*) iv2->getShadow());
-  }
+  sv1 = getShadowValue(lScope, lValue);
+  sv2 = getShadowValue(rScope, rValue);
 
   switch(pred) {
     case CmpInst::FCMP_FALSE:
@@ -392,28 +496,35 @@ void FPInstabilityAnalysis::fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, i
   }
 
   if (sresult != executionStack.top()[inx]->getIntValue()) {
-    cerr << "[FPInstabilityAnalysis] Concrete difference at FCMP." << endl; 
+    DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FCMP.");
+    DEBUG_STDERR("\tline: " << line);
+    DEBUG_STDERR("\tshadow result = " << sresult << ", result = " << executionStack.top()[inx]->getIntValue());
+    if (preFpISO != NULL) {
+      FPInstabilityShadowObject<HIGHPRECISION> fpISO(*preFpISO);
+      fpISO.setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE);
+      analysisTable[line] = fpISO;
+      DEBUG_STDERR("\t sum relative error: " << preFpISO->getSumRelErr());
+      DEBUG_STDERR("\t max relative error: " << preFpISO->getMaxRelErr());
+      DEBUG_STDERR("\t max relative error source: " << preFpISO->getMaxRelErrSource(0) << ":" << preFpISO->getMaxRelErrSource(1));
+    }
   }
 }
 
-void FPInstabilityAnalysis::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  InterpreterObserver::fptosi(iid, type, op, size, inx);
+void FPInstabilityAnalysis::pre_fptosi(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {
+  if (opScope != CONSTANT) {
+    pre_analysis(op);
+  }
+}
 
-  long double sv;
+void FPInstabilityAnalysis::post_fptosi(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind, int size UNUSED, int inx) {
+
+  double sv, cv;
   int64_t sresult;
 
-  if (op->inx == -1) {
-    sv = (long double) op->value.as_flp;
-  } else {
-    IValue* iv;
+  cv = getConcreteValue(opScope, op);
+  sv = getShadowValue(opScope, op);
 
-    iv = op->isGlobal ? globalSymbolTable[op->inx] :
-      executionStack.top()[op->inx];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
-          double*) iv->getShadow());
-  }
-
-  switch (type) {
+  switch (kind) {
     case INT1_KIND:
       sresult = (bool) sv;
       break;
@@ -424,6 +535,9 @@ void FPInstabilityAnalysis::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size
       sresult = (int16_t) sv;
       break;
     case INT24_KIND:
+      sresult = (int32_t) sv;
+      sresult = sresult & 0x00FFFFFF;
+      break;
     case INT32_KIND:
       sresult = (int32_t) sv;
       break;
@@ -432,34 +546,40 @@ void FPInstabilityAnalysis::fptosi(IID iid, KIND type, KVALUE* op, uint64_t size
       break;
     default:
       sresult = 0;
-      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(type));
+      DEBUG_STDERR("Unsupported integer type: " << KIND_ToString(kind));
       safe_assert(false);
   }
 
   if (sresult != executionStack.top()[inx]->getIntValue()) {
-    cerr << "[FPInstabilityAnalysis] Concrete difference at FPTOUI." << endl; 
+    DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FPTOSI.");
+    DEBUG_STDERR("\tshadow operand = " << sv << ", concrete operand = " << cv);
+    DEBUG_STDERR("\tshadow result = " << sresult << ", result = " << executionStack.top()[inx]->getIntValue());
+    if (preFpISO != NULL) {
+      FPInstabilityShadowObject<HIGHPRECISION> fpISO(*preFpISO);
+      fpISO.setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE);
+      // TODO: add fpISO to analysis table
+      DEBUG_STDERR("\t sum relative error: " << preFpISO->getSumRelErr());
+      DEBUG_STDERR("\t max relative error: " << preFpISO->getMaxRelErr());
+      DEBUG_STDERR("\t max relative error source: " << preFpISO->getMaxRelErrSource(0) << ":" << preFpISO->getMaxRelErrSource(1));
+    }
   }
 }
 
-void FPInstabilityAnalysis::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  InterpreterObserver::fptrunc(iid, type, op, size, inx);
+void FPInstabilityAnalysis::pre_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {
+  if (opScope != CONSTANT) {
+    pre_analysis(op);
+  }
+}
+
+void FPInstabilityAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind, int size UNUSED, int inx) {
 
   long double sv;
   long double sresult;
-  long double *shadow;
+  FPInstabilityShadowObject<HIGHPRECISION> *shadow;
 
-  if (op->inx == -1) {
-    sv = (long double) op->value.as_flp;
-  } else {
-    IValue* iv;
+  sv = getShadowValue(opScope, op);
 
-    iv = op->isGlobal ? globalSymbolTable[op->inx] :
-      executionStack.top()[op->inx];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
-          double*) iv->getShadow());
-  }
-
-  switch (type) {
+  switch (kind) {
     case FLP32_KIND:
       sresult = (float) sv;
       break;
@@ -471,34 +591,33 @@ void FPInstabilityAnalysis::fptrunc(IID iid, KIND type, KVALUE* op, uint64_t siz
       break;
     default:
       sresult = 0;
-      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
+      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(kind));
       safe_assert(false);
   }
 
-  shadow = (long double *) malloc(sizeof(long double));
-  shadow[0] = sresult;
-  executionStack.top()[inx]->setShadow(shadow);
+  if (preFpISO != NULL) {
+    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+    preFpISO->copyTo(shadow);
+    shadow->setValue(sresult);
+    executionStack.top()[inx]->setShadow(shadow);
+  }
 }
 
-void FPInstabilityAnalysis::fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx) {
-  InterpreterObserver::fpext(iid, type, op, size, inx);
+void FPInstabilityAnalysis::pre_fpext(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {
+  if (opScope != CONSTANT) {
+    pre_analysis(op);
+  }
+}
+
+void FPInstabilityAnalysis::post_fpext(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind, int size UNUSED, int inx) {
 
   long double sv;
   long double sresult;
-  long double *shadow;
+  FPInstabilityShadowObject<HIGHPRECISION> *shadow;
 
-  if (op->inx == -1) {
-    sv = (long double) op->value.as_flp;
-  } else {
-    IValue* iv;
+  sv = getShadowValue(opScope, op);
 
-    iv = op->isGlobal ? globalSymbolTable[op->inx] :
-      executionStack.top()[op->inx];
-    sv = iv->getShadow() == NULL ? (long double) iv->getFlpValue() : *((long
-          double*) iv->getShadow());
-  }
-
-  switch (type) {
+  switch (kind) {
     case FLP32_KIND:
       sresult = (float) sv;
       break;
@@ -510,13 +629,141 @@ void FPInstabilityAnalysis::fpext(IID iid, KIND type, KVALUE* op, uint64_t size,
       break;
     default:
       sresult = 0;
-      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
+      DEBUG_STDERR("Unsupported float type: " << KIND_ToString(kind));
       safe_assert(false);
   }
 
-  shadow = (long double *) malloc(sizeof(long double));
-  shadow[0] = sresult;
-  executionStack.top()[inx]->setShadow(shadow);
+  if (preFpISO != NULL) {
+    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+    preFpISO->copyTo(shadow);
+    shadow->setValue(sresult);
+    executionStack.top()[inx]->setShadow(shadow);
+  }
 }
 
-*/
+void FPInstabilityAnalysis::post_analysis() {
+  map<int, FPInstabilityShadowObject<HIGHPRECISION> >::iterator it;
+
+  cerr << "" << endl;
+  cerr << "#######################################################" << endl;
+  cerr << "############## FPINSTABILITY ANALYSIS #################" << endl;
+  cerr << "#######################################################" << endl;
+  cerr << "" << endl;
+  cerr << "[PARAMETER] Relative error threshold: 10^" << epsilon << endl;
+  cerr << "[PARAMETER] Tracking from line: " << source << endl;
+  cerr << "" << endl;
+  cerr << "============= RECOMMENDATION" << endl;
+
+  it = analysisTable.find(source);
+
+  if (it == analysisTable.end()) {
+    cerr << "[SUCCESS] No precision change required." << endl; 
+  } else {
+    queue<FPInstabilityShadowObject<HIGHPRECISION> > errorFpISO; // FPISO objects propagation trace
+    set<int> highPrecision; // line that should performed in higher precision
+    queue<int> errorTrace; // error propagation trace
+
+    errorTrace.push(source); // source is the first error
+
+    //
+    // Repeat until cannot propagate further backward
+    //
+    while (!errorTrace.empty()) {
+      int line = errorTrace.front();
+      errorTrace.pop();
+
+      it = analysisTable.find(line);
+
+      if (it != analysisTable.end()) {
+
+        //
+        // this line should be performed in higher precision
+        //
+        highPrecision.insert(line);
+
+        FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
+        errorFpISO.push(fpISO);
+        analysisTable.erase(it);
+
+        int line01 = fpISO.getMaxRelErrSource(0);
+        int line02 = fpISO.getMaxRelErrSource(1); 
+
+        if (analysisTable.find(line01) != analysisTable.end()) {
+          errorTrace.push(line01);
+        }
+
+        if (line02 != line01 && analysisTable.find(line02) != analysisTable.end()) {
+          errorTrace.push(line02);
+        }
+      }
+    }
+
+    //
+    // Print high level suggestion
+    //
+    for (set<int>::iterator it = highPrecision.begin(); it != highPrecision.end(); it++) {
+      int line = *it;
+      cerr << "[RECOMMENDATION] Line " << line << " should be computed in higher precision" << endl;
+    }
+
+    //
+    // Print error traces in form of FPSIO objects
+    //
+    cerr << "" << endl;
+    cerr << "============= Detailed Analysis" << endl;
+    while (!errorFpISO.empty()) {
+      FPInstabilityShadowObject<HIGHPRECISION> fpISO = errorFpISO.front();
+      errorFpISO.pop();
+
+      //
+      // Print error messages
+      //
+      if (fpISO.getAbnormalType() != FPInstabilityShadowObject<HIGHPRECISION>::NONE) {
+        if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION) {
+          cerr << "[WARN] High relative error at location (line: " <<
+            fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " <<
+            fpISO.getMaxCBad() << endl;
+        } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE) {
+          cerr << "[WARN] Concrete difference at location: (line: " << fpISO.getPC() <<
+            ", file:" << fpISO.getFileID() << ")" << endl;
+          cerr << "\t source of concrete difference: (line: " << fpISO.getPC()
+            << ", file:" << fpISO.getFileID() << ")" << endl;
+        } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::SYNC) {
+          cerr << "[WARN] Assume high relative error from sync at location (line: " << 
+            fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " <<
+            fpISO.getMaxCBad() << endl;
+        }
+
+        cerr << "\t sum relative error: " << fpISO.getSumRelErr() << endl;
+        cerr << "\t max relative error: " << fpISO.getMaxRelErr() << endl;
+        cerr << "\t max relative error source: " << fpISO.getMaxRelErrSource(0)
+          << ":" << fpISO.getMaxRelErrSource(1) << endl;
+        cerr << "\t max cbad:" << fpISO.getMaxCBad() << endl;
+        cerr << "\t max cbad source:" << fpISO.getMaxCBadSource() << endl; 
+      }
+    }
+  }
+
+  /*
+  for (map<int, FPInstabilityShadowObject<HIGHPRECISION> >::iterator it = analysisTable.begin(); it
+      != analysisTable.end(); ++it) {
+    int line = it->first;
+    FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
+
+    if (fpISO.getAbnormalType() != FPInstabilityShadowObject<HIGHPRECISION>::NONE) {
+      if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION) {
+        cerr << "[WARN] High relative error at location (line: " << fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " << fpISO.getMaxCBad() << endl;
+      } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE) {
+        cerr << "[WARN] Concrete difference at location: (line: " << line << ", file:" << fpISO.getFileID() << ")" << endl;
+        cerr << "\t source of concrete difference: (line: " << fpISO.getPC() << ", file:" << fpISO.getFileID() << ")" << endl;
+      }
+
+      cerr << "\t sum relative error: " << fpISO.getSumRelErr() << endl;
+      cerr << "\t max relative error: " << fpISO.getMaxRelErr() << endl;
+      cerr << "\t max relative error source: " << fpISO.getMaxRelErrSource(0) << ":" << fpISO.getMaxRelErrSource(1) << endl;
+      cerr << "\t max cbad:" << fpISO.getMaxCBad() << endl;
+      cerr << "\t max cbad source:" << fpISO.getMaxCBadSource() << endl; 
+    }
+  }
+  */
+}

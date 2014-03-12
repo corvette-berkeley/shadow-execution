@@ -150,7 +150,7 @@ public:
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void push_array_size5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED) {}; 
 	virtual void construct_array_type(uint64_t i UNUSED) {};
-	virtual void after_call(KVALUE* value UNUSED) {};
+	virtual void after_call(KVALUE* value UNUSED, int line UNUSED) {};
 	virtual void after_void_call() {};
 	virtual void after_struct_call() {};
 	virtual void create_stack_frame(int size UNUSED) {};

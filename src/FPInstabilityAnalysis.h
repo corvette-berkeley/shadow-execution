@@ -43,26 +43,73 @@
 #define FP_INSTABILITY_ANALYSIS_H_
 
 #include "InterpreterObserver.h"
+#include "FPInstabilityShadowObject.h"
 #include "IValue.h"
+#include <map>
 
 using namespace llvm;
+using namespace std;
 
 class FPInstabilityAnalysis : public InterpreterObserver {
 
   public:
+    static int source; // source of code location to track from
+    static double epsilon; // the error threshold to track
+
+    typedef double HIGHPRECISION;
+
     FPInstabilityAnalysis(std::string name) : InterpreterObserver(name) {}
+
+    virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
     virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
+    virtual void pre_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
     virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+    virtual void pre_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
     virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
+    virtual void pre_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
     virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
+
+    virtual void pre_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+
+    virtual void post_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+
+    virtual void pre_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void post_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void pre_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void post_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void pre_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void pre_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void post_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+
+    virtual void pre_sync_call(int callerId, int line);
+
+    virtual void post_sync_call(int callerId, int line);
 
     virtual void post_create_global_symbol_table();
 
+    virtual void post_analysis();
+
   private:
+    map<int, FPInstabilityShadowObject <HIGHPRECISION> > analysisTable;  // store analysis information
+    FPInstabilityShadowObject<HIGHPRECISION> *preFpISO;                // store the FPInstabilityShadowObject
+                                                        // before the operation happens
+                                         
+
     /**
      * Copy shadow value (long double value) from the source IValue to the
      * destination IValue.
@@ -70,39 +117,62 @@ class FPInstabilityAnalysis : public InterpreterObserver {
     static void copyShadow(IValue *src, IValue *dest);
 
     /**
-     * Return long double shadow value for the given KVALUE.
+     * Return long double shadow value for the given value.
      *
-     * @note kv must has floating-point type.
-     * @param kv the KVALUE to get shadow value from.
+     * @note a value is denoted by a pair of scope and value/index.
+     * @param scope scope of the value
+     * @param value value/index of the value
      * @return long double shadow value.
      */
     long double getShadowValue(SCOPE scope, int64_t value);
 
+    /**
+     * Return concrete value for the given value.
+     *
+     * @note a value is denoted by a pair of scope and value/index.
+     * @param scope scope of the value
+     * @param value value/index of the value
+     * @return concrete value casted to long double.
+     */
     long double getConcreteValue(SCOPE scope, int64_t value);
 
+    /**
+     * Return line number for the given value.
+     *
+     * @note a value is denoted by a pair of scope and value/index.
+     * @param scope scope of the value
+     * @param value value/index of the value
+     * @return line number of the given value
+     */
     int getLineNumber(SCOPE scope, int64_t value);
 
+    /**
+     * Return the exact bit of a value, given the precise value.
+     *
+     * @param v1 the (probably) in-exact value
+     * @param v2 the exact value
+     * @return the exact bit of v1 
+     */
     int getEBits(long double v1, long double v2);
 
+    /**
+     * Return the exponent value of a double value.
+     *
+     * @note the exponent value is conformed to IEEE 754 standard
+     * @param v double value
+     * @return value of the exponent component
+     */
     int getExponent(double v);
 
-    void fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);
+    /**
+     * Get the FPInstabilityShadowObject before the operation happens.
+     */
+    void pre_analysis(int inx);
 
-    /*
-     * not used in PLDI12 Benz Paper
-     virtual void fcmp(IID iid, KVALUE* op1, KVALUE* op2, PRED pred, int inx);
-
-     virtual void fptoui(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-     virtual void fptosi(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-     virtual void fptrunc(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-     virtual void fpext(IID iid, KIND type, KVALUE* op, uint64_t size, int inx);
-
-      */
-
-
+    /**
+     * Analysis code after floating-point binary operation. 
+     */
+    void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);
 };
 
 #endif /* FP_INSTABILITY_ANALYSIS_H_ */

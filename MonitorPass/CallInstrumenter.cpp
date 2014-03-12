@@ -30,6 +30,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   Constant* iid = IID_CONSTANT(callInst);
   Constant* inx = computeIndex(callInst);
+  Constant *cLine = INT32_CONSTANT(getLineNumber(callInst), SIGNED);
 
   // for later reference: iid and function name
   Function *callee = callInst->getCalledFunction();
@@ -168,7 +169,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     } else {
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
-      call = CALL_KVALUE("llvm_after_call", callReturnValue);
+      call = CALL_KVALUE_INT("llvm_after_call", callReturnValue, cLine);
 
     }
     instrsAfter.push_back(call);

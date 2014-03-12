@@ -9,8 +9,15 @@ export PROFILER=""
 # export PROFILER="-lprofiler"
 export CPUPROFILE="a.prof"
 
+#compile into bitcode
+$LPATH/clang -emit-llvm -g -pg -c $1.c -o $1.bc
+
+# remove constant geps
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --break-constgeps -f -o $1-ngep.bc $1.bc 
+
 # instrument the bitcode file
-$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$1-metadata.txt -f -o tmppass.bc $1.bc
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$1-metadata.txt -f -o tmppass.bc $1-ngep.bc
+llvm-dis $1-ngep.bc
 
 # move alloca instructions to top of each function
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc

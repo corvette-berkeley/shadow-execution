@@ -42,11 +42,18 @@
 #ifndef FP_INSTABILITY_SHADOW_OBJECT_H
 #define FP_INSTABILITY_SHADOW_OBJECT_H
 
+template <class T>
 class FPInstabilityShadowObject {
+  public:
+    typedef enum {
+      NONE, CANCELLATION, CONCRETEDIFFERENCE, SYNC
+    } ABNORMALTYPE;
+
   private:
-    long double val;    // Value in higher precision
+    T val;    // Value in higher precision
     int td;             // Depth of the computation tree
     int pc;             // Address of the instruction that wrote to the variable lastly
+    int fid;            // Id of the file containing the pc instruction
     int mcb;            // Maximum cancellation badness
     int mcbSrc;         // Instruction that caused maximum cancellation badness
     long double sre;    // Sum or relative errors
@@ -55,51 +62,125 @@ class FPInstabilityShadowObject {
                         // that computed the operands that caused the maximum relative
                         // error
     int scb;            // Sum of cancellation badnesses
+    ABNORMALTYPE abt;    // Type of abnormal behavior
 
   public:
+    FPInstabilityShadowObject(): val(0), td(1), pc(0), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), scb(0), abt(NONE) {};
 
-    FPInstabilityShadowObject(long double v, int line): val(v), td(1), pc(line), mcb(0), mcbSrc(-1), sre(0), mre(0), scb(0) {
+    FPInstabilityShadowObject(T v, int line): val(v), td(1), pc(line), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), scb(0), abt(NONE) {
       mreSrc[0] = -1;
       mreSrc[1] = -1;
     }
 
-    long double getValue();
+    FPInstabilityShadowObject(const FPInstabilityShadowObject& fpISO) {
+      create(fpISO);
+    };
 
-    int getComputationDepth();
+    ~FPInstabilityShadowObject() {
+      uncreate();
+    }
 
-    int getPC();
+    FPInstabilityShadowObject& operator=(const FPInstabilityShadowObject& fpISO) {
+      if (&fpISO != this) {
 
-    int getMaxCBad();
+        // free the object in the left-hand side
+        uncreate();
 
-    int getMaxCBadSource();
+        // copy elements from the right-hand side to the left-hand side
+        create(fpISO);
+      }
 
-    long double getSumRelErr();
+      return *this;
+    };
 
-    long double getMaxRelErr();
+    T getValue() const { return val; };
 
-    int getMaxRelErrSource(int i);
+    int getComputationDepth() const { return td; };
 
-    int getSumCBad();
+    int getPC() const { return pc; };
 
-    void setValue(long double val);
+    int getFileID() const { return fid; }
 
-    void setComputationDepth(int td);
+    int getMaxCBad() const { return mcb; };
 
-    void setPC(int pc);
+    int getMaxCBadSource() const { return mcbSrc; };
 
-    void setMaxCBad(int mcb);
+    long double getSumRelErr() const { return sre; };
 
-    void setMaxCBadSource(int mcbSrc);
+    long double getMaxRelErr() const { return mre; };
 
-    void setSumRelErr(long double sre);
+    int getMaxRelErrSource(int i) const { return mreSrc[i]; };
 
-    void setMaxRelErr(long double mre);
+    int getSumCBad() const { return scb; };
 
-    void setMaxRelErrSource(int i, int pc);
+    ABNORMALTYPE getAbnormalType() const { return abt; };
 
-    void setSumCBad(int scb);
+    void setValue(T val) { this->val = val; };
 
-    void copyTo(FPInstabilityShadowObject *fpISO);
+    void setComputationDepth(int td) { this->td = td; };
+
+    void setPC(int pc) { this->pc = pc; };
+
+    void setFileID(int fid) { this->fid = fid; }
+
+    void setMaxCBad(int mcb) { this->mcb = mcb; };
+
+    void setMaxCBadSource(int mcbSrc) {
+      this->mcbSrc = mcbSrc;
+    };
+
+    void setSumRelErr(long double sre) {
+      this->sre = sre;
+    };
+
+    void setMaxRelErr(long double mre) {
+      this->mre = mre;
+    };
+
+    void setMaxRelErrSource(int i, int pc) {
+      this->mreSrc[i] = pc;
+    };
+
+    void setSumCBad(int scb) {
+      this->scb = scb;
+    };
+
+    void setAbnormalType(ABNORMALTYPE abt) {
+      this->abt = abt;
+    };
+
+    void copyTo(FPInstabilityShadowObject *fpISO) {
+      fpISO->setValue(val);
+      fpISO->setComputationDepth(td);
+      fpISO->setPC(pc);
+      fpISO->setFileID(fid);
+      fpISO->setMaxCBad(mcb);
+      fpISO->setMaxCBadSource(mcbSrc);
+      fpISO->setSumRelErr(sre);
+      fpISO->setMaxRelErr(mre);
+      fpISO->setMaxRelErrSource(0, mreSrc[0]);
+      fpISO->setMaxRelErrSource(1, mreSrc[1]);
+      fpISO->setSumCBad(scb);
+      fpISO->setAbnormalType(abt);
+    };
+
+  private:
+    void create(const FPInstabilityShadowObject& fpISO) {
+      val = fpISO.getValue();
+      td = fpISO.getComputationDepth();
+      pc = fpISO.getPC();
+      fid = fpISO.getFileID();
+      mcb = fpISO.getMaxCBad();
+      mcbSrc = fpISO.getMaxCBadSource();
+      sre = fpISO.getSumRelErr();
+      mre = fpISO.getMaxRelErr();
+      mreSrc[0] = fpISO.getMaxRelErrSource(0);
+      mreSrc[1] = fpISO.getMaxRelErrSource(1);
+      scb = fpISO.getSumCBad();
+      abt = fpISO.getAbnormalType();
+    };
+
+    void uncreate() {};
 };
 
 #endif /* FP_INSTABILITY_SHADOW_OBJECT_H_ */

@@ -5,8 +5,8 @@ export CC=$LPATH"/clang -use-gold-plugin"
 export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib -L"$PROFILER_PATH"/lib"
 
 # variables related to profiling
-export PROFILER=""
-# export PROFILER="-lprofiler"
+# export PROFILER=""
+export PROFILER="-lprofiler"
 export CPUPROFILE="a.prof"
 
 # remove constant geps

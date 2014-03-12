@@ -50,6 +50,11 @@ Setup: Debugging information off. Logging disabled.
 
 SMALL INPUTS.
 
+FFBENCH: (0.338s) (332X) 
+real  1m49.661s
+user  1m45.803s
+sys 0m3.400s
+
 CG: (0.211s) (955X)
 real  3m3.505s
 user  2m59.515s

@@ -141,7 +141,7 @@ extern "C" {
   void llvm_push_array_size(uint64_t i);
   void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
   void llvm_construct_array_type(uint64_t i);
-  void llvm_after_call(KVALUE* value);
+  void llvm_after_call(KVALUE* value, int line);
   void llvm_after_void_call();
   void llvm_after_struct_call();
   void llvm_create_stack_frame(int size);

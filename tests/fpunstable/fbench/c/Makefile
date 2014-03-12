@@ -3,7 +3,7 @@
 
 CC = $(LLVM_WRAPPER)/wllvm
 
-COPTS = -O3 -lm
+COPTS = -O3 -lm -g
 
 # PROGRAMS = fbench ffbench fbench_ansi
 PROGRAMS = ffbench fbench_ansi

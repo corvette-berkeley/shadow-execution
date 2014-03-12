@@ -45,7 +45,7 @@
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
 #include "FPInstabilityAnalysis.h"
-// j#include "OutOfBoundAnalysis.h"
+// #include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
 #define DISPATCH_TO_OBSERVERS(func, ...) \
@@ -362,8 +362,8 @@ void llvm_construct_array_type(uint64_t i) {
   DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
-void llvm_after_call(KVALUE* value) {
-  DISPATCH_TO_OBSERVERS(after_call, value)
+void llvm_after_call(KVALUE* value, int line) {
+  DISPATCH_TO_OBSERVERS(after_call, value, line)
 }
 
 void llvm_after_void_call() {
@@ -425,8 +425,8 @@ ObserverPtrList observers_;
 // active observers
 //REGISTER_OBSERVER(PrintObserver, "print")
 //REGISTER_OBSERVER(InterpreterObserver, "interpreter")
-//REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
- REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
+REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
+// REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 
 /*******************************************************************************************/

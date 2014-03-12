@@ -149,8 +149,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValu
     case FLP32_KIND:
       if (isnan((float)dest->getValue().as_flp) && isnan((float)dpValue)) {
         result = true;
-      }
-      else {
+      } else {
         result = ((float)dest->getValue().as_flp) == ((float)dpValue);
       }
       break;
@@ -716,9 +715,11 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   DEBUG_STDOUT("\twrittenValue: " << writtenValue->toString());
 
   if (!checkStore(writtenValue, srcKind, srcValue)) { // destLocation
+    double *ptr = (double*) &srcValue;
     DEBUG_STDERR("\twrittenValue: " << writtenValue->toString());
     DEBUG_STDERR("\tconcreteType: " << KIND_ToString(srcKind));
-    DEBUG_STDERR("\tconcreteValue: " << srcValue);
+    DEBUG_STDERR("\tconcreteValue in int64: " << srcValue);
+    DEBUG_STDERR("\tconcreteValue in double: " << *ptr);
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
   }
@@ -778,6 +779,9 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
 
     DEBUG_STDOUT("\tOperand 02: " << loc2->toString());
   }
+
+  DEBUG_STDOUT("\tv1: " << v1 << " v2: " << v2);
+  DEBUG_STDOUT("\td1: " << d1 << " d2: " << d2);
 
   switch (op) {
     case ADD:
@@ -1722,103 +1726,116 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
   int structElemNo, structSize, index, size, i, newOffset;
   int* structElemSize, *structElem;
 
-  //
-  // get the struct operand
-  //
-  structPtr = executionStack.top()[op->inx];
-  structElemNo = structType.size();
-  structElemSize = (int*) malloc(sizeof(int)*structElemNo);
-  structElem = (int*) malloc(sizeof(int)*structElemNo);
-
-  //
-  // record struct element size
-  // compute struct size
-  //
-  structSize = 0;
-  i = 0;
-  while (!structType.empty()) {
-    structElemSize[i] = KIND_GetSize(structType.front());
-    structElem[i] = structType.front();
-    structSize += structElemSize[i];
-    i++;
-    structType.pop();
-  }
-
-  DEBUG_STDOUT("\tstructSize is " << structSize);
-
-  DEBUG_STDOUT("\t" << structPtr->toString());
-
-  // compute struct index
-  DEBUG_STDOUT("\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size());
-  index = getElementPtrIndexList.front()*structElemNo;
-  getElementPtrIndexList.pop();
-  if (!getElementPtrIndexList.empty()) {
-    unsigned i;
-    for (i = 0; i < getElementPtrIndexList.front(); i++) {
-      index = index + structElementSize.front();
-      safe_assert(!structElementSize.empty());
+  if (op->inx == -1) {
+    // TODO: review this
+    // constant pointer
+    // return a dummy object
+    structElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
+    while (!getElementPtrIndexList.empty()) {
+      getElementPtrIndexList.pop();
+    }
+    while (!structElementSize.empty()) {
       structElementSize.pop();
     }
-  }
-  if (!getElementPtrIndexList.empty()) {
-    getElementPtrIndexList.pop();
-  }
-  while (!structElementSize.empty()) {
-    structElementSize.pop();
-  }
-  safe_assert(getElementPtrIndexList.empty());
-
-  DEBUG_STDOUT("\tIndex is " << index);
-
-  newOffset = structSize * (index/structElemNo);
-  for (i = 0; i < index % structElemNo; i++) {
-    newOffset = newOffset + KIND_GetSize(structElem[i]);
-  }
-
-  newOffset = newOffset + structPtr->getOffset();
-
-  size = KIND_GetSize(structElem[index % structElemNo]);
-
-
-  DEBUG_STDOUT("\tNew offset is: " << newOffset);
-
-  //
-  // compute the result; consider two cases: the struct pointer operand is
-  // initialized and is not initialized
-  //
-  if (structPtr->isInitialized()) {
-    IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
-
-
-    index = findIndex((IValue*) structPtr->getIPtrValue(), newOffset, structPtr->getLength()); // TODO: revise offset, getValue().as_ptr
-
-    DEBUG_STDOUT("\tNew index is: " << index);
-
-    // TODO: revisit this
-    if (index < (int) structPtr->getLength()) {
-      DEBUG_STDOUT("\tstructBase = " << structBase->toString());
-      IValue* structElem = structBase + index;
-      DEBUG_STDOUT("\tstructElem = " << structElem->toString());
-      structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
-      structElemPtr->setValueOffset(structPtr->getValueOffset());
-      structElemPtr->setIndex(index);
-      structElemPtr->setLength(structPtr->getLength());
-      structElemPtr->setSize(size);
-      structElemPtr->setOffset(newOffset);
-    } else {
-      structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
-      structElemPtr->setValueOffset(structPtr->getValueOffset());
-    }
   } else {
-    DEBUG_STDOUT("\tPointer is not initialized");
-    VALUE structElemPtrValue;
+    //
+    // get the struct operand
+    //
+    structPtr = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
+    structElemNo = structType.size();
+    structElemSize = (int*) malloc(sizeof(int)*structElemNo);
+    structElem = (int*) malloc(sizeof(int)*structElemNo);
 
-    // compute the value for the element pointer
-    structElemPtrValue = structPtr->getValue();
-    structElemPtrValue.as_int = structElemPtrValue.as_int + newOffset;
+    //
+    // record struct element size
+    // compute struct size
+    //
+    structSize = 0;
+    i = 0;
+    while (!structType.empty()) {
+      structElemSize[i] = KIND_GetSize(structType.front());
+      structElem[i] = structType.front();
+      structSize += structElemSize[i];
+      i++;
+      structType.pop();
+    }
 
-    structElemPtr = new IValue(PTR_KIND, structElemPtrValue, size, 0, 0, 0);
-    structElemPtr->setValueOffset((int64_t)structElemPtr - structElemPtr->getValue().as_int);
+    DEBUG_STDOUT("\tstructSize is " << structSize);
+
+    DEBUG_STDOUT("\t" << structPtr->toString());
+
+    // compute struct index
+    DEBUG_STDOUT("\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size());
+    index = getElementPtrIndexList.front()*structElemNo;
+    getElementPtrIndexList.pop();
+    if (!getElementPtrIndexList.empty()) {
+      unsigned i;
+      for (i = 0; i < getElementPtrIndexList.front(); i++) {
+        index = index + structElementSize.front();
+        safe_assert(!structElementSize.empty());
+        structElementSize.pop();
+      }
+    }
+    if (!getElementPtrIndexList.empty()) {
+      getElementPtrIndexList.pop();
+    }
+    while (!structElementSize.empty()) {
+      structElementSize.pop();
+    }
+    safe_assert(getElementPtrIndexList.empty());
+
+    DEBUG_STDOUT("\tIndex is " << index);
+
+    newOffset = structSize * (index/structElemNo);
+    for (i = 0; i < index % structElemNo; i++) {
+      newOffset = newOffset + KIND_GetSize(structElem[i]);
+    }
+
+    newOffset = newOffset + structPtr->getOffset();
+
+    size = KIND_GetSize(structElem[index % structElemNo]);
+
+
+    DEBUG_STDOUT("\tNew offset is: " << newOffset);
+
+    //
+    // compute the result; consider two cases: the struct pointer operand is
+    // initialized and is not initialized
+    //
+    if (structPtr->isInitialized()) {
+      IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
+
+
+      index = findIndex((IValue*) structPtr->getIPtrValue(), newOffset, structPtr->getLength()); // TODO: revise offset, getValue().as_ptr
+
+      DEBUG_STDOUT("\tNew index is: " << index);
+
+      // TODO: revisit this
+      if (index < (int) structPtr->getLength()) {
+        DEBUG_STDOUT("\tstructBase = " << structBase->toString());
+        IValue* structElem = structBase + index;
+        DEBUG_STDOUT("\tstructElem = " << structElem->toString());
+        structElemPtr = new IValue(PTR_KIND, structPtr->getValue());
+        structElemPtr->setValueOffset(structPtr->getValueOffset());
+        structElemPtr->setIndex(index);
+        structElemPtr->setLength(structPtr->getLength());
+        structElemPtr->setSize(size);
+        structElemPtr->setOffset(newOffset);
+      } else {
+        structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
+        structElemPtr->setValueOffset(structPtr->getValueOffset());
+      }
+    } else {
+      DEBUG_STDOUT("\tPointer is not initialized");
+      VALUE structElemPtrValue;
+
+      // compute the value for the element pointer
+      structElemPtrValue = structPtr->getValue();
+      structElemPtrValue.as_int = structElemPtrValue.as_int + newOffset;
+
+      structElemPtr = new IValue(PTR_KIND, structElemPtrValue, size, 0, 0, 0);
+      structElemPtr->setValueOffset((int64_t)structElemPtr - structElemPtr->getValue().as_int);
+    }
   }
 
   delete(executionStack.top()[inx]);
@@ -2152,19 +2169,27 @@ void InterpreterObserver::sext(int64_t opVal, SCOPE opScope, KIND opKind, KIND k
 }
 
 void InterpreterObserver::fptrunc(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  pre_fptrunc(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTRUNC);
+  post_fptrunc(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fpext(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  pre_fpext(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPEXT);
+  post_fpext(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fptoui(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  pre_fptoui(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTOUI);
+  post_fptoui(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fptosi(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
+  pre_fptosi(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTOSI);
+  post_fptosi(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::uitofp(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
@@ -2253,6 +2278,8 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
     callerVarIndex.pop();
   } else {
     cout << "The execution stack is empty.\n";
+
+    post_analysis();
   }
 
   //
@@ -2438,6 +2465,8 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 }
 
 void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int line, int inx) {
+  pre_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
+
   double v1, v2;
 
   // get value of v1
@@ -2541,6 +2570,7 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
 
+  post_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
   return;
 }
 
@@ -2721,9 +2751,12 @@ void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s
   }
 }
 
-void InterpreterObserver::after_call(KVALUE* kvalue) {
+void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
 
   if (!isReturn) {
+    int callerId = callerVarIndex.top();
+    pre_sync_call(callerId, line);
+
     // call is not interpreted
     safe_assert(!callerVarIndex.empty());
 
@@ -2738,7 +2771,10 @@ void InterpreterObserver::after_call(KVALUE* kvalue) {
     IValue* reg = executionStack.top()[callerVarIndex.top()];
     reg->setValue(kvalue->value);
     reg->setValueOffset(0); // new
+    reg->setShadow(0);
     callerVarIndex.pop();
+
+    post_sync_call(callerId, line);
 
     DEBUG_STDOUT(reg->toString());
   } else {
@@ -3385,6 +3421,4 @@ void InterpreterObserver::pre_create_global_symbol_table() {}
 
 void InterpreterObserver::post_create_global_symbol_table() {}
 
-void InterpreterObserver::pre_fbinop() {}
-
-void InterpreterObserver::post_fbinop() {}
+void InterpreterObserver::post_analysis() {}

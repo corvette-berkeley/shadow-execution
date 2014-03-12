@@ -278,14 +278,35 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
+  virtual void post_fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {};
+  
+  virtual void pre_fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {};
+
+  virtual void post_fptrunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void pre_fptrunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+  
+  virtual void post_fpext(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void pre_fpext(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void post_fptoui(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void pre_fptoui(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void post_fptosi(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
+  virtual void pre_fptosi(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
+
   virtual void pre_create_global_symbol_table();
 
   virtual void post_create_global_symbol_table();
 
-  virtual void pre_fbinop();
+  virtual void pre_sync_call(int inx UNUSED, int line UNUSED) {};
 
-  virtual void post_fbinop();
+  virtual void post_sync_call(int inx UNUSED, int line UNUSED) {};
 
+  virtual void post_analysis();
 
   //****  Other Functions ****//
   
@@ -313,7 +334,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
 
-  void after_call(KVALUE* value);
+  void after_call(KVALUE* value, int line);
 
   void after_void_call();
 
