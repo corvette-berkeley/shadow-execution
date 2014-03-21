@@ -16,25 +16,38 @@ double fun(double x){
 
   for(k = 1; k <= n; k++) {
 
+    /** A STATEMENT **/
+    printf("fun line: %d, arg d1: %Le\n", 1, (long double)fabs(l_d1 - d1));
     d1 = 2.0 * d1;
     l_d1 = 2.0 * l_d1; // shadow
-    //printf("fun:%d: %Le\n", 1, (long double)(l_d1 - d1));
+    printf("fun line: %d, result dppi: %Le\n", 1, (long double)fabs(l_d1 - d1));
 
+    /** A STATEMENT **/
+    printf("fun line: %d, arg1 d1: %Le\n", 2, (long double)fabs(l_d1 - d1));
+    printf("fun line: %d, arg2 x: %Le\n", 2, (long double)fabs(l_x - x));
     temp1 = d1 * x;
     l_temp1 = l_d1 * l_x; // shadow
-    //printf("fun:%d: %Le\n", 2, (long double)(l_temp1 - temp1));
+    printf("fun line: %d, result temp1: %Le\n", 2, (long double)fabs(l_temp1 - temp1));
 
+    /** A STATEMENT **/
+    printf("fun line: %d, arg temp1: %Le\n", 3, (long double)fabs(l_temp1 - temp1));
     temp2 = sin(temp1);
     l_temp2 = sin(l_temp1); // shadow
-    //printf("fun:%d: %Le\n", 3, (long double)(l_temp2 - temp2));
+    printf("fun line: %d, result temp2: %Le\n", 3, (long double)fabs(l_temp2 - temp2));
 
+    /** A STATEMENT **/
+    printf("fun line: %d, arg1 temp2: %Le\n", 4, (long double)fabs(l_temp2 - temp2));
+    printf("fun line: %d, arg2 d1: %Le\n", 4, (long double)fabs(l_d1 - d1));
     temp3 = temp2 / d1;
     l_temp3 = l_temp2 / l_d1; // shadow
-    //printf("fun:%d: %Le\n", 4, (long double)(l_temp3 - temp3));
+    printf("fun line: %d, result temp3: %Le\n", 4, (long double)fabs(l_temp3 - temp3));
 
+    /** A STATEMENT **/
+    printf("fun line: %d, arg1 t1: %Le\n", 5, (long double)fabs(l_t1 - t1));
+    printf("fun line: %d, arg2 temp3: %Le\n", 5, (long double)fabs(l_temp3 - temp3));
     t1 = t1 + temp3;
     l_t1 = l_t1 + l_temp3; // shadow
-    //printf("fun:%d: %Le\n", 5, (long double)(l_t1 - t1));
+    printf("fun line: %d, result t1: %Le\n", 5, (long double)fabs(l_t1 - t1));
   }
 
   return t1;
