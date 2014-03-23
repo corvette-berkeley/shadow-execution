@@ -1,18 +1,18 @@
 #include <math.h>
 #include <stdio.h>
 
-double fun(double x){
+double fun(double x) {
   int k, n = 5;
   double t1, d1 = 1.0L;
   double temp1, temp2, temp3;
   t1 = x;
   
   for(k = 1; k <= n; k++) {
-    d1 = 2.0 * d1;
-    temp1 = d1 * x;
-    temp2 = sin(temp1);
-    temp3 = temp2 / d1;
-    t1 = t1 + temp3;
+    d1 = 2.0 * d1; // stmt 0
+    temp1 = d1 * x; // stmt 1
+    temp2 = sin(temp1); //stmt 2
+    temp3 = temp2 / d1; // stmt 3
+    t1 = t1 + temp3; // stmt 4
   }
   return t1;
 }
@@ -30,18 +30,18 @@ int main( int argc, char **argv) {
   dppi = acos(t1);
   s1 = 0.0;
   t1 = 0.0;
-  h = dppi / n;
+  h = dppi / n; // stmt 5
 
   for(i = 1; i <= n; i++) {
-    temp1 = i * h;
-    t2 = fun(temp1);
-    temp2 = t2 - t1;
-    temp3 = temp2 * temp2;
-    temp4 = h * h;
-    temp5 = temp4 + temp3;
-    temp6 = sqrt(temp5);
-    s1 = s1 + temp6;
-    t1 = t2;
+    temp1 = i * h; // stmt 6
+    t2 = fun(temp1); // stmt 7
+    temp2 = t2 - t1; // stmt 8
+    temp3 = temp2 * temp2; // stmt 9
+    temp4 = h * h; // stmt 10
+    temp5 = temp4 + temp3; // stmt 11
+    temp6 = sqrt(temp5); // stmt 12
+    s1 = s1 + temp6; // stmt 13
+    t1 = t2; // stmt 14
   }
 
   printf(" => total error: %d %1.15Le %1.15Le\n", (long double) fabs(ans-s1) > threshold,
