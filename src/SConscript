@@ -69,6 +69,8 @@ plugin = env.SharedLibrary(
     'NaNPropagationAnalysis.cpp',
     'PrintObserver.cpp',
 #    'OutOfBoundAnalysis.cpp',
+    'FPBackwardAnalysis.cpp',
+    'FPBackwardShadowObject.cpp',
     'FPInstabilityAnalysis.cpp'
         ],
     INCPREFIX='-isystem ',
