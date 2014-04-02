@@ -5,14 +5,14 @@ double fun(double x) {
   int k, n = 5;
   double t1, d1 = 1.0L;
   double temp1, temp2, temp3;
-  t1 = x;
+  t1 = x; // stmt 1
   
   for(k = 1; k <= n; k++) {
-    d1 = 2.0 * d1; // stmt 0
-    temp1 = d1 * x; // stmt 1
-    temp2 = sin(temp1); //stmt 2
-    temp3 = temp2 / d1; // stmt 3
-    t1 = t1 + temp3; // stmt 4
+    d1 = 2.0 * d1; // stmt 2
+    temp1 = d1 * x; // stmt 3
+    temp2 = sin(temp1); //stmt 4
+    temp3 = temp2 / d1; // stmt 5
+    t1 = t1 + temp3; // stmt 6
   }
   return t1;
 }
@@ -26,10 +26,10 @@ int main( int argc, char **argv) {
   long double s1;
   double temp1, temp2, temp3, temp4, temp5, temp6;
 
-  t1 = -1.0;
-  dppi = acos(t1);
-  s1 = 0.0;
-  t1 = 0.0;
+  t1 = -1.0; // stmt 1
+  dppi = acos(t1); // stmt2
+  s1 = 0.0; // stmt3
+  t1 = 0.0; // stmt4
   h = dppi / n; // stmt 5
 
   for(i = 1; i <= n; i++) {
