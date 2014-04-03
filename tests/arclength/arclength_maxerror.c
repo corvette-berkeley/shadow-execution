@@ -227,7 +227,7 @@ int main( int argc, char **argv) {
 
   // printing errors per statement
   printf("Max error per statement\n");
-  for(int i = 0; i < stmts; i++) {
+  for(int i = 0; i < stmts + 1; i++) {
     printf("stmt %d: max error %Le\n", i, max_errors[i]);
   }
 
