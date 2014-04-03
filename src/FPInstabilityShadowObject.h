@@ -42,6 +42,8 @@
 #ifndef FP_INSTABILITY_SHADOW_OBJECT_H
 #define FP_INSTABILITY_SHADOW_OBJECT_H
 
+#include "Constants.h"
+
 template <class T>
 class FPInstabilityShadowObject {
   public:
@@ -50,7 +52,9 @@ class FPInstabilityShadowObject {
     } ABNORMALTYPE;
 
   private:
-    T val;    // Value in higher precision
+    T val;              // Value in higher precision
+    T lowVal;           // Original value
+    BINOP op;           // The corresponding binary operation
     int td;             // Depth of the computation tree
     int pc;             // Address of the instruction that wrote to the variable lastly
     int fid;            // Id of the file containing the pc instruction
@@ -61,15 +65,29 @@ class FPInstabilityShadowObject {
     int mreSrc[2];      // Pair of instruction addresses that point to the instructions 
                         // that computed the operands that caused the maximum relative
                         // error
+    T mreHighValue[2]; // Pair of values of the operands in high precision
+    T mreLowValue[2]; // Pair of values of the operands in original precision
+    T mreValue;         // Value in higher precision at maximum relative error point
     int scb;            // Sum of cancellation badnesses
     ABNORMALTYPE abt;    // Type of abnormal behavior
 
   public:
-    FPInstabilityShadowObject(): val(0), td(1), pc(0), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), scb(0), abt(NONE) {};
-
-    FPInstabilityShadowObject(T v, int line): val(v), td(1), pc(line), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), scb(0), abt(NONE) {
+    FPInstabilityShadowObject(): val(0), lowVal(0), op(BINOP_INVALID), td(1), pc(0), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), mreValue(0), scb(0), abt(NONE) {
       mreSrc[0] = -1;
       mreSrc[1] = -1;
+      mreHighValue[0] = 0; 
+      mreHighValue[1] = 0;
+      mreLowValue[0] = 0; 
+      mreLowValue[1] = 0;
+    };
+
+    FPInstabilityShadowObject(T v, T lv, int line, BINOP o): val(v), lowVal(lv), op(o), td(1), pc(line), fid(0), mcb(0), mcbSrc(-1), sre(0), mre(0), mreValue(0), scb(0), abt(NONE) {
+      mreSrc[0] = -1;
+      mreSrc[1] = -1;
+      mreHighValue[0] = 0; 
+      mreHighValue[1] = 0;
+      mreLowValue[0] = 0; 
+      mreLowValue[1] = 0;
     }
 
     FPInstabilityShadowObject(const FPInstabilityShadowObject& fpISO) {
@@ -95,6 +113,10 @@ class FPInstabilityShadowObject {
 
     T getValue() const { return val; };
 
+    T getLowValue() const { return lowVal; }
+
+    BINOP getBinOp() const { return op; }
+
     int getComputationDepth() const { return td; };
 
     int getPC() const { return pc; };
@@ -111,11 +133,21 @@ class FPInstabilityShadowObject {
 
     int getMaxRelErrSource(int i) const { return mreSrc[i]; };
 
+    T getMaxRelErrHighValue(int i) const { return mreHighValue[i]; };
+
+    T getMaxRelErrLowValue(int i) const { return mreLowValue[i]; };
+
+    T getMaxRelErrValue() const { return mreValue; };
+
     int getSumCBad() const { return scb; };
 
     ABNORMALTYPE getAbnormalType() const { return abt; };
 
     void setValue(T val) { this->val = val; };
+
+    void setLowValue(T lowVal) { this->lowVal = lowVal; }
+
+    void setBinOp(BINOP op) { this->op = op; }
 
     void setComputationDepth(int td) { this->td = td; };
 
@@ -125,32 +157,27 @@ class FPInstabilityShadowObject {
 
     void setMaxCBad(int mcb) { this->mcb = mcb; };
 
-    void setMaxCBadSource(int mcbSrc) {
-      this->mcbSrc = mcbSrc;
-    };
+    void setMaxCBadSource(int mcbSrc) { this->mcbSrc = mcbSrc; };
 
-    void setSumRelErr(long double sre) {
-      this->sre = sre;
-    };
+    void setSumRelErr(long double sre) { this->sre = sre; };
 
-    void setMaxRelErr(long double mre) {
-      this->mre = mre;
-    };
+    void setMaxRelErr(long double mre) { this->mre = mre; };
 
-    void setMaxRelErrSource(int i, int pc) {
-      this->mreSrc[i] = pc;
-    };
+    void setMaxRelErrSource(int i, int pc) { this->mreSrc[i] = pc; };
 
-    void setSumCBad(int scb) {
-      this->scb = scb;
-    };
+    void setMaxRelHighValue(int i, T v) { this->mreHighValue[i] = v; }
 
-    void setAbnormalType(ABNORMALTYPE abt) {
-      this->abt = abt;
-    };
+    void setMaxRelLowValue(int i, T v) { this->mreLowValue[i] = v; }
+
+    void setMaxRelErrValue(T v) { this->mreValue = v; };
+
+    void setSumCBad(int scb) { this->scb = scb; };
+
+    void setAbnormalType(ABNORMALTYPE abt) { this->abt = abt; };
 
     void copyTo(FPInstabilityShadowObject *fpISO) {
       fpISO->setValue(val);
+      fpISO->setBinOp(op);
       fpISO->setComputationDepth(td);
       fpISO->setPC(pc);
       fpISO->setFileID(fid);
@@ -167,6 +194,8 @@ class FPInstabilityShadowObject {
   private:
     void create(const FPInstabilityShadowObject& fpISO) {
       val = fpISO.getValue();
+      lowVal = fpISO.getLowValue();
+      op = fpISO.getBinOp();
       td = fpISO.getComputationDepth();
       pc = fpISO.getPC();
       fid = fpISO.getFileID();
@@ -176,6 +205,11 @@ class FPInstabilityShadowObject {
       mre = fpISO.getMaxRelErr();
       mreSrc[0] = fpISO.getMaxRelErrSource(0);
       mreSrc[1] = fpISO.getMaxRelErrSource(1);
+      mreHighValue[0] = fpISO.getMaxRelErrHighValue(0);
+      mreHighValue[1] = fpISO.getMaxRelErrHighValue(1);
+      mreLowValue[0] = fpISO.getMaxRelErrLowValue(0);
+      mreLowValue[1] = fpISO.getMaxRelErrLowValue(1);
+      mreValue = fpISO.getMaxRelErrValue();
       scb = fpISO.getSumCBad();
       abt = fpISO.getAbnormalType();
     };

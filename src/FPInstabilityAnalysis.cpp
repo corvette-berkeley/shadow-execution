@@ -48,8 +48,8 @@
 #include <llvm/IR/InstrTypes.h>
 
 /******** INITIALIZE ANALYSIS CONFIGURATIONS **********/
-int FPInstabilityAnalysis::source = 10;
-double FPInstabilityAnalysis::epsilon = -10;
+int FPInstabilityAnalysis::source = 51;
+double FPInstabilityAnalysis::epsilon = -4;
 
 /******** HELPER FUNCTIONS **********/
 
@@ -62,7 +62,7 @@ void FPInstabilityAnalysis::copyShadow(IValue *src, IValue *dest) {
       FPInstabilityShadowObject<HIGHPRECISION> *fpISOSrc, *fpISODest; 
 
       fpISOSrc = (FPInstabilityShadowObject<HIGHPRECISION> *) src->getShadow();
-      fpISODest = new FPInstabilityShadowObject<HIGHPRECISION>(0,0);
+      fpISODest = new FPInstabilityShadowObject<HIGHPRECISION>(0,0,0, BINOP_INVALID);
       fpISOSrc->copyTo(fpISODest);
 
       dest->setShadow(fpISODest);
@@ -70,6 +70,11 @@ void FPInstabilityAnalysis::copyShadow(IValue *src, IValue *dest) {
       dest->setShadow(NULL);
     }
   }
+}
+
+FPInstabilityAnalysis::HIGHPRECISION FPInstabilityAnalysis::computeRelativeError(HIGHPRECISION highValue, float lowValue) {
+  HIGHPRECISION d = highValue != 0 ? highValue : 10e-10;
+  return abs((HIGHPRECISION)((highValue - lowValue)/d));
 }
 
 long double FPInstabilityAnalysis::getShadowValue(SCOPE scope, int64_t value) {
@@ -128,8 +133,39 @@ int FPInstabilityAnalysis::getLineNumber(SCOPE scope, int64_t value) {
   return line;
 }
 
-int FPInstabilityAnalysis::getEBits(long double v1, long double v2) {
-  int p = 32768; // exponent of long double, 2^15 
+int64_t FPInstabilityAnalysis::getMantisa(double v) {
+  int64_t m;
+  int64_t *ptr;
+
+  ptr = (int64_t*)&v;
+  m = *ptr & 0x000fffffffffffff;
+
+  return m;
+}
+
+int FPInstabilityAnalysis::getExactBits(double v1, double v2) {
+  int64_t m1, m2;
+
+  m1 = getMantisa(v1);
+  m2 = getMantisa(v2);
+
+  if (m1 == m2) {
+    return 53; // significand bit of double
+  } else {
+    int ie = 0;
+
+    while (m1 != m2 && ie < 52) {
+      m1 >>= 1;
+      m2 >>= 1;
+      ie += 1;
+    }
+
+    return 53 - ie;
+  }
+}
+
+int FPInstabilityAnalysis::getEBits(double v1, double v2) {
+  int p = 53; // significand bit of double
 
   if (v1 == v2) {
     return p;
@@ -152,7 +188,7 @@ int FPInstabilityAnalysis::getEBits(long double v1, long double v2) {
 int FPInstabilityAnalysis::getExponent(double v) {
   int e;
   int *ptr; 
-  
+
   ptr = (int*)&v;
   ptr = ptr + 1;
   e = *ptr & 0x7ff00000;
@@ -168,13 +204,13 @@ void FPInstabilityAnalysis::pre_analysis(int inx) {
   if (executionStack.top()[inx]->getShadow() != NULL) {
     preFpISO = (FPInstabilityShadowObject<HIGHPRECISION>*) executionStack.top()[inx]->getShadow();
   } else {
-    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0,0, 0, BINOP_INVALID);
   }
 }
 
 void FPInstabilityAnalysis::pre_sync_call(int inx UNUSED, int line UNUSED) {
   if (executionStack.top()[inx]->isFlpValue()) {
-    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0, line);
+    preFpISO = new FPInstabilityShadowObject<HIGHPRECISION>(0,0, line, BINOP_INVALID);
     preFpISO->setMaxRelErr(pow(10, epsilon));
     if (executionStack.top()[inx]->getShadow() != NULL) {
       preFpISO->setSumRelErr(pow(10, epsilon) +
@@ -201,7 +237,8 @@ void FPInstabilityAnalysis::post_sync_call(int inx UNUSED, int line UNUSED) {
   if (executionStack.top()[inx]->isFlpValue()) {
     FPInstabilityShadowObject<HIGHPRECISION> *shadow = new FPInstabilityShadowObject<HIGHPRECISION>(*preFpISO);
     shadow->setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::SYNC);
-    shadow->setValue(executionStack.top()[inx]->getFlpValue());
+    shadow->setValue((executionStack.top()[inx]->getFlpValue())/(1-pow(10,epsilon)));
+    //    shadow->setValue(executionStack.top()[inx]->getFlpValue());
     delete(preFpISO);
     preFpISO = NULL;
     executionStack.top()[inx]->setShadow(shadow);
@@ -215,9 +252,9 @@ void FPInstabilityAnalysis::post_sync_call(int inx UNUSED, int line UNUSED) {
 
 void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
 
-  long double v1, v2, sv1, sv2, sresult, result;
+  HIGHPRECISION v1, v2, sv1, sv2, sresult, result;
   FPInstabilityShadowObject<HIGHPRECISION> *fpISO;
-  long double rerr, d;
+  HIGHPRECISION rerr;
   int l1, l2, e1, e2, e3, cbits, cbad;
 
   //
@@ -260,8 +297,9 @@ void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lVal
   //
   // Construct shadow value for the result shadow object. 
   //
+  result = executionStack.top()[inx]->getFlpValue();
   if (executionStack.top()[inx]->getShadow() == NULL) {
-    fpISO = new FPInstabilityShadowObject<HIGHPRECISION>(sresult, line);
+    fpISO = new FPInstabilityShadowObject<HIGHPRECISION>(sresult, result, line, op);
   } else {
     fpISO = (FPInstabilityShadowObject<HIGHPRECISION>*) executionStack.top()[inx]->getShadow();
   }
@@ -271,16 +309,19 @@ void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lVal
   // See: "A dyanmic program analysis to find floating-point accuracy problems"
   // by F. Benz, A. Hildebrandt and S. Hack, PLDO 2012, p.6
   //
-  result = executionStack.top()[inx]->getFlpValue();
-  d = sresult != 0 ? sresult : 10e-10;
-  rerr = abs((long double)((sresult - result)/d));
+  rerr = computeRelativeError(sresult, result);
 
   fpISO->setSumRelErr(preFpISO->getSumRelErr() + rerr);
 
   if (rerr > preFpISO->getMaxRelErr()) {
     fpISO->setMaxRelErr(rerr);
+    fpISO->setMaxRelLowValue(0, v1); 
+    fpISO->setMaxRelLowValue(1, v2);
+    fpISO->setMaxRelHighValue(0, sv1);
+    fpISO->setMaxRelHighValue(1, sv2);
     fpISO->setMaxRelErrSource(0, l1);
     fpISO->setMaxRelErrSource(1, l2);
+    fpISO->setMaxRelErrValue(sresult);
   }
 
   e1 = getExponent(v1);
@@ -307,7 +348,8 @@ void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lVal
   // record analysis information
   //
   // if (fpISO->getMaxRelErr() > 0.7 && cbad > 5) {
-  if (fpISO->getMaxRelErr() > pow(10, epsilon)) {
+  // if (fpISO->getMaxRelErr() > pow(10, epsilon)) {
+  if (true) {
     fpISO->setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION);
     analysisTable[line] = *fpISO;
     DEBUG_STDERR("[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad);
@@ -322,17 +364,17 @@ void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lVal
     DEBUG_STDERR("\t result:" << result << ", sresult:" << sresult);
 
     /*
-    cerr << "[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad << endl;
-    cerr << "\t sum relative error: " << fpISO->getSumRelErr() << endl;
-    cerr << "\t max relative error: " << fpISO->getMaxRelErr() << endl;
-    cerr << "\t max relative error source: " << fpISO->getMaxRelErrSource(0) << ":" << fpISO->getMaxRelErrSource(1) << endl;
-    cerr << "\t max cbad: " << fpISO->getMaxCBad() << endl;
-    cerr << "\t max cbad source: " << fpISO->getMaxCBadSource() << endl;
-    cerr << "\t binop:" << BINOP_ToString(op) << endl;
-    cerr << "\t v1:" << v1 << ", sv1:" << sv1 << endl;
-    cerr << "\t v2:" << v2 << ", sv2:" << sv2 << endl;
-    cerr << "\t result:" << result << ", sresult:" << sresult << endl;
-    */
+       cerr << "[WARN] Catastrophic cancellation at line: " << line << ", cbad: " << cbad << endl;
+       cerr << "\t sum relative error: " << fpISO->getSumRelErr() << endl;
+       cerr << "\t max relative error: " << fpISO->getMaxRelErr() << endl;
+       cerr << "\t max relative error source: " << fpISO->getMaxRelErrSource(0) << ":" << fpISO->getMaxRelErrSource(1) << endl;
+       cerr << "\t max cbad: " << fpISO->getMaxCBad() << endl;
+       cerr << "\t max cbad source: " << fpISO->getMaxCBadSource() << endl;
+       cerr << "\t binop:" << BINOP_ToString(op) << endl;
+       cerr << "\t v1:" << v1 << ", sv1:" << sv1 << endl;
+       cerr << "\t v2:" << v2 << ", sv2:" << sv2 << endl;
+       cerr << "\t result:" << result << ", sresult:" << sresult << endl;
+       */
   }
 
   executionStack.top()[inx]->setShadow(fpISO);
@@ -418,6 +460,7 @@ void FPInstabilityAnalysis::post_fptoui(int64_t op, SCOPE opScope, KIND opKind U
 
   if (sresult != executionStack.top()[inx]->getIntValue()) {
     DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FPTOUI.");
+    DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FPTOUI.");
     DEBUG_STDERR("\tshadow operand = " << sv << ", concrete operand = " << cv);
     DEBUG_STDERR("\tshadow result = " << sresult << ", result = " << executionStack.top()[inx]->getIntValue());
     if (preFpISO != NULL) {
@@ -440,10 +483,14 @@ void FPInstabilityAnalysis::pre_fcmp(SCOPE lScope, SCOPE rScope UNUSED, int64_t 
 void FPInstabilityAnalysis::post_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int line, int inx) {
 
   long double sv1, sv2; 
+  int line1, line2; 
   bool sresult;
 
   sv1 = getShadowValue(lScope, lValue);
   sv2 = getShadowValue(rScope, rValue);
+
+  line1 = getLineNumber(lScope, lValue);
+  line2 = getLineNumber(rScope, rValue);
 
   switch(pred) {
     case CmpInst::FCMP_FALSE:
@@ -496,12 +543,15 @@ void FPInstabilityAnalysis::post_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue
   }
 
   if (sresult != executionStack.top()[inx]->getIntValue()) {
+    cerr << "[FPInstabilityAnalysis] Concrete difference at FCMP." << endl;
     DEBUG_STDERR("[FPInstabilityAnalysis] Concrete difference at FCMP.");
     DEBUG_STDERR("\tline: " << line);
     DEBUG_STDERR("\tshadow result = " << sresult << ", result = " << executionStack.top()[inx]->getIntValue());
     if (preFpISO != NULL) {
       FPInstabilityShadowObject<HIGHPRECISION> fpISO(*preFpISO);
       fpISO.setAbnormalType(FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE);
+      fpISO.setMaxRelErrSource(0, line1);
+      fpISO.setMaxRelErrSource(1, line2);
       analysisTable[line] = fpISO;
       DEBUG_STDERR("\t sum relative error: " << preFpISO->getSumRelErr());
       DEBUG_STDERR("\t max relative error: " << preFpISO->getMaxRelErr());
@@ -596,7 +646,7 @@ void FPInstabilityAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind 
   }
 
   if (preFpISO != NULL) {
-    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0, 0, BINOP_INVALID);
     preFpISO->copyTo(shadow);
     shadow->setValue(sresult);
     executionStack.top()[inx]->setShadow(shadow);
@@ -634,7 +684,7 @@ void FPInstabilityAnalysis::post_fpext(int64_t op, SCOPE opScope, KIND opKind UN
   }
 
   if (preFpISO != NULL) {
-    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0);
+    shadow = new FPInstabilityShadowObject<HIGHPRECISION>(0, 0, 0, BINOP_INVALID);
     preFpISO->copyTo(shadow);
     shadow->setValue(sresult);
     executionStack.top()[inx]->setShadow(shadow);
@@ -655,55 +705,60 @@ void FPInstabilityAnalysis::post_analysis() {
   cerr << "============= RECOMMENDATION" << endl;
 
   it = analysisTable.find(source);
+  FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
 
-  if (it == analysisTable.end()) {
+  // if (it == analysisTable.end()) {
+  if (fpISO.getMaxRelErr() < pow(10, epsilon)) {
     cerr << "[SUCCESS] No precision change required." << endl; 
   } else {
     queue<FPInstabilityShadowObject<HIGHPRECISION> > errorFpISO; // FPISO objects propagation trace
     set<int> highPrecision; // line that should performed in higher precision
     queue<int> errorTrace; // error propagation trace
 
-    errorTrace.push(source); // source is the first error
+    backwardAnalysis(source, highPrecision, pow(10, epsilon));
 
     //
     // Repeat until cannot propagate further backward
     //
-    while (!errorTrace.empty()) {
-      int line = errorTrace.front();
-      errorTrace.pop();
+    /*
+       errorTrace.push(source); // source is the first error
+       while (!errorTrace.empty()) {
+       int line = errorTrace.front();
+       errorTrace.pop();
 
-      it = analysisTable.find(line);
+       it = analysisTable.find(line);
 
-      if (it != analysisTable.end()) {
+       if (it != analysisTable.end()) {
 
-        //
-        // this line should be performed in higher precision
-        //
-        highPrecision.insert(line);
+    //
+    // this line should be performed in higher precision
+    //
+    highPrecision.insert(line);
 
-        FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
-        errorFpISO.push(fpISO);
-        analysisTable.erase(it);
+    FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
+    errorFpISO.push(fpISO);
+    analysisTable.erase(it);
 
-        int line01 = fpISO.getMaxRelErrSource(0);
-        int line02 = fpISO.getMaxRelErrSource(1); 
+    int line01 = fpISO.getMaxRelErrSource(0);
+    int line02 = fpISO.getMaxRelErrSource(1); 
 
-        if (analysisTable.find(line01) != analysisTable.end()) {
-          errorTrace.push(line01);
-        }
-
-        if (line02 != line01 && analysisTable.find(line02) != analysisTable.end()) {
-          errorTrace.push(line02);
-        }
-      }
+    if (analysisTable.find(line01) != analysisTable.end()) {
+    errorTrace.push(line01);
     }
+
+    if (line02 != line01 && analysisTable.find(line02) != analysisTable.end()) {
+    errorTrace.push(line02);
+    }
+    }
+    }
+    */
 
     //
     // Print high level suggestion
     //
     for (set<int>::iterator it = highPrecision.begin(); it != highPrecision.end(); it++) {
       int line = *it;
-      cerr << "[RECOMMENDATION] Line " << line << " should be computed in higher precision" << endl;
+      cerr << "[RECOMMENDATION] Result at line " << line << " should be computed in higher precision" << endl;
     }
 
     //
@@ -711,9 +766,13 @@ void FPInstabilityAnalysis::post_analysis() {
     //
     cerr << "" << endl;
     cerr << "============= Detailed Analysis" << endl;
-    while (!errorFpISO.empty()) {
-      FPInstabilityShadowObject<HIGHPRECISION> fpISO = errorFpISO.front();
-      errorFpISO.pop();
+    //    while (!errorFpISO.empty()) {
+    //      FPInstabilityShadowObject<HIGHPRECISION> fpISO = errorFpISO.front();
+    //      errorFpISO.pop();
+
+    for (set<int>::iterator it = highPrecision.begin(); it != highPrecision.end(); it++) {
+      int line = *it;
+      FPInstabilityShadowObject<HIGHPRECISION> fpISO = analysisTable.find(line)->second;
 
       //
       // Print error messages
@@ -723,6 +782,7 @@ void FPInstabilityAnalysis::post_analysis() {
           cerr << "[WARN] High relative error at location (line: " <<
             fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " <<
             fpISO.getMaxCBad() << endl;
+          cerr << "\t binary operator: " << BINOP_ToString(fpISO.getBinOp()) << endl;
         } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE) {
           cerr << "[WARN] Concrete difference at location: (line: " << fpISO.getPC() <<
             ", file:" << fpISO.getFileID() << ")" << endl;
@@ -738,6 +798,13 @@ void FPInstabilityAnalysis::post_analysis() {
         cerr << "\t max relative error: " << fpISO.getMaxRelErr() << endl;
         cerr << "\t max relative error source: " << fpISO.getMaxRelErrSource(0)
           << ":" << fpISO.getMaxRelErrSource(1) << endl;
+        cerr << "\t operand actual value 01 and 02: " <<
+          fpISO.getMaxRelErrLowValue(0) << ":" <<
+          fpISO.getMaxRelErrLowValue(1) << endl;
+        cerr << "\t operand high value 01 and 02: " <<
+          fpISO.getMaxRelErrHighValue(0) << ":" <<
+          fpISO.getMaxRelErrHighValue(1) << endl;
+        cerr << "\t value at max relative error: " << fpISO.getMaxRelErrValue() << endl;
         cerr << "\t max cbad:" << fpISO.getMaxCBad() << endl;
         cerr << "\t max cbad source:" << fpISO.getMaxCBadSource() << endl; 
       }
@@ -745,25 +812,129 @@ void FPInstabilityAnalysis::post_analysis() {
   }
 
   /*
-  for (map<int, FPInstabilityShadowObject<HIGHPRECISION> >::iterator it = analysisTable.begin(); it
-      != analysisTable.end(); ++it) {
-    int line = it->first;
+     for (map<int, FPInstabilityShadowObject<HIGHPRECISION> >::iterator it = analysisTable.begin(); it
+     != analysisTable.end(); ++it) {
+     int line = it->first;
+     FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
+
+     if (fpISO.getAbnormalType() != FPInstabilityShadowObject<HIGHPRECISION>::NONE) {
+     if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION) {
+     cerr << "[WARN] High relative error at location (line: " << fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " << fpISO.getMaxCBad() << endl;
+     } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE) {
+     cerr << "[WARN] Concrete difference at location: (line: " << line << ", file:" << fpISO.getFileID() << ")" << endl;
+     cerr << "\t source of concrete difference: (line: " << fpISO.getPC() << ", file:" << fpISO.getFileID() << ")" << endl;
+     }
+
+     cerr << "\t sum relative error: " << fpISO.getSumRelErr() << endl;
+     cerr << "\t max relative error: " << fpISO.getMaxRelErr() << endl;
+     cerr << "\t max relative error source: " << fpISO.getMaxRelErrSource(0) << ":" << fpISO.getMaxRelErrSource(1) << endl;
+     cerr << "\t max cbad:" << fpISO.getMaxCBad() << endl;
+     cerr << "\t max cbad source:" << fpISO.getMaxCBadSource() << endl; 
+     }
+     }
+     */
+  }
+
+  void FPInstabilityAnalysis::backwardAnalysis(int line, set<int>& highPrecision, HIGHPRECISION errorThreshold) {
+    map<int, FPInstabilityShadowObject<HIGHPRECISION> >::iterator it;
+
+    it = analysisTable.find(line);
+    safe_assert(it != analysisTable.end());
+
     FPInstabilityShadowObject<HIGHPRECISION> fpISO = it->second;
 
-    if (fpISO.getAbnormalType() != FPInstabilityShadowObject<HIGHPRECISION>::NONE) {
-      if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CANCELLATION) {
-        cerr << "[WARN] High relative error at location (line: " << fpISO.getPC() << ", file: " << fpISO.getFileID() << ") , cbad: " << fpISO.getMaxCBad() << endl;
-      } else if (fpISO.getAbnormalType() == FPInstabilityShadowObject<HIGHPRECISION>::CONCRETEDIFFERENCE) {
-        cerr << "[WARN] Concrete difference at location: (line: " << line << ", file:" << fpISO.getFileID() << ")" << endl;
-        cerr << "\t source of concrete difference: (line: " << fpISO.getPC() << ", file:" << fpISO.getFileID() << ")" << endl;
-      }
+    if (fpISO.getMaxRelErr() >= errorThreshold) {
+      highPrecision.insert(line); // the result need to be in higher precision
 
-      cerr << "\t sum relative error: " << fpISO.getSumRelErr() << endl;
-      cerr << "\t max relative error: " << fpISO.getMaxRelErr() << endl;
-      cerr << "\t max relative error source: " << fpISO.getMaxRelErrSource(0) << ":" << fpISO.getMaxRelErrSource(1) << endl;
-      cerr << "\t max cbad:" << fpISO.getMaxCBad() << endl;
-      cerr << "\t max cbad source:" << fpISO.getMaxCBadSource() << endl; 
+      BINOP op = fpISO.getBinOp();
+
+      if (op != BINOP_INVALID) {
+        //
+        // Binop case:
+        // Analyze constraint for two operands and invoke backwardAnalysis correspondingly.
+        //
+        int line01, line02;
+        FPInstabilityShadowObject<HIGHPRECISION> fpISO1, fpISO2;
+
+        line01 = fpISO.getMaxRelErrSource(0);
+        line02 = fpISO.getMaxRelErrSource(1);
+
+        safe_assert(line01 != -1);
+        safe_assert(line02 != -1);
+
+        it = analysisTable.find(line01);
+        safe_assert(it != analysisTable.end());
+        fpISO1 = it->second;
+        it = analysisTable.find(line02);
+        safe_assert(it != analysisTable.end());
+        fpISO2 = it->second;
+
+        //
+        // Case 1: only the result need to be in higher precision
+        //
+        HIGHPRECISION result = eval(fpISO.getMaxRelErrLowValue(0), fpISO.getMaxRelErrLowValue(1), op);
+        HIGHPRECISION err = computeRelativeError(fpISO.getValue(), result);
+
+        if (err >= errorThreshold) {
+          //
+          // Case 2: the operands also need to be in higher precision
+          //
+          HIGHPRECISION subErrorThreshold;
+          HIGHPRECISION high0, high1, high;
+
+          high = fpISO.getMaxRelErrValue();
+          high0 = fpISO.getMaxRelErrHighValue(0);
+          high1 = fpISO.getMaxRelErrHighValue(1);
+          switch (op) {
+            case FADD:
+            case FSUB:
+              if (high == 0) {
+                subErrorThreshold = 0; // TODO: recheck this
+              } else {
+                subErrorThreshold = errorThreshold * high / max(abs(high0-high1), abs(high0+high1));
+              }
+              break;
+            case FMUL:
+              if (high == 0) {
+                subErrorThreshold = 0; // TODO: recheck this 
+              } else {
+                subErrorThreshold = errorThreshold / 2;
+              }
+              break;
+            case FDIV:
+              if (high == 0) {
+                subErrorThreshold = 0; // TODO: recheck this
+              } else {
+                subErrorThreshold = errorThreshold / 2;
+              }
+              break;
+            default:
+              safe_assert(false);
+              break;
+          }
+
+          if (highPrecision.find(line01) == highPrecision.end()) {
+            backwardAnalysis(line01, highPrecision, subErrorThreshold);
+          }
+          if (highPrecision.find(line02) == highPrecision.end()) {
+            backwardAnalysis(line02, highPrecision, subErrorThreshold);
+          }
+        } 
+      } else {
+        //
+        // Not binop case:
+        // Call backwardAnalysis on the maximum relative error source using the default epsilon.
+        //
+        highPrecision.insert(line); // (safely assume) the result need to be in higher precision
+
+        int line01 = fpISO.getMaxRelErrSource(0);
+        if (line01 != -1 && highPrecision.find(line01) == highPrecision.end()) {
+          backwardAnalysis(line01, highPrecision, pow(10, epsilon));
+        }
+        int line02 = fpISO.getMaxRelErrSource(1);
+        if (line02 != -1 && highPrecision.find(line02) == highPrecision.end()) {
+          backwardAnalysis(line02, highPrecision, pow(10, epsilon));
+        }
+      }
     }
   }
-  */
-}

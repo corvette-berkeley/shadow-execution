@@ -100,94 +100,133 @@ class IValue {
      */
     int setValue(int offset, int byte, uint8_t* content);
 
+    void create(const IValue& iv);
+
+    void uncreate() {};
+
  public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(s), shadow(NULL) {}
+    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1),
+    size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
+    lineNumber(0), scope(s), shadow(NULL) {}
       
-    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0),
+    index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0),
+    scope(REGISTER), shadow(NULL) {}
 
-    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1),
+    size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0),
+    lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t), value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t),
+    value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l),
+    offset(o), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
     
-    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
-      value.as_int = 0;
-    }
+    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0),
+    length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER),
+    shadow(NULL) { value.as_int = 0; }
 
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
-    }
+    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0),
+    length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER),
+    shadow(NULL) {}
+
+    IValue(const IValue& iv) {
+      create(iv);
+    };
 
     ~IValue() {
-    }
+      uncreate();
+    };
 
-    void setType(KIND t);
+    IValue& operator=(const IValue& iv) {
+      if (&iv != this) {
+        
+        // free the object in the left-hand side
+        uncreate();
 
-    void setValue(VALUE v);
+        // copy elements from the right-hand side to the left-hand side
+        create(iv);
+      }
 
-    void setValueOffset(int64_t v);
+      return *this;
+    };
 
-    void setSize(unsigned int s);
+    void setType(KIND type) { this->type = type; };
 
-    void setIndex(unsigned i);
+    void setValue(VALUE value) { this->value = value; };
 
-    void setFirstByte(unsigned f);
+    void setValueOffset(int64_t valueOffset) { this->valueOffset = valueOffset; };
 
-    void setLength(unsigned l);
+    void setScope(SCOPE scope) { this->scope = scope; };
 
-    void setOffset(int o);
+    void setSize(unsigned int size) { this->size = size; };
 
-    void setBitOffset(int bo);
+    void setIndex(unsigned index) { this->index = index; };
 
-    void setLineNumber(int l);
+    void setFirstByte(unsigned firstByte) { this->firstByte = firstByte; };
 
-    void setScope(SCOPE s);
+    void setLength(unsigned length) { this->length = length; };
 
-    void setShadow(void* addr);
+    void setOffset(int offset) { this->offset = offset; };
 
-    static void setCopyShadow(void (*cs)(IValue*, IValue*));
+    void setBitOffset(int bitOffset) { this->bitOffset = bitOffset; };
 
-    void setInitialized();
+    void setLineNumber(int lineNumber) { this->lineNumber = lineNumber; };
 
-    KIND getType();
+    void setShadow(void* shadow) { this->shadow = shadow; };
 
-    VALUE getValue();
+    static void setCopyShadow(void (*copyShadow)(IValue*, IValue*)) {
+      IValue::copyShadow = copyShadow; };
 
-    unsigned getIndex();
+    void setInitialized() {
+      if (type == PTR_KIND && length == 0) {
+        length = 1;
+      }
+    };
 
-    unsigned getFirstByte();
+    KIND getType() const { return this->type; };
 
-    unsigned getLength();
+    VALUE getValue() const { return this->value; };
 
-    unsigned int getSize();
+    unsigned getIndex() const { return this->index; };
 
-    SCOPE getScope();
+    unsigned getFirstByte() const { return this->firstByte; };
 
-    int getOffset();
+    unsigned getLength() const { return this->length; };
 
-    int getBitOffset();
+    unsigned int getSize() const { return this->size; };
 
-    int getLineNumber();
+    SCOPE getScope() const { return this->scope; };
 
-    int64_t getValueOffset();
+    int getOffset() const { return this->offset; };
+
+    int getBitOffset() const { return this->bitOffset; };
+
+    int getLineNumber() const { return this->lineNumber; };
+
+    int64_t getValueOffset() const { return this->valueOffset; };
+
+    void* getShadow() const { return this->shadow; };
 
     int64_t getIntValue();
 
     uint64_t getUIntValue();
 
-    void* getPtrValue();
+    void* getPtrValue() { return value.as_ptr; };
 
     double getFlpValue();
 
-    void* getIPtrValue();
+    void* getIPtrValue() { return (void*)((int64_t)value.as_ptr + valueOffset); };
 
-    void* getShadow();
+    bool isInitialized() { return type != PTR_KIND || length > 0; };
 
-    bool isInitialized();
+    bool isIntValue() { return type == INT1_KIND || type == INT8_KIND || type
+      == INT16_KIND || type == INT24_KIND || type == INT32_KIND || type ==
+        INT64_KIND || type == INT80_KIND; };
 
-    bool isIntValue();
+    bool isFlpValue() { return type == FLP32_KIND || type == FLP64_KIND || type
+      == FLP80X86_KIND || type == FLP128_KIND || type == FLP128PPC_KIND; };
 
-    bool isFlpValue();
-
-    bool isPtrValue();
+    bool isPtrValue() { return type == PTR_KIND; };
 
     string toString();
 

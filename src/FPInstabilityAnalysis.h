@@ -153,7 +153,7 @@ class FPInstabilityAnalysis : public InterpreterObserver {
      * @param v2 the exact value
      * @return the exact bit of v1 
      */
-    int getEBits(long double v1, long double v2);
+    int getEBits(double v1, double v2);
 
     /**
      * Return the exponent value of a double value.
@@ -164,6 +164,10 @@ class FPInstabilityAnalysis : public InterpreterObserver {
      */
     int getExponent(double v);
 
+    int getExactBits(double v1, double v2); 
+
+    int64_t getMantisa(double v); 
+
     /**
      * Get the FPInstabilityShadowObject before the operation happens.
      */
@@ -173,6 +177,27 @@ class FPInstabilityAnalysis : public InterpreterObserver {
      * Analysis code after floating-point binary operation. 
      */
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op);
+
+    void backwardAnalysis(int line, set<int>& highPrecision, double errorThreshold);
+
+    HIGHPRECISION computeRelativeError(HIGHPRECISION highValue, float lowValue);
+
+    template<class T>
+    HIGHPRECISION eval(T v1, T v2, BINOP op) {
+      switch (op) {
+        case FADD:
+          return v1 + v2;
+        case FSUB:
+          return v1 - v2;
+        case FMUL:
+          return v1 * v2;
+        case FDIV:
+          return v1 / v2;
+        default:
+          safe_assert(false);
+          return -1;
+      }
+    };
 };
 
 #endif /* FP_INSTABILITY_ANALYSIS_H_ */

@@ -43,106 +43,6 @@
 
 void (*IValue::copyShadow)(IValue*,IValue*) = NULL;
 
-void IValue::setShadow(void* addr) {
-  shadow = addr;
-}
-
-void IValue::setCopyShadow(void (*cs)(IValue*, IValue*)) {
-  copyShadow = cs;
-}
-
-void IValue::setLineNumber(int l) {
-  lineNumber = l;
-}
-
-void IValue::setType(KIND t) {
-  type = t;
-}
-
-void IValue::setValue(VALUE v) {
-  value = v;
-}
-
-void IValue::setValueOffset(int64_t v) {
-  valueOffset = v;
-}
-
-void IValue::setScope(SCOPE s) {
-  scope = s;
-}
-
-void IValue::setSize(unsigned int s) {
-  size = s;
-}
-
-void IValue::setOffset(int o) {
-  offset = o;
-}
-
-void IValue::setBitOffset(int bo) {
-  bitOffset = bo;
-}
-
-void IValue::setIndex(unsigned i) {
-  index = i;
-}
-
-void IValue::setFirstByte(unsigned f) {
-  firstByte = f;
-}
-
-void IValue::setLength(unsigned l) {
-  length = l;
-}
-
-int IValue::getLineNumber() {
-  return lineNumber;
-}
-
-void* IValue::getShadow() {
-  return shadow;
-}
-
-KIND IValue::getType() {
-  return type;
-}
-
-VALUE IValue::getValue() {
-  return value;
-}
-
-int64_t IValue::getValueOffset() {
-  return valueOffset;
-}
-
-SCOPE IValue::getScope() {
-  return scope;
-}
-
-unsigned int IValue::getSize() {
-  return size;
-}
-
-int IValue::getOffset() {
-  return offset;
-}
-
-int IValue::getBitOffset() {
-  return bitOffset;
-}
-
-unsigned IValue::getIndex() {
-  return index;
-}
-
-unsigned IValue::getFirstByte() {
-  return firstByte;
-}
-
-unsigned IValue::getLength() {
-  return length;
-}
-
 string IValue::toString() {
   std::stringstream s;
 
@@ -457,31 +357,6 @@ bool IValue::writeValue(int offset, int byte, IValue* src) {
   }
 }
 
-bool IValue::isInitialized() {
-  return type != PTR_KIND || length > 0;
-}
-
-bool IValue::isIntValue() {
-  return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND || type
-    == INT24_KIND || type == INT32_KIND || type == INT64_KIND || type ==
-    INT80_KIND;
-}
-
-bool IValue::isFlpValue() {
-  return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND ||
-    type == FLP128_KIND || type == FLP128PPC_KIND;
-}
-
-bool IValue::isPtrValue() {
-  return type == PTR_KIND;
-}
-
-void IValue::setInitialized() {
-  if (type == PTR_KIND && length == 0) {
-    length = 1;
-  }
-}
-
 bool IValue::isIValue(KIND t) {
   return type == t;
 }
@@ -576,11 +451,17 @@ double IValue::getFlpValue() {
   }
 }
 
-void* IValue::getPtrValue() {
-  return value.as_ptr;
+void IValue::create(const IValue& iv) {
+  type = iv.getType();
+  value = iv.getValue();
+  valueOffset = iv.getValueOffset();
+  size = iv.getSize();
+  index = iv.getIndex();
+  firstByte = iv.getFirstByte();
+  length = iv.getLength();
+  offset = iv.getOffset();
+  bitOffset = iv.getOffset();
+  lineNumber = iv.getLineNumber();
+  scope = iv.getScope();
+  shadow = iv.getShadow();
 }
-
-void* IValue::getIPtrValue() {
-  return (void*)((int64_t)value.as_ptr + valueOffset);
-}
-
