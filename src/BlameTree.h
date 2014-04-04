@@ -57,6 +57,7 @@ class BlameTree : public InterpreterObserver {
     static int dynamicCounter; // unique counter for instructions executed
     static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
     static HIGHPRECISION machineEpsilon;    // the machine smallest unit in high precision
+    static map<int, BlameTreeShadowObject<HIGHPRECISION> > trace;
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 
@@ -86,7 +87,7 @@ class BlameTree : public InterpreterObserver {
 
     //virtual void post_create_global_symbol_table();
 
-    //virtual void post_analysis();
+    virtual void post_analysis();
 
   private:
     BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
