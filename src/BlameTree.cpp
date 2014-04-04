@@ -252,7 +252,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
 
     s1->setValue(BITS_23, v1);
-    s1->setValue(BITS_23, (HIGHPRECISION)v1);
+    s1->setValue(BITS_52, (HIGHPRECISION)v1);
     s1->setPC(pc1);
     s1->setDPC(dynamicCounter);
     setShadow(lScope, lValue, s1);
@@ -265,7 +265,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     cout << "shadow2 is NULL" << endl;
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
 
-    s2->setValue(BITS_52, v2);
+    s2->setValue(BITS_23, v2);
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
     s2->setDPC(dynamicCounter);
