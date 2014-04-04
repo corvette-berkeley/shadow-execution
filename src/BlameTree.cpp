@@ -213,6 +213,31 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 }
 
 
+void BlameTree::pre_allocax(IID iid UNUSED, KIND type UNUSED, uint64_t size UNUSED, int inx UNUSED, 
+				      int line UNUSED, bool arg UNUSED, KVALUE* actualAddress UNUSED) {}
+
+void BlameTree::post_allocax(IID iid UNUSED, KIND type UNUSED, uint64_t size UNUSED, int inx UNUSED, 
+				       int line UNUSED, bool arg UNUSED, KVALUE* actualAddress UNUSED) {
+  dynamicCounter++;
+}
+
+void BlameTree::pre_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
+				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
+ 
+void BlameTree::post_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
+				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {
+  dynamicCounter++;
+}
+
+void BlameTree::pre_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
+				    int file UNUSED, int line UNUSED, int inx UNUSED) {}
+
+void BlameTree::post_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
+				     int file UNUSED, int line UNUSED, int inx UNUSED) {
+  dynamicCounter++;
+}
+
+
 void BlameTree::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
   pre_fpbinop(inx);
 }
