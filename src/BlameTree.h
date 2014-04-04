@@ -57,6 +57,7 @@ class BlameTree : public InterpreterObserver {
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 
+    /*
     virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
         rValue, KIND type, int line, int inx);
 
@@ -84,7 +85,7 @@ class BlameTree : public InterpreterObserver {
     virtual void post_create_global_symbol_table();
 
     virtual void post_analysis();
-
+    */
   private:
     BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
 

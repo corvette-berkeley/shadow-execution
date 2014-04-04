@@ -44,6 +44,7 @@ BlameTree::HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
 
 /******* HELPER FUNCTIONS *******/
 
+/*
 void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   // copy shadow object from source to destination, only if they are
@@ -62,7 +63,9 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
     }
   }
 }
+*/
 
+/*
 BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t value) {
   HIGHPRECISION result;
 
@@ -82,7 +85,9 @@ BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t value) {
 
   return result;
 }
+*/
 
+/*
 BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   LOWPRECISION actualValue;
 
@@ -101,7 +106,9 @@ BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
 
   return actualValue;
 }
+*/
 
+/*
 int BlameTree::getPC(SCOPE scope, int64_t value) {
   int pc;
 
@@ -120,7 +127,9 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
   return pc;
 }
+*/
 
+/*
 BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
                  highValue, LOWPRECISION lowValue) {
   HIGHPRECISION d; 
@@ -129,9 +138,11 @@ BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
 
   return abs((HIGHPRECISION)((highValue - lowValue)/d));
 }
+*/
 
 /******* ANALYSIS FUNCTIONS *******/
 
+/*
 void BlameTree::pre_fpbinop(int inx) {
   if (executionStack.top()[inx]->getShadow() != NULL) {
     preBtmSO = *((BlameTreeShadowObject<HIGHPRECISION>*)
@@ -139,8 +150,10 @@ void BlameTree::pre_fpbinop(int inx) {
   } else {
     preBtmSO = BlameTreeShadowObject<HIGHPRECISION>();
   }
-} 
+}
+*/
 
+/*
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line, int inx, BINOP op) {
 
@@ -184,9 +197,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
-
   //
   // Compute other analysis information such as relative error, sources of
   // relative error
   //
 }
+*/
