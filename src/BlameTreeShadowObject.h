@@ -135,8 +135,55 @@ class BlameTreeShadowObject {
 
     void setValue(int i, T v) { value[i] = v; };
 
+    std::string BINOP_ToString(int binop) {
+      std::stringstream s;
+      switch(binop) {
+      case ADD:
+	s << "ADD";
+	break;
+      case FADD:
+	s << "FADD";
+	break;
+      case SUB:
+	s << "SUB";
+	break;
+      case FSUB:
+	s << "FSUB";
+	break;
+      case MUL:
+	s << "MUL";
+	break;
+      case FMUL:
+	s << "FMUL";
+	break;
+      case UDIV:
+	s << "UDIV";
+	break;
+      case SDIV:
+	s << "SDIV";
+	break;
+      case FDIV:
+	s << "FDIV";
+	break;
+      case UREM:
+	s << "UREM";
+	break;
+      case SREM:
+	s << "SREM";
+	break;
+      case FREM:
+	s << "FREM";
+	break;
+      default: 
+	DEBUG_STDERR("Unsupport binary operator operand: " << binop);
+	safe_assert(false);
+	break;
+      }
+      return s.str();
+    };
+
     void print() {
-      cout << "[SHADOW] dpc: " << dpc << ", value: " << value[4] << endl;
+      printf("[SHADOW] pc: %d, dpc: %d, value: %f, op: %s\n", pc, dpc, value[4], BINOP_ToString(binOp).c_str());
     }
 
   private:

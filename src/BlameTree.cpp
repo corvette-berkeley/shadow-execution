@@ -160,7 +160,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
   HIGHPRECISION sv1, sv2, sresult;
   //LOWPRECISION v1, v2;
-  //int pc1, pc2;
+  int pc1;
 
   //
   // assert: type is a floating-point type
@@ -175,7 +175,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //v2 = getActualValue(rScope, rValue);
   sv1 = getShadowValue(lScope, lValue, BITS_52);
   sv2 = getShadowValue(rScope, rValue, BITS_52);
-  //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
+  pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
   //pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
 
   //
@@ -201,9 +201,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
 
   HIGHPRECISION *values = new HIGHPRECISION[5];
-  values[4] = sresult;
-  BlameTreeShadowObject<HIGHPRECISION> resultShadow(0, dynamicCounter++, BIN_INTR, op, values);
-  cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(4) << endl;
+  values[BITS_52] = sresult;
+  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter++, BIN_INTR, op, values);
+  cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(BITS_52) << endl;
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
   //
