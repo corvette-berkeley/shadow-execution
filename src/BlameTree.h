@@ -41,6 +41,7 @@
 #include "InterpreterObserver.h"
 #include "BlameTreeShadowObject.h"
 #include "IValue.h"
+#include <math.h>
 
 using namespace llvm;
 using namespace std;
@@ -124,6 +125,8 @@ class BlameTree : public InterpreterObserver {
      * @return the program counter associated with the given value.
      */
     int getPC(SCOPE scope, int64_t value);
+
+    HIGHPRECISION computeRelativeError(HIGHPRECISION highValue, LOWPRECISION lowValue);
 
     void pre_fpbinop(int inx);
 

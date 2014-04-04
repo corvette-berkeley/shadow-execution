@@ -44,7 +44,6 @@ BlameTree::HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
 
 /******* HELPER FUNCTIONS *******/
 
-/*
 void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   // copy shadow object from source to destination, only if they are
@@ -63,9 +62,8 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
     }
   }
 }
-*/
 
-/*
+
 BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t value) {
   HIGHPRECISION result;
 
@@ -80,14 +78,13 @@ BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t value) {
     iv = (scope == GLOBAL) ? globalSymbolTable[value] :
       executionStack.top()[value];
     result = iv->getShadow() == NULL ? iv->getFlpValue() :
-      ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue();
+      ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(0); // FIX: value to get
   }
 
   return result;
 }
-*/
 
-/*
+
 BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   LOWPRECISION actualValue;
 
@@ -106,9 +103,8 @@ BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
 
   return actualValue;
 }
-*/
 
-/*
+
 int BlameTree::getPC(SCOPE scope, int64_t value) {
   int pc;
 
@@ -127,22 +123,21 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
   return pc;
 }
-*/
 
-/*
+
 BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
                  highValue, LOWPRECISION lowValue) {
   HIGHPRECISION d; 
   
   d = highValue != 0 ? highValue : machineEpsilon;
 
-  return abs((HIGHPRECISION)((highValue - lowValue)/d));
+  return fabs((HIGHPRECISION)((highValue - lowValue)/d));
 }
-*/
+
 
 /******* ANALYSIS FUNCTIONS *******/
 
-/*
+
 void BlameTree::pre_fpbinop(int inx) {
   if (executionStack.top()[inx]->getShadow() != NULL) {
     preBtmSO = *((BlameTreeShadowObject<HIGHPRECISION>*)
@@ -151,14 +146,14 @@ void BlameTree::pre_fpbinop(int inx) {
     preBtmSO = BlameTreeShadowObject<HIGHPRECISION>();
   }
 }
-*/
 
-/*
+
+
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
-    int64_t rValue, KIND type, int line, int inx, BINOP op) {
+    int64_t rValue, KIND type, int line, int inx UNUSED, BINOP op) {
 
   HIGHPRECISION sv1, sv2, sresult;
-  LOWPRECISION v1, v2, result;
+  //LOWPRECISION v1, v2, result;
   int pc1, pc2;
 
   //
@@ -170,8 +165,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   // Obtain actual value, shadow value and pc of two operands
   //
-  v1 = getActualValue(lScope, lValue);
-  v2 = getActualValue(rScope, rValue);
+  //v1 = getActualValue(lScope, lValue);
+  //v2 = getActualValue(rScope, rValue);
   sv1 = getShadowValue(lScope, lValue);
   sv2 = getShadowValue(rScope, rValue);
   pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
@@ -197,9 +192,10 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
+
+  cout << "result: " << sresult << " pc1: " << pc1 << " pc2: " << pc2 << endl;
   //
   // Compute other analysis information such as relative error, sources of
   // relative error
   //
 }
-*/
