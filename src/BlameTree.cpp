@@ -65,6 +65,23 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   }
 }
 
+void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameTree::HIGHPRECISION>* shadowObject) {
+
+  if (scope == CONSTANT) {
+    return; // no need to associate this shadow object with any IValue
+  } else {
+    IValue *iv;
+    if (scope == GLOBAL) {
+      iv = globalSymbolTable[inx];
+    }
+    else {
+      iv = executionStack.top()[inx];
+    }
+    iv->setShadow(shadowObject);
+    cout << "set shadow object" << endl;
+  }
+  return;
+}
 
 BlameTreeShadowObject<BlameTree::HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
 
@@ -238,7 +255,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     s1->setValue(BITS_23, (HIGHPRECISION)v1);
     s1->setPC(pc1);
     s1->setDPC(dynamicCounter);
-    // TODO: set shadow object
+    setShadow(lScope, lValue, s1);
 
     s1->print();
     cout << "done printing" << endl;
@@ -252,7 +269,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
     s2->setDPC(dynamicCounter);
-    // TODO: set shadow object
+    setShadow(rScope, rValue, s2);
 
     s2->print();
     cout << "done printing" << endl;

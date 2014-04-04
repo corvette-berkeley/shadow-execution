@@ -108,6 +108,17 @@ class BlameTree : public InterpreterObserver {
      */
     HIGHPRECISION getShadowValue(SCOPE scope, int64_t constOrIndex, PRECISION precision);
 
+
+    /**
+     * Set BlameTreeShadowObject in corresponding IValue.
+     *
+     * @note a value is denoted by a pair of scope and const/index.
+     * @param scope scope of the value.
+     * @param constOrIndex constant/index of the value.
+     * @param shadowObject associated with the given value.
+     */
+    void setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameTree::HIGHPRECISION>* shadowObject);
+
     /**
      * Return BlameTreeShadowObject associated with the given value.
      *
