@@ -65,25 +65,30 @@ class BlameTreeShadowObject {
   private:
     int pc;                 // Program counter of the instruction associate with this object
     int dpc;                // Program counter of the instruction as appeared in the execution trace
+    int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
     T[5] value;             // Value in 5 different precision
 
   public:
-    BlameTreeShadowObject(): pc(0), dpc(0)
-      
-      
-      value(0), intrType(INTRTYPE_INVALID),
-        binOp(BINOP_INVALID), td(1), pc(0), fid(0), mre(0), mreLowValue(0),
-        mreHighValue(0) {
-      mreSrc[0] = -1;
-      mreSrc[1] = -1;
-      mreSrcLowValue[0] = 0;
-      mreSrcLowValue[1] = 0;
-      mreSrcHighValue[0] = 0;
-      mreSrcHighValue[1] = 0;
+    BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
+    binOp(BINOP_INVALID) {
+      value[0] = 0; 
+      value[1] = 1;
+      value[2] = 2;
+      value[3] = 3;
+      value[4] = 4;
     };
 
+    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, T *val): pc(p),
+    dpc(dp), intrType(it), binOp(bo) {
+      value[0] = val[0];
+      value[1] = val[1];
+      value[2] = val[2];
+      value[3] = val[3];
+      value[4] = val[4];
+    } 
+      
     BlameTreeShadowObject(T v, int l, INTRTYPE it, BINOP bo): value(v),
         intrType(it), binOp(bo), td(1), pc(l), fid(0), mre(0), mreLowValue(0),
         mreHighValue(0) {
@@ -116,9 +121,17 @@ class BlameTreeShadowObject {
       return *this;
     };
 
-    T getValue() const { return value; };
+    int getPC() const { return pc; };
 
-    void setValue(T value) { this->value = value; };
+    void setPC(int pc) { this->pc = pc; };
+
+    int getDPC() const { return dpc; };
+
+    void setDPC(int dpc) { this->dpc = dpc; };
+
+    int getFileID() const { return fid; };
+
+    void setFileID(int fileID) { this->fileID = fileID; };
 
     INTRTYPE getIntrType() const { return intrType; };
 
@@ -128,83 +141,22 @@ class BlameTreeShadowObject {
 
     void setBinOp(BINOP binOp) { this->binOp = binOp; };
 
-    int getComputationDepth() const { return td; };
+    T getValue(int i) const { return value[i]; };
 
-    void setComputationDepth(int td) { this->td = td; };
-
-    int getPC() const { return pc; };
-
-    void setPC(int pc) { this->pc = pc; };
-
-    int getFileID() const { return fid; };
-
-    void setFileID(int fileID) { this->fileID = fileID; };
-
-    T getMaxRelErr() const { return mre; };
-
-    void setMaxRelErr(T mre) { this->mre = mre; };
-
-    T getMaxRelErrLowValue() const { return mreLowValue; };
-
-    void setMaxRelErrLowValue(T mreLowValue) { this->mreLowValue = mreLowValue; };
-
-    T getMaxRelErrHighValue() const { return mreHighValue; };
-
-    void setMaxRelErrHighValue(T mreHighValue) { this->mreHighValue = mreHighValue; };
-
-    int getMaxRelErrSource(int i) const {
-      safe_assert(i == 0 || i == 1);
-
-      return mreSrc[i];
-    };
-
-    void setMaxRelErrSource(int i, int pc) {
-      safe_assert(i == 0 || i == 1);
-
-      mreSrc[i] = pc;
-    };
-
-    T getMaxRelErrSrcLowValue(int i) const {
-      safe_assert(i == 0 || i == 1);
-
-      return mreSrcLowValue[i];
-    }
-
-    void setMaxRelErrSrcLowValue(int i , T value) {
-      safe_assert(i == 0 || i == 1);
-
-      return mreSrcLowValue[i];
-    }
-
-    T getMaxRelErrSrcHighValue(int i) const {
-      safe_assert(i == 0 || i == 1);
-
-      return mreSrcHighValue[i];
-    };
-
-    void setMaxRelErrSrcHighValue(int i, T value) {
-      safe_assert(i == 0 || i == 1);
-      
-      mreSrcHighValue[i] = value;
-    };
+    void setValue(int i, T v) const { value[i] = v; };
 
   private:
     void create(const BlameTreeShadowObject& btmSO) {
-      value = btmSO.getValue();
+      pc = btmSO.getPC();
+      dpc = btmSO.getDPC();
+      fid = btmSO.getFileID();
       intrType = btmSO.getIntrType();
       binOp = btmSO.getBinOp();
-      td = btmSO.getComputationDepth();
-      pc = btmSO.getPC();
-      fid = btmSO.getFileID();
-      mre = btmSO.getMaxRelErr();
-      mreLowValue = btmSO.getMaxRelErrLowValue();
-      mreHighValue = btmSO.getMaxRelErrHighValue();
-      mreSrc[0] = btmSO.getMaxRelErrSource(0);
-      mreSrc[1] = btmSO.getMaxRelErrSource(1);
-      mreSrcLowValue[0] = btmSO.getMaxRelErrSrcLowValue(0);
-      mreSrcLowValue[1] = btmSO.getMaxRelErrSrcLowValue(1);
-      mreSrcHighValue[0] = btmSO.getMaxRelErrSrcHighValue(0);
-      mreSrcHighValue[1] = btmSO.getMaxRelErrSrcHighValue(1);
+      value[0] = btmSO.getValue(0);
+      value[1] = btmSO.getValue(1);
+      value[2] = btmSO.getValue(2);
+      value[3] = btmSO.getValue(3);
+      value[4] = btmSO.getValue(4);
     };
 
     void uncreate() {};
