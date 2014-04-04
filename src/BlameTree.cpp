@@ -52,10 +52,10 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   if (src->isFlpValue() && dest->isFlpValue()) {
     if (src->getShadow() != NULL) {
-      BlameTreeShadowObject *btmSOSrc, *btmSODest;
+      BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
 
-      btmSOSrc = (BlameTreeShadowObject*) src->getShadow();
-      btmSODest = new BlameTreeShadowObject(*btmSOSrc);
+      btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*) src->getShadow();
+      btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
 
       dest->setShadow(btmSODest);
     } else {
@@ -86,7 +86,7 @@ BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRE
       result = iv->getFlpValue();
     }
     else {
-      result = ((BlameTreeShadowObject*) iv->getShadow())->getValue(precision);
+      result = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(precision);
     }
   }
 
@@ -124,7 +124,7 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
     iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
     if (iv->getShadow() != NULL) {
-      pc = ((BlameTreeShadowObject*) iv->getShadow())->getPC();
+      pc = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getPC();
     } else {
       pc = iv->getLineNumber();
     }
@@ -147,10 +147,10 @@ BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
 
 void BlameTree::pre_fpbinop(int inx) {
   if (executionStack.top()[inx]->getShadow() != NULL) {
-    preBtmSO = *((BlameTreeShadowObject*)
+    preBtmSO = *((BlameTreeShadowObject<HIGHPRECISION>*)
       executionStack.top()[inx]->getShadow());
   } else {
-    preBtmSO = BlameTreeShadowObject();
+    preBtmSO = BlameTreeShadowObject<HIGHPRECISION>();
   }
 }
 
@@ -158,7 +158,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
   HIGHPRECISION sv1, sv2, sresult;
-  LOWPRECISION v1, v2;
+  //LOWPRECISION v1, v2;
   //int pc1, pc2;
 
   //
@@ -170,8 +170,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   // Obtain actual value, shadow value and pc of two operands
   //
-  v1 = getActualValue(lScope, lValue);
-  v2 = getActualValue(rScope, rValue);
+  //v1 = getActualValue(lScope, lValue);
+  //v2 = getActualValue(rScope, rValue);
   sv1 = getShadowValue(lScope, lValue, BITS_52);
   sv2 = getShadowValue(rScope, rValue, BITS_52);
   //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
@@ -199,16 +199,10 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   }
 
 
-
-  cout << "v1: " << v1 << " v2: " << v2 << endl;
-  cout << "sv1: " << sv1 << " sv2: " << sv2 << endl;
-  cout << "result: " << sresult << endl;
-
-  long double *values = new long double[5];
-  BlameTreeShadowObject shadow(0, dynamicCounter, BIN_INTR, ADD, values);
-  cout << shadow.getPC() << endl;
-
-  cout << "dynamic counter: " << dynamicCounter++ << endl; 
+  HIGHPRECISION *values = new HIGHPRECISION[5];
+  values[4] = sresult;
+  BlameTreeShadowObject<HIGHPRECISION> resultShadow(0, dynamicCounter++, BIN_INTR, op, values);
+  cout << "TRACE: " << resultShadow.getDPC() << ": " << resultShadow.getValue(4) << endl;
 
   //
   // Compute other analysis information such as relative error, sources of

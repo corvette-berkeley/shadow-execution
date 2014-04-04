@@ -60,7 +60,7 @@ typedef enum {
   INTRTYPE_INVALID
 } INTRTYPE;
 
-
+template <class T>
 class BlameTreeShadowObject {
 
   private:
@@ -69,7 +69,7 @@ class BlameTreeShadowObject {
     int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
-    long double value[5];   // Value in 5 different precision
+    T value[5];   // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
@@ -81,7 +81,7 @@ class BlameTreeShadowObject {
       value[4] = 4;
     };
 
-    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, long double *val): pc(p),
+    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, T *val): pc(p),
     dpc(dp), intrType(it), binOp(bo) {
       value[0] = val[0];
       value[1] = val[1];
@@ -131,9 +131,9 @@ class BlameTreeShadowObject {
 
     void setBinOp(BINOP binOp) { this->binOp = binOp; };
 
-    long double getValue(int i) const { return value[i]; };
+    T getValue(int i) const { return value[i]; };
 
-    void setValue(int i, long double v) { value[i] = v; };
+    void setValue(int i, T v) { value[i] = v; };
 
   private:
     void create(const BlameTreeShadowObject& btmSO) {

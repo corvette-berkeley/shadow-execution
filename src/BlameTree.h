@@ -89,7 +89,7 @@ class BlameTree : public InterpreterObserver {
     //virtual void post_analysis();
 
   private:
-    BlameTreeShadowObject preBtmSO;
+    BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
 
     /**
      * Define how to copy BlameTreeShadowObject from the source IValue to
