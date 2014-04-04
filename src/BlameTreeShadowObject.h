@@ -68,7 +68,7 @@ class BlameTreeShadowObject {
     int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
-    T[5] value;             // Value in 5 different precision
+    T value[5];             // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
