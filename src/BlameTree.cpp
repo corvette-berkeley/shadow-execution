@@ -176,8 +176,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
   HIGHPRECISION sv1, sv2, sresult;
-  //LOWPRECISION v1, v2;
-  int pc1;
+  LOWPRECISION v1, v2;
+  int pc1, pc2;
 
   //
   // assert: type is a floating-point type
@@ -188,12 +188,12 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   // Obtain actual value, shadow value and pc of two operands
   //
-  //v1 = getActualValue(lScope, lValue);
-  //v2 = getActualValue(rScope, rValue);
+  v1 = getActualValue(lScope, lValue);
+  v2 = getActualValue(rScope, rValue);
   sv1 = getShadowValue(lScope, lValue, BITS_52);
   sv2 = getShadowValue(rScope, rValue, BITS_52);
   pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
-  //pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
+  pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
 
   //
   // Perform binary operation for shadow values
@@ -221,7 +221,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   values[BITS_52] = sresult;
 
   // creating, recording, and printing shadow object for target
-  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter++, BIN_INTR, op, values);
+  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter, BIN_INTR, op, values);
   cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(BITS_52) << endl;
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
@@ -229,40 +229,46 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   // TODO: add missing shadow objects load/store
   BlameTreeShadowObject<HIGHPRECISION>* s1 = getShadow(lScope, lValue);
   BlameTreeShadowObject<HIGHPRECISION>* s2 = getShadow(rScope, rValue);
-  if (s1 && s2) {
-    cout << "found both shadow objects" << endl;
+  if (!s1) {
+    // constructing and setting shadow object
+    cout << "shadow1 is NULL" << endl;
+    s1 = new BlameTreeShadowObject<HIGHPRECISION>();
+
+    s1->setValue(BITS_23, v1);
+    s1->setValue(BITS_23, (HIGHPRECISION)v1);
+    s1->setPC(pc1);
+    s1->setDPC(dynamicCounter);
+    // TODO: set shadow object
+
+    s1->print();
+    cout << "done printing" << endl;
   }
+  if (!s2) {
+    // constructing and setting shadow object
+    cout << "shadow2 is NULL" << endl;
+    s2 = new BlameTreeShadowObject<HIGHPRECISION>();
+
+    s2->setValue(BITS_52, v2);
+    s2->setValue(BITS_52, (HIGHPRECISION)v2);
+    s2->setPC(pc2);
+    s2->setDPC(dynamicCounter);
+    // TODO: set shadow object
+
+    s2->print();
+    cout << "done printing" << endl;
+  }
+  
+  // making copies of shadow objects
+  BlameTreeShadowObject<HIGHPRECISION> s1Copy(*s1);
+  BlameTreeShadowObject<HIGHPRECISION> s2Copy(*s2);
+
+  // adding to the trace
+  trace[dynamicCounter].push_back(s1Copy);
+  trace[dynamicCounter].push_back(s2Copy);
+
+  dynamicCounter++;
   return;
 }
-
-
-void BlameTree::pre_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
-				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {}
- 
-void BlameTree::post_load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool 
-				   loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {
-  dynamicCounter++;
-}
-
-void BlameTree::pre_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
-				    int file UNUSED, int line UNUSED, int inx UNUSED) {}
-
-void BlameTree::post_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
-				     int file UNUSED, int line UNUSED, int inx UNUSED) {
-
-  BlameTreeShadowObject<HIGHPRECISION> shadowSrc;
-  if (executionStack.top()[inx]->getShadow() != NULL) {
-    shadowSrc = *((BlameTreeShadowObject<HIGHPRECISION>*)executionStack.top()[inx]->getShadow());
-  } else {
-    shadowSrc = BlameTreeShadowObject<HIGHPRECISION>();
-  }
-
-  //BlameTreeShadowObject<HIGHPRECISION> shadowDst(shadowSrc);
-  cout << "[STORE]";
-  shadowSrc.print();
-  dynamicCounter++;
-}
-
 
 void BlameTree::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
   pre_fpbinop(inx);
