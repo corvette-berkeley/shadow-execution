@@ -54,13 +54,14 @@
  * analysis, e.g. maximum relative errors, sources of maximum relative errors,
  * etc.
  */
-template <class T>
+
+typedef enum {
+  BIN_INTR, UNARY_INTR, CONSTANT_INTR, CALL_INTR, LOAD_INTR, STORE_INTR,
+  INTRTYPE_INVALID
+} INTRTYPE;
+
+
 class BlameTreeShadowObject {
-  public:
-    typedef enum {
-      BIN_INTR, UNARY_INTR, CONSTANT_INTR, CALL_INTR, LOAD_INTR, STORE_INTR,
-      INTRTYPE_INVALID
-    } INTRTYPE;
 
   private:
     int pc;                 // Program counter of the instruction associate with this object
@@ -68,7 +69,7 @@ class BlameTreeShadowObject {
     int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
-    T value[5];             // Value in 5 different precision
+    long double value[5];   // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
@@ -80,7 +81,7 @@ class BlameTreeShadowObject {
       value[4] = 4;
     };
 
-    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, T *val): pc(p),
+    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, long double *val): pc(p),
     dpc(dp), intrType(it), binOp(bo) {
       value[0] = val[0];
       value[1] = val[1];
@@ -120,7 +121,7 @@ class BlameTreeShadowObject {
 
     int getFileID() const { return fid; };
 
-    void setFileID(int fileID) { this->fileID = fileID; };
+    void setFileID(int fileID) { this->fid = fileID; };
 
     INTRTYPE getIntrType() const { return intrType; };
 
@@ -130,9 +131,9 @@ class BlameTreeShadowObject {
 
     void setBinOp(BINOP binOp) { this->binOp = binOp; };
 
-    T getValue(int i) const { return value[i]; };
+    long double getValue(int i) const { return value[i]; };
 
-    void setValue(int i, T v) const { value[i] = v; };
+    void setValue(int i, long double v) { value[i] = v; };
 
   private:
     void create(const BlameTreeShadowObject& btmSO) {

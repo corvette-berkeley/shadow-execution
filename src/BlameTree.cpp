@@ -41,6 +41,7 @@
 int BlameTree::outputPC = 0;
 BlameTree::HIGHPRECISION BlameTree::errorThreshold = 2e-26; 
 BlameTree::HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
+int BlameTree::dynamicCounter = 0;
 
 /******* HELPER FUNCTIONS *******/
 
@@ -51,10 +52,10 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   if (src->isFlpValue() && dest->isFlpValue()) {
     if (src->getShadow() != NULL) {
-      BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
+      BlameTreeShadowObject *btmSOSrc, *btmSODest;
 
-      btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION> *) src->getShadow();
-      btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
+      btmSOSrc = (BlameTreeShadowObject*) src->getShadow();
+      btmSODest = new BlameTreeShadowObject(*btmSOSrc);
 
       dest->setShadow(btmSODest);
     } else {
@@ -69,16 +70,24 @@ BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRE
 
   if (scope == CONSTANT) {
     double *ptr;
-
     ptr = (double*) &inx;
     result = *ptr;
+
   } else {
-    IValue *iv; 
-    
-    iv = (scope == GLOBAL) ? globalSymbolTable[inx] :
-      executionStack.top()[inx];
-    result = iv->getShadow() == NULL ? iv->getFlpValue() :
-      ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(precision);
+    IValue *iv;
+    if (scope == GLOBAL) {
+      iv = globalSymbolTable[inx];
+    }
+    else {
+      iv = executionStack.top()[inx];
+    }
+
+    if (iv->getShadow() == NULL) {
+      result = iv->getFlpValue();
+    }
+    else {
+      result = ((BlameTreeShadowObject*) iv->getShadow())->getValue(precision);
+    }
   }
 
   return result;
@@ -115,7 +124,7 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
     iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
     if (iv->getShadow() != NULL) {
-      pc = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getPC();
+      pc = ((BlameTreeShadowObject*) iv->getShadow())->getPC();
     } else {
       pc = iv->getLineNumber();
     }
@@ -123,7 +132,6 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
   return pc;
 }
-
 
 BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
                  highValue, LOWPRECISION lowValue) {
@@ -137,13 +145,12 @@ BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
 
 /******* ANALYSIS FUNCTIONS *******/
 
-
 void BlameTree::pre_fpbinop(int inx) {
   if (executionStack.top()[inx]->getShadow() != NULL) {
-    preBtmSO = *((BlameTreeShadowObject<HIGHPRECISION>*)
+    preBtmSO = *((BlameTreeShadowObject*)
       executionStack.top()[inx]->getShadow());
   } else {
-    preBtmSO = BlameTreeShadowObject<HIGHPRECISION>();
+    preBtmSO = BlameTreeShadowObject();
   }
 }
 
@@ -151,7 +158,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
   HIGHPRECISION sv1, sv2, sresult;
-  //LOWPRECISION v1, v2, result;
+  LOWPRECISION v1, v2;
   //int pc1, pc2;
 
   //
@@ -163,8 +170,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   // Obtain actual value, shadow value and pc of two operands
   //
-  //v1 = getActualValue(lScope, lValue);
-  //v2 = getActualValue(rScope, rValue);
+  v1 = getActualValue(lScope, lValue);
+  v2 = getActualValue(rScope, rValue);
   sv1 = getShadowValue(lScope, lValue, BITS_52);
   sv2 = getShadowValue(rScope, rValue, BITS_52);
   //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
@@ -191,7 +198,18 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       safe_assert(false);
   }
 
+
+
+  cout << "v1: " << v1 << " v2: " << v2 << endl;
+  cout << "sv1: " << sv1 << " sv2: " << sv2 << endl;
   cout << "result: " << sresult << endl;
+
+  long double *values = new long double[5];
+  BlameTreeShadowObject shadow(0, dynamicCounter, BIN_INTR, ADD, values);
+  cout << shadow.getPC() << endl;
+
+  cout << "dynamic counter: " << dynamicCounter++ << endl; 
+
   //
   // Compute other analysis information such as relative error, sources of
   // relative error

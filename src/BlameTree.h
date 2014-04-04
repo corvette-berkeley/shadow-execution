@@ -54,6 +54,7 @@ class BlameTree : public InterpreterObserver {
     typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52} PRECISION;
 
     static int outputPC;    // location of the output value to track from
+    static int dynamicCounter; // unique counter for instructions executed
     static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
     static HIGHPRECISION machineEpsilon;    // the machine smallest unit in high precision
 
@@ -88,7 +89,7 @@ class BlameTree : public InterpreterObserver {
     //virtual void post_analysis();
 
   private:
-    BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
+    BlameTreeShadowObject preBtmSO;
 
     /**
      * Define how to copy BlameTreeShadowObject from the source IValue to
