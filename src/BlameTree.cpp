@@ -66,6 +66,23 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
 }
 
 
+BlameTreeShadowObject<BlameTree::HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
+
+  if (scope == CONSTANT) {
+    return NULL;
+  } else {
+    IValue *iv;
+    if (scope == GLOBAL) {
+      iv = globalSymbolTable[inx];
+    }
+    else {
+      iv = executionStack.top()[inx];
+    }
+    return (BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow();
+  }
+}
+
+
 BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
   HIGHPRECISION result;
 
@@ -181,6 +198,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   // Perform binary operation for shadow values
   //
+  HIGHPRECISION *values = new HIGHPRECISION[5];
   switch (op) {
     case FADD:
       sresult = sv1 + sv2;
@@ -199,17 +217,22 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       safe_assert(false);
   }
 
-
-  HIGHPRECISION *values = new HIGHPRECISION[5];
+  // TODO: generalize to all precisions
   values[BITS_52] = sresult;
+
+  // creating, recording, and printing shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter++, BIN_INTR, op, values);
   cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(BITS_52) << endl;
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
-  //
-  // Compute other analysis information such as relative error, sources of
-  // relative error
-  //
+  // shadow objects for operands
+  // TODO: add missing shadow objects load/store
+  BlameTreeShadowObject<HIGHPRECISION>* s1 = getShadow(lScope, lValue);
+  BlameTreeShadowObject<HIGHPRECISION>* s2 = getShadow(rScope, rValue);
+  if (s1 && s2) {
+    cout << "found both shadow objects" << endl;
+  }
+  return;
 }
 
 
