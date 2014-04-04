@@ -61,12 +61,6 @@ class BlameTree : public InterpreterObserver {
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 
-    virtual void pre_allocax(IID iid, KIND kind, uint64_t size, int inx, 
-			   int line, bool arg, KVALUE* result);
-
-    virtual void post_allocax(IID iid, KIND kind, uint64_t size, int inx, 
-			      int line, bool arg, KVALUE* result);
-
     virtual void pre_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t 
 			  opAddr, bool loadGlobal, int loadInx, int file, int line, int in);
     
