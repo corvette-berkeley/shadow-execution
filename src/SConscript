@@ -73,6 +73,7 @@ plugin = env.SharedLibrary(
     'FPBackwardShadowObject.cpp',
     'FPInstabilityAnalysis.cpp',
     'BlameTree.cpp',
+    'BlameTreeAnalysis.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
