@@ -33,7 +33,7 @@
  *
  */
 
-// Author: Cuong Nguyen
+// Author: Cuong Nguyen and Cindy Rubio-Gonzalez
 
 #include "BlameTree.h"
 

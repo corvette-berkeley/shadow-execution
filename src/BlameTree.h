@@ -33,10 +33,10 @@
  *
  */
 
-// Author: Cuong Nguyen
+// Author: Cuong Nguyen and Cindy Rubio-Gonzalez
 
-#ifndef BLAME_TREE_MAX_H_
-#define BLAME_TREE_MAX_H_
+#ifndef BLAME_TREE_H_
+#define BLAME_TREE_H_
 
 #include "InterpreterObserver.h"
 #include "BlameTreeShadowObject.h"
