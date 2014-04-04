@@ -45,6 +45,7 @@
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
 #include "FPInstabilityAnalysis.h"
+#include "BlameTree.h"
 // #include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
@@ -426,8 +427,9 @@ ObserverPtrList observers_;
 //REGISTER_OBSERVER(PrintObserver, "print")
 REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 //REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
-// REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
+//REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
+//REGISTER_OBSERVER(BlameTree, "blametree")
 
 /*******************************************************************************************/
 

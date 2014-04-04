@@ -51,6 +51,7 @@ class BlameTree : public InterpreterObserver {
   public:
     typedef double HIGHPRECISION;
     typedef float LOWPRECISION;
+    typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52} PRECISION;
 
     static int outputPC;    // location of the output value to track from
     static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
@@ -58,7 +59,6 @@ class BlameTree : public InterpreterObserver {
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 
-    /*
     virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
         rValue, KIND type, int line, int inx);
 
@@ -83,10 +83,10 @@ class BlameTree : public InterpreterObserver {
     virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
         int64_t rValue, KIND type, int line, int inx);
 
-    virtual void post_create_global_symbol_table();
+    //virtual void post_create_global_symbol_table();
 
-    virtual void post_analysis();
-    */
+    //virtual void post_analysis();
+
   private:
     BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
 
@@ -104,7 +104,7 @@ class BlameTree : public InterpreterObserver {
      * @param constOrIndex constant/index of the value.
      * @return BlameTreeShadowObject associated with the given value.
      */
-    HIGHPRECISION getShadowValue(SCOPE scope, int64_t constOrIndex);
+    HIGHPRECISION getShadowValue(SCOPE scope, int64_t constOrIndex, PRECISION precision);
 
     /**
      * Return the actual value in its lower precision.

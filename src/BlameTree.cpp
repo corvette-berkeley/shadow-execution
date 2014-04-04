@@ -64,21 +64,21 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
 }
 
 
-BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t value) {
+BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
   HIGHPRECISION result;
 
   if (scope == CONSTANT) {
     double *ptr;
 
-    ptr = (double *) &value;
+    ptr = (double*) &inx;
     result = *ptr;
   } else {
     IValue *iv; 
     
-    iv = (scope == GLOBAL) ? globalSymbolTable[value] :
-      executionStack.top()[value];
+    iv = (scope == GLOBAL) ? globalSymbolTable[inx] :
+      executionStack.top()[inx];
     result = iv->getShadow() == NULL ? iv->getFlpValue() :
-      ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(0); // FIX: value to get
+      ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(precision);
   }
 
   return result;
@@ -147,14 +147,12 @@ void BlameTree::pre_fpbinop(int inx) {
   }
 }
 
-
-
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
-    int64_t rValue, KIND type, int line, int inx UNUSED, BINOP op) {
+    int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
   HIGHPRECISION sv1, sv2, sresult;
   //LOWPRECISION v1, v2, result;
-  int pc1, pc2;
+  //int pc1, pc2;
 
   //
   // assert: type is a floating-point type
@@ -167,10 +165,10 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   //v1 = getActualValue(lScope, lValue);
   //v2 = getActualValue(rScope, rValue);
-  sv1 = getShadowValue(lScope, lValue);
-  sv2 = getShadowValue(rScope, rValue);
-  pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
-  pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
+  sv1 = getShadowValue(lScope, lValue, BITS_52);
+  sv2 = getShadowValue(rScope, rValue, BITS_52);
+  //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
+  //pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
 
   //
   // Perform binary operation for shadow values
@@ -193,9 +191,42 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       safe_assert(false);
   }
 
-  cout << "result: " << sresult << " pc1: " << pc1 << " pc2: " << pc2 << endl;
+  cout << "result: " << sresult << endl;
   //
   // Compute other analysis information such as relative error, sources of
   // relative error
   //
+}
+
+
+void BlameTree::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_fpbinop(inx);
+}
+
+void BlameTree::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_fpbinop(inx);
+}
+
+void BlameTree::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_fpbinop(inx);
+}
+
+void BlameTree::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+  pre_fpbinop(inx);
+}
+
+void BlameTree::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+}
+
+void BlameTree::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+}
+
+void BlameTree::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+}
+
+void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
 }
