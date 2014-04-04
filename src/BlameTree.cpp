@@ -249,6 +249,17 @@ void BlameTree::pre_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKi
 
 void BlameTree::post_store(int destInx UNUSED, SCOPE destScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, 
 				     int file UNUSED, int line UNUSED, int inx UNUSED) {
+
+  BlameTreeShadowObject<HIGHPRECISION> shadowSrc;
+  if (executionStack.top()[inx]->getShadow() != NULL) {
+    shadowSrc = *((BlameTreeShadowObject<HIGHPRECISION>*)executionStack.top()[inx]->getShadow());
+  } else {
+    shadowSrc = BlameTreeShadowObject<HIGHPRECISION>();
+  }
+
+  //BlameTreeShadowObject<HIGHPRECISION> shadowDst(shadowSrc);
+  cout << "[STORE]";
+  shadowSrc.print();
   dynamicCounter++;
 }
 

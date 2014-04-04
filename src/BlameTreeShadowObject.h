@@ -175,15 +175,14 @@ class BlameTreeShadowObject {
 	s << "FREM";
 	break;
       default: 
-	DEBUG_STDERR("Unsupport binary operator operand: " << binop);
-	safe_assert(false);
+	s << "INVALID";
 	break;
       }
       return s.str();
     };
 
     void print() {
-      printf("[SHADOW] pc: %d, dpc: %d, value: %f, op: %s\n", pc, dpc, value[4], BINOP_ToString(binOp).c_str());
+      printf("[SHADOW]<pc: %d, dpc: %d, value: %f, op: %s>\n", pc, dpc, value[4], BINOP_ToString(binOp).c_str());
     }
 
   private:
