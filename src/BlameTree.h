@@ -57,7 +57,7 @@ class BlameTree : public InterpreterObserver {
     static int dynamicCounter; // unique counter for instructions executed
     static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
     static HIGHPRECISION machineEpsilon;    // the machine smallest unit in high precision
-    static map<int, BlameTreeShadowObject<HIGHPRECISION> > trace;
+    static map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace;
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 

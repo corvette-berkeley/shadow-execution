@@ -41,7 +41,7 @@
 int BlameTree::outputPC = 0;
 BlameTree::HIGHPRECISION BlameTree::errorThreshold = 2e-26; 
 BlameTree::HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
-map<int, BlameTreeShadowObject<BlameTree::HIGHPRECISION> > BlameTree::trace;
+map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > BlameTree::trace;
 int BlameTree::dynamicCounter = 0;
 
 /******* HELPER FUNCTIONS *******/
@@ -204,7 +204,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   values[4] = sresult;
   BlameTreeShadowObject<HIGHPRECISION> resultShadow(0, dynamicCounter++, BIN_INTR, op, values);
   cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(4) << endl;
-  trace[resultShadow.getDPC()] = resultShadow;
+  trace[resultShadow.getDPC()].push_back(resultShadow);
 
   //
   // Compute other analysis information such as relative error, sources of
@@ -265,7 +265,11 @@ void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rV
 void BlameTree::post_analysis() {
   cout << "Printing trace after analysis: " << dynamicCounter << endl;
   for(int i = 0; i < dynamicCounter; i++) {
-    cout << "address: " << &trace[i] << endl;
+    cout << "Counter: " << i << endl;
+    for(unsigned j = 0; j < trace[i].size(); j++) {
+      cout << "\t";
+      trace[i][j].print();
+    }
   }
   return;
 }

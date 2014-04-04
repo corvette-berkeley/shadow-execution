@@ -135,6 +135,10 @@ class BlameTreeShadowObject {
 
     void setValue(int i, T v) { value[i] = v; };
 
+    void print() {
+      cout << "[SHADOW] dpc: " << dpc << ", value: " << value[4] << endl;
+    }
+
   private:
     void create(const BlameTreeShadowObject& btmSO) {
       pc = btmSO.getPC();
