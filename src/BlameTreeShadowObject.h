@@ -89,17 +89,6 @@ class BlameTreeShadowObject {
       value[4] = val[4];
     } 
       
-    BlameTreeShadowObject(T v, int l, INTRTYPE it, BINOP bo): value(v),
-        intrType(it), binOp(bo), td(1), pc(l), fid(0), mre(0), mreLowValue(0),
-        mreHighValue(0) {
-      mreSrc[0] = -1;
-      mreSrc[1] = -1;
-      mreSrcLowValue[0] = 0;
-      mreSrcLowValue[1] = 0;
-      mreSrcHighValue[0] = 0;
-      mreSrcHighValue[1] = 0;
-    };
-
     BlameTreeShadowObject(const BlameTreeShadowObject& btmSO) {
       create(btmSO);
     };
