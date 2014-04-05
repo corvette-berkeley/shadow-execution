@@ -67,6 +67,7 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
 
 void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameTree::HIGHPRECISION>* shadowObject) {
 
+  cout << endl;
   if (scope == CONSTANT) {
     return; // no need to associate this shadow object with any IValue
   } else {
@@ -76,9 +77,10 @@ void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameT
     }
     else {
       iv = executionStack.top()[inx];
+      cout << iv->toString() << endl;
     }
     iv->setShadow(shadowObject);
-    cout << "set shadow object" << endl;
+    cout << "set shadow object, address: " << iv << endl;
   }
   return;
 }
@@ -86,6 +88,7 @@ void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameT
 BlameTreeShadowObject<BlameTree::HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
 
   if (scope == CONSTANT) {
+    cout << "[GET] It's constant" << endl;
     return NULL;
   } else {
     IValue *iv;
@@ -240,6 +243,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   // creating, recording, and printing shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter, BIN_INTR, op, values);
   cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(BITS_52) << endl;
+  cout << "lScope, lValue: " << lScope << " " << lValue << endl;
+  cout << "rScope, rValue: " << rScope << " " << rValue << endl;
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
   // shadow objects for operands
