@@ -74,8 +74,8 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
         BlameTree::HIGHPRECISION value02 = right02.getValue(j);
 
         if (BlameTreeUtilities::clearBits(value, precision) ==
-            BlameTreeUtilities::clearBits(eval(value01, value02, bop),
-              precision)) {
+            BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
+                value02, bop), precision)) {
           //
           // Construct edges for each blame
           //
@@ -102,28 +102,3 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
   return it->second;
 }
 
-BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
-    BlameTree::HIGHPRECISION value02, BINOP bop) {
-  switch (bop) {
-    case ADD:
-    case FADD:
-      return value01 + value02;
-    case SUB:
-    case FSUB:
-      return value01 - value02; 
-    case MUL:
-    case FMUL:
-      return value01 * value02;
-    case FDIV:
-    case UDIV:
-    case SDIV:
-      return value01 / value02;
-    case UREM:
-    case SREM:
-    case FREM:
-    default:
-      safe_assert(false);
-      DEBUG_STDERR("Unsupport binary operator " << bop);
-      return 0;
-  }
-}

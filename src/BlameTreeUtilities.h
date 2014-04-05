@@ -38,11 +38,15 @@
 #ifndef BLAME_TREE_UTILITIES_H
 #define BLAME_TREE_UTILITIES_H
 
+#include "BlameTree.h"
 #include <inttypes.h>
 
 class BlameTreeUtilities {
   public:
     static double clearBits(double v, int shift);
+
+    static BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
+        BlameTree::HIGHPRECISION value02, BINOP bop);
 };
 
 #endif

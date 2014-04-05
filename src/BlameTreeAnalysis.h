@@ -46,18 +46,22 @@ class BlameTreeAnalysis {
     map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
 
     /**
+     * Construct blame node given a binary operation expression. This function
+     * connects the node of left to the node of right01 or right02 if it can
+     * blame right01 or right02 given the precision constraint.
      *
+     * @param left the left value of the binary operation
+     * @param precision the precision constraint on left
+     * @param right01 the first operand of the binary operation
+     * @param right02 the second oeprand of the binary opeartion
+     *
+     * @return the blame node associated with left and precision constraint,
+     * that connects to nodes it blames
      */
     BlameNode constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION> left,
         BlameTree::PRECISION precision,
         BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
         BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
-
-    /**
-     *
-     */
-    BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
-        BlameTree::HIGHPRECISION value02, BINOP bop);
 
   public:
     /**
