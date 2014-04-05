@@ -73,7 +73,9 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
       for (j = 0; j < max_j; j++) {
         BlameTree::HIGHPRECISION value02 = right02.getValue(j);
 
-        if (value == chop(eval(value01, value02, bop), precision)) {
+        if (BlameTreeUtilities::clearBits(value, precision) ==
+            BlameTreeUtilities::clearBits(eval(value01, value02, bop),
+              precision)) {
           //
           // Construct edges for each blame
           //

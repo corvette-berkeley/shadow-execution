@@ -1,6 +1,6 @@
 /**
- * @file BlameTreeAnalysis.h
- * @brief BlameTreeAnalysis Declarations.
+ * @file BlameTreeUtilities.cpp
+ * @brief 
  */
 
 /*
@@ -33,37 +33,21 @@
  *
  */
 
-// Author: Cuong Nguyen
+// Author: Cuong Nguyen and Cindy Rubio-Gonzalez
 
-#ifndef BLAME_TREE_ANALYSIS_H
-#define BLAME_TREE_ANALYSIS_H
-
-#include "BlameNode.h"
 #include "BlameTreeUtilities.h"
 
-class BlameTreeAnalysis {
-  private:
-    map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
 
-    /**
-     *
-     */
-    BlameNode constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION> left,
-        BlameTree::PRECISION precision,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
+double BlameTreeUtilities::clearBits(double v, int shift) {
+  int64_t *ptr;
+  double *dm;
+  int64_t mask = 0xffffffffffffffff;
+  mask = mask << shift; // adds "positions" zeros to the end
 
-    /**
-     *
-     */
-    BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
-        BlameTree::HIGHPRECISION value02, BINOP bop);
+  ptr = (int64_t*)&v;
+  *ptr = *ptr & mask;
+  dm = (double*)ptr;
 
-  public:
-    /**
-     *
-     */
-    void constructBlameGraph(map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > >); 
-};
+  return *dm;
+}
 
-#endif
