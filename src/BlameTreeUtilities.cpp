@@ -76,3 +76,20 @@ BlameTree::HIGHPRECISION BlameTreeUtilities::eval(BlameTree::HIGHPRECISION value
       return 0;
   }
 }
+
+string BlameTreeUtilities::precisionToString(BlameTree::PRECISION precision) {
+  switch (precision) {
+    case BlameTree::BITS_23:
+      return "23bits";
+    case BlameTree::BITS_30:
+      return "30bits";
+    case BlameTree::BITS_37:
+      return "37bits";
+    case BlameTree::BITS_44:
+      return "44bits";
+    case BlameTree::BITS_52:
+      return "52bits";
+    default:
+      return "undefined";
+  }
+}

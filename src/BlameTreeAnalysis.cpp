@@ -174,3 +174,45 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
   return blameGraph;
 }
 
+std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
+  std::ostringstream dot;
+  std::set<BlameNodeID> bnIDs;
+  vector< vector< BlameNodeID > > edges;
+
+  edges = graph.getEdges();
+
+  dot << "\t" << graph.edgeToDot(nodes) << endl;
+  for (vector< vector< BlameNodeID > >::iterator edgesIt = edges.begin();
+      edgesIt != edges.end(); ++edgesIt) {
+
+    vector< BlameNodeID > blameNodes = *edgesIt;
+
+    for (vector< BlameNodeID >::iterator nodesIt = blameNodes.begin(); nodesIt
+        != blameNodes.end(); ++nodesIt) {
+      BlameNodeID bnID = *nodesIt;
+
+      if (bnIDs.find(bnID) != bnIDs.end()) {
+        BlameNode bn = nodes[bnID];
+        dot << edgeToDot(bn);
+
+        bnIDs.insert(bnID);
+      }
+    }
+  }
+
+  return dot.str();
+}
+
+std::string BlameTreeAnalysis::toDot(BlameNode graph) {
+  std::ostringstream dot;
+  std::set<BlameNodeID> bnIDs;
+  vector< vector< BlameNodeID > > edges;
+
+  dot << "digraph G { " << endl;
+
+  dot << edgeToDot(graph);
+
+  dot << "}" << endl;
+
+  return dot.str();
+}

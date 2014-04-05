@@ -63,9 +63,24 @@ class BlameTreeAnalysis {
         BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
         BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
 
+    /**
+     * Helper function for toDot function. This function visualize all edges of
+     * the graph in GraphViz dot format.
+     *
+     * @return dot visualization of an edge
+     */
+    std::string edgeToDot(BlameNode graph);
+
   public:
 
     map<BlameNodeID, BlameNode> getNodes() { return nodes; };
+
+    /**
+     * Visualize blame graph in GraphViz dot format.
+     *
+     * @return dot program of the visualized blame graph
+     */
+    std::string toDot(BlameNode graph);
 
     /**
      * Construct the blame graph given the execution trace and a node to start

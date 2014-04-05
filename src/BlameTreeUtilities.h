@@ -56,6 +56,8 @@ class BlameTreeUtilities {
      */
     static BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
         BlameTree::HIGHPRECISION value02, BINOP bop);
+
+    static string precisionToString(BlameTree::PRECISION);
 };
 
 #endif
