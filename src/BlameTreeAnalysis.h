@@ -64,6 +64,9 @@ class BlameTreeAnalysis {
         BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
 
   public:
+
+    map<BlameNodeID, BlameNode> getNodes() { return nodes; };
+
     /**
      * Construct the blame graph given the execution trace and a node to start
      * with. The constructed graph contains all the nodes that the start node

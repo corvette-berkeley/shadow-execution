@@ -126,3 +126,51 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
   return it->second;
 }
 
+BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
+    vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > trace,
+    BlameNodeID bnID) {
+  //
+  // Variable declarations.
+  //
+  int dpc; 
+  BlameTree::PRECISION precision;
+  vector< BlameTreeShadowObject<BlameTree::HIGHPRECISION> > startNode;
+  vector< vector< BlameNodeID > > blameEdges;
+  BlameNode blameGraph;
+
+  //
+  // Variable definitions.
+  //
+  dpc = bnID.getDPC();
+  precision = bnID.getPrecision();
+  startNode = trace[dpc];
+
+  //
+  // We are assuming that each element of the trace has three elements.
+  // Construct blameGraph given the start node. Recursively construct
+  // blameGraph for all operands that are blamed by the start node.
+  //
+  safe_assert(startNode.size() == 3);
+  blameGraph = constructBlameNode(startNode[0], precision, startNode[1], startNode[2]);
+  blameEdges = blameGraph.getEdges();
+
+  for (vector< vector< BlameNodeID > >::iterator edgesIt = blameEdges.begin(); edgesIt != blameEdges.end(); ++edgesIt) {
+    vector< BlameNodeID > blameNodes;
+
+    blameNodes = *edgesIt;
+
+    for (vector<BlameNodeID>::iterator nodesIt = blameNodes.begin(); nodesIt != blameNodes.end(); ++nodesIt) {
+      BlameNodeID blameNode = *nodesIt;
+
+      //
+      // Construct graph for this node if it is never constructed before
+      //
+      if (nodes.find(blameNode) != nodes.end()) {
+        constructBlameGraph(trace, blameNode);
+      }
+    }
+  } 
+
+  return blameGraph;
+}
+
