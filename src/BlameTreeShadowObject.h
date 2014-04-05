@@ -55,13 +55,14 @@
  * etc.
  */
 
-typedef enum {
-  BIN_INTR, UNARY_INTR, CONSTANT_INTR, CALL_INTR, LOAD_INTR, STORE_INTR,
-  INTRTYPE_INVALID
-} INTRTYPE;
-
 template <class T>
 class BlameTreeShadowObject {
+
+  public:
+    typedef enum {
+      BIN_INTR, UNARY_INTR, CONSTANT_INTR, CALL_INTR, LOAD_INTR, STORE_INTR,
+      INTRTYPE_INVALID
+    } INTRTYPE;
 
   private:
     int pc;                 // Program counter of the instruction associate with this object
@@ -69,16 +70,16 @@ class BlameTreeShadowObject {
     int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
-    T value[5];   // Value in 5 different precision
+    T value[5];             // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
     binOp(BINOP_INVALID) {
       value[0] = 0; 
-      value[1] = 1;
-      value[2] = 2;
-      value[3] = 3;
-      value[4] = 4;
+      value[1] = 0;
+      value[2] = 0;
+      value[3] = 0;
+      value[4] = 0;
     };
 
     BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, T *val): pc(p),
@@ -138,52 +139,52 @@ class BlameTreeShadowObject {
     std::string BINOP_ToString(int binop) {
       std::stringstream s;
       switch(binop) {
-      case ADD:
-	s << "ADD";
-	break;
-      case FADD:
-	s << "FADD";
-	break;
-      case SUB:
-	s << "SUB";
-	break;
-      case FSUB:
-	s << "FSUB";
-	break;
-      case MUL:
-	s << "MUL";
-	break;
-      case FMUL:
-	s << "FMUL";
-	break;
-      case UDIV:
-	s << "UDIV";
-	break;
-      case SDIV:
-	s << "SDIV";
-	break;
-      case FDIV:
-	s << "FDIV";
-	break;
-      case UREM:
-	s << "UREM";
-	break;
-      case SREM:
-	s << "SREM";
-	break;
-      case FREM:
-	s << "FREM";
-	break;
-      default: 
-	s << "INVALID";
-	break;
+        case ADD:
+          s << "ADD";
+          break;
+        case FADD:
+          s << "FADD";
+          break;
+        case SUB:
+          s << "SUB";
+          break;
+        case FSUB:
+          s << "FSUB";
+          break;
+        case MUL:
+          s << "MUL";
+          break;
+        case FMUL:
+          s << "FMUL";
+          break;
+        case UDIV:
+          s << "UDIV";
+          break;
+        case SDIV:
+          s << "SDIV";
+          break;
+        case FDIV:
+          s << "FDIV";
+          break;
+        case UREM:
+          s << "UREM";
+          break;
+        case SREM:
+          s << "SREM";
+          break;
+        case FREM:
+          s << "FREM";
+          break;
+        default: 
+          s << "INVALID";
+          break;
       }
       return s.str();
     };
 
     void print() {
       printf("[SHADOW]<pc: %d, dpc: %d, value_23: %f, value_30: %f, value_37: %f, value_44: %f, value_52: %f op: %s>\n", 
-	     pc, dpc, value[0], value[1], value[2], value[3], value[4], BINOP_ToString(binOp).c_str());
+          pc, dpc, value[0], value[1], value[2], value[3], value[4], BINOP_ToString(binOp).c_str());
     }
 
   private:

@@ -365,7 +365,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   }
 
   // creating, recording, and printing shadow object for target
-  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter, BIN_INTR, op, values);
+  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter,
+      BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
   // shadow objects for operands

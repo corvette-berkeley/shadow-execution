@@ -51,7 +51,7 @@ class BlameTree : public InterpreterObserver {
   public:
     typedef double HIGHPRECISION;
     typedef float LOWPRECISION;
-    typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52} PRECISION;
+    typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52, PRECISION_NO} PRECISION;
 
     static int outputPC;    // location of the output value to track from
     static int dynamicCounter; // unique counter for instructions executed

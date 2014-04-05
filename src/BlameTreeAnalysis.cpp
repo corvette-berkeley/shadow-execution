@@ -42,11 +42,17 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
     BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02) {
 
+  //
+  // variables declaration
+  //
   int dpc, pc, fid, dpc01, dpc02;
   std::map<BlameNodeID, BlameNode>::iterator it;
   BlameTree::HIGHPRECISION value;
   BINOP bop;
 
+  //
+  // variables definition
+  //
   dpc = left.getDPC();
   BlameNodeID bnID(dpc, precision);
   pc = left.getPC(); 
@@ -55,9 +61,17 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
   bop = left.getBinOp();
   it = nodes.find(bnID);
 
+  //
+  // nodes remember all nodes that are processed before
+  // process again only if this is not processed before
+  //
   if (it != nodes.end()) {
-    int i, j, max_j;
+    BlameTree::PRECISION i, j, max_j;
     vector< vector< BlameNodeID > > blameNodeIds;
+
+    //
+    // construct a node associate with the binary operation result
+    //
     BlameNode node(dpc, pc, fid, precision, blameNodeIds);
 
     dpc01 = right01.getDPC();
@@ -66,11 +80,12 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     //
     // try different combination of precision of the two operands
     //
-    max_j = 5;
-    for (i = 0; i < 5; i++) {
+    max_j = BlameTree::PRECISION_NO;
+    for (i = BlameTree::BITS_23; i < BlameTree::PRECISION_NO; i =
+        BlameTree::PRECISION(i+1)) {
       BlameTree::HIGHPRECISION value01 = right01.getValue(i);
 
-      for (j = 0; j < max_j; j++) {
+      for (j = BlameTree::BITS_23; j < max_j; j = BlameTree::PRECISION(j+1)) {
         BlameTree::HIGHPRECISION value02 = right02.getValue(j);
 
         if (BlameTreeUtilities::clearBits(value, precision) ==
@@ -79,18 +94,27 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
           //
           // Construct edges for each blame
           //
-          BlameNodeID bnID01(dpc01, BlameTree::PRECISION(i));
-          BlameNodeID bnID02(dpc02, BlameTree::PRECISION(j));
+          BlameNodeID bnID01(dpc01, i);
+          BlameNodeID bnID02(dpc02, j);
           vector<BlameNodeID> blamedNodes; 
 
-          blamedNodes.push_back(bnID01);
-          blamedNodes.push_back(bnID02);
+          //
+          // Blame only if the operand cannot be in the lowest precision (right
+          // now BITS_23)
+          //
+          if (i != BlameTree::BITS_23) blamedNodes.push_back(bnID01);
+          if (j != BlameTree::BITS_23) blamedNodes.push_back(bnID02);
           node.addBlamedNodes(blamedNodes);
 
+          //
+          // Do not try larger j because it subsumes what have been tried
+          //
           break;
         }
       }
-
+      //
+      // Do not try larger j because it subsumes what have been tried
+      //
       max_j = j;
     }
 

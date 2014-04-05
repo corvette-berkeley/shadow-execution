@@ -45,6 +45,15 @@ class BlameTreeUtilities {
   public:
     static double clearBits(double v, int shift);
 
+    /**
+     * Evaluate the binary operation given the operator and two operands.
+     *
+     * @param value01 the first operand
+     * @param value02 the second operand
+     * @param bop the binary operator
+     *
+     * @return the result of the binary operation 
+     */
     static BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
         BlameTree::HIGHPRECISION value02, BINOP bop);
 };

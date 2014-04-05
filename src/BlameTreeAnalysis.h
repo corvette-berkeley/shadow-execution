@@ -65,9 +65,15 @@ class BlameTreeAnalysis {
 
   public:
     /**
+     * Construct the blame graph given the execution trace and a node to start
+     * with. The constructed graph contains all the nodes that the start node
+     * can blame given its precision constraint.
      *
+     * @param trace the program execution trace
+     * @param bnID a node to start with
+     * @return the blame graph
      */
-    void constructBlameGraph(map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > >); 
+    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > trace, BlameNodeID bnID); 
 };
 
 #endif
