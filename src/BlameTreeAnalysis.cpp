@@ -36,3 +36,92 @@
 // Author: Cuong Nguyen
 
 #include "BlameTreeAnalysis.h"
+
+BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION>
+    left, BlameTree::PRECISION precision,
+    BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
+    BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02) {
+
+  int dpc, pc, fid, dpc01, dpc02;
+  std::map<BlameNodeID, BlameNode>::iterator it;
+  BlameTree::HIGHPRECISION value;
+  BINOP bop;
+
+  dpc = left.getDPC();
+  BlameNodeID bnID(dpc, precision);
+  pc = left.getPC(); 
+  fid = left.getFileID();
+  value = left.getValue(precision);
+  bop = left.getBinOp();
+  it = nodes.find(bnID);
+
+  if (it != nodes.end()) {
+    int i, j, max_j;
+    vector< vector< BlameNodeID > > blameNodeIds;
+    BlameNode node(dpc, pc, fid, precision, blameNodeIds);
+
+    dpc01 = right01.getDPC();
+    dpc02 = right02.getDPC();
+
+    //
+    // try different combination of precision of the two operands
+    //
+    max_j = 5;
+    for (i = 0; i < 5; i++) {
+      BlameTree::HIGHPRECISION value01 = right01.getValue(i);
+
+      for (j = 0; j < max_j; j++) {
+        BlameTree::HIGHPRECISION value02 = right02.getValue(j);
+
+        if (value == chop(eval(value01, value02, bop), precision)) {
+          //
+          // Construct edges for each blame
+          //
+          BlameNodeID bnID01(dpc01, BlameTree::PRECISION(i));
+          BlameNodeID bnID02(dpc02, BlameTree::PRECISION(j));
+          vector<BlameNodeID> blamedNodes; 
+
+          blamedNodes.push_back(bnID01);
+          blamedNodes.push_back(bnID02);
+          node.addBlamedNodes(blamedNodes);
+
+          break;
+        }
+      }
+
+      max_j = j;
+    }
+
+    nodes[bnID] = node;
+
+    return node;
+  } 
+
+  return it->second;
+}
+
+BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
+    BlameTree::HIGHPRECISION value02, BINOP bop) {
+  switch (bop) {
+    case ADD:
+    case FADD:
+      return value01 + value02;
+    case SUB:
+    case FSUB:
+      return value01 - value02; 
+    case MUL:
+    case FMUL:
+      return value01 * value02;
+    case FDIV:
+    case UDIV:
+    case SDIV:
+      return value01 / value02;
+    case UREM:
+    case SREM:
+    case FREM:
+    default:
+      safe_assert(false);
+      DEBUG_STDERR("Unsupport binary operator " << bop);
+      return 0;
+  }
+}

@@ -38,15 +38,36 @@
 #ifndef BLAME_TREE_ANALYSIS_H
 #define BLAME_TREE_ANALYSIS_H
 
-#include "BlameTreeNode.h"
+#include "BlameNode.h"
 
 class BlameTreeAnalysis {
   private:
-    void constructBlameEdges(BlameTreeShadowObject<BlameTree::HIGHPRECISION>,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION>,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION>);
+    map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
+
+    /**
+     *
+     */
+    BlameNode constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION> left,
+        BlameTree::PRECISION precision,
+        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
+        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
+
+    /**
+     *
+     */
+    BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
+        BlameTree::HIGHPRECISION value02, BINOP bop);
+
+    /**
+     *
+     */
+    BlameTree::HIGHPRECISION chop(BlameTree::HIGHPRECISION value,
+        BlameTree::PRECISION precision);
 
   public:
+    /**
+     *
+     */
     void constructBlameGraph(map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > >); 
 };
 
