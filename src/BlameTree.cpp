@@ -176,6 +176,85 @@ BlameTree::HIGHPRECISION BlameTree::computeRelativeError(HIGHPRECISION
   return fabs((HIGHPRECISION)((highValue - lowValue)/d));
 }
 
+int64_t BlameTree::getMantisa(double v) {
+  int64_t m;
+  int64_t *ptr;
+
+  ptr = (int64_t*)&v;
+  m = *ptr & 0x000fffffffffffff;
+
+  return m;
+}
+
+int BlameTree::getExactBits(double v1, double v2) {
+  int64_t m1, m2;
+
+  m1 = getMantisa(v1);
+  m2 = getMantisa(v2);
+
+  if (m1 == m2) {
+    return 53; // significand bit of double
+  } else {
+    int ie = 0;
+
+    while (m1 != m2 && ie < 52) {
+      m1 >>= 1;
+      m2 >>= 1;
+      ie += 1;
+    }
+
+    return 53 - ie;
+  }
+}
+
+int BlameTree::getEBits(double v1, double v2) {
+  int p = 53; // significand bit of double
+
+  if (v1 == v2) {
+    return p;
+  } else {
+    int e1, e2;
+
+    e1 = getExponent(v1);
+    e2 = getExponent(v2);
+    if (e1 != e2) {
+      return 0;
+    } else {
+      int e3;
+
+      e3 = getExponent(v1-v2);
+      return min(p, abs(e1-e3));
+    }
+  }
+}
+
+int BlameTree::getExponent(double v) {
+  int e;
+  int *ptr; 
+
+  ptr = (int*)&v;
+  ptr = ptr + 1;
+  e = *ptr & 0x7ff00000;
+  e >>= 20;
+  e = e - 1023;
+
+  return e;
+}
+
+double BlameTree::clearBits(double v, int shift) {
+  int64_t *ptr;
+  double *dm;
+  int64_t mask = 0xffffffffffffffff;
+  mask = mask << (shift * 4); // adds "positions" zeros to the end
+
+  ptr = (int64_t*)&v;
+  *ptr = *ptr & mask;
+  dm = (double*)ptr;
+
+  return *dm;
+}
+
+
 
 /******* ANALYSIS FUNCTIONS *******/
 
@@ -217,34 +296,53 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   HIGHPRECISION *values = new HIGHPRECISION[5];
   switch (op) {
     case FADD:
+      // highest precision
       sresult = sv1 + sv2;
+      values[BITS_52] = sresult;
+
+      // 44 bits
+      sresult = clearBits(sv1, 52 - 44) + clearBits(sv2, 52 - 44);
+      values[BITS_44] = clearBits(sresult, 52 - 44);
       break;
     case FSUB:
+      // highest precision
       sresult = sv1 - sv2;
+      values[BITS_52] = sresult;
+
+      // 44 bits
+      sresult = clearBits(sv1, 52 - 44) - clearBits(sv2, 52 - 44);
+      values[BITS_44] = clearBits(sresult, 52 - 44);
       break;
     case FMUL:
+      // highest precision
       sresult = sv1 * sv2;
+      values[BITS_52] = sresult;
+
+      // 44 bits
+      sresult = clearBits(sv1, 52 - 44) * clearBits(sv2, 52 - 44);
+      values[BITS_44] = clearBits(sresult, 52 - 44);
       break;
     case FDIV:
+      // highest precision
       sresult = sv1 / sv2;
+      values[BITS_52] = sresult;
+
+      // 44 bits
+      sresult = clearBits(sv1, 52 - 44) / clearBits(sv2, 52 - 44);
+      values[BITS_44] = clearBits(sresult, 52 - 44);
       break;
     default:
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
 
-  // TODO: generalize to all precisions
-  values[BITS_52] = sresult;
+
 
   // creating, recording, and printing shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter, BIN_INTR, op, values);
-  //cout << "[TRACE] address: " << &resultShadow << ", dpc: " << resultShadow.getDPC() << ", value: " << resultShadow.getValue(BITS_52) << endl;
-  //cout << "lScope, lValue: " << lScope << " " << lValue << endl;
-  //cout << "rScope, rValue: " << rScope << " " << rValue << endl;
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
   // shadow objects for operands
-  // TODO: add missing shadow objects load/store
   BlameTreeShadowObject<HIGHPRECISION>* s1 = getShadow(lScope, lValue);
   BlameTreeShadowObject<HIGHPRECISION>* s2 = getShadow(rScope, rValue);
   if (!s1) {
