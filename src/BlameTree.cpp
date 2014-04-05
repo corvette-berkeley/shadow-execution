@@ -296,47 +296,73 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   HIGHPRECISION *values = new HIGHPRECISION[5];
   switch (op) {
     case FADD:
-      // highest precision
       sresult = sv1 + sv2;
       values[BITS_52] = sresult;
 
-      // 44 bits
       sresult = getShadowValue(lScope, lValue, BITS_44) + getShadowValue(rScope, rValue, BITS_44);
       values[BITS_44] = clearBits(sresult, 52 - 44);
+
+      sresult = getShadowValue(lScope, lValue, BITS_37) + getShadowValue(rScope, rValue, BITS_37);
+      values[BITS_37] = clearBits(sresult, 52 - 37);
+
+      sresult = getShadowValue(lScope, lValue, BITS_30) + getShadowValue(rScope, rValue, BITS_30);
+      values[BITS_30] = clearBits(sresult, 52 - 30);
+
+      sresult = v1 + v2;
+      values[BITS_23] = sresult;
       break;
     case FSUB:
-      // highest precision
       sresult = sv1 - sv2;
       values[BITS_52] = sresult;
 
-      // 44 bits
       sresult = getShadowValue(lScope, lValue, BITS_44) - getShadowValue(rScope, rValue, BITS_44);
       values[BITS_44] = clearBits(sresult, 52 - 44);
+
+      sresult = getShadowValue(lScope, lValue, BITS_37) - getShadowValue(rScope, rValue, BITS_37);
+      values[BITS_37] = clearBits(sresult, 52 - 37);
+
+      sresult = getShadowValue(lScope, lValue, BITS_30) - getShadowValue(rScope, rValue, BITS_30);
+      values[BITS_30] = clearBits(sresult, 52 - 30);
+
+      sresult = v1 - v2;
+      values[BITS_23] = sresult;
       break;
     case FMUL:
-      // highest precision
       sresult = sv1 * sv2;
       values[BITS_52] = sresult;
 
-      // 44 bits
       sresult = getShadowValue(lScope, lValue, BITS_44) * getShadowValue(rScope, rValue, BITS_44);
       values[BITS_44] = clearBits(sresult, 52 - 44);
+
+      sresult = getShadowValue(lScope, lValue, BITS_37) * getShadowValue(rScope, rValue, BITS_37);
+      values[BITS_37] = clearBits(sresult, 52 - 37);
+
+      sresult = getShadowValue(lScope, lValue, BITS_30) * getShadowValue(rScope, rValue, BITS_30);
+      values[BITS_30] = clearBits(sresult, 52 - 30);
+
+      sresult = v1 * v2;
+      values[BITS_23] = sresult;
       break;
     case FDIV:
-      // highest precision
       sresult = sv1 / sv2;
       values[BITS_52] = sresult;
 
-      // 44 bits
       sresult = getShadowValue(lScope, lValue, BITS_44) / getShadowValue(rScope, rValue, BITS_44);
       values[BITS_44] = clearBits(sresult, 52 - 44);
+
+      sresult = getShadowValue(lScope, lValue, BITS_37) / getShadowValue(rScope, rValue, BITS_37);
+      values[BITS_37] = clearBits(sresult, 52 - 37);
+
+      sresult = getShadowValue(lScope, lValue, BITS_30) / getShadowValue(rScope, rValue, BITS_30);
+      values[BITS_30] = clearBits(sresult, 52 - 30);
+
+      sresult = v1 / v2;
+      values[BITS_23] = sresult;
       break;
     default:
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
-
-
 
   // creating, recording, and printing shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter, BIN_INTR, op, values);
@@ -349,6 +375,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
     s1->setValue(BITS_23, v1);
+    s1->setValue(BITS_30, clearBits((HIGHPRECISION)v1, 52-30));
+    s1->setValue(BITS_37, clearBits((HIGHPRECISION)v1, 52-37));
     s1->setValue(BITS_44, clearBits((HIGHPRECISION)v1, 52-44));
     s1->setValue(BITS_52, (HIGHPRECISION)v1);
     s1->setPC(pc1);
@@ -360,6 +388,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
     s2->setValue(BITS_23, v2);
+    s2->setValue(BITS_30, clearBits((HIGHPRECISION)v2, 52-30));
+    s2->setValue(BITS_37, clearBits((HIGHPRECISION)v2, 52-37));
     s2->setValue(BITS_44, clearBits((HIGHPRECISION)v2, 52-44));
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
