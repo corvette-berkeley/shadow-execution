@@ -245,7 +245,7 @@ double BlameTree::clearBits(double v, int shift) {
   int64_t *ptr;
   double *dm;
   int64_t mask = 0xffffffffffffffff;
-  mask = mask << (shift * 4); // adds "positions" zeros to the end
+  mask = mask << shift; // adds "positions" zeros to the end
 
   ptr = (int64_t*)&v;
   *ptr = *ptr & mask;
