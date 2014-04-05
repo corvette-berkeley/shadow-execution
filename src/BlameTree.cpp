@@ -360,7 +360,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
     s2->setValue(BITS_23, v2);
-    s1->setValue(BITS_44, clearBits((HIGHPRECISION)v2, 52-44));
+    s2->setValue(BITS_44, clearBits((HIGHPRECISION)v2, 52-44));
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
     s2->setDPC(dynamicCounter);

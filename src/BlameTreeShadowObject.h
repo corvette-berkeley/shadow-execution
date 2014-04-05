@@ -182,7 +182,7 @@ class BlameTreeShadowObject {
     };
 
     void print() {
-      printf("[SHADOW]<pc: %d, dpc: %d, value: %f, op: %s>\n", pc, dpc, value[4], BINOP_ToString(binOp).c_str());
+      printf("[SHADOW]<pc: %d, dpc: %d, value_44: %f, value_52: %f op: %s>\n", pc, dpc, value[3], value[4], BINOP_ToString(binOp).c_str());
     }
 
   private:
