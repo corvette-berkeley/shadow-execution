@@ -57,6 +57,7 @@ class BlameNode {
     int dpc;        // dynamic program counter of instruction associated with this blame tree node
     int pc;         // source program counter of instruction associated with this blame tree noe
     int fid;        // id of source file containing instruction associated with this blame tree node
+    bool highlight;     // highlighted node indicates higher precision requirement
     BlameTree::PRECISION precision;    // the precision constraint of this blame tree node
     vector< vector< BlameNodeID > > edges;    // set of nodes that this
                                                      // node blames, a node is identified 
@@ -64,10 +65,10 @@ class BlameNode {
 
   public:
 
-    BlameNode(): dpc(0), pc(0), fid(0), precision(BlameTree::BITS_23) {};
+    BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BlameTree::BITS_23) {};
 
-    BlameNode(int dp, int p, int f, BlameTree::PRECISION prec, vector< vector<
-        BlameNodeID > > es): dpc(dp), pc(p), fid(f), precision(prec), edges(es) {};
+    BlameNode(int dp, int p, int f, bool hl, BlameTree::PRECISION prec, vector< vector<
+        BlameNodeID > > es): dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es) {};
 
     BlameNode(const BlameNode& btNode) {
       create(btNode);
@@ -102,6 +103,10 @@ class BlameNode {
 
     void setFileID(int fid) { this->fid = fid; };
 
+    bool isHighlight() const { return highlight; };
+
+    void setHighlight(bool highlight) { this->highlight = highlight; };
+
     BlameTree::PRECISION getPrecision() const { return precision; };
 
     void setPrecision(BlameTree::PRECISION precision) { this->precision = precision; };
@@ -127,6 +132,7 @@ class BlameNode {
       dpc = btNode.getDPC();
       pc = btNode.getPC();
       fid = btNode.getFileID();
+      highlight = btNode.isHighlight();
       precision = btNode.getPrecision();
       edges = btNode.getEdges();
     };

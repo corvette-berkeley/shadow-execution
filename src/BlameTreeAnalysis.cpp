@@ -72,7 +72,7 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     //
     // construct a node associate with the binary operation result
     //
-    BlameNode node(dpc, pc, fid, precision, blameNodeIds);
+    BlameNode node(dpc, pc, fid, false, precision, blameNodeIds);
 
     dpc01 = right01.getDPC();
     dpc02 = right02.getDPC();
@@ -84,9 +84,11 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     for (i = BlameTree::BITS_23; i < BlameTree::PRECISION_NO; i =
         BlameTree::PRECISION(i+1)) {
       BlameTree::HIGHPRECISION value01 = right01.getValue(i);
+      BlameTree::HIGHPRECISION lowvalue01 = right01.getValue(BlameTree::BITS_23);
 
       for (j = BlameTree::BITS_23; j < max_j; j = BlameTree::PRECISION(j+1)) {
         BlameTree::HIGHPRECISION value02 = right02.getValue(j);
+        BlameTree::HIGHPRECISION lowvalue02 = right02.getValue(BlameTree::BITS_23);
 
         if (BlameTreeUtilities::clearBits(value, precision) ==
             BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
@@ -102,8 +104,10 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
           // Blame only if the operand cannot be in the lowest precision (right
           // now BITS_23)
           //
-          if (i != BlameTree::BITS_23) blamedNodes.push_back(bnID01);
-          if (j != BlameTree::BITS_23) blamedNodes.push_back(bnID02);
+          if (BlameTreeUtilities::clearBits(lowvalue01, i) != value01) 
+            blamedNodes.push_back(bnID01);
+          if (BlameTreeUtilities::clearBits(lowvalue02, j) != value02) 
+            blamedNodes.push_back(bnID02);
           node.addBlamedNodes(blamedNodes);
 
           //
@@ -117,6 +121,12 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
       //
       max_j = j;
     }
+
+    //
+    // Determined whether node is highlighted
+    //
+    if (value != (BlameTree::LOWPRECISION) value)
+      node.setHighlight(true);
 
     nodes[bnID] = node;
 
