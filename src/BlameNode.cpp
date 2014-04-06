@@ -41,7 +41,8 @@ std::string BlameNode::toDot() {
   std::ostringstream dot;
 
   dot << "\"(" << dpc << ", " << pc << ", " <<
-    BlameTreeUtilities::precisionToString(precision) << ")\"";
+    BlameTreeUtilities::precisionToString(precision) << ", double:" <<
+    highlight << ")\"";
 
   return dot.str();
 }
