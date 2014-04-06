@@ -148,16 +148,6 @@ class BlameTree : public InterpreterObserver {
      */
     int getPC(SCOPE scope, int64_t value);
 
-    HIGHPRECISION computeRelativeError(HIGHPRECISION highValue, LOWPRECISION lowValue);
-
-    int64_t getMantisa(double v);
-
-    int getExactBits(double v1, double v2);
-
-    int getEBits(double v1, double v2);
-
-    int getExponent(double v);
-
     double clearBits(double v, int shirt);
 
     void pre_fpbinop(int inx);
