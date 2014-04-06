@@ -40,6 +40,7 @@
 
 #include "InterpreterObserver.h"
 #include "BlameTreeShadowObject.h"
+#include "BlameTreeUtilities.h"
 #include "IValue.h"
 #include <math.h>
 
@@ -49,10 +50,6 @@ using namespace std;
 class BlameTree : public InterpreterObserver {
   
   public:
-    typedef double HIGHPRECISION;
-    typedef float LOWPRECISION;
-    typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52, PRECISION_NO} PRECISION;
-
     static int outputPC;    // location of the output value to track from
     static int dynamicCounter; // unique counter for instructions executed
     static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
@@ -117,7 +114,7 @@ class BlameTree : public InterpreterObserver {
      * @param constOrIndex constant/index of the value.
      * @param shadowObject associated with the given value.
      */
-    void setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameTree::HIGHPRECISION>* shadowObject);
+    void setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject);
 
     /**
      * Return BlameTreeShadowObject associated with the given value.
@@ -148,7 +145,7 @@ class BlameTree : public InterpreterObserver {
      */
     int getPC(SCOPE scope, int64_t value);
 
-    double clearBits(double v, int shirt);
+    double clearBits(double v, int shift);
 
     void pre_fpbinop(int inx);
 

@@ -39,6 +39,7 @@
 #define BLAME_TREE_ANALYSIS_H
 
 #include "BlameNode.h"
+#include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
 
 class BlameTreeAnalysis {
@@ -58,10 +59,10 @@ class BlameTreeAnalysis {
      * @return the blame node associated with left and precision constraint,
      * that connects to nodes it blames
      */
-    BlameNode constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION> left,
-        BlameTree::PRECISION precision,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
-        BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02);
+    BlameNode constructBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+        PRECISION precision,
+        BlameTreeShadowObject<HIGHPRECISION> right01,
+        BlameTreeShadowObject<HIGHPRECISION> right02);
 
     /**
      * Helper function for toDot function. This function visualize all edges of
@@ -91,7 +92,7 @@ class BlameTreeAnalysis {
      * @param bnID a node to start with
      * @return the blame graph
      */
-    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > trace, BlameNodeID bnID); 
+    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace, BlameNodeID bnID); 
 };
 
 #endif

@@ -37,17 +37,17 @@
 
 #include "BlameTreeAnalysis.h"
 
-BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree::HIGHPRECISION>
-    left, BlameTree::PRECISION precision,
-    BlameTreeShadowObject<BlameTree::HIGHPRECISION> right01,
-    BlameTreeShadowObject<BlameTree::HIGHPRECISION> right02) {
+BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECISION>
+    left, PRECISION precision,
+    BlameTreeShadowObject<HIGHPRECISION> right01,
+    BlameTreeShadowObject<HIGHPRECISION> right02) {
 
   //
   // variables declaration
   //
   int dpc, pc, fid, dpc01, dpc02;
   std::map<BlameNodeID, BlameNode>::iterator it;
-  BlameTree::HIGHPRECISION value;
+  HIGHPRECISION value;
   BINOP bop;
 
   //
@@ -66,7 +66,7 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
   // process again only if this is not processed before
   //
   if (it != nodes.end()) {
-    BlameTree::PRECISION i, j, max_j;
+    PRECISION i, j, max_j;
     vector< vector< BlameNodeID > > blameNodeIds;
 
     //
@@ -80,15 +80,15 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     //
     // try different combination of precision of the two operands
     //
-    max_j = BlameTree::PRECISION_NO;
-    for (i = BlameTree::BITS_23; i < BlameTree::PRECISION_NO; i =
-        BlameTree::PRECISION(i+1)) {
-      BlameTree::HIGHPRECISION value01 = right01.getValue(i);
-      BlameTree::HIGHPRECISION lowvalue01 = right01.getValue(BlameTree::BITS_23);
+    max_j = PRECISION_NO;
+    for (i = BITS_23; i < PRECISION_NO; i =
+        PRECISION(i+1)) {
+      HIGHPRECISION value01 = right01.getValue(i);
+      HIGHPRECISION lowvalue01 = right01.getValue(BITS_23);
 
-      for (j = BlameTree::BITS_23; j < max_j; j = BlameTree::PRECISION(j+1)) {
-        BlameTree::HIGHPRECISION value02 = right02.getValue(j);
-        BlameTree::HIGHPRECISION lowvalue02 = right02.getValue(BlameTree::BITS_23);
+      for (j = BITS_23; j < max_j; j = PRECISION(j+1)) {
+        HIGHPRECISION value02 = right02.getValue(j);
+        HIGHPRECISION lowvalue02 = right02.getValue(BITS_23);
 
         if (BlameTreeUtilities::clearBits(value, precision) ==
             BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
@@ -125,7 +125,7 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
     //
     // Determined whether node is highlighted
     //
-    if (value != (BlameTree::LOWPRECISION) value)
+    if (value != (LOWPRECISION) value)
       node.setHighlight(true);
 
     nodes[bnID] = node;
@@ -137,14 +137,14 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<BlameTree:
 }
 
 BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
-    vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > trace,
+    vector<BlameTreeShadowObject<HIGHPRECISION> > > trace,
     BlameNodeID bnID) {
   //
   // Variable declarations.
   //
   int dpc; 
-  BlameTree::PRECISION precision;
-  vector< BlameTreeShadowObject<BlameTree::HIGHPRECISION> > startNode;
+  PRECISION precision;
+  vector< BlameTreeShadowObject<HIGHPRECISION> > startNode;
   vector< vector< BlameNodeID > > blameEdges;
   BlameNode blameGraph;
 

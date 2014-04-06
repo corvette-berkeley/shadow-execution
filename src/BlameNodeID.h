@@ -38,13 +38,15 @@
 #ifndef BLAME_NODE_ID_H
 #define BLAME_NODE_ID_H
 
+#include "BlameTreeUtilities.h"
+
 class BlameNodeID {
   private:
     int dpc;
-    BlameTree::PRECISION precision;
+    PRECISION precision;
 
   public:
-    BlameNodeID(int dp, BlameTree::PRECISION prec): dpc(dp), precision(prec) {};
+    BlameNodeID(int dp, PRECISION prec): dpc(dp), precision(prec) {};
 
     BlameNodeID(const BlameNodeID& bnID) { create(bnID); };
 
@@ -77,9 +79,9 @@ class BlameNodeID {
 
     void setDPC(int dpc) { this->dpc = dpc; };
 
-    BlameTree::PRECISION getPrecision() const { return precision; };
+    PRECISION getPrecision() const { return precision; };
 
-    void setPrecision(BlameTree::PRECISION precision) { this->precision = precision; };
+    void setPrecision(PRECISION precision) { this->precision = precision; };
 
   private:
     void create(const BlameNodeID& bnID) {

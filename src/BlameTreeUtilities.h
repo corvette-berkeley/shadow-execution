@@ -38,8 +38,21 @@
 #ifndef BLAME_TREE_UTILITIES_H
 #define BLAME_TREE_UTILITIES_H
 
-#include "BlameTree.h"
+#include "Common.h"
+#include "Constants.h"
 #include <inttypes.h>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+
+
+using namespace std;
+
+typedef double HIGHPRECISION;
+typedef float LOWPRECISION;
+typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52, PRECISION_NO} PRECISION;
+
 
 class BlameTreeUtilities {
   public:
@@ -54,10 +67,9 @@ class BlameTreeUtilities {
      *
      * @return the result of the binary operation 
      */
-    static BlameTree::HIGHPRECISION eval(BlameTree::HIGHPRECISION value01,
-        BlameTree::HIGHPRECISION value02, BINOP bop);
+    static HIGHPRECISION eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop);
 
-    static string precisionToString(BlameTree::PRECISION);
+    static string precisionToString(PRECISION);
 };
 
 #endif

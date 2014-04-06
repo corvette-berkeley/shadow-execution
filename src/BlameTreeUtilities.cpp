@@ -42,7 +42,7 @@ double BlameTreeUtilities::clearBits(double v, int shift) {
   int64_t *ptr;
   double *dm;
   int64_t mask = 0xffffffffffffffff;
-  mask = mask << shift; // adds "positions" zeros to the end
+  mask = mask << shift;
 
   ptr = (int64_t*)&v;
   *ptr = *ptr & mask;
@@ -51,8 +51,7 @@ double BlameTreeUtilities::clearBits(double v, int shift) {
   return *dm;
 }
 
-BlameTree::HIGHPRECISION BlameTreeUtilities::eval(BlameTree::HIGHPRECISION value01,
-    BlameTree::HIGHPRECISION value02, BINOP bop) {
+HIGHPRECISION BlameTreeUtilities::eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop) {
   switch (bop) {
     case ADD:
     case FADD:
@@ -77,17 +76,17 @@ BlameTree::HIGHPRECISION BlameTreeUtilities::eval(BlameTree::HIGHPRECISION value
   }
 }
 
-string BlameTreeUtilities::precisionToString(BlameTree::PRECISION precision) {
+string BlameTreeUtilities::precisionToString(PRECISION precision) {
   switch (precision) {
-    case BlameTree::BITS_23:
+    case BITS_23:
       return "23bits";
-    case BlameTree::BITS_30:
+    case BITS_30:
       return "30bits";
-    case BlameTree::BITS_37:
+    case BITS_37:
       return "37bits";
-    case BlameTree::BITS_44:
+    case BITS_44:
       return "44bits";
-    case BlameTree::BITS_52:
+    case BITS_52:
       return "52bits";
     default:
       return "undefined";

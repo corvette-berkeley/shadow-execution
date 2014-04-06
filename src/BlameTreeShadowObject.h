@@ -39,6 +39,7 @@
 #define BLAME_TREE_SHADOW_OBJECT_H
 
 #include "Constants.h"
+#include <sstream>
 
 /**
  * BlameTreeShadowObject is an abstraction of a value in the program in

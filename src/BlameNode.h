@@ -38,7 +38,6 @@
 #ifndef BLAME_NODE_H
 #define BLAME_NODE_H
 
-#include "BlameTree.h"
 #include "BlameNodeID.h"
 #include "BlameTreeUtilities.h"
 
@@ -58,16 +57,16 @@ class BlameNode {
     int pc;         // source program counter of instruction associated with this blame tree noe
     int fid;        // id of source file containing instruction associated with this blame tree node
     bool highlight;     // highlighted node indicates higher precision requirement
-    BlameTree::PRECISION precision;    // the precision constraint of this blame tree node
+    PRECISION precision;    // the precision constraint of this blame tree node
     vector< vector< BlameNodeID > > edges;    // set of nodes that this
                                                      // node blames, a node is identified 
                                                      // by a pair of dpc and precision
 
   public:
 
-    BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BlameTree::BITS_23) {};
+    BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BITS_23) {};
 
-    BlameNode(int dp, int p, int f, bool hl, BlameTree::PRECISION prec, vector< vector<
+    BlameNode(int dp, int p, int f, bool hl, PRECISION prec, vector< vector<
         BlameNodeID > > es): dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es) {};
 
     BlameNode(const BlameNode& btNode) {
@@ -107,9 +106,9 @@ class BlameNode {
 
     void setHighlight(bool highlight) { this->highlight = highlight; };
 
-    BlameTree::PRECISION getPrecision() const { return precision; };
+    PRECISION getPrecision() const { return precision; };
 
-    void setPrecision(BlameTree::PRECISION precision) { this->precision = precision; };
+    void setPrecision(PRECISION precision) { this->precision = precision; };
 
     vector< vector< BlameNodeID > > getEdges() const { return edges; };
 

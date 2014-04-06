@@ -39,9 +39,9 @@
 
 /******* DEFINE ANALYSIS PARAMETERS *******/
 int BlameTree::outputPC = 0;
-BlameTree::HIGHPRECISION BlameTree::errorThreshold = 2e-26; 
-BlameTree::HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
-map<int, vector<BlameTreeShadowObject<BlameTree::HIGHPRECISION> > > BlameTree::trace;
+HIGHPRECISION BlameTree::errorThreshold = 2e-26; 
+HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
+map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > BlameTree::trace;
 int BlameTree::dynamicCounter = 0;
 
 /******* HELPER FUNCTIONS *******/
@@ -65,7 +65,7 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   }
 }
 
-void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameTree::HIGHPRECISION>* shadowObject) {
+void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
 
   if (scope == CONSTANT) {
     return; // no need to associate this shadow object with any IValue
@@ -82,7 +82,7 @@ void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<BlameT
   return;
 }
 
-BlameTreeShadowObject<BlameTree::HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
+BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
 
   if (scope == CONSTANT) {
     return NULL;
@@ -99,7 +99,7 @@ BlameTreeShadowObject<BlameTree::HIGHPRECISION>* BlameTree::getShadow(SCOPE scop
 }
 
 
-BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
+HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
   HIGHPRECISION result;
 
   if (scope == CONSTANT) {
@@ -128,7 +128,7 @@ BlameTree::HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRE
 }
 
 
-BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
+LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   LOWPRECISION actualValue;
 
   if (scope == CONSTANT) {
@@ -147,6 +147,18 @@ BlameTree::LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   return actualValue;
 }
 
+double BlameTree::clearBits(double v, int shift) {
+  int64_t *ptr;
+  double *dm;
+  int64_t mask = 0xffffffffffffffff;
+  mask = mask << shift;
+
+  ptr = (int64_t*)&v;
+  *ptr = *ptr & mask;
+  dm = (double*)ptr;
+
+  return *dm;
+}
 
 int BlameTree::getPC(SCOPE scope, int64_t value) {
   int pc;
@@ -166,21 +178,6 @@ int BlameTree::getPC(SCOPE scope, int64_t value) {
 
   return pc;
 }
-
-double BlameTree::clearBits(double v, int shift) {
-  int64_t *ptr;
-  double *dm;
-  int64_t mask = 0xffffffffffffffff;
-  mask = mask << shift; // adds "positions" zeros to the end
-
-  ptr = (int64_t*)&v;
-  *ptr = *ptr & mask;
-  dm = (double*)ptr;
-
-  return *dm;
-}
-
-
 
 /******* ANALYSIS FUNCTIONS *******/
 

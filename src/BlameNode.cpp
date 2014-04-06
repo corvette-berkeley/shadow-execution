@@ -36,6 +36,7 @@
 // Author: Cuong Nguyen
 
 #include "BlameNode.h"
+#include <sstream>
 
 std::string BlameNode::toDot() {
   std::ostringstream dot;
