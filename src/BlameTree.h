@@ -145,8 +145,6 @@ class BlameTree : public InterpreterObserver {
      */
     int getPC(SCOPE scope, int64_t value);
 
-    double clearBits(double v, int shift);
-
     void pre_fpbinop(int inx);
 
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t

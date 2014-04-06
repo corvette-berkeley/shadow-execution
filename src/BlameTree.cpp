@@ -147,19 +147,6 @@ LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   return actualValue;
 }
 
-double BlameTree::clearBits(double v, int shift) {
-  int64_t *ptr;
-  double *dm;
-  int64_t mask = 0xffffffffffffffff;
-  mask = mask << shift;
-
-  ptr = (int64_t*)&v;
-  *ptr = *ptr & mask;
-  dm = (double*)ptr;
-
-  return *dm;
-}
-
 int BlameTree::getPC(SCOPE scope, int64_t value) {
   int pc;
 
@@ -223,13 +210,13 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       values[BITS_52] = sresult;
 
       sresult = getShadowValue(lScope, lValue, BITS_44) + getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = clearBits(sresult, 52 - 44);
+      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
 
       sresult = getShadowValue(lScope, lValue, BITS_37) + getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = clearBits(sresult, 52 - 37);
+      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
 
       sresult = getShadowValue(lScope, lValue, BITS_30) + getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = clearBits(sresult, 52 - 30);
+      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
 
       sresult = v1 + v2;
       values[BITS_23] = sresult;
@@ -239,13 +226,13 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       values[BITS_52] = sresult;
 
       sresult = getShadowValue(lScope, lValue, BITS_44) - getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = clearBits(sresult, 52 - 44);
+      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
 
       sresult = getShadowValue(lScope, lValue, BITS_37) - getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = clearBits(sresult, 52 - 37);
+      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
 
       sresult = getShadowValue(lScope, lValue, BITS_30) - getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = clearBits(sresult, 52 - 30);
+      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
 
       sresult = v1 - v2;
       values[BITS_23] = sresult;
@@ -255,13 +242,13 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       values[BITS_52] = sresult;
 
       sresult = getShadowValue(lScope, lValue, BITS_44) * getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = clearBits(sresult, 52 - 44);
+      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
 
       sresult = getShadowValue(lScope, lValue, BITS_37) * getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = clearBits(sresult, 52 - 37);
+      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
 
       sresult = getShadowValue(lScope, lValue, BITS_30) * getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = clearBits(sresult, 52 - 30);
+      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
 
       sresult = v1 * v2;
       values[BITS_23] = sresult;
@@ -271,13 +258,13 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       values[BITS_52] = sresult;
 
       sresult = getShadowValue(lScope, lValue, BITS_44) / getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = clearBits(sresult, 52 - 44);
+      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
 
       sresult = getShadowValue(lScope, lValue, BITS_37) / getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = clearBits(sresult, 52 - 37);
+      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
 
       sresult = getShadowValue(lScope, lValue, BITS_30) / getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = clearBits(sresult, 52 - 30);
+      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
 
       sresult = v1 / v2;
       values[BITS_23] = sresult;
@@ -299,9 +286,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
     s1->setValue(BITS_23, v1);
-    s1->setValue(BITS_30, clearBits((HIGHPRECISION)v1, 52-30));
-    s1->setValue(BITS_37, clearBits((HIGHPRECISION)v1, 52-37));
-    s1->setValue(BITS_44, clearBits((HIGHPRECISION)v1, 52-44));
+    s1->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-30));
+    s1->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-37));
+    s1->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-44));
     s1->setValue(BITS_52, (HIGHPRECISION)v1);
     s1->setPC(pc1);
     s1->setDPC(dynamicCounter);
@@ -312,9 +299,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
     s2->setValue(BITS_23, v2);
-    s2->setValue(BITS_30, clearBits((HIGHPRECISION)v2, 52-30));
-    s2->setValue(BITS_37, clearBits((HIGHPRECISION)v2, 52-37));
-    s2->setValue(BITS_44, clearBits((HIGHPRECISION)v2, 52-44));
+    s2->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-30));
+    s2->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-37));
+    s2->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-44));
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
     s2->setDPC(dynamicCounter);
