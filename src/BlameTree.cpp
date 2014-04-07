@@ -242,7 +242,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
     switch(i) {
     case BITS_23:
-      values[BITS_23] = BlameTreeUtilities::clearBits(sresult, 52 - 23); // TODO: test independently rounding vs truncation
+      printf("interpreter value: %lf\n", executionStack.top()[inx]->getFlpValue());
+      values[BITS_23] = executionStack.top()[inx]->getFlpValue();
       break;
     case BITS_30:
       values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
@@ -342,7 +343,7 @@ void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rV
 void BlameTree::post_analysis() {
   cout << "Printing trace after analysis: " << dynamicCounter << endl;
   cout << "Trace length: " << dynamicCounter << endl;
-  /*
+  
   for(int i = 0; i < dynamicCounter; i++) {
     cout << "Counter: " << i << endl;
     for(unsigned j = 0; j < trace[i].size(); j++) {
@@ -350,6 +351,6 @@ void BlameTree::post_analysis() {
       trace[i][j].print();
     }
   }
-  */
+  
   return;
 }
