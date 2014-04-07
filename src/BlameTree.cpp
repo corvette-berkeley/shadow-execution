@@ -82,7 +82,7 @@ void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPR
   return;
 }
 
-BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadow(SCOPE scope, int64_t inx) {
+BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadowObject(SCOPE scope, int64_t inx) {
 
   if (scope == CONSTANT) {
     return NULL;
@@ -180,6 +180,7 @@ void BlameTree::pre_fpbinop(int inx) {
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
+  BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
   LOWPRECISION v1, v2;
   int pc1, pc2;
@@ -195,8 +196,10 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   v1 = getActualValue(lScope, lValue);
   v2 = getActualValue(rScope, rValue);
-  sv1 = getShadowValue(lScope, lValue, BITS_52);
-  sv2 = getShadowValue(rScope, rValue, BITS_52);
+  
+  s1 = getShadowObject(lScope, lValue);
+  s2 = getShadowObject(rScope, rValue);
+
   pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
   pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
 
@@ -204,74 +207,59 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   // Perform binary operation for shadow values
   //
   HIGHPRECISION *values = new HIGHPRECISION[5];
-  switch (op) {
+
+  for(int i = 0; i < 5; i++) {
+    if (s1) {
+      sv1 = s1->getValue(i); 
+    }
+    else {
+      sv1 = getShadowValue(lScope, lValue, (PRECISION)i);
+    }
+    if (s2) {
+      sv2 = s2->getValue(i);
+    }
+    else {
+      sv2 = getShadowValue(rScope, rValue, (PRECISION)i);
+    }
+
+    switch (op) {
     case FADD:
       sresult = sv1 + sv2;
-      values[BITS_52] = sresult;
-
-      sresult = getShadowValue(lScope, lValue, BITS_44) + getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
-
-      sresult = getShadowValue(lScope, lValue, BITS_37) + getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
-
-      sresult = getShadowValue(lScope, lValue, BITS_30) + getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
-
-      sresult = v1 + v2;
-      values[BITS_23] = sresult;
       break;
     case FSUB:
       sresult = sv1 - sv2;
-      values[BITS_52] = sresult;
-
-      sresult = getShadowValue(lScope, lValue, BITS_44) - getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
-
-      sresult = getShadowValue(lScope, lValue, BITS_37) - getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
-
-      sresult = getShadowValue(lScope, lValue, BITS_30) - getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
-
-      sresult = v1 - v2;
-      values[BITS_23] = sresult;
       break;
     case FMUL:
       sresult = sv1 * sv2;
-      values[BITS_52] = sresult;
-
-      sresult = getShadowValue(lScope, lValue, BITS_44) * getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
-
-      sresult = getShadowValue(lScope, lValue, BITS_37) * getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
-
-      sresult = getShadowValue(lScope, lValue, BITS_30) * getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
-
-      sresult = v1 * v2;
-      values[BITS_23] = sresult;
       break;
     case FDIV:
       sresult = sv1 / sv2;
-      values[BITS_52] = sresult;
-
-      sresult = getShadowValue(lScope, lValue, BITS_44) / getShadowValue(rScope, rValue, BITS_44);
-      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
-
-      sresult = getShadowValue(lScope, lValue, BITS_37) / getShadowValue(rScope, rValue, BITS_37);
-      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
-
-      sresult = getShadowValue(lScope, lValue, BITS_30) / getShadowValue(rScope, rValue, BITS_30);
-      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
-
-      sresult = v1 / v2;
-      values[BITS_23] = sresult;
       break;
     default:
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
+    }
+
+    switch(i) {
+    case BITS_23:
+      values[BITS_23] = BlameTreeUtilities::clearBits(sresult, 52 - 23); // TODO: test independently
+      break;
+    case BITS_30:
+      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
+      break;
+    case BITS_37:
+      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
+      break;
+    case BITS_44:
+      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
+      break;
+    case BITS_52:
+      values[BITS_52] = BlameTreeUtilities::clearBits(sresult, 52 - 52);
+      break;
+    default:
+      // nothing
+      break;
+    }
   }
 
   // creating, recording, and printing shadow object for target
@@ -280,8 +268,6 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   trace[resultShadow.getDPC()].push_back(resultShadow);
 
   // shadow objects for operands
-  BlameTreeShadowObject<HIGHPRECISION>* s1 = getShadow(lScope, lValue);
-  BlameTreeShadowObject<HIGHPRECISION>* s2 = getShadow(rScope, rValue);
   if (!s1) {
     // constructing and setting shadow object
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
@@ -314,6 +300,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   BlameTreeShadowObject<HIGHPRECISION> s2Copy(*s2);
 
   // adding to the trace
+  cout << "adding to trace" << endl;
   trace[dynamicCounter].push_back(s1Copy);
   trace[dynamicCounter].push_back(s2Copy);
 

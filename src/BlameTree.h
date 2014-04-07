@@ -123,7 +123,7 @@ class BlameTree : public InterpreterObserver {
      * @param scope scope of the value.
      * @return BlameTreeShadowObject associated with the given value.
      */
-    BlameTreeShadowObject<HIGHPRECISION>* getShadow(SCOPE scope, int64_t constOrIndex);
+    BlameTreeShadowObject<HIGHPRECISION>* getShadowObject(SCOPE scope, int64_t constOrIndex);
 
     /**
      * Return the actual value in its lower precision.
