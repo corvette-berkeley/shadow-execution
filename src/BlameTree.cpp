@@ -242,7 +242,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
     switch(i) {
     case BITS_23:
-      values[BITS_23] = BlameTreeUtilities::clearBits(sresult, 52 - 23); // TODO: test independently
+      values[BITS_23] = BlameTreeUtilities::clearBits(sresult, 52 - 23); // TODO: test independently rounding vs truncation
       break;
     case BITS_30:
       values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
@@ -254,7 +254,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
       break;
     case BITS_52:
-      values[BITS_52] = BlameTreeUtilities::clearBits(sresult, 52 - 52);
+      values[BITS_52] = sresult;
       break;
     default:
       // nothing
