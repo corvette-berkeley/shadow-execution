@@ -17,7 +17,7 @@ double fun(double x) {
 
 int main(int argc, char **argv) {
 
-  int i, j, k, n = 1; // try 10 later.
+  int i, j, k, n = 1000000; // try 10 later.
   double h, t1, t2, dppi, ans = 5.795776322412856L;
   double s1, threshold = 1e-14L;
 
