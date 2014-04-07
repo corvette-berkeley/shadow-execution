@@ -300,7 +300,6 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   BlameTreeShadowObject<HIGHPRECISION> s2Copy(*s2);
 
   // adding to the trace
-  cout << "adding to trace" << endl;
   trace[dynamicCounter].push_back(s1Copy);
   trace[dynamicCounter].push_back(s2Copy);
 
@@ -342,6 +341,8 @@ void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rV
 
 void BlameTree::post_analysis() {
   cout << "Printing trace after analysis: " << dynamicCounter << endl;
+  cout << "Trace length: " << dynamicCounter << endl;
+  /*
   for(int i = 0; i < dynamicCounter; i++) {
     cout << "Counter: " << i << endl;
     for(unsigned j = 0; j < trace[i].size(); j++) {
@@ -349,5 +350,6 @@ void BlameTree::post_analysis() {
       trace[i][j].print();
     }
   }
+  */
   return;
 }
