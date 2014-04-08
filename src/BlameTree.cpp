@@ -38,9 +38,8 @@
 #include "BlameTree.h"
 
 /******* DEFINE ANALYSIS PARAMETERS *******/
-int BlameTree::outputPC = 0;
-HIGHPRECISION BlameTree::errorThreshold = 2e-26; 
-HIGHPRECISION BlameTree::machineEpsilon = 2e-52;
+
+BlameNodeID BlameTree::rootNode(12, BITS_27);
 map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > BlameTree::trace;
 int BlameTree::dynamicCounter = 0;
 
@@ -355,6 +354,9 @@ void BlameTree::post_analysis() {
       trace[i][j].print();
     }
   }
+
+  BlameTreeAnalysis bta;
+  cout << bta.toDot(bta.constructBlameGraph(trace, rootNode)) << endl;
   
   return;
 }

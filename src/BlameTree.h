@@ -41,6 +41,8 @@
 #include "InterpreterObserver.h"
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
+#include "BlameTreeAnalysis.h"
+#include "BlameNodeID.h"
 #include "IValue.h"
 #include <math.h>
 
@@ -50,10 +52,8 @@ using namespace std;
 class BlameTree : public InterpreterObserver {
   
   public:
-    static int outputPC;    // location of the output value to track from
+    static BlameNodeID rootNode;    // location of computation of interest
     static int dynamicCounter; // unique counter for instructions executed
-    static HIGHPRECISION errorThreshold;    // the allowable error threshold  on the output
-    static HIGHPRECISION machineEpsilon;    // the machine smallest unit in high precision
     static map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace;
 
     BlameTree(std::string name) : InterpreterObserver(name) {}

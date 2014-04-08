@@ -59,15 +59,18 @@ class BlameNode {
     bool highlight;     // highlighted node indicates higher precision requirement
     PRECISION precision;    // the precision constraint of this blame tree node
     vector< vector< BlameNodeID > > edges;    // set of nodes that this
-                                                     // node blames, a node is identified 
-                                                     // by a pair of dpc and precision
+                                              // node blames, a node is identified 
+                                              // by a pair of dpc and precision
+    vector<bool> edgeAttributes;              // set of edge attributes                                              
+                                              // right now it indicates whether
+                                              // the edge (the computation)
+                                              // equires high precision
 
   public:
 
     BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BITS_23) {};
 
-    BlameNode(int dp, int p, int f, bool hl, PRECISION prec, vector< vector<
-        BlameNodeID > > es): dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es) {};
+    BlameNode(int dp, int p, int f, bool hl, PRECISION prec, vector< vector< BlameNodeID > > es, vector<bool> eas): dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es), edgeAttributes(eas) {};
 
     BlameNode(const BlameNode& btNode) {
       create(btNode);
@@ -116,6 +119,12 @@ class BlameNode {
 
     void addBlamedNodes(vector< BlameNodeID > nodes) { edges.push_back(nodes); }
 
+    vector< bool > getEdgeAttributes() const { return edgeAttributes; };
+
+    void setEdgeAttributes(vector< bool > edgeAttributes) { this->edgeAttributes = edgeAttributes; };
+
+    void addEdgeAttribute(bool ea) { edgeAttributes.push_back(ea); };
+
     /**
      * Visualize this node in GraphViz dot format.
      */
@@ -134,6 +143,7 @@ class BlameNode {
       highlight = btNode.isHighlight();
       precision = btNode.getPrecision();
       edges = btNode.getEdges();
+      edgeAttributes = btNode.getEdgeAttributes();
     };
 
     void uncreate() {};

@@ -65,14 +65,15 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
   // nodes remember all nodes that are processed before
   // process again only if this is not processed before
   //
-  if (it != nodes.end()) {
+  if (it == nodes.end()) {
     PRECISION i, j, max_j;
     vector< vector< BlameNodeID > > blameNodeIds;
+    vector< bool > edgeAttributes;
 
     //
     // construct a node associate with the binary operation result
     //
-    BlameNode node(dpc, pc, fid, false, precision, blameNodeIds);
+    BlameNode node(dpc, pc, fid, false, precision, blameNodeIds, edgeAttributes);
 
     dpc01 = right01.getDPC();
     dpc02 = right02.getDPC();
@@ -107,11 +108,22 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
           if (i != BITS_23 && BlameTreeUtilities::clearBits(lowvalue01, 52 -
                 BlameTreeUtilities::exactBits(i)) != value01) 
             blamedNodes.push_back(bnID01);
+
           if (j != BITS_23 && BlameTreeUtilities::clearBits(lowvalue02, 52 -
-                BlameTreeUtilities::exactBits(j)) != value02) 
+                BlameTreeUtilities::exactBits(j)) != value02)
             blamedNodes.push_back(bnID02);
+
           node.addBlamedNodes(blamedNodes);
 
+          //
+          // Determine the edge attribute
+          //
+          node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
+                BlameTreeUtilities::exactBits(precision)) !=
+              BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
+                  value02, bop), 52 -
+                BlameTreeUtilities::exactBits(precision)));
+          
           //
           // Do not try larger j because it subsumes what have been tried
           //
@@ -136,6 +148,7 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
   } 
 
   return it->second;
+
 }
 
 BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
@@ -177,7 +190,7 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
       //
       // Construct graph for this node if it is never constructed before
       //
-      if (nodes.find(blameNode) != nodes.end()) {
+      if (nodes.find(blameNode) == nodes.end()) {
         constructBlameGraph(trace, blameNode);
       }
     }
@@ -203,7 +216,7 @@ std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
         != blameNodes.end(); ++nodesIt) {
       BlameNodeID bnID = *nodesIt;
 
-      if (bnIDs.find(bnID) != bnIDs.end()) {
+      if (bnIDs.find(bnID) == bnIDs.end()) {
         BlameNode bn = nodes[bnID];
         dot << edgeToDot(bn);
 
@@ -219,8 +232,17 @@ std::string BlameTreeAnalysis::toDot(BlameNode graph) {
   std::ostringstream dot;
   std::set<BlameNodeID> bnIDs;
   vector< vector< BlameNodeID > > edges;
+  map<BlameNodeID, BlameNode>::iterator it;
 
   dot << "digraph G { " << endl;
+
+  for (it = nodes.begin(); it != nodes.end(); ++it) {
+    BlameNode bn = it->second;
+
+    if (bn.isHighlight()) {
+      dot << "\t" << bn.toDot() << "[color=red]" << endl;
+    }
+  } 
 
   dot << edgeToDot(graph);
 

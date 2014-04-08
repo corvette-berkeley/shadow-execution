@@ -45,6 +45,7 @@
 class BlameTreeAnalysis {
   private:
     map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
+                                       // set of nodes in the tree
 
     /**
      * Construct blame node given a binary operation expression. This function
