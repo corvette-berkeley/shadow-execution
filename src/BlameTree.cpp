@@ -153,25 +153,6 @@ LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   return actualValue;
 }
 
-int BlameTree::getPC(SCOPE scope, int64_t value) {
-  int pc;
-
-  if (scope == CONSTANT) {
-    pc = -1;
-  } else {
-    IValue *iv;
-
-    iv = (scope == GLOBAL) ? globalSymbolTable[value] : executionStack.top()[value];
-    if (iv->getShadow() != NULL) {
-      pc = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getPC();
-    } else {
-      pc = iv->getLineNumber();
-    }
-  }
-
-  return pc;
-}
-
 /******* ANALYSIS FUNCTIONS *******/
 
 void BlameTree::pre_fpbinop(int inx) {

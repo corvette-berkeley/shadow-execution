@@ -135,16 +135,6 @@ class BlameTree : public InterpreterObserver {
      */
     LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
 
-    /**
-     * Return the program counter associated with the given value.
-     *
-     * @note a value is denoted by a pair of scope and const/index.
-     * @param scope scope of the value.
-     * @param constOrIndex constant/index of the value.
-     * @return the program counter associated with the given value.
-     */
-    int getPC(SCOPE scope, int64_t value);
-
     void pre_fpbinop(int inx);
 
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
