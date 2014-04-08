@@ -65,6 +65,13 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   }
 }
 
+void BlameTree::post_create_global_symbol_table() {
+  //
+  // instantiate copyShadow
+  //
+  IValue::setCopyShadow(&copyShadow);
+}
+
 void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
 
   if (scope == CONSTANT) {
@@ -116,6 +123,7 @@ HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION prec
       iv = executionStack.top()[inx];
     }
 
+    cout << "address of iv: " << iv << endl;
     if (iv->getShadow() == NULL) {
       result = iv->getFlpValue();
     }
@@ -180,6 +188,7 @@ void BlameTree::pre_fpbinop(int inx) {
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
+  cout << "AT BINOP" << endl;
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
   LOWPRECISION v1, v2;
@@ -214,12 +223,14 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     }
     else {
       sv1 = getShadowValue(lScope, lValue, (PRECISION)i);
+      cout << "- get shadow value for lscope: " << lScope << " , lvalue: " << lValue << ", value: " << sv1 << endl;
     }
     if (s2) {
       sv2 = s2->getValue(i);
     }
     else {
       sv2 = getShadowValue(rScope, rValue, (PRECISION)i);
+      cout << "== get shadow value for rscope: " << rScope << " , rvalue: " << rValue << ", value: " << sv2 << endl;
     }
 
     switch (op) {
@@ -238,6 +249,11 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     default:
       DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
+    }
+
+    if (i == 4) {
+      cout << "Float and double precision value:" << endl;
+      cout << executionStack.top()[inx]->getFlpValue() << ":" << sresult << endl;
     }
 
     switch(i) {

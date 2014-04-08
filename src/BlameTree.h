@@ -149,6 +149,8 @@ class BlameTree : public InterpreterObserver {
 
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
         rValue, KIND type, int line, int inx, BINOP op);
+
+    void post_create_global_symbol_table();
 };
 
 #endif
