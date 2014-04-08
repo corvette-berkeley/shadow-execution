@@ -53,7 +53,6 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   if (src->isFlpValue() && dest->isFlpValue()) {
     if (src->getShadow() != NULL) {
-      cout << "*** shadow is not null" << endl;
       BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
 
       btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*) src->getShadow();
@@ -61,7 +60,6 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
 
       dest->setShadow(btmSODest);
     } else {
-      cout << "--- shadow is NULL" << endl;
       dest->setShadow(NULL); 
     }
   }
@@ -125,7 +123,6 @@ HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION prec
       iv = executionStack.top()[inx];
     }
 
-    cout << "address of iv: " << iv << endl;
     if (iv->getShadow() == NULL) {
       result = iv->getFlpValue();
     }
@@ -190,7 +187,6 @@ void BlameTree::pre_fpbinop(int inx) {
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
 
-  cout << "AT BINOP" << endl;
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
   LOWPRECISION v1, v2;
@@ -202,15 +198,13 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       || type == FLP128_KIND || type == FLP128PPC_KIND);
 
   //
-  // Obtain actual value, shadow value and pc of two operands
+  // Obtain actual values, and shadow values
   //
   v1 = getActualValue(lScope, lValue);
   v2 = getActualValue(rScope, rValue);
   
   s1 = getShadowObject(lScope, lValue);
   s2 = getShadowObject(rScope, rValue);
-
-  //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
 
   //
   // Perform binary operation for shadow values
@@ -248,9 +242,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
   for(int i = 0; i < 5; i++) {
     sv1 = s1->getValue(i);
-    printf("sv1: %lf\n", sv1);
+    //printf("sv1: %lf\n", sv1);
     sv2 = s2->getValue(i);
-    printf("sv2: %lf\n", sv2);
+    //printf("sv2: %lf\n", sv2);
 
     switch (op) {
     case FADD:
@@ -298,9 +292,10 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     }
   }
 
-  // creating, recording, and printing shadow object for target
+  // creating shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = 
-    new BlameTreeShadowObject<HIGHPRECISION>(line, dynamicCounter, BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
+    new BlameTreeShadowObject<HIGHPRECISION>(line, dynamicCounter, 
+					     BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
   executionStack.top()[inx]->setShadow(resultShadow);
 
   // making copies of shadow objects
