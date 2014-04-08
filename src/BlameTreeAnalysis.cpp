@@ -90,9 +90,9 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
         HIGHPRECISION value02 = right02.getValue(j);
         HIGHPRECISION lowvalue02 = right02.getValue(BITS_23);
 
-        if (BlameTreeUtilities::clearBits(value, precision) ==
+        if (BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)) ==
             BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
-                value02, bop), precision)) {
+                value02, bop), 52 - BlameTreeUtilities::exactBits(precision))) {
           //
           // Construct edges for each blame
           //
@@ -104,9 +104,11 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
           // Blame only if the operand cannot be in the lowest precision (right
           // now BITS_23)
           //
-          if (BlameTreeUtilities::clearBits(lowvalue01, i) != value01) 
+          if (i != BITS_23 && BlameTreeUtilities::clearBits(lowvalue01, 52 -
+                BlameTreeUtilities::exactBits(i)) != value01) 
             blamedNodes.push_back(bnID01);
-          if (BlameTreeUtilities::clearBits(lowvalue02, j) != value02) 
+          if (j != BITS_23 && BlameTreeUtilities::clearBits(lowvalue02, 52 -
+                BlameTreeUtilities::exactBits(j)) != value02) 
             blamedNodes.push_back(bnID02);
           node.addBlamedNodes(blamedNodes);
 

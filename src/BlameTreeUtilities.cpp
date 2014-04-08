@@ -76,6 +76,24 @@ HIGHPRECISION BlameTreeUtilities::eval(HIGHPRECISION value01, HIGHPRECISION valu
   }
 }
 
+int BlameTreeUtilities::exactBits(PRECISION precision) {
+   switch (precision) {
+    case BITS_23:
+      return 23;
+    case BITS_30:
+      return 30;
+    case BITS_37:
+      return 37;
+    case BITS_44:
+      return 44;
+    case BITS_52:
+      return 52;
+    default:
+      safe_assert(false);
+      return 0;
+  }
+}
+
 string BlameTreeUtilities::precisionToString(PRECISION precision) {
   switch (precision) {
     case BITS_23:
@@ -89,6 +107,7 @@ string BlameTreeUtilities::precisionToString(PRECISION precision) {
     case BITS_52:
       return "52bits";
     default:
+      safe_assert(false);
       return "undefined";
   }
 }

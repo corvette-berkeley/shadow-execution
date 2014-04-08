@@ -69,6 +69,8 @@ class BlameTreeUtilities {
      */
     static HIGHPRECISION eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop);
 
+    static int exactBits(PRECISION precision);
+
     static string precisionToString(PRECISION);
 };
 
