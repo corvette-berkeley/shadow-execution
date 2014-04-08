@@ -225,9 +225,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
     s1->setValue(BITS_23, v1);
-    s1->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-30));
-    s1->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-37));
-    s1->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-44));
+    s1->setValue(BITS_19, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-19));
+    s1->setValue(BITS_27, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-27));
+    s1->setValue(BITS_33, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-33));
     s1->setValue(BITS_52, (HIGHPRECISION)v1);
     s1->setPC(pc1);
     s1->setDPC(dynamicCounter);
@@ -239,9 +239,9 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     // constructing and setting shadow object
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
     s2->setValue(BITS_23, v2);
-    s2->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-30));
-    s2->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-37));
-    s2->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-44));
+    s2->setValue(BITS_19, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-19));
+    s2->setValue(BITS_27, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-27));
+    s2->setValue(BITS_33, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-33));
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
     s2->setPC(pc2);
     s2->setDPC(dynamicCounter);
@@ -284,14 +284,14 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       printf("interpreter value: %lf\n", executionStack.top()[inx]->getFlpValue());
       values[BITS_23] = executionStack.top()[inx]->getFlpValue();
       break;
-    case BITS_30:
-      values[BITS_30] = BlameTreeUtilities::clearBits(sresult, 52 - 30);
+    case BITS_19:
+      values[BITS_19] = BlameTreeUtilities::clearBits(sresult, 52 - 19);
       break;
-    case BITS_37:
-      values[BITS_37] = BlameTreeUtilities::clearBits(sresult, 52 - 37);
+    case BITS_27:
+      values[BITS_27] = BlameTreeUtilities::clearBits(sresult, 52 - 27);
       break;
-    case BITS_44:
-      values[BITS_44] = BlameTreeUtilities::clearBits(sresult, 52 - 44);
+    case BITS_33:
+      values[BITS_33] = BlameTreeUtilities::clearBits(sresult, 52 - 33);
       break;
     case BITS_52:
       values[BITS_52] = sresult;

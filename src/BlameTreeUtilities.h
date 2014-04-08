@@ -51,7 +51,7 @@ using namespace std;
 
 typedef double HIGHPRECISION;
 typedef float LOWPRECISION;
-typedef enum {BITS_23, BITS_30, BITS_37, BITS_44, BITS_52, PRECISION_NO} PRECISION;
+typedef enum {BITS_23, BITS_19, BITS_27, BITS_33, BITS_52, PRECISION_NO} PRECISION;
 
 
 class BlameTreeUtilities {

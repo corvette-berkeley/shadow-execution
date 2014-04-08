@@ -98,12 +98,12 @@ string BlameTreeUtilities::precisionToString(PRECISION precision) {
   switch (precision) {
     case BITS_23:
       return "23bits";
-    case BITS_30:
-      return "30bits";
-    case BITS_37:
-      return "37bits";
-    case BITS_44:
-      return "44bits";
+    case BITS_19:
+      return "19bits";
+    case BITS_27:
+      return "27bits";
+    case BITS_33:
+      return "33bits";
     case BITS_52:
       return "52bits";
     default:
