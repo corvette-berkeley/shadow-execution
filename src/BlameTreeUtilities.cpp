@@ -80,12 +80,12 @@ int BlameTreeUtilities::exactBits(PRECISION precision) {
    switch (precision) {
     case BITS_23:
       return 23;
-    case BITS_30:
-      return 30;
-    case BITS_37:
-      return 37;
-    case BITS_44:
-      return 44;
+    case BITS_19:
+      return 19;
+    case BITS_27:
+      return 27;
+    case BITS_33:
+      return 33;
     case BITS_52:
       return 52;
     default:

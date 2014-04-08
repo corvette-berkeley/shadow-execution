@@ -213,6 +213,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
   pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
   pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
+  cout << "line: " << pc1 << " " << pc2 << " " << line << endl;
 
   //
   // Perform binary operation for shadow values
@@ -221,7 +222,6 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
   // shadow objects for operands
   if (!s1) {
-    cout << "HERE" << endl;
     // constructing and setting shadow object
     s1 = new BlameTreeShadowObject<HIGHPRECISION>();
     s1->setValue(BITS_23, v1);
@@ -235,7 +235,6 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     //s1->print();
   }
   if (!s2) {
-    cout << "HERE" << endl;
     // constructing and setting shadow object
     s2 = new BlameTreeShadowObject<HIGHPRECISION>();
     s2->setValue(BITS_23, v2);
@@ -303,8 +302,8 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   }
 
   // creating, recording, and printing shadow object for target
-  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new BlameTreeShadowObject<HIGHPRECISION>(pc1, dynamicCounter,
-      BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
+  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = 
+    new BlameTreeShadowObject<HIGHPRECISION>(pc1, dynamicCounter, BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
   executionStack.top()[inx]->setShadow(resultShadow);
 
   // making copies of shadow objects
