@@ -244,14 +244,16 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
       safe_assert(false);
     }
 
+    /*
     if (i == 4) {
       cout << "Float and double precision value:" << endl;
       printf("%lf, %lf\n", executionStack.top()[inx]->getFlpValue(), sresult);
     }
+    */
 
     switch(i) {
     case BITS_23:
-      printf("interpreter value: %lf\n", executionStack.top()[inx]->getFlpValue());
+      //printf("interpreter value: %lf\n", executionStack.top()[inx]->getFlpValue());
       values[BITS_23] = executionStack.top()[inx]->getFlpValue();
       break;
     case BITS_19:
@@ -327,14 +329,68 @@ void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rV
 void BlameTree::post_analysis() {
   cout << "Printing trace after analysis: " << dynamicCounter << endl;
   cout << "Trace length: " << dynamicCounter << endl;
-  
-  for(int i = 0; i < dynamicCounter; i++) {
-    cout << "Counter: " << i << endl;
-    for(unsigned j = 0; j < trace[i].size(); j++) {
-      cout << "\t";
-      trace[i][j].print();
+  std::string line;
+
+  //
+  // Print the trace 
+  //
+  cout << endl;
+  cout << "Do you want to see the trace (yes|no)?" << endl;
+  std::getline(std::cin, line);
+
+  if (line.compare("yes") == 0) {
+    for(int i = 0; i < dynamicCounter; i++) {
+      cout << "DPC: " << i << endl;
+      for(unsigned j = 0; j < trace[i].size(); j++) {
+        cout << "\t";
+        trace[i][j].print();
+      }
     }
   }
+
+  //
+  // read rootnode from a file
+  //
+  cout << endl;
+  cout << "Ok, now you have seen the trace, take a look at all computation points with values with different precision." << endl;
+  cout << "Tell me:" << endl;
+  cout << "\t Which computation point you are interested in?" << endl;
+  cout << "\t What is your desired precision for that computation point?" << endl;
+    
+  cout << endl;
+  cout << "I suggest the following parameter" << endl;
+  cout << "\t Computation point: " << (dynamicCounter - 1) << endl;
+  cout << "\t Desired precision: exact to 27 bits." << endl; 
+
+  BlameNodeID rootNode(0,BITS_23);
+  std::getline(std::cin, line);
+
+  if (line.empty()) {
+    rootNode = BlameNodeID(dynamicCounter-1, BITS_27);
+  } else {
+    std::stringstream lineStream(line);
+    std::string token;
+    int dpc, prec; 
+
+    lineStream >> token; 
+    dpc = atoi(token.c_str());
+    lineStream >> token; 
+    prec = atoi(token.c_str());
+
+    rootNode = BlameNodeID(dpc, BlameTreeUtilities::exactBitToPrecision(prec));
+  }
+
+  //
+  // construct blame tree
+  //
+  cout << endl;
+  cout << "Constructing blame tree from root at:" << endl; 
+  cout << "\tComputation point: " <<  rootNode.getDPC() << endl; 
+  cout << "\tDesired precision: " << BlameTreeUtilities::precisionToString(rootNode.getPrecision()) << endl;
+
+  cout << endl;
+  cout << "Blame tree in dot format:" << endl;
+  cout << endl;
 
   BlameTreeAnalysis bta;
   cout << bta.toDot(bta.constructBlameGraph(trace, rootNode)) << endl;

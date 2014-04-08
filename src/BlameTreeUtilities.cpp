@@ -119,6 +119,24 @@ int BlameTreeUtilities::exactBits(PRECISION precision) {
   }
 }
 
+PRECISION BlameTreeUtilities::exactBitToPrecision(int bit) {
+  switch (bit) {
+    case 23:
+      return BITS_23;
+    case 19:
+      return BITS_19;
+    case 27:
+      return BITS_27;
+    case 33:
+      return BITS_33;
+    case 52:
+      return BITS_52;
+    default:
+      safe_assert(false);
+      return BITS_23;
+  }
+}
+
 string BlameTreeUtilities::precisionToString(PRECISION precision) {
   switch (precision) {
     case BITS_23:

@@ -73,6 +73,8 @@ class BlameTreeUtilities {
 
     static int exactBits(PRECISION precision);
 
+    static PRECISION exactBitToPrecision(int bit);
+
     static string precisionToString(PRECISION);
 };
 
