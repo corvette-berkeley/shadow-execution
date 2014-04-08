@@ -604,9 +604,9 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
 
-    // copying instead of replacing IValue Apr 7th
-    destLocation->copy(executionStack.top()[inx]);
-    delete(destLocation);
+    delete(executionStack.top()[inx]);
+    executionStack.top()[inx] = destLocation;
+
     DEBUG_STDOUT(destLocation->toString());
   }
 
@@ -824,9 +824,9 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   iResult = new IValue(type, result);
   iResult->setLineNumber(line);
 
-  // copying instead of replacing Apr 7th
-  iResult->copy(executionStack.top()[inx]);
-  delete(iResult);
+  delete(executionStack.top()[inx]);
+  executionStack.top()[inx] = iResult;
+
   DEBUG_STDOUT(iResult->toString());
 
   return;
