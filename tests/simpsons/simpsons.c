@@ -15,13 +15,12 @@ int main( int argc, char **argv) {
 
   // variables for logging/checking
   double epsilon = -4.0;
-  long double threshold = 0.0;
   int l;
   
   int i, j, k; // diff: added constants
   const int n = 1000000;
   double a, b; // removed fun, h, s1, and x
-  long double h, s1, x;
+  double h, s1, x;
   const double fuzz = 1e-26; // diff: added fuzz
 
   for(l = 0; l < 100; l++) { // ITERS before
