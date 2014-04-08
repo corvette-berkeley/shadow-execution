@@ -194,7 +194,6 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
   LOWPRECISION v1, v2;
-  int pc1, pc2;
 
   //
   // assert: type is a floating-point type
@@ -211,9 +210,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   s1 = getShadowObject(lScope, lValue);
   s2 = getShadowObject(rScope, rValue);
 
-  pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
-  pc2 = (rScope == CONSTANT) ? line : getPC(rScope, rValue);
-  cout << "line: " << pc1 << " " << pc2 << " " << line << endl;
+  //pc1 = (lScope == CONSTANT) ? line : getPC(lScope, lValue); 
 
   //
   // Perform binary operation for shadow values
@@ -229,7 +226,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     s1->setValue(BITS_27, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-27));
     s1->setValue(BITS_33, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-33));
     s1->setValue(BITS_52, (HIGHPRECISION)v1);
-    s1->setPC(pc1);
+    s1->setPC(line);
     s1->setDPC(dynamicCounter);
     setShadowObject(lScope, lValue, s1);
     //s1->print();
@@ -242,7 +239,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     s2->setValue(BITS_27, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-27));
     s2->setValue(BITS_33, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-33));
     s2->setValue(BITS_52, (HIGHPRECISION)v2);
-    s2->setPC(pc2);
+    s2->setPC(line);
     s2->setDPC(dynamicCounter);
     setShadowObject(rScope, rValue, s2);
     //s2->print();
@@ -303,7 +300,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
   // creating, recording, and printing shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = 
-    new BlameTreeShadowObject<HIGHPRECISION>(pc1, dynamicCounter, BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
+    new BlameTreeShadowObject<HIGHPRECISION>(line, dynamicCounter, BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
   executionStack.top()[inx]->setShadow(resultShadow);
 
   // making copies of shadow objects
