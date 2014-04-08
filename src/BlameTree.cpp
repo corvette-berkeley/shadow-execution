@@ -53,6 +53,7 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
   //
   if (src->isFlpValue() && dest->isFlpValue()) {
     if (src->getShadow() != NULL) {
+      cout << "*** shadow is not null" << endl;
       BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
 
       btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*) src->getShadow();
@@ -60,6 +61,7 @@ void BlameTree::copyShadow(IValue *src, IValue *dest) {
 
       dest->setShadow(btmSODest);
     } else {
+      cout << "--- shadow is NULL" << endl;
       dest->setShadow(NULL); 
     }
   }
@@ -72,7 +74,7 @@ void BlameTree::post_create_global_symbol_table() {
   IValue::setCopyShadow(&copyShadow);
 }
 
-void BlameTree::setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
+void BlameTree::setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
 
   if (scope == CONSTANT) {
     return; // no need to associate this shadow object with any IValue
@@ -217,21 +219,42 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   //
   HIGHPRECISION *values = new HIGHPRECISION[5];
 
+  // shadow objects for operands
+  if (!s1) {
+    cout << "HERE" << endl;
+    // constructing and setting shadow object
+    s1 = new BlameTreeShadowObject<HIGHPRECISION>();
+    s1->setValue(BITS_23, v1);
+    s1->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-30));
+    s1->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-37));
+    s1->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-44));
+    s1->setValue(BITS_52, (HIGHPRECISION)v1);
+    s1->setPC(pc1);
+    s1->setDPC(dynamicCounter);
+    setShadowObject(lScope, lValue, s1);
+    //s1->print();
+  }
+  if (!s2) {
+    cout << "HERE" << endl;
+    // constructing and setting shadow object
+    s2 = new BlameTreeShadowObject<HIGHPRECISION>();
+    s2->setValue(BITS_23, v2);
+    s2->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-30));
+    s2->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-37));
+    s2->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-44));
+    s2->setValue(BITS_52, (HIGHPRECISION)v2);
+    s2->setPC(pc2);
+    s2->setDPC(dynamicCounter);
+    setShadowObject(rScope, rValue, s2);
+    //s2->print();
+  }
+
+
   for(int i = 0; i < 5; i++) {
-    if (s1) {
-      sv1 = s1->getValue(i); 
-    }
-    else {
-      sv1 = getShadowValue(lScope, lValue, (PRECISION)i);
-      cout << "- get shadow value for lscope: " << lScope << " , lvalue: " << lValue << ", value: " << sv1 << endl;
-    }
-    if (s2) {
-      sv2 = s2->getValue(i);
-    }
-    else {
-      sv2 = getShadowValue(rScope, rValue, (PRECISION)i);
-      cout << "== get shadow value for rscope: " << rScope << " , rvalue: " << rValue << ", value: " << sv2 << endl;
-    }
+    sv1 = s1->getValue(i);
+    printf("sv1: %lf\n", sv1);
+    sv2 = s2->getValue(i);
+    printf("sv2: %lf\n", sv2);
 
     switch (op) {
     case FADD:
@@ -253,7 +276,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 
     if (i == 4) {
       cout << "Float and double precision value:" << endl;
-      cout << executionStack.top()[inx]->getFlpValue() << ":" << sresult << endl;
+      printf("%lf, %lf\n", executionStack.top()[inx]->getFlpValue(), sresult);
     }
 
     switch(i) {
@@ -280,43 +303,17 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   }
 
   // creating, recording, and printing shadow object for target
-  BlameTreeShadowObject<HIGHPRECISION> resultShadow(pc1, dynamicCounter,
+  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new BlameTreeShadowObject<HIGHPRECISION>(pc1, dynamicCounter,
       BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
-  trace[resultShadow.getDPC()].push_back(resultShadow);
+  executionStack.top()[inx]->setShadow(resultShadow);
 
-  // shadow objects for operands
-  if (!s1) {
-    // constructing and setting shadow object
-    s1 = new BlameTreeShadowObject<HIGHPRECISION>();
-    s1->setValue(BITS_23, v1);
-    s1->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-30));
-    s1->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-37));
-    s1->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52-44));
-    s1->setValue(BITS_52, (HIGHPRECISION)v1);
-    s1->setPC(pc1);
-    s1->setDPC(dynamicCounter);
-    setShadow(lScope, lValue, s1);
-    //s1->print();
-  }
-  if (!s2) {
-    // constructing and setting shadow object
-    s2 = new BlameTreeShadowObject<HIGHPRECISION>();
-    s2->setValue(BITS_23, v2);
-    s2->setValue(BITS_30, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-30));
-    s2->setValue(BITS_37, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-37));
-    s2->setValue(BITS_44, BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52-44));
-    s2->setValue(BITS_52, (HIGHPRECISION)v2);
-    s2->setPC(pc2);
-    s2->setDPC(dynamicCounter);
-    setShadow(rScope, rValue, s2);
-    //s2->print();
-  }
-  
   // making copies of shadow objects
+  BlameTreeShadowObject<HIGHPRECISION> rCopy(*resultShadow);
   BlameTreeShadowObject<HIGHPRECISION> s1Copy(*s1);
   BlameTreeShadowObject<HIGHPRECISION> s2Copy(*s2);
 
   // adding to the trace
+  trace[dynamicCounter].push_back(rCopy);
   trace[dynamicCounter].push_back(s1Copy);
   trace[dynamicCounter].push_back(s2Copy);
 

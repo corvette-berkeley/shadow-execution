@@ -114,7 +114,7 @@ class BlameTree : public InterpreterObserver {
      * @param constOrIndex constant/index of the value.
      * @param shadowObject associated with the given value.
      */
-    void setShadow(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject);
+    void setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject);
 
     /**
      * Return BlameTreeShadowObject associated with the given value.
