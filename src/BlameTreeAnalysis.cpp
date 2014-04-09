@@ -42,23 +42,11 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
     BlameTreeShadowObject<HIGHPRECISION> right01,
     BlameTreeShadowObject<HIGHPRECISION> right02) {
 
-  //
-  // variables declaration
-  //
-  int dpc, pc, fid, dpc01, dpc02;
+  int dpc;
   std::map<BlameNodeID, BlameNode>::iterator it;
-  HIGHPRECISION value;
-  BINOP bop;
 
-  //
-  // variables definition
-  //
   dpc = left.getDPC();
   BlameNodeID bnID(dpc, precision);
-  pc = left.getPC(); 
-  fid = left.getFileID();
-  value = left.getValue(precision);
-  bop = left.getBinOp();
   it = nodes.find(bnID);
 
   //
@@ -66,9 +54,23 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
   // process again only if this is not processed before
   //
   if (it == nodes.end()) {
+    //
+    // variables declaration
+    //
+    int pc, fid, dpc01, dpc02;
+    HIGHPRECISION value;
+    BINOP bop;
     PRECISION i, j, max_j;
     vector< vector< BlameNodeID > > blameNodeIds;
     vector< bool > edgeAttributes;
+
+    //
+    // variables definition
+    //
+    pc = left.getPC(); 
+    fid = left.getFileID();
+    value = left.getValue(precision);
+    bop = left.getBinOp();
 
     //
     // construct a node associate with the binary operation result
@@ -123,7 +125,7 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
               BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
                   value02, bop), 52 -
                 BlameTreeUtilities::exactBits(precision)));
-          
+
           //
           // Do not try larger j because it subsumes what have been tried
           //
@@ -152,51 +154,62 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
 }
 
 BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
-    vector<BlameTreeShadowObject<HIGHPRECISION> > > trace,
-    BlameNodeID bnID) {
-  //
-  // Variable declarations.
-  //
-  int dpc; 
-  PRECISION precision;
-  vector< BlameTreeShadowObject<HIGHPRECISION> > startNode;
-  vector< vector< BlameNodeID > > blameEdges;
-  BlameNode blameGraph;
+    vector<BlameTreeShadowObject<HIGHPRECISION> > > trace) {
 
-  //
-  // Variable definitions.
-  //
-  dpc = bnID.getDPC();
-  precision = bnID.getPrecision();
-  startNode = trace[dpc];
+  while (!workList.empty()) {
 
-  //
-  // We are assuming that each element of the trace has three elements.
-  // Construct blameGraph given the start node. Recursively construct
-  // blameGraph for all operands that are blamed by the start node.
-  //
-  safe_assert(startNode.size() == 3);
-  blameGraph = constructBlameNode(startNode[0], precision, startNode[1], startNode[2]);
-  blameEdges = blameGraph.getEdges();
+    //
+    // Variable declarations.
+    //
+    int dpc; 
+    PRECISION precision;
+    vector< BlameTreeShadowObject<HIGHPRECISION> > startNode;
+    vector< vector< BlameNodeID > > blameEdges;
+    set<BlameNodeID> nodeIds;
+    BlameNode blameGraph;
 
-  for (vector< vector< BlameNodeID > >::iterator edgesIt = blameEdges.begin(); edgesIt != blameEdges.end(); ++edgesIt) {
-    vector< BlameNodeID > blameNodes;
+    //
+    // Variable definitions.
+    //
+    BlameNodeID bnID = workList.front();
+    workList.pop();
+    dpc = bnID.getDPC();
+    precision = bnID.getPrecision();
+    startNode = trace[dpc];
 
-    blameNodes = *edgesIt;
+    //
+    // We are assuming that each element of the trace has three elements.
+    // Construct blameGraph given the start node. Recursively construct
+    // blameGraph for all operands that are blamed by the start node.
+    //
+    safe_assert(startNode.size() == 3);
+    blameGraph = constructBlameNode(startNode[0], precision, startNode[1], startNode[2]);
+    blameEdges = blameGraph.getEdges();
 
-    for (vector<BlameNodeID>::iterator nodesIt = blameNodes.begin(); nodesIt != blameNodes.end(); ++nodesIt) {
+    for (vector< vector< BlameNodeID > >::iterator edgesIt = blameEdges.begin(); edgesIt != blameEdges.end(); ++edgesIt) {
+      vector< BlameNodeID > blameNodes;
+
+      blameNodes = *edgesIt;
+
+      for (vector<BlameNodeID>::iterator nodesIt = blameNodes.begin(); nodesIt != blameNodes.end(); ++nodesIt) {
+        BlameNodeID blameNode = *nodesIt;
+
+        //
+        // Construct graph for this node if it is never constructed before
+        //
+        nodeIds.insert(blameNode);
+      }
+    } 
+
+    for (set<BlameNodeID>::iterator nodesIt = nodeIds.begin(); nodesIt != nodeIds.end(); ++nodesIt) {
       BlameNodeID blameNode = *nodesIt;
-
-      //
-      // Construct graph for this node if it is never constructed before
-      //
-      if (nodes.find(blameNode) == nodes.end()) {
-        constructBlameGraph(trace, blameNode);
+      if (nodes.find(blameNode) == nodes.end()){
+        workList.push(blameNode);
       }
     }
-  } 
+  }
 
-  return blameGraph;
+  return nodes[rootNode];
 }
 
 std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {

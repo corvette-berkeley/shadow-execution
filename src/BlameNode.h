@@ -146,6 +146,7 @@ class BlameNode {
       edgeAttributes = btNode.getEdgeAttributes();
     };
 
-    void uncreate() {};
+    void uncreate() {
+    };
 };
 #endif

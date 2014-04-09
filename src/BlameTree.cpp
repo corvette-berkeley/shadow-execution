@@ -39,7 +39,6 @@
 
 /******* DEFINE ANALYSIS PARAMETERS *******/
 
-BlameNodeID BlameTree::rootNode(12, BITS_27);
 map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > BlameTree::trace;
 int BlameTree::dynamicCounter = 0;
 
@@ -388,12 +387,28 @@ void BlameTree::post_analysis() {
   cout << "\tComputation point: " <<  rootNode.getDPC() << endl; 
   cout << "\tDesired precision: " << BlameTreeUtilities::precisionToString(rootNode.getPrecision()) << endl;
 
+  BlameTreeAnalysis bta(rootNode);
+  BlameNode graph;
+  clock_t startTime, endTime;
+
+  startTime = clock();
+
+  graph = bta.constructBlameGraph(trace);
+
+  endTime = clock();
+
   cout << endl;
-  cout << "Blame tree in dot format:" << endl;
+  cout << "Done!" << endl;
+  cout << "Construction time: " << double(endTime-startTime)/double(CLOCKS_PER_SEC) << " seconds." << endl;
+
+  cout << endl;
+  cout << "Blame tree in dot format: blametree.dot" << endl;
   cout << endl;
 
-  BlameTreeAnalysis bta;
-  cout << bta.toDot(bta.constructBlameGraph(trace, rootNode)) << endl;
+  ofstream blametree;
+  blametree.open("blametree.dot");
+  blametree << bta.toDot(graph);
+  blametree.close();
   
   return;
 }

@@ -45,6 +45,7 @@
 #include "BlameNodeID.h"
 #include "IValue.h"
 #include <math.h>
+#include <fstream>
 
 using namespace llvm;
 using namespace std;
@@ -52,9 +53,8 @@ using namespace std;
 class BlameTree : public InterpreterObserver {
   
   public:
-    static BlameNodeID rootNode;    // location of computation of interest
     static int dynamicCounter; // unique counter for instructions executed
-    static map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace;
+    static map< int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace;
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 

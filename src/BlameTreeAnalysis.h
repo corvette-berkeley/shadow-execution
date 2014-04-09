@@ -41,11 +41,14 @@
 #include "BlameNode.h"
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
+#include <queue>
 
 class BlameTreeAnalysis {
   private:
     map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
                                        // set of nodes in the tree
+    queue<BlameNodeID> workList;                                       
+    BlameNodeID rootNode;              // root node of the tree                                      
 
     /**
      * Construct blame node given a binary operation expression. This function
@@ -75,6 +78,8 @@ class BlameTreeAnalysis {
 
   public:
 
+    BlameTreeAnalysis(BlameNodeID bnID): rootNode(bnID) {workList.push(bnID);};
+
     map<BlameNodeID, BlameNode> getNodes() { return nodes; };
 
     /**
@@ -90,10 +95,9 @@ class BlameTreeAnalysis {
      * can blame given its precision constraint.
      *
      * @param trace the program execution trace
-     * @param bnID a node to start with
      * @return the blame graph
      */
-    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace, BlameNodeID bnID); 
+    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace);
 };
 
 #endif
