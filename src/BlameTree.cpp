@@ -407,7 +407,7 @@ void BlameTree::post_analysis() {
 
   ofstream blametree;
   blametree.open("blametree.dot");
-  blametree << bta.toDot(graph);
+  blametree << bta.toDot();
   blametree.close();
   
   return;

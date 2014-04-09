@@ -220,6 +220,8 @@ std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
   edges = graph.getEdges();
 
   dot << "\t" << graph.edgeToDot(nodes) << endl;
+
+  /*
   for (vector< vector< BlameNodeID > >::iterator edgesIt = edges.begin();
       edgesIt != edges.end(); ++edgesIt) {
 
@@ -237,11 +239,12 @@ std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
       }
     }
   }
+  */
 
   return dot.str();
 }
 
-std::string BlameTreeAnalysis::toDot(BlameNode graph) {
+std::string BlameTreeAnalysis::toDot() {
   std::ostringstream dot;
   std::set<BlameNodeID> bnIDs;
   vector< vector< BlameNodeID > > edges;
@@ -255,9 +258,9 @@ std::string BlameTreeAnalysis::toDot(BlameNode graph) {
     if (bn.isHighlight()) {
       dot << "\t" << bn.toDot() << "[color=red]" << endl;
     }
-  } 
 
-  dot << edgeToDot(graph);
+    dot << edgeToDot(bn);
+  } 
 
   dot << "}" << endl;
 

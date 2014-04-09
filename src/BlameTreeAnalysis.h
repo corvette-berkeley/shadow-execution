@@ -87,7 +87,7 @@ class BlameTreeAnalysis {
      *
      * @return dot program of the visualized blame graph
      */
-    std::string toDot(BlameNode graph);
+    std::string toDot();
 
     /**
      * Construct the blame graph given the execution trace and a node to start
