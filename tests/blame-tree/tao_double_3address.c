@@ -34,6 +34,6 @@ int main() {
   else
     printf("miss\n");
 
-  printf("result: %lf\n", b);
+  printf("result: %.10f\n", b);
   return 0;
 }
