@@ -64,7 +64,7 @@ class BlameNode {
     vector<bool> edgeAttributes;              // set of edge attributes                                              
                                               // right now it indicates whether
                                               // the edge (the computation)
-                                              // equires high precision
+                                              // requires high precision
 
   public:
 

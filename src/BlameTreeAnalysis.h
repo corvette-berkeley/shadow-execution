@@ -47,7 +47,6 @@ class BlameTreeAnalysis {
   private:
     map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
                                        // set of nodes in the tree
-    queue<BlameNodeID> workList;                                       
     BlameNodeID rootNode;              // root node of the tree                                      
 
     /**
@@ -78,9 +77,15 @@ class BlameTreeAnalysis {
 
   public:
 
-    BlameTreeAnalysis(BlameNodeID bnID): rootNode(bnID) {workList.push(bnID);};
+    BlameTreeAnalysis(BlameNodeID bnID): rootNode(bnID) {};
 
     map<BlameNodeID, BlameNode> getNodes() { return nodes; };
+
+    /**
+     * Output the results for each lines of code, including whether the result
+     * needs higher precision or the operator needs higher precision.
+     */
+    void printResult(); 
 
     /**
      * Visualize blame graph in GraphViz dot format.

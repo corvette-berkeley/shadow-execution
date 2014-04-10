@@ -388,27 +388,35 @@ void BlameTree::post_analysis() {
   cout << "\tDesired precision: " << BlameTreeUtilities::precisionToString(rootNode.getPrecision()) << endl;
 
   BlameTreeAnalysis bta(rootNode);
-  BlameNode graph;
   clock_t startTime, endTime;
 
   startTime = clock();
 
-  graph = bta.constructBlameGraph(trace);
+  bta.constructBlameGraph(trace);
 
   endTime = clock();
 
   cout << endl;
   cout << "Done!" << endl;
   cout << "Construction time: " << double(endTime-startTime)/double(CLOCKS_PER_SEC) << " seconds." << endl;
+  cout << "Analysis result:" << endl;
+
+  bta.printResult();
 
   cout << endl;
-  cout << "Blame tree in dot format: blametree.dot" << endl;
-  cout << endl;
+  cout << "Do you want to visualize the blame tree? (yes|no)" << endl;
+  std::getline(std::cin, line);
 
-  ofstream blametree;
-  blametree.open("blametree.dot");
-  blametree << bta.toDot();
-  blametree.close();
+  if (line.compare("yes") == 0) {
+    cout << endl;
+    cout << "Blame tree in dot format: blametree.dot" << endl;
+    cout << endl;
+
+    ofstream blametree;
+    blametree.open("blametree.dot");
+    blametree << bta.toDot();
+    blametree.close();
+  }
   
   return;
 }

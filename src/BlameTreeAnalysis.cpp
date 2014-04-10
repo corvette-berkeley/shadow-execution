@@ -156,6 +156,10 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
 BlameNode BlameTreeAnalysis::constructBlameGraph(map<int,
     vector<BlameTreeShadowObject<HIGHPRECISION> > > trace) {
 
+  queue<BlameNodeID> workList;                                       
+
+  workList.push(rootNode);
+
   while (!workList.empty()) {
 
     //
@@ -221,26 +225,6 @@ std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
 
   dot << "\t" << graph.edgeToDot(nodes) << endl;
 
-  /*
-  for (vector< vector< BlameNodeID > >::iterator edgesIt = edges.begin();
-      edgesIt != edges.end(); ++edgesIt) {
-
-    vector< BlameNodeID > blameNodes = *edgesIt;
-
-    for (vector< BlameNodeID >::iterator nodesIt = blameNodes.begin(); nodesIt
-        != blameNodes.end(); ++nodesIt) {
-      BlameNodeID bnID = *nodesIt;
-
-      if (bnIDs.find(bnID) == bnIDs.end()) {
-        BlameNode bn = nodes[bnID];
-        dot << edgeToDot(bn);
-
-        bnIDs.insert(bnID);
-      }
-    }
-  }
-  */
-
   return dot.str();
 }
 
@@ -265,4 +249,88 @@ std::string BlameTreeAnalysis::toDot() {
   dot << "}" << endl;
 
   return dot.str();
+}
+
+void BlameTreeAnalysis::printResult() {
+  queue<BlameNodeID> workList;
+  set<BlameNodeID> cacheNodes;   // set of already considered blame nodes
+  map< int, vector<bool> > result; // map from pc to a pair of boolean, the first
+                                 // boolean indicates whether the result
+                                 // requires higherprecision, the second
+                                 // boolean indicates whether the operator
+                                 // requires higher precision
+  workList.push(rootNode);
+  cacheNodes.insert(rootNode);
+
+  while(!workList.empty()) {
+    int pc;
+    vector< vector< BlameNodeID > > edges;
+    vector<bool> edgeAttributes;
+    bool highlight;
+    bool edgeHighlight;
+
+    BlameNodeID bnID = workList.front();
+    BlameNode bn = nodes[bnID];
+    workList.pop();
+    pc = bn.getPC();
+    highlight = bn.isHighlight();
+    edges = bn.getEdges();
+    edgeAttributes = bn.getEdgeAttributes();
+
+    if (!edges.empty()) {
+      vector< BlameNodeID > bnIDs; 
+      
+      edgeHighlight = edgeAttributes[0];
+      //
+      // save the result for the current node
+      //
+      if (result.find(pc) == result.end()) {
+        vector<bool> nodeResult; 
+
+        nodeResult.push_back(highlight);
+        nodeResult.push_back(edgeHighlight);
+        result[pc] = nodeResult;
+      } else {
+        vector<bool> nodeResult; 
+        
+        nodeResult = result[pc];
+        nodeResult[0] = nodeResult[0] || highlight;
+        nodeResult[1] = nodeResult[1] || edgeHighlight;
+        result[pc] = nodeResult;
+      }
+      
+      bnIDs= edges[0];
+      for (vector<BlameNodeID>::iterator it = bnIDs.begin(); it != bnIDs.end();
+          ++it) {
+        BlameNodeID bnID = *it;
+        if (cacheNodes.find(bnID) == cacheNodes.end()) {
+          cacheNodes.insert(bnID);
+          workList.push(bnID);
+        }
+      }
+    }
+  }
+
+  //
+  // print result
+  //
+  for (map<int, vector<bool> >::iterator it = result.begin(); it !=
+      result.end(); it++) {
+    int pc;
+    bool highlight, edgeHighlight;
+
+    pc = it->first;
+    highlight = it->second[0];
+    edgeHighlight = it->second[1];
+
+    if (highlight || edgeHighlight) {
+      cout << "\t Line " << pc << ":" << endl;
+      if (highlight) {
+        cout << "\t\t Result: double precision" << endl;
+      }
+      if (edgeHighlight) {
+        cout << "\t\t Operator: double precision" << endl; 
+      }
+    }
+  }
 }
