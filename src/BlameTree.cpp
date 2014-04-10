@@ -241,33 +241,16 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   }
 
   // truncate result depending on precision
-  for(int i = 0; i < 5; i++) {
-    switch(i) {
-    case BITS_23:
-      values[BITS_23] = executionStack.top()[inx]->getFlpValue();
-      break;
-    case BITS_19:
-      values[BITS_19] = BlameTreeUtilities::clearBits(sresult, 52 - 19);
-      break;
-    case BITS_27:
-      values[BITS_27] = BlameTreeUtilities::clearBits(sresult, 52 - 27);
-      break;
-    case BITS_33:
-      values[BITS_33] = BlameTreeUtilities::clearBits(sresult, 52 - 33);
-      break;
-    case BITS_52:
-      values[BITS_52] = sresult;
-      break;
-    default:
-      // nothing
-      break;
-    }
-  }
+  values[BITS_23] = executionStack.top()[inx]->getFlpValue();
+  values[BITS_19] = BlameTreeUtilities::clearBits(sresult, 52 - 19);
+  values[BITS_27] = BlameTreeUtilities::clearBits(sresult, 52 - 27);
+  values[BITS_33] = BlameTreeUtilities::clearBits(sresult, 52 - 33);
+  values[BITS_52] = sresult;
 
   // creating shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = 
     new BlameTreeShadowObject<HIGHPRECISION>(line, dynamicCounter, 
-					     BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
+        BlameTreeShadowObject<HIGHPRECISION>::BIN_INTR, op, values);
   executionStack.top()[inx]->setShadow(resultShadow);
 
   // making copies of shadow objects
@@ -346,7 +329,7 @@ void BlameTree::post_analysis() {
   cout << "Tell me:" << endl;
   cout << "\t Which computation point you are interested in?" << endl;
   cout << "\t What is your desired precision for that computation point?" << endl;
-    
+
   cout << endl;
   cout << "I suggest the following parameter" << endl;
   cout << "\t Computation point: " << (dynamicCounter - 1) << endl;
