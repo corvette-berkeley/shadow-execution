@@ -218,41 +218,32 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
     //s2->print();
   }
 
+  // retrieve values in higher precision
+  sv1 = s1->getValue(4);
+  sv2 = s2->getValue(4);
 
+  switch (op) {
+  case FADD:
+    sresult = sv1 + sv2;
+    break;
+  case FSUB:
+    sresult = sv1 - sv2;
+    break;
+  case FMUL:
+    sresult = sv1 * sv2;
+    break;
+  case FDIV:
+    sresult = sv1 / sv2;
+    break;
+  default:
+    DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
+    safe_assert(false);
+  }
+
+  // truncate result depending on precision
   for(int i = 0; i < 5; i++) {
-    sv1 = s1->getValue(i);
-    //printf("sv1: %lf\n", sv1);
-    sv2 = s2->getValue(i);
-    //printf("sv2: %lf\n", sv2);
-
-    switch (op) {
-    case FADD:
-      sresult = sv1 + sv2;
-      break;
-    case FSUB:
-      sresult = sv1 - sv2;
-      break;
-    case FMUL:
-      sresult = sv1 * sv2;
-      break;
-    case FDIV:
-      sresult = sv1 / sv2;
-      break;
-    default:
-      DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op)); 
-      safe_assert(false);
-    }
-
-    /*
-    if (i == 4) {
-      cout << "Float and double precision value:" << endl;
-      printf("%lf, %lf\n", executionStack.top()[inx]->getFlpValue(), sresult);
-    }
-    */
-
     switch(i) {
     case BITS_23:
-      //printf("interpreter value: %lf\n", executionStack.top()[inx]->getFlpValue());
       values[BITS_23] = executionStack.top()[inx]->getFlpValue();
       break;
     case BITS_19:
