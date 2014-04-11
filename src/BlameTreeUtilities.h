@@ -65,17 +65,47 @@ class BlameTreeUtilities {
      * @param value02 the second operand
      * @param bop the binary operator
      *
-     * @return the result of the binary operation 
+     * @return the result of the binary operation in HIGHPRECISION 
      */
     static HIGHPRECISION eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop);
 
+    /**
+     * Evaluate the binary operation given the operator and two operands.
+     *
+     * @param value01 the first operand
+     * @param value02 the second operand
+     * @param bop the binary operator
+     *
+     * @return the result of the binary operation in LOWPRECISION 
+     */
     static LOWPRECISION feval(LOWPRECISION value01, LOWPRECISION value02, BINOP bop);
 
+    /**
+     * Convert from precision to a number specifying the exact bits.
+     *
+     * @param precision the precision to be converted
+     *
+     * @return the number of exact bits associated with the precision
+     */
     static int exactBits(PRECISION precision);
 
+    /**
+     * Convert from the number of exact bits to precision.
+     *
+     * @param bit the number of exact bits
+     *
+     * @return the precision associated with the exact bits
+     */
     static PRECISION exactBitToPrecision(int bit);
 
-    static string precisionToString(PRECISION);
+    /**
+     * Convert precision to its string representation.
+     *
+     * @param precision the precision to be converted  
+     *
+     * @return the string representation of this precision
+     */
+    static string precisionToString(PRECISION precision);
 };
 
 #endif
