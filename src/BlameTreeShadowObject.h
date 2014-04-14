@@ -39,6 +39,7 @@
 #define BLAME_TREE_SHADOW_OBJECT_H
 
 #include "Constants.h"
+#include "BlameTreeUtilities.h"
 #include <sstream>
 
 /**
@@ -59,23 +60,18 @@
 template <class T>
 class BlameTreeShadowObject {
 
-  public:
-    typedef enum {
-      BIN_INTR, UNARY_INTR, CONSTANT_INTR, CALL_INTR, LOAD_INTR, STORE_INTR,
-      INTRTYPE_INVALID
-    } INTRTYPE;
-
   private:
     int pc;                 // Program counter of the instruction associate with this object
     int dpc;                // Program counter of the instruction as appeared in the execution trace
     int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
+    string func;            // Name of the function call (if instruction is CALL)
     T value[5];             // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
-    binOp(BINOP_INVALID) {
+    binOp(BINOP_INVALID), func("NONE") {
       value[0] = 0; 
       value[1] = 0;
       value[2] = 0;
@@ -83,15 +79,15 @@ class BlameTreeShadowObject {
       value[4] = 0;
     };
 
-    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, T *val): pc(p),
-    dpc(dp), intrType(it), binOp(bo) {
+    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): pc(p),
+    dpc(dp), intrType(it), binOp(bo), func(f) {
       value[0] = val[0];
       value[1] = val[1];
       value[2] = val[2];
       value[3] = val[3];
       value[4] = val[4];
     } 
-      
+
     BlameTreeShadowObject(const BlameTreeShadowObject& btmSO) {
       create(btmSO);
     };
@@ -102,7 +98,7 @@ class BlameTreeShadowObject {
 
     BlameTreeShadowObject& operator=(const BlameTreeShadowObject& btmSO) {
       if (&btmSO != this) {
-        
+
         // free the object in the left-hand side
         uncreate();
 
@@ -132,6 +128,10 @@ class BlameTreeShadowObject {
     BINOP getBinOp() const { return binOp; };
 
     void setBinOp(BINOP binOp) { this->binOp = binOp; };
+
+    string getFunc() const { return func; };
+
+    void setFunc(string func) { this->func = func; };
 
     T getValue(int i) const { return value[i]; };
 
@@ -184,12 +184,7 @@ class BlameTreeShadowObject {
     };
 
     void print() {
-      printf("[SHADOW]<pc: %d, dpc: %d, value_23: %.10f, value_19: %.10f, value_27: %.10f, value_33: %.10f, value_52: %.10f op: %s>\n", pc, dpc, value[0], value[1], value[2], value[3], value[4], BINOP_ToString(binOp).c_str());
-
-      /*
-      printf("[SHADOW]<pc: %d, dpc: %d, value_23: %f, value_52: %f op: %s>\n", 
-	     pc, dpc, value[0], value[4], BINOP_ToString(binOp).c_str());
-      */ 
+      printf("[SHADOW]<pc: %d, dpc: %d, value_23: %.10f, value_19: %.10f, value_27: %.10f, value_33: %.10f, value_52: %.10f, op: %s, func: %s>\n", pc, dpc, value[0], value[1], value[2], value[3], value[4], BINOP_ToString(binOp).c_str(), func.c_str());
     }
 
   private:
@@ -199,6 +194,7 @@ class BlameTreeShadowObject {
       fid = btmSO.getFileID();
       intrType = btmSO.getIntrType();
       binOp = btmSO.getBinOp();
+      func = btmSO.getFunc();
       value[0] = btmSO.getValue(0);
       value[1] = btmSO.getValue(1);
       value[2] = btmSO.getValue(2);

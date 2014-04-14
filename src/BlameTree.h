@@ -58,37 +58,35 @@ class BlameTree : public InterpreterObserver {
 
     BlameTree(std::string name) : InterpreterObserver(name) {}
 
-    virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-        rValue, KIND type, int line, int inx);
+    virtual void post_call_sin(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+
+    virtual void post_call_acos(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+
+    virtual void post_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
 
     virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
         int64_t rValue, KIND type, int line, int inx);
 
-    virtual void pre_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-        rValue, KIND type, int line, int inx);
-
     virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
         int64_t rValue, KIND type, int line, int inx);
-
-    virtual void pre_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-        rValue, KIND type, int line, int inx);
 
     virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue,
         int64_t rValue, KIND type, int line, int inx);
 
-    virtual void pre_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-        rValue, KIND type, int line, int inx);
-
     virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
         int64_t rValue, KIND type, int line, int inx);
 
-    //virtual void post_create_global_symbol_table();
+    virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND
+        kind, int size, int inx);
+
+    virtual void post_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND
+        kind, int size, int inx);
+
+    virtual void post_create_global_symbol_table();
 
     virtual void post_analysis();
 
   private:
-    BlameTreeShadowObject<HIGHPRECISION> preBtmSO;
-
     /**
      * Define how to copy BlameTreeShadowObject from the source IValue to
      * the destination IValue.
@@ -135,12 +133,8 @@ class BlameTree : public InterpreterObserver {
      */
     LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
 
-    void pre_fpbinop(int inx);
-
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
         rValue, KIND type, int line, int inx, BINOP op);
-
-    void post_create_global_symbol_table();
 };
 
 #endif

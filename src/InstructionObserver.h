@@ -159,6 +159,9 @@ public:
 	virtual void create_global(KVALUE* value UNUSED, KVALUE* initializer UNUSED) {};
   virtual void create_global_array(KVALUE *value UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
+	virtual void call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
+	virtual void call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
+	virtual void call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 
 				 int size UNUSED, int inx UNUSED, KVALUE* mallocAddress UNUSED) {};
 	virtual void vaarg() {};

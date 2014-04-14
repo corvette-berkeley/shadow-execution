@@ -150,6 +150,9 @@ extern "C" {
   void llvm_create_global(KVALUE* value, KVALUE* initializer);
   void llvm_create_global_array(KVALUE* value, uint32_t size, KIND type);
   void llvm_call(IID iid, bool nounwind, KIND type, int x);
+  void llvm_call_sin(IID iid, bool nounwind, int pc, KIND type, int x);
+  void llvm_call_acos(IID iid, bool nounwind, int pc, KIND type, int x);
+  void llvm_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int x, KVALUE* mallocAddress);
   void llvm_vaarg();
   void llvm_landingpad();

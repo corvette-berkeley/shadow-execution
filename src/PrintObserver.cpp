@@ -399,6 +399,18 @@ void PrintObserver::call(IID iid, bool nounwind, KIND type, int inx) {
   DEBUG_STDOUT("<<<<< CALL >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
 }
 
+void PrintObserver::call_sin(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL SIN >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
+void PrintObserver::call_acos(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL ACOS >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
+void PrintObserver::call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL SQRT >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
 void PrintObserver::vaarg() {
   DEBUG_STDOUT("<<<<< VAARG >>>>>\n");
 }

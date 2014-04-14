@@ -193,6 +193,12 @@ public:
 
 	virtual void call(IID iid, bool nounwind, KIND type, int inx);
 
+  virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
+
 	virtual void vaarg();
 
 	virtual void landingpad();

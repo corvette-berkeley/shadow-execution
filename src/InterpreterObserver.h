@@ -237,6 +237,12 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void call(IID iid, bool nounwind, KIND type, int inx);
 
+  virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
+
   virtual void call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx, KVALUE* mallocAddress);
   
   virtual void vaarg();
@@ -261,6 +267,18 @@ class InterpreterObserver : public InstructionObserver {
   virtual void pre_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
 
   virtual void post_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
+
+  virtual void pre_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
+
+  virtual void post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
+
+  virtual void pre_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
+
+  virtual void post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
+
+  virtual void pre_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
+
+  virtual void post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
 
   virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx);
 
