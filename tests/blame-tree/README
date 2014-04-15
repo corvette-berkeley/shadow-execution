@@ -20,4 +20,7 @@ array-double-halfchange.c: for reference.
 RESULT: at point 2 correctly suggests double precision. at point 5 correctly suggests single precision.
   
 array-float-halfchangev2.c: to use in shadow execution.
-RESULT: variant with conditional statement. finds correct precision in both branches of the conditional.
+RESULT: variant with conditional statement. finds correct precision in both branches of the conditional. first half of the elements in the array require double precision.
+
+array-float-halfchangev3.c: to use in shadow execution.
+RESULT: variant in which only even array elements require double precision. analysis finds correct precision in both branches of the conditional.
