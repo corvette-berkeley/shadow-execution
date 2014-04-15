@@ -6,9 +6,10 @@ float fadd(float a, float b) {
 }
 
 int main() {
-  float x = 1.3d;
-  float y = 1.3d;
+  float x = 1.3;
+  float y = 1.3;
   float result = fadd(x, y);
+  result = result + x;
   printf("%.10f\n", result);
   return 0;
 }
