@@ -15,4 +15,7 @@ array-float-nochange.c: to use in shadow execution.
 array-double-nochange.c: all double precision (initial constants in single precision). Used to double check double precision shadow values.
 RESULT: array can remain in single precision => NO CONFIGURATION.
 
+array-float-halfchange.c: to use in shadow execution.
+array-double-halfchange.c: for reference.
+RESULT: at point 2 correctly suggests double precision. at point 5 correctly suggests single precision.
   
