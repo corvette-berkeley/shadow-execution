@@ -4,4 +4,15 @@ Function calls:
 function-call-float.c: to use in shadow execution.
 function-call-double.c: all double precision (initial constants in single precision). Used to double check double precision shadow values.
 function-call-result.c: the configuration given by the analysis. Confirmed to match all double precision to 6 digits (27 bits).
+
+Arrays:
+=======
+array-float.c: to use in shadow execution.
+array-double.c: all double precision (initial constants in single precision). Used to double check double precision shadow values.
+RESULT: array should be double => LINE 11.  
+
+array-float-nochange.c: to use in shadow execution.
+array-double-nochange.c: all double precision (initial constants in single precision). Used to double check double precision shadow values.
+RESULT: array can remain in single precision => NO CONFIGURATION.
+
   
