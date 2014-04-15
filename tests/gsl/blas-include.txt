@@ -1,0 +1,11 @@
+cblas_dgemm
+cblas_xerbla
+cov_arr_check
+cov_arr_log
+cov_deserialize
+cov_serialize
+gsl_blas_dgemm
+gsl_error
+gsl_matrix_view_array
+gsl_stream_printf
+main
