@@ -1,0 +1,7 @@
+
+Function calls:
+===============
+function-call-float.c: to use in shadow execution.
+function-call-double.c: all double precision (initial constants in single precision). Used to double check double precision shadow values.
+function-call-result.c: the configuration given by the analysis. Confirmed to match all double precision to 6 digits (27 bits).
+  
