@@ -19,3 +19,5 @@ array-float-halfchange.c: to use in shadow execution.
 array-double-halfchange.c: for reference.
 RESULT: at point 2 correctly suggests double precision. at point 5 correctly suggests single precision.
   
+array-float-halfchangev2.c: to use in shadow execution.
+RESULT: variant with conditional statement. finds correct precision in both branches of the conditional.
