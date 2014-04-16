@@ -386,7 +386,7 @@ std::string BlameTreeAnalysis::toDot() {
 void BlameTreeAnalysis::printResult() {
   queue<BlameNodeID> workList;
   set<BlameNodeID> cacheNodes;   // set of already considered blame nodes
-  map< int, vector<bool> > result; // map from pc to a pair of boolean, the first
+  map< pair<int,int>, vector<bool> > result; // map from pc to a pair of boolean, the first
   // boolean indicates whether the result
   // requires higherprecision, the second
   // boolean indicates whether the operator
@@ -396,6 +396,8 @@ void BlameTreeAnalysis::printResult() {
 
   while(!workList.empty()) {
     int pc;
+    int file;
+
     vector< vector< BlameNodeID > > edges;
     vector<bool> edgeAttributes;
     bool highlight;
@@ -405,6 +407,8 @@ void BlameTreeAnalysis::printResult() {
     BlameNode bn = nodes[bnID];
     workList.pop();
     pc = bn.getPC();
+    file = bn.getFileID();
+
     highlight = bn.isHighlight();
     edges = bn.getEdges();
     edgeAttributes = bn.getEdgeAttributes();
@@ -416,19 +420,19 @@ void BlameTreeAnalysis::printResult() {
       //
       // save the result for the current node
       //
-      if (result.find(pc) == result.end()) {
+      if (result.find(make_pair(file, pc)) == result.end()) {
         vector<bool> nodeResult; 
 
         nodeResult.push_back(highlight);
         nodeResult.push_back(edgeHighlight);
-        result[pc] = nodeResult;
+        result[make_pair(file, pc)] = nodeResult;
       } else {
         vector<bool> nodeResult; 
 
-        nodeResult = result[pc];
+        nodeResult = result[make_pair(file, pc)];
         nodeResult[0] = nodeResult[0] || highlight;
         nodeResult[1] = nodeResult[1] || edgeHighlight;
-        result[pc] = nodeResult;
+        result[make_pair(file, pc)] = nodeResult;
       }
 
       bnIDs= edges[0];
@@ -446,17 +450,18 @@ void BlameTreeAnalysis::printResult() {
   //
   // print result
   //
-  for (map<int, vector<bool> >::iterator it = result.begin(); it !=
+  for (map<pair<int, int>, vector<bool> >::iterator it = result.begin(); it !=
       result.end(); it++) {
-    int pc;
+  int pc, file;
     bool highlight, edgeHighlight;
 
-    pc = it->first;
+    file = it->first.first;
+    pc = it->first.second;
     highlight = it->second[0];
     edgeHighlight = it->second[1];
 
     if (highlight || edgeHighlight) {
-      cout << "\t Line " << pc << ":" << endl;
+      cout << "\t File: " << file << ", Line " << pc << ":" << endl;
       if (highlight) {
         cout << "\t\t Result: double precision" << endl;
       }
