@@ -340,8 +340,8 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
   return;
 }
 
-void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
-    int64_t rValue, KIND type, int line UNUSED, int inx UNUSED, BINOP op) {
+void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, 
+			    KIND type, int file UNUSED, int line UNUSED, int inx UNUSED, BINOP op) {
 
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
@@ -446,20 +446,20 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   return;
 }
 
-void BlameTree::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+void BlameTree::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FADD);
 }
 
-void BlameTree::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+void BlameTree::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FSUB);
 }
 
-void BlameTree::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+void BlameTree::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FMUL);
 }
 
-void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
+void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FDIV);
 }
 
 void BlameTree::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx) {

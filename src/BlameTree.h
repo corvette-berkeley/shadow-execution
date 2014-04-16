@@ -65,16 +65,16 @@ class BlameTree : public InterpreterObserver {
     virtual void post_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
 
     virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-        int64_t rValue, KIND type, int line, int inx);
+			   int64_t rValue, KIND type, int file, int line, int inx);
 
     virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
-        int64_t rValue, KIND type, int line, int inx);
+			   int64_t rValue, KIND type, int file, int line, int inx);
 
     virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue,
-        int64_t rValue, KIND type, int line, int inx);
+			   int64_t rValue, KIND type, int file, int line, int inx);
 
     virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
-        int64_t rValue, KIND type, int line, int inx);
+			   int64_t rValue, KIND type, int file, int line, int inx);
 
     virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND
         kind, int size, int inx);
@@ -134,7 +134,7 @@ class BlameTree : public InterpreterObserver {
     LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
 
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-        rValue, KIND type, int line, int inx, BINOP op);
+		     rValue, KIND type, int file, int line, int inx, BINOP op);
 };
 
 #endif

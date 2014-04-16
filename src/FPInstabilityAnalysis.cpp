@@ -249,7 +249,7 @@ void FPInstabilityAnalysis::post_sync_call(int inx UNUSED, int line UNUSED) {
   }
 }
 
-void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
+void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx, BINOP op) {
 
   HIGHPRECISION v1, v2, sv1, sv2, sresult, result;
   FPInstabilityShadowObject<HIGHPRECISION> *fpISO;
@@ -380,36 +380,36 @@ void FPInstabilityAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lVal
 
 }
 
-void FPInstabilityAnalysis::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPInstabilityAnalysis::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPInstabilityAnalysis::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPInstabilityAnalysis::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPInstabilityAnalysis::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPInstabilityAnalysis::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPInstabilityAnalysis::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPInstabilityAnalysis::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPInstabilityAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+void FPInstabilityAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FADD);
 }
 
-void FPInstabilityAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+void FPInstabilityAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FSUB);
 }
 
-void FPInstabilityAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+void FPInstabilityAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FMUL);
 }
 
-void FPInstabilityAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
+void FPInstabilityAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FDIV);
 }
 
 void FPInstabilityAnalysis::post_create_global_symbol_table() {

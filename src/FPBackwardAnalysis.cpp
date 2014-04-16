@@ -140,7 +140,7 @@ void FPBackwardAnalysis::pre_analysis(int inx) {
   }
 }
 
-void FPBackwardAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx, BINOP op) {
+void FPBackwardAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx, BINOP op) {
 
   //long double v1, v2, result;
   PRECISION sv1, sv2, sresult;
@@ -208,36 +208,36 @@ void FPBackwardAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
   return;
 }
 
-void FPBackwardAnalysis::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPBackwardAnalysis::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPBackwardAnalysis::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPBackwardAnalysis::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPBackwardAnalysis::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPBackwardAnalysis::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPBackwardAnalysis::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx) {
+void FPBackwardAnalysis::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx) {
   pre_analysis(inx);
 }
 
-void FPBackwardAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FADD);
+void FPBackwardAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FADD);
 }
 
-void FPBackwardAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FSUB);
+void FPBackwardAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FSUB);
 }
 
-void FPBackwardAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FMUL);
+void FPBackwardAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FMUL);
 }
 
-void FPBackwardAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, line, inx, FDIV);
+void FPBackwardAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FDIV);
 }
 
 /*
