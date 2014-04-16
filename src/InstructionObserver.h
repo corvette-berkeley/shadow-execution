@@ -57,26 +57,26 @@ public:
 	virtual ~InstructionObserver() {}
 
 	// ***** Binary Operators **** //
-	virtual void add(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void sub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void mul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void udiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void sdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void urem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void srem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void add(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void sub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void mul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void udiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void sdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void urem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void srem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 
 	// ***** Bitwise Binary Operators ***** //
-	virtual void shl(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void lshr(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void ashr(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void and_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void or_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void xor_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void shl(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void lshr(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void ashr(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void and_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void or_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void xor_(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
 
 	// ***** Vector Operations ***** //
 	virtual void extractelement(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {};
@@ -137,15 +137,16 @@ public:
 	virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {};
 	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
-  virtual void push_string(int c UNUSED){};
+	virtual void push_string(int c UNUSED){};
 	virtual void push_stack(KVALUE* value UNUSED) {};
 	virtual void push_phinode_value(int valId UNUSED, int blockId UNUSED) {};
 	virtual void push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {};
 	virtual void push_return_struct(KVALUE* value UNUSED) {};
 	virtual void push_struct_type(KIND kind UNUSED) {};
-  virtual void push_struct_element_size(uint64_t s UNUSED) {};
+	virtual void push_struct_element_size(uint64_t s UNUSED) {};
 	virtual void push_getelementptr_inx(KVALUE* value UNUSED) {};
-	virtual void push_getelementptr_inx5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED, int64_t vori01 UNUSED, int64_t vori02 UNUSED, int64_t vori03 UNUSED, int64_t vori04 UNUSED, int64_t vori05 UNUSED) {};
+	virtual void push_getelementptr_inx5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED, int64_t vori01 UNUSED, 
+					     int64_t vori02 UNUSED, int64_t vori03 UNUSED, int64_t vori04 UNUSED, int64_t vori05 UNUSED) {};
 	virtual void push_getelementptr_inx2(int value UNUSED) {};
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void push_array_size5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED) {}; 
@@ -157,7 +158,7 @@ public:
 	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};
 	virtual void create_global(KVALUE* value UNUSED, KVALUE* initializer UNUSED) {};
-  virtual void create_global_array(KVALUE *value UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
+	virtual void create_global_array(KVALUE *value UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};

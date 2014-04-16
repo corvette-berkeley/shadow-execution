@@ -21,7 +21,7 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
     Value *lValue, *rValue;
-    Constant *cInx, *cLine, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
+    Constant *cInx, *cFile, *cLine, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
 
     lValue = binInst->getOperand(0);
     rValue = binInst->getOperand(1);
@@ -29,6 +29,16 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     cInx = computeIndex(binInst);
     cLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
     cType = KIND_CONSTANT(TypeToKind(binInst->getType()));
+
+    string filename = getFileName(binInst);
+    if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
+      // element was inserted
+      cFile = INT32_CONSTANT(parent_->fileCount, SIGNED);
+      parent_->fileCount++;
+    }
+    else {
+      cFile = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
+    }
 
     cLScope = INT32_CONSTANT(getScope(lValue), SIGNED);
     cRScope = INT32_CONSTANT(getScope(rValue), SIGNED);
@@ -106,8 +116,8 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     }
 
     Instruction *call =
-      CALL_INT_INT_INT64_INT64_KIND_INT_INT(callback.str().c_str(), cLScope,
-          cRScope, cLValue, cRValue, cType, cLine, cInx);
+      CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT(callback.str().c_str(), cLScope,
+					    cRScope, cLValue, cRValue, cType, cFile, cLine, cInx);
 
     instrs.push_back(call);
 
