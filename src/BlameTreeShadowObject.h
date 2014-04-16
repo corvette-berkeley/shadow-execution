@@ -62,16 +62,16 @@ template <class T>
 class BlameTreeShadowObject {
 
   private:
+    int fid;                // Id of the file containing this instruction
     int pc;                 // Program counter of the instruction associate with this object
     int dpc;                // Program counter of the instruction as appeared in the execution trace
-    int fid;                // Id of the file containing this instruction
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
     string func;            // Name of the function call (if instruction is CALL)
     T value[PRECISION_NO];             // Value in 5 different precision
 
   public:
-    BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
+ BlameTreeShadowObject(): fid(0), pc(0), dpc(0), intrType(INTRTYPE_INVALID),
     binOp(BINOP_INVALID), func("NONE") {
       PRECISION i;
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
@@ -79,7 +79,15 @@ class BlameTreeShadowObject {
       }
     };
 
-    BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): pc(p),
+ BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): fid(0), pc(p),
+    dpc(dp), intrType(it), binOp(bo), func(f) {
+      PRECISION i;
+      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
+        value[i] = val[i];
+      }
+    } 
+
+ BlameTreeShadowObject(int file, int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): fid(file), pc(p),
     dpc(dp), intrType(it), binOp(bo), func(f) {
       PRECISION i;
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
@@ -190,7 +198,7 @@ class BlameTreeShadowObject {
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
         cout << ", " << BlameTreeUtilities::precisionToString(i) << ":" << value[i];
       }
-      cout << ", op: " << BINOP_ToString(binOp).c_str() << ", func:" << func.c_str() << endl;
+      cout << ", op: " << BINOP_ToString(binOp).c_str() << ", func:" << func.c_str() << ", file: " << fid << endl;
     }
 
   private:

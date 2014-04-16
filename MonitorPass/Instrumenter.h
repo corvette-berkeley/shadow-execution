@@ -1038,7 +1038,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   /*******************************************************************************************/
   Instruction* CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT(const char* func, Value
 							 *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, 
-							 Value *kind, Value *line, Value *file, Value *inx) {
+							 Value *kind, Value *file, Value *line, Value *inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());

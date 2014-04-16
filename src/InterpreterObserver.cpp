@@ -730,7 +730,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 }
 
 // **** Binary Operations *** //
-void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx, BINOP op) {
+void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx, BINOP op) {
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
