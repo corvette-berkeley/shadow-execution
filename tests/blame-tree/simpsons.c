@@ -18,7 +18,7 @@ int main( int argc, char **argv) {
   int l;
   
   int i, j, k; // diff: added constants
-  const int n = 1000000;
+  const int n = 10000;
   double a, b; // removed fun, h, s1, and x
   double h, s1, x;
   const double fuzz = 1e-26; // diff: added fuzz
@@ -44,5 +44,8 @@ int main( int argc, char **argv) {
     s1 = s1 + fun(x);
 
   }
+
+  printf("s1 = %.10f\n", s1);
+
   return 0;
 }

@@ -1,9 +1,10 @@
 #include <stdio.h>
 
 int main() {
-  const float a = 4;
-  const float b = 4.1;
-  const float c = 8;
+  float a = 4.0f;
+  float b = 4.1f;
+  float c = 8.0f;
+  float d = 2.0f; 
   float tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
 
   tmp0 = a + b;
