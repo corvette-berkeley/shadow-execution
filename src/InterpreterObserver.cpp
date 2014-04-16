@@ -452,7 +452,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
     }
   }
 
-  dest->setLineNumber(line);
+  dest->setSourceInfo(file, line);
 
   delete(executionStack.top()[inx]);
   executionStack.top()[inx] = dest;
@@ -579,7 +579,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     }
 
-    destLocation->setLineNumber(line);
+    destLocation->setSourceInfo(file, line);
     destLocation->copy(executionStack.top()[inx]);
     delete(destLocation);
     DEBUG_STDOUT(destLocation->toString());
@@ -599,7 +599,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     destLocation->setType(type);
     destLocation->setValue(zeroValue);
-    destLocation->setLineNumber(line);
+    destLocation->setSourceInfo(file, line);
 
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
@@ -822,7 +822,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   }
 
   iResult = new IValue(type, result);
-  iResult->setLineNumber(line);
+  iResult->setSourceInfo(file, line);
 
   delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
@@ -1105,7 +1105,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   }
 
   iResult = new IValue(type, result);
-  iResult->setLineNumber(line);
+  iResult->setSourceInfo(file, line);
 
   delete(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;

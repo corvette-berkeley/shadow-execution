@@ -113,6 +113,7 @@ string IValue::toString() {
   s << ", BitOffset: " << bitOffset;
   s << ", Index: " << index;
   s << ", Line: " << lineNumber;
+  s << ", File: " << fileNumber;
   s << ", FirstByte: " << firstByte;
   s << ", Length: " << length;
   s << ", Initialized: " << isInitialized();
@@ -135,6 +136,10 @@ void IValue::copy(IValue *dest) {
   if (copyShadow != NULL) {
     copyShadow(this, dest);
   }
+  // source info?
+  dest->setLineNumber(lineNumber);
+  dest->setFileNumber(fileNumber);
+  return;
 }
 
 void IValue::copyFrom(KVALUE* kValue) {

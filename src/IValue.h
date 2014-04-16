@@ -66,6 +66,7 @@ class IValue {
      *    distance from its address to the base pointer [used for elements in an array]
      *  length: number of elements in the array object [used for array (pointer) only]
      *  scope: either a GLOBAL, LOCAL or REGISTER object
+     *  fileNumber: file id for source location
      *  lineNumber: source code line number
      *  flag: machine flag (currently unused)
      *  shadow: pointer to shadow object
@@ -74,7 +75,7 @@ class IValue {
     VALUE value; 
     int64_t valueOffset; 
     unsigned size, index, firstByte, length; 
-    int offset, bitOffset, lineNumber; 
+    int offset, bitOffset, fileNumber, lineNumber; 
     SCOPE scope; 
     MACHINEFLAG flag;
     void* shadow;
@@ -106,28 +107,28 @@ class IValue {
 
  public:
     IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1),
-    size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-    lineNumber(0), scope(s), shadow(NULL) {}
+      size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
+      fileNumber(0), lineNumber(0), scope(s), shadow(NULL) {}
       
     IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0),
-    index(0), firstByte(0), length(0), offset(0), bitOffset(0), lineNumber(0),
-    scope(REGISTER), shadow(NULL) {}
+      index(0), firstByte(0), length(0), offset(0), bitOffset(0), 
+      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
     IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1),
-    size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0),
-    lineNumber(0), scope(REGISTER), shadow(NULL) {}
+      size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0),
+      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
 
     IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t),
-    value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l),
-    offset(o), bitOffset(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+      value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l),
+      offset(o), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
     
     IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0),
-    length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER),
-    shadow(NULL) { value.as_int = 0; }
+      length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
+      shadow(NULL) { value.as_int = 0; }
 
     IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0),
-    length(0), offset(0), bitOffset(0), lineNumber(0), scope(REGISTER),
-    shadow(NULL) {}
+      length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
+      shadow(NULL) {}
 
     IValue(const IValue& iv) {
       create(iv);
@@ -171,6 +172,10 @@ class IValue {
     void setBitOffset(int bitOffset) { this->bitOffset = bitOffset; };
 
     void setLineNumber(int lineNumber) { this->lineNumber = lineNumber; };
+
+    void setFileNumber(int fileNumber) { this->fileNumber = fileNumber; };
+
+    void setSourceInfo(int fileNumber, int lineNumber) { this->fileNumber = fileNumber; this->lineNumber = lineNumber;};
 
     void setShadow(void* shadow) { this->shadow = shadow; };
 
