@@ -40,6 +40,7 @@
 
 #include "Constants.h"
 #include "BlameTreeUtilities.h"
+#include <limits>
 #include <sstream>
 
 /**
@@ -67,25 +68,23 @@ class BlameTreeShadowObject {
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
     string func;            // Name of the function call (if instruction is CALL)
-    T value[5];             // Value in 5 different precision
+    T value[PRECISION_NO];             // Value in 5 different precision
 
   public:
     BlameTreeShadowObject(): pc(0), dpc(0), intrType(INTRTYPE_INVALID),
     binOp(BINOP_INVALID), func("NONE") {
-      value[0] = 0; 
-      value[1] = 0;
-      value[2] = 0;
-      value[3] = 0;
-      value[4] = 0;
+      PRECISION i;
+      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
+        value[i] = 0;
+      }
     };
 
     BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): pc(p),
     dpc(dp), intrType(it), binOp(bo), func(f) {
-      value[0] = val[0];
-      value[1] = val[1];
-      value[2] = val[2];
-      value[3] = val[3];
-      value[4] = val[4];
+      PRECISION i;
+      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
+        value[i] = val[i];
+      }
     } 
 
     BlameTreeShadowObject(const BlameTreeShadowObject& btmSO) {
@@ -184,22 +183,30 @@ class BlameTreeShadowObject {
     };
 
     void print() {
-      printf("[SHADOW]<pc: %d, dpc: %d, value_23: %.10f, value_19: %.10f, value_27: %.10f, value_33: %.10f, value_52: %.10f, op: %s, func: %s>\n", pc, dpc, value[0], value[1], value[2], value[3], value[4], BINOP_ToString(binOp).c_str(), func.c_str());
+      PRECISION i;
+
+      cout << "[SHADOW]<pc: " << pc << ", dpc: " << dpc;
+      cout.precision(20);
+//      cout.precision(std::numeric_limits< double >::digits10);
+      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
+        cout << ", " << BlameTreeUtilities::precisionToString(i) << ":" << value[i];
+      }
+      cout << ", op: " << BINOP_ToString(binOp).c_str() << ", func:" << func.c_str() << endl;
     }
 
   private:
     void create(const BlameTreeShadowObject& btmSO) {
+      PRECISION i;
+
       pc = btmSO.getPC();
       dpc = btmSO.getDPC();
       fid = btmSO.getFileID();
       intrType = btmSO.getIntrType();
       binOp = btmSO.getBinOp();
       func = btmSO.getFunc();
-      value[0] = btmSO.getValue(0);
-      value[1] = btmSO.getValue(1);
-      value[2] = btmSO.getValue(2);
-      value[3] = btmSO.getValue(3);
-      value[4] = btmSO.getValue(4);
+      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
+        value[i] = btmSO.getValue(i);
+      }
     };
 
     void uncreate() {};

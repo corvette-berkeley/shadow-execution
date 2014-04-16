@@ -67,6 +67,16 @@ class BlameTreeAnalysis {
         BlameTreeShadowObject<HIGHPRECISION> right01,
         BlameTreeShadowObject<HIGHPRECISION> right02);
 
+    BlameNode constructFuncBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+        PRECISION precision,
+        BlameTreeShadowObject<HIGHPRECISION> right);
+
+    BlameNode constructTruncBlameNode(BlameTreeShadowObject<HIGHPRECISION>
+        left, PRECISION precision, BlameTreeShadowObject<HIGHPRECISION> right);
+
+    BlameNode constructExtBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+        PRECISION precision, BlameTreeShadowObject<HIGHPRECISION> right);
+
     /**
      * Helper function for toDot function. This function visualize all edges of
      * the graph in GraphViz dot format.

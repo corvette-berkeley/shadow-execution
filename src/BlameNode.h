@@ -68,9 +68,11 @@ class BlameNode {
 
   public:
 
-    BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BITS_23) {};
+    BlameNode(): dpc(0), pc(0), fid(0), highlight(false), precision(BITS_FLOAT) {};
 
-    BlameNode(int dp, int p, int f, bool hl, PRECISION prec, vector< vector< BlameNodeID > > es, vector<bool> eas): dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es), edgeAttributes(eas) {};
+    BlameNode(int dp, int p, int f, bool hl, PRECISION prec, vector< vector<
+        BlameNodeID > > es, vector<bool> eas): dpc(dp), pc(p), fid(f),
+    highlight(hl), precision(prec), edges(es), edgeAttributes(eas) {};
 
     BlameNode(const BlameNode& btNode) {
       create(btNode);
