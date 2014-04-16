@@ -64,47 +64,6 @@ double BlameTreeUtilities::clearBits(double v, int shift) {
   dm = (double*) ptr;
 
   return *dm;
-
-  /*
-  if (shift != 0) {
-    double v2;
-    int64_t *ptr;
-    int64_t *ptr2;
-    double *dm;
-    double *dm2;
-    int64_t mask = 0xffffffffffffffff;
-    int64_t mask2 = mask;
-
-    mask = mask << shift;
-    mask2 = mask2 << (shift-1);
-    v2 = v;
-
-    ptr = (int64_t*)&v;
-    ptr2 = (int64_t*)&v2;
-    *ptr = *ptr & mask;
-    *ptr2 = *ptr2 & mask2;
-    dm = (double*)ptr;
-    dm2 = (double*)ptr2;
-
-    if (*dm == *dm2) {
-      return *dm;
-    } else {
-      // need to round up dm
-      int64_t round = *ptr;
-      round = round >> shift;
-      round = round + 1; 
-      round = round << shift;
-      // over-flow
-      safe_assert(round != 0);
-      *ptr = round;
-      dm = (double*)ptr;
-
-      return *dm;
-    }
-  } 
-
-  return v;
-  */
 }
 
 LOWPRECISION BlameTreeUtilities::feval(LOWPRECISION value01, LOWPRECISION value02, BINOP bop) {
@@ -356,7 +315,7 @@ string BlameTreeUtilities::precisionToString(PRECISION precision) {
     case BITS_32:
       return "32 bits";
     case BITS_33:
-      return "33bits";
+      return "33 bits";
     case BITS_DOUBLE:
       return "double";
     default:

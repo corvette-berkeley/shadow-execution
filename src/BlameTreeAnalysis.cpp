@@ -84,10 +84,16 @@ BlameTreeAnalysis::constructFuncBlameNode(BlameTreeShadowObject<HIGHPRECISION>
       HIGHPRECISION value01 = right.getValue(i);
       HIGHPRECISION lowvalue01 = right.getValue(BITS_FLOAT);
 
+      safe_assert(value == BlameTreeUtilities::clearBits(value, 52 -
+            BlameTreeUtilities::exactBits(precision)));
+      if (BlameTreeUtilities::equalWithPrecision(value,
+            BlameTreeUtilities::evalFunc(value01, func), precision)) {
+        /*
       if (BlameTreeUtilities::clearBits(value, 52 -
             BlameTreeUtilities::exactBits(precision)) ==
           BlameTreeUtilities::clearBits(BlameTreeUtilities::evalFunc(value01,
               func), 52 - BlameTreeUtilities::exactBits(precision))) {
+              */
         //
         // Construct edges for each blame
         //
@@ -185,10 +191,13 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
         HIGHPRECISION lowvalue02 = right02.getValue(BITS_FLOAT);
 
         safe_assert(value == BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)));
+        if (BlameTreeUtilities::equalWithPrecision(value,
+              BlameTreeUtilities::eval(value01, value02, bop), precision)) {
+            /*
         if (value ==
             BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
                 value02, bop), 52 - BlameTreeUtilities::exactBits(precision)))
-        {
+        {*/
           //
           // Construct edges for each blame
           //
@@ -213,11 +222,15 @@ BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECIS
           //
           // Determine the edge attribute
           //
+          node.addEdgeAttribute(!BlameTreeUtilities::equalWithPrecision(value,
+                BlameTreeUtilities::feval(value01, value02, bop), precision));
+          /*
           node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
                 BlameTreeUtilities::exactBits(precision)) !=
               BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
                   value02, bop), 52 -
                 BlameTreeUtilities::exactBits(precision)));
+                */
 
           //
           // Do not try larger j because it subsumes what have been tried
@@ -344,7 +357,7 @@ std::string BlameTreeAnalysis::toDot() {
   vector< vector< BlameNodeID > > edges;
   map<BlameNodeID, BlameNode>::reverse_iterator it;
 
-  int nodeCnt = 0;
+  //int nodeCnt = 0;
 
   dot << "digraph G { " << endl;
 
@@ -357,10 +370,12 @@ std::string BlameTreeAnalysis::toDot() {
 
     dot << edgeToDot(bn);
 
+    /*
     cout << nodeCnt << endl;
 
     nodeCnt++; 
     if (nodeCnt > 500) break;
+    */
   } 
 
   dot << "}" << endl;

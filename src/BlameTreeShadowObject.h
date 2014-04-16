@@ -186,8 +186,7 @@ class BlameTreeShadowObject {
       PRECISION i;
 
       cout << "[SHADOW]<pc: " << pc << ", dpc: " << dpc;
-      cout.precision(20);
-//      cout.precision(std::numeric_limits< double >::digits10);
+      cout.precision(10);
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
         cout << ", " << BlameTreeUtilities::precisionToString(i) << ":" << value[i];
       }

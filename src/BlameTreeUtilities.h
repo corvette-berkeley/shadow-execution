@@ -54,19 +54,24 @@ typedef double HIGHPRECISION;
 typedef float LOWPRECISION;
 typedef enum { 
   BITS_FLOAT, 
-//  BITS_8, BITS_9,
-//  BITS_10, BITS_11,
+  /*
+  BITS_8, BITS_9,
+  BITS_10, BITS_11,
+  */
   BITS_12, BITS_13,
   BITS_14, BITS_15,
   BITS_16, BITS_17, 
-  BITS_18, BITS_19, 
+  BITS_18, 
+  BITS_19, 
   BITS_20, BITS_21, 
   BITS_22, BITS_23,
   BITS_24, BITS_25, 
-  BITS_26, BITS_27, 
+  BITS_26, 
+  BITS_27, 
   BITS_28, BITS_29, 
   BITS_30, BITS_31,
-  BITS_32, BITS_33, 
+  BITS_32, 
+  BITS_33, 
   BITS_DOUBLE, PRECISION_NO 
 } PRECISION;
 typedef enum {
