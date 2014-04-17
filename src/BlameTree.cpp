@@ -340,6 +340,70 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
   return;
 }
 
+
+void BlameTree::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+  BlameTreeShadowObject<HIGHPRECISION> *shadow;
+  LOWPRECISION arg, result;
+  HIGHPRECISION sarg, sresult;
+  PRECISION p;
+
+  //
+  // Obtain actual values and shadow values
+  //
+  arg = getActualValue(argScope, argValueOrIndex);
+  result = executionStack.top()[inx]->getFlpValue();
+
+  shadow = getShadowObject(argScope, argValueOrIndex);
+
+  //
+  // Perform sqrt function on shadow values
+  // 
+  HIGHPRECISION values[PRECISION_NO];
+
+  // shadow object for operands
+  if (!shadow) {
+    // constructing and setting shadow object
+    HIGHPRECISION values[PRECISION_NO];
+    PRECISION p;
+    values[BITS_FLOAT] = arg;
+    values[BITS_DOUBLE] = (HIGHPRECISION) arg;
+    for (p = PRECISION(BITS_FLOAT+1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
+      values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION) arg, 52 -
+          BlameTreeUtilities::exactBits(p));
+    }
+    
+    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
+        BINOP_INVALID, "NONE", values);
+    setShadowObject(argScope, argValueOrIndex, shadow);
+  }
+
+
+  // retrieve the value in higher precision
+  sarg = shadow->getValue(BITS_DOUBLE);
+  sresult = fabs(sarg);
+
+  values[BITS_FLOAT] = result;
+  values[BITS_DOUBLE] = sresult;
+  for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
+    values[p] = BlameTreeUtilities::clearBits(sresult, 52 -
+        BlameTreeUtilities::exactBits(p));
+  }
+
+  // creating shadow object for the result
+  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
+    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sqrt",
+        values); 
+  executionStack.top()[inx]->setShadow(resultShadow);
+
+  // adding to the trace
+  trace[dynamicCounter].push_back(*resultShadow);
+  trace[dynamicCounter].push_back(*shadow);
+
+  dynamicCounter++; 
+  return;
+}
+
+
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, 
 			    KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
 
