@@ -148,7 +148,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     InsertAllAfter(instrsAfter, callInst); // new
   }
 
-  if (callInst->getCalledFunction() != NULL &&
+  else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sin") {
     //
     // the case for sin function
@@ -159,7 +159,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     return true;
   }
-  if (callInst->getCalledFunction() != NULL &&
+  else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "acos") {
     //
     // the case for acos function
@@ -170,7 +170,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     return true;
   }
-  if (callInst->getCalledFunction() != NULL &&
+  else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sqrt") {
     //
     // the case for sqrt function
@@ -182,7 +182,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     return true;
   }
 
-  if (callInst->getCalledFunction() != NULL &&
+  else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "fabs") {
     //
     // the case for fabs function
@@ -194,7 +194,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     return true;
   }
 
-  if (callInst->getCalledFunction() != NULL &&
+  else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "cos") {
     //
     // the case for cos function
