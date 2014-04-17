@@ -147,6 +147,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     InsertAllBefore(instrs, callInst);
     InsertAllAfter(instrsAfter, callInst); // new
   }
+
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sin") {
     //
@@ -161,7 +162,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "acos") {
     //
-    // the case for sin function
+    // the case for acos function
     //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_acos", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
@@ -172,9 +173,21 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sqrt") {
     //
-    // the case for sin function
+    // the case for sqrt function
     //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sqrt", iid, noUnwindC, cLine, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
+
+    return true;
+  }
+
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "fabs") {
+    //
+    // the case for fabs function
+    //
+    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_fabs", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
 
