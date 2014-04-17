@@ -45,6 +45,7 @@
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
 #include "BlameTree.h"
+#include "BlameTreeFloat.h"
 // #include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
@@ -449,6 +450,7 @@ ObserverPtrList observers_;
 //REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 REGISTER_OBSERVER(BlameTree, "blametree")
+//REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
 
 /*******************************************************************************************/
 

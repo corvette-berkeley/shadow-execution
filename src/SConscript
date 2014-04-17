@@ -74,6 +74,7 @@ plugin = env.SharedLibrary(
 #    'FPInstabilityAnalysis.cpp',
     'BlameNode.cpp',
     'BlameTree.cpp',
+    'BlameTreeFloat.cpp',
     'BlameTreeAnalysis.cpp',
     'BlameTreeUtilities.cpp'
         ],
