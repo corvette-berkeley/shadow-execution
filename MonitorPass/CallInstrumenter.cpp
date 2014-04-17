@@ -14,7 +14,6 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   } 
 
   bool isIntrinsic = dyn_cast<IntrinsicInst>(callInst) != NULL;
-  //bool noUnwind = callInst->getAttributes().hasAttrSomewhere(Attribute::NoUnwind) || isIntrinsic;
   bool noUnwind = isIntrinsic;
 
   if (noUnwind && callInst->getType()->isVoidTy()) {
@@ -148,14 +147,48 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     InsertAllBefore(instrs, callInst);
     InsertAllAfter(instrsAfter, callInst); // new
   }
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "sin") {
+    //
+    // the case for sin function
+    //
+    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sin", iid, noUnwindC, cLine, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
+
+    return true;
+  }
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "acos") {
+    //
+    // the case for sin function
+    //
+    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_acos", iid, noUnwindC, cLine, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
+
+    return true;
+  }
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "sqrt") {
+    //
+    // the case for sin function
+    //
+    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sqrt", iid, noUnwindC, cLine, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
+
+    return true;
+  }
   else {
+    //
+    // the case for general function call
+    //
     // kind is the return type of the function
     call = CALL_IID_BOOL_KIND_INT("llvm_call", iid, noUnwindC, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
   }
-
-  ///////
 
   if (callInst->getCalledFunction() == NULL || callInst->getCalledFunction()->getName() != "malloc") {
     Instruction* call = NULL;
@@ -174,8 +207,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     }
     instrsAfter.push_back(call);
     InsertAllAfter(instrsAfter, callInst);
-
   }
+
   return true;
 }
 

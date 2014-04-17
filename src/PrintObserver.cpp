@@ -62,76 +62,76 @@ void PrintObserver::load_struct(IID iid, KIND type, KVALUE* op, int file, int li
 
 // ***** Binary Operations ***** //
 
-void PrintObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< ADD >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< FADD >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< SUB >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< FSUB >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< MUL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< FMUL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< UDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< SDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< FDIV >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< UREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< SREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< FREM >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
 // ***** Bitwise Binary Operations ***** //
-void PrintObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< SHL >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< LSHR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< ASHR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< AND >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< OR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 
-void PrintObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx) {
+void PrintObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int col UNUSED, int inx) {
   DEBUG_STDOUT("<<<<< XOR >>>>> lscope:" << SCOPE_ToString(lScope) << ", rscope:" << SCOPE_ToString(rScope) << ", lvalue:" << lValue << ", rValue:" << rValue << ", type:" << KIND_ToString(type) << ", line:" << line << ", [INX:" << inx << "]");
 }
 

@@ -64,6 +64,7 @@ class BlameTreeShadowObject {
   private:
     int fid;                // Id of the file containing this instruction
     int pc;                 // Program counter of the instruction associate with this object
+    int col;                // Column offset of the instruction associate with this object
     int dpc;                // Program counter of the instruction as appeared in the execution trace
     INTRTYPE intrType;      // Type of the instruction
     BINOP binOp;            // Binary operator (if instruction is BINOP) 
@@ -71,7 +72,7 @@ class BlameTreeShadowObject {
     T value[PRECISION_NO];             // Value in 5 different precision
 
   public:
- BlameTreeShadowObject(): fid(0), pc(0), dpc(0), intrType(INTRTYPE_INVALID),
+    BlameTreeShadowObject(): fid(0), pc(0), col(0), dpc(0), intrType(INTRTYPE_INVALID),
     binOp(BINOP_INVALID), func("NONE") {
       PRECISION i;
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
@@ -79,16 +80,8 @@ class BlameTreeShadowObject {
       }
     };
 
- BlameTreeShadowObject(int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): fid(0), pc(p),
-    dpc(dp), intrType(it), binOp(bo), func(f) {
-      PRECISION i;
-      for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
-        value[i] = val[i];
-      }
-    } 
-
- BlameTreeShadowObject(int file, int p, int dp, INTRTYPE it, BINOP bo, string f, T *val): fid(file), pc(p),
-    dpc(dp), intrType(it), binOp(bo), func(f) {
+    BlameTreeShadowObject(int file, int p, int c, int dp, INTRTYPE it, BINOP bo, string f, T *val): fid(file), pc(p),
+    col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
       PRECISION i;
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
         value[i] = val[i];
@@ -119,6 +112,10 @@ class BlameTreeShadowObject {
     int getPC() const { return pc; };
 
     void setPC(int pc) { this->pc = pc; };
+
+    int getCol() const { return col; };
+
+    void setCol(int col) { this->col = col; };
 
     int getDPC() const { return dpc; };
 
@@ -193,7 +190,7 @@ class BlameTreeShadowObject {
     void print() {
       PRECISION i;
 
-      cout << "[SHADOW]<pc: " << pc << ", dpc: " << dpc;
+      cout << "[SHADOW]<pc: " << pc << ", col: " << col << ", dpc: " << dpc;
       cout.precision(10);
       for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i+1)) {
         cout << ", " << BlameTreeUtilities::precisionToString(i) << ":" << value[i];
@@ -206,6 +203,7 @@ class BlameTreeShadowObject {
       PRECISION i;
 
       pc = btmSO.getPC();
+      col = btmSO.getCol();
       dpc = btmSO.getDPC();
       fid = btmSO.getFileID();
       intrType = btmSO.getIntrType();

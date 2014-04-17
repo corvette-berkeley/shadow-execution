@@ -10,7 +10,7 @@ int main() {
   // a*a*a*a
   tmp0 = a*a;               
   tmp1 = tmp0*a;            
-  tmp2 = (double) tmp1 * (double) a;         
+  tmp2 = (double) tmp1 * (double) a; // double         
 
   // 4*a*a*a
   tmp3 = 4 * a;          
@@ -18,14 +18,14 @@ int main() {
   tmp5 = tmp4 * a;      
 
   // 6*a*a
-  tmp6 = (double) 6 * (double) a;
-  tmp7 = tmp6 * a;
+  tmp6 = (double) 6 * (double) a; // double
+  tmp7 = tmp6 * a;  // double
 
   // 4 *a
   tmp8 = 4 *a;
 
-  tmp9 = tmp2 - tmp5;
-  tmp10 = tmp9 + tmp7;
+  tmp9 = tmp2 - tmp5; // double
+  tmp10 = tmp9 + tmp7; // double
   tmp11 = (double) tmp10 - (double) tmp8;
 
   tmp12 = tmp11 + 1;

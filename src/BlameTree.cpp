@@ -185,7 +185,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
           BlameTreeUtilities::exactBits(p));
     }
     
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CONSTANT_INTR,
+    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(argScope, argValueOrIndex, shadow);
   }
@@ -204,7 +204,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
 
   // creating shadow object for the result
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CALL_INTR, BINOP_INVALID, "sin",
+    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sin",
         values); 
   executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -247,7 +247,7 @@ void BlameTree::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
           BlameTreeUtilities::exactBits(p));
     }
     
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CONSTANT_INTR,
+    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(argScope, argValueOrIndex, shadow);
   }
@@ -266,7 +266,7 @@ void BlameTree::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
 
   // creating shadow object for the result
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CALL_INTR, BINOP_INVALID, "acos",
+    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "acos",
         values); 
   executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -309,7 +309,7 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
           BlameTreeUtilities::exactBits(p));
     }
     
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CONSTANT_INTR,
+    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(argScope, argValueOrIndex, shadow);
   }
@@ -328,7 +328,7 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
 
   // creating shadow object for the result
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(pc, dynamicCounter, CALL_INTR, BINOP_INVALID, "sqrt",
+    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sqrt",
         values); 
   executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -341,7 +341,7 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
 }
 
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, 
-			    KIND type, int file, int line, int inx UNUSED, BINOP op) {
+			    KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
 
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
@@ -380,7 +380,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
           BlameTreeUtilities::exactBits(p));
     }
 
-    s1 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, dynamicCounter, CONSTANT_INTR,
+    s1 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(lScope, lValue, s1);
   }
@@ -396,7 +396,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
           BlameTreeUtilities::exactBits(p));
     }
 
-    s2 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, dynamicCounter, CONSTANT_INTR,
+    s2 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(rScope, rValue, s2);
   }
@@ -433,7 +433,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
 
   // creating shadow object for target
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = 
-    new BlameTreeShadowObject<HIGHPRECISION>(file, line, dynamicCounter, 
+    new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dynamicCounter, 
         BIN_INTR, op, "NONE", values);
   executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -446,20 +446,20 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
   return;
 }
 
-void BlameTree::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FADD);
+void BlameTree::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FADD);
 }
 
-void BlameTree::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FSUB);
+void BlameTree::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FSUB);
 }
 
-void BlameTree::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FMUL);
+void BlameTree::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FMUL);
 }
 
-void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, inx, FDIV);
+void BlameTree::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FDIV);
 }
 
 void BlameTree::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx) {

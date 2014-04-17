@@ -44,7 +44,6 @@
 #include "PrintObserver.h"
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
-#include "FPInstabilityAnalysis.h"
 #include "BlameTree.h"
 // #include "OutOfBoundAnalysis.h"
 
@@ -56,77 +55,77 @@
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
-void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(add, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(add, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(fadd, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(fadd, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(sub, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(sub, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(fsub, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(fsub, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(mul, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(mul, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx){
-  DISPATCH_TO_OBSERVERS(fmul, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx){
+  DISPATCH_TO_OBSERVERS(fmul, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(udiv, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(udiv, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(sdiv, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(sdiv, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(fdiv, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(fdiv, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(urem, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(urem, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(srem, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(srem, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(frem, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(frem, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
-void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, file, line, inx)
+void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+  DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, file, line, col, inx)
 }
 
 // ****** Vector Operations ****** //

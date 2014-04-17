@@ -21,13 +21,14 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
     Value *lValue, *rValue;
-    Constant *cInx, *cFile, *cLine, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
+    Constant *cInx, *cFile, *cLine, *cCol, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
 
     lValue = binInst->getOperand(0);
     rValue = binInst->getOperand(1);
 
     cInx = computeIndex(binInst);
     cLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
+    cCol = INT32_CONSTANT(getColumnNumber(binInst), SIGNED);
     cType = KIND_CONSTANT(TypeToKind(binInst->getType()));
 
     string filename = getFileName(binInst);
@@ -116,8 +117,8 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     }
 
     Instruction *call =
-      CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT(callback.str().c_str(), cLScope,
-					    cRScope, cLValue, cRValue, cType, cFile, cLine, cInx);
+      CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT_INT(callback.str().c_str(), cLScope,
+					    cRScope, cLValue, cRValue, cType, cFile, cLine, cCol, cInx);
 
     instrs.push_back(call);
 

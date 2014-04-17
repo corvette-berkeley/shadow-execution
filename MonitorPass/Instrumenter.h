@@ -296,6 +296,14 @@ int getLineNumber(Instruction* inst) {
   return 0;
 }
 
+int getColumnNumber(Instruction* inst) {
+  if (MDNode* node = inst->getMetadata("dbg")) {
+    DILocation loc(node);
+    return loc.getColumnNumber();
+  }
+  return 0;
+}
+
 string getFileName(Instruction* inst) {
   if (MDNode* node = inst->getMetadata("dbg")) {
     DILocation loc(node);
@@ -564,6 +572,26 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
+
+  /*******************************************************************************************/
+  Instruction* CALL_IID_BOOL_INT_KIND_INT(const char* func, Value* iid, Value* b1, Value* line, Value* kind, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(b1);
+    Args.push_back(line);
+    Args.push_back(kind);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
   /*******************************************************************************************/
   Instruction* CALL_IID_BOOL_KVALUE_KIND_KIND_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind1, Value* kind2, Value* inx) {
     TypePtrVector ArgTypes;
@@ -1036,15 +1064,16 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
-  Instruction* CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT(const char* func, Value
+  Instruction* CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT_INT(const char* func, Value
 							 *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, 
-							 Value *kind, Value *file, Value *line, Value *inx) {
+							 Value *kind, Value *file, Value *line, Value *col, Value *inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT64_TYPE());
     ArgTypes.push_back(INT64_TYPE());
     ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
@@ -1057,6 +1086,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(kind);
     Args.push_back(file);
     Args.push_back(line);
+    Args.push_back(col);
     Args.push_back(inx);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
