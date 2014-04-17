@@ -1,0 +1,89 @@
+      SUBROUTINE qrtc1(a, b, c, d, Z)
+      IMPLICIT NONE
+      REAL*8           a, b, c, d
+      COMPLEX*16                   Z(4)
+c     Qrtc1(a, b, c, d, Z)  finds the four real or complex zeros  Z(k)
+c     of the monic real quadratic  Q(z) = z^4 + aúz^3 + búz^2 + cúz + d
+c     putting complex-conjugate pairs in adjacent locations of  Z .
+c                                               W. Kahan,  20 March 2014
+$     RIGHTMARGIN(72)
+      REAL*10  a2, d4, g, h, r, rL, t, Tqbc1r, Tqdrtc1, u, v, w, x, y
+      EXTERNAL                         Tqbc1r, Tqdrtc1
+      REAL*10  eta
+      DATA     eta /3.3621T-4932/
+      REAL*4  hf28
+      DATA    hf28 /3.7253e-9/
+
+      logical*1        trs,  dmp                                        <<<
+      common /debugs/  trs,  dmp                                        <<<
+
+      d4 = 4.0T0*d
+      g = a*c - d4
+      v = b
+      a2 = 0.5T0*a
+      t = v - a2*a2
+      rL = t
+      IF (d4 .GE. 0.0) rL = MAX(rL, SQRT(d4))
+      h = d4*t - c*c
+      IF (dmp) PRINT *, ' bgh', v,g,h                                   <<<
+
+      r = MAX( rL, Tqbc1r(v, g, h, rL) )
+c       = Rightmost zero of  r^3 - búr^2 + gúr + h ;  and  r ò rL ,  but
+c     ...  guarded lest  Tqbc1r's  roundoff put  r  slightly below  rL .
+      IF (dmp) PRINT *, ' Rightmost r = ', r                            <<<
+
+      u = a2*r - c
+      v = SQRT(MAX( r*r - d4, 0.0T0 ))
+      x = u/(v+eta)
+      w = ABS( x*v - u )
+      y = SIGN( SQRT(r - t), u )
+      u = ABS( y*v - u )
+      IF ( (w .LT. u) .AND. (v .GT. hf28*d4) ) THEN
+          y = x
+          IF (dmp) PRINT *, ' Y, DC ', y, w                             <<<
+        ELSE
+          IF (dmp) PRINT *, ' y, dc ', y, u                             <<<
+        ENDIF
+
+      t = d
+      g = Tqdrtc1(0.5*r, t, v, w)
+      IF (dmp) PRINT *, ' New  g = ', g                                 <<<
+      IF (g .LT. 0.0 ) THEN
+          w = v
+        ELSEIF (v .LT. w) THEN
+          t = w
+          w = v
+          v = t
+        ENDIF
+      IF (dmp) PRINT *, ' w, v : ', w, v                                <<<
+c     Note that  w*v = d  with fair accuracy.
+
+c     One quadratic factor of  Q(z)  is  Fp(z) = z^2 + (a/2 + y)úz + v :
+      g = Tqdrtc1(-0.5*(a2+y), v, x, u)
+      IF (dmp) PRINT 10, 'p', g, x, u                                   <<<
+   10 FORMAT(1X,'F', A1, '''s g,x,u: ', 1PG9.2, 2(1X, 1PG24.17))        <<<
+      IF (g .LT. 0.0) THEN
+          Z(1) = CMPLX(DBLE(x), DBLE(u))
+          Z(2) = CONJG(Z(1))
+        ELSE
+          Z(1) = DBLE(x)
+          Z(2) = DBLE(u)
+        ENDIF
+
+c     The other quadratic factor is  Fm(z) = z^2 + (a/2 - y)úz + w :
+      g = Tqdrtc1(-0.5*(a2-y), w, x, u)
+      IF (dmp) PRINT 10, 'm', g, x, u                                   <<<
+      IF (g .LT. 0.0) THEN
+          Z(3) = CMPLX(DBLE(x), DBLE(u))
+          Z(4) = CONJG(Z(3))
+        ELSE
+          Z(3) = DBLE(x)
+          Z(4) = DBLE(u)
+        ENDIF
+
+      END
+
+      INCLUDE  Tqbc1r.ftn
+c     INCLUDE  Tqdrtc1r.ftn  included already in  Tqbc1r.ftn
+c===  End of qrtc1.ftn  ===============================================
+

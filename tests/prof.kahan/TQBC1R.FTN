@@ -1,0 +1,246 @@
+      REAL*10 FUNCTION Tqbc1r(b, g, h, tt)
+      IMPLICIT NONE
+      REAL*10                 b, g, h, tt
+c     Real*10  r = Tqbc1r(b, g, h, t)  is the rightmost real zero  r  of
+c     the monic real cubic  Q(x) = x^3 - b*x^2 + g*x + h  given also  t
+c     satisfying  t <= b  &  Q(t) <= 0  (except perhaps for roundoff).
+c     Uses  Doubled Newton iteration.            W. Kahan,  9 March 2013
+$     RIGHTMARGIN(72)
+      REAL*10   d, dx, qL, qo, qR, qx, rL, rR, t, u, v, w, x, y
+      REAL*10   eps, eta, infinity,  NxtftrUp, NxtftrDn, Q, Secant
+      REAL*10   Qs, Tqbrt, Tqdrtc1
+      EXTERNAL  Qs, Tqbrt, Tqdrtc1
+      INTEGER*2     inf(5)
+      REAL*8                       infy
+      EQUIVALENCE  (inf, infinity, infy)
+      DATA       inf(5) /#7FFFh/,  infy /-0.0D0/
+      data  eps /1.08420217248550443401T-19/,  eta /3.3621T-4932/
+c           eps = 0.5**63                     eta = smallest normal
+
+      INTEGER*2  k                                                      <<<
+      LOGICAL*1        trs,  dmp                                        <<<
+      COMMON /debugs/  trs,  dmp                                        <<<
+
+      Q(x) = ((x - b)*x + g)*x + h
+      Secant(rL,qL, rR,qR) = rL - (rR - rL)*(0.9999*qL/(qR - qL))
+      NxtftrUp(x) = x + MAX(eta, ABS(eps*x))
+      NxtftrDn(x) = x - MAX(eta, ABS(eps*x))
+
+      IF (h .EQ. 0.0) THEN
+          x = 0.0
+          d = Tqdrtc1(0.5*b, g, u, v)
+c         = (b/2)**2 - g ;  if >= 0  then  (z-u)*(z-v) = z^2 - b*z + g
+          IF (d .GE. 0)  x = MAX(x, MAX(u, v))
+          GOTO 900
+        ENDIF
+c        ... if h = 0 ,  GOTO 900  to return  Tqbc1r = x ;
+c            but henceforth  h .NE. 0.0 .
+
+      t = tt
+c     ...  to not overwrite  tt .
+      IF (Q(t) .GT. 0.0)  t = -infinity
+      IF(dmp) PRINT *, '           t = ', t                             <<<
+
+c     A good starting value  x  is needed for  Newton's  iteration:
+      x = b/3
+      d = Tqdrtc1(x, g/3, v, w)
+c     ... = (b/3)**2 - g/3 = Discriminant of  z**2 - 2*x*z + g/3
+C     IF (dmp) print *, ' d=',d,' v=',v,' w=',w                         <<<
+      IF (d .LT. 0.0) THEN
+          u = Qs(x, b, g, h, y)
+c           = Q(x)/Q'(x)  &  y = Q(x)
+          IF (y .EQ. 0.0) GOTO 900
+          y = Tqbrt(y)
+          qx = u/y
+          qx = qx*qx*qx
+          IF (y .LT. 0.0) THEN
+              IF (y .GT. u) THEN
+                  rL = MAX( t, x - y/(1.0 + y/u) )
+                  rR = x - y
+                ELSE
+                  rL = MAX( t, x - u/(1.0 + qx) )
+                  rR = x - u
+                ENDIF
+              x = rL
+              qL = Q(x)
+              IF (dmp) print *, ' Initial1 qL = ', qL                   <<<
+              IF (qL .EQ. 0.0) GOTO 900
+              IF (qL .GT. 0.0) qL = -eta
+              x = rR
+              dx = Qs(x, b, g, h, qR)
+              IF (dmp) print *, ' Initial1 qR = ', qR                   <<<
+              IF (qR .EQ. 0.0) GOTO 900
+              IF (qR .LT. 0.0) qR = +eta
+              qx = qR
+
+            ELSE
+c           ... now that  y > 0 ...
+              IF (y .LT. u) THEN
+                  rL = MAX( t, x - y )
+                  rR = x - y/(1.0 + y/u)
+                ELSE
+                  rL = MAX( t, x - u )
+                  rR = x - u/(1.0 + qx)
+                ENDIF
+              x = rR
+              qR = Q(x)
+              IF (dmp) print *, ' Initial2 qR = ', qR                   <<<
+              IF (qR .EQ. 0.0) GOTO 900
+              IF (qR .LT. 0.0) qR = +eta
+              x = rL
+              dx = Qs(x, b, g, h, qL)
+              IF (dmp) print *, ' Initial2 qL = ', qL                   <<<
+              IF (qL .EQ. 0.0) GOTO 900
+              IF (qL .GT. 0.0) qL = -eta
+              qx = qL
+            ENDIF
+
+        ELSE
+c       ... now that  d >= 0 ,  (z-v)*(z-w) = z**2 - 2*x*z + g/3
+c       ... and ideally  Q'(v) = Q'(w) = 0
+          d = SQRT(d)
+          IF (v .LT. w) THEN
+              qx = v
+              v = w
+              w = qx
+            ENDIF
+c               ...  now  w <= v  and ideally  Q(w) > Q(v)
+C         IF (dmp) print *, ' v=',v, ' w=',w                            <<<
+          u = Q(w)
+          x = v
+          y = Q(x)
+          IF (y .EQ. 0.0) GOTO 900
+          x = d*d*d
+          IF (y .GT. 0.0) THEN
+c             ... when  y = Q(v) > 0 ...
+              rL = MAX( t, w - TQBRT(y + x) )
+              rR = w - TQBRT(0.25*y + x)
+              x = rR
+              qR = Q(x)
+              IF (dmp) print *, ' Initial3 qR = ', qR                   <<<
+              IF (qR .EQ. 0.0) GOTO 900
+              IF (qR .LT. 0.0) qR = +eta
+              x = rL
+              dx = Qs(x, b, g, h, qL)
+              IF (dmp) print *, ' Initial3 qL = ', qL                   <<<
+              IF (qL .EQ. 0.0) GOTO 900
+              IF (qL .GT. 0.0) qL = -eta
+              qx = qL
+            ELSE
+              IF (u .LT. 0.0) THEN
+c                 ... when  y = Q(v) <= u = Q(w) < 0 ...
+                  rR = v + TQBRT(x - u)
+                  rL = MAX( t, v + TQBRT(x - 0.25*u) )
+C                 IF (dmp) print *, ' rR=',rR,' rL=',rL                 <<<
+                ELSE
+c                 ... when  y = Q(v) < 0 <= u = Q(w)
+                  rR = v + MIN( SQRT(-y/(3*d)), TQBRT(-0.25*y) )
+                  rL = MAX( t, v + SQRT(-0.25*y/d) )
+C                 IF (dmp) print *, ' rL=',rL,' rR=',rR                 <<<
+                ENDIF
+              x = rL
+              qL = Q(x)
+              IF (dmp) print *, ' Initial4 qL = ', qL                   <<<
+              IF (qL .EQ. 0.0) GOTO 900
+              IF (qL .GT. 0.0) qL = -eta
+              x = rR
+              dx = Qs(x, b, g, h, qR)
+              IF (dmp) print *, ' Initial4 qR = ', qR                   <<<
+              IF (qR .EQ. 0.0) GOTO 900
+              IF (qR .LT. 0.0) qR = +eta
+              qx = qR
+            ENDIF
+        ENDIF
+
+      IF (dmp) THEN                                                     <<<
+          print *, ' Initial  rL = ', rL                                <<<
+          print *, ' Initial   x = ', x                                 <<<
+          print *, ' Initial  rR = ', rR                                <<<
+          print *, ' Initial  dx = ', dx                                <<<
+          print *, ' Initial  qx = ', qx                                <<<
+        ENDIF                                                           <<<
+
+c     Now begins  Newton's  iteration starting from  x  keeping ...
+c     ...  rL < x < rR  and  qL = Q(rL) < qx = Q(x) < qR = Q(rR) .
+      k = 0                                                             <<<
+      qo = qx
+      DO WHILE (qx .NE. 0.0)
+          k = k+1                                                       <<<
+          IF (qx .GT. 0.0) THEN
+c             ... when  qx = Q(x) > 0  so  dx = Q(x)/Q'(x) > 0
+              rR = x
+              IF (qx/qo .GT. 0.033) THEN
+                  x = rR - 2.0*dx
+                  IF (x .LE. rL) GOTO 100
+                ELSE
+  100             x = rR - dx
+                ENDIF
+              qR = qx
+              IF (x .LE. rL) THEN
+                  x = Secant(rR, qR, rL, qL)
+                  IF (x .LE. rL)  x = NxtftrUp(x)
+                  IF (dmp) print *, ' rL Secant x = ', x                <<<
+                ENDIF
+            ELSE
+c             ... when  qx = Q(x) < 0  so  dx = Q(x)/Q'(x) < 0
+              rL = x
+              IF (qx/qo .GT. 0.033) THEN
+                  x = rL - 2.0*dx
+                  IF (x .GE. rR) GOTO 200
+                ELSE
+  200             x = rL - dx
+                ENDIF
+              qL = qx
+              IF (x .GE. rR) THEN
+                  x = Secant(rL, qL, rR, qR)
+                  IF (x .GE. rR)  x = NxtftrDn(x)
+                  IF (dmp) print *, ' rR Secant x = ', x                <<<
+                ENDIF
+            ENDIF
+c         ... New iterate  x  is straddled tighter by  rL= < x <= rR .
+          IF ((x .LE. rL) .OR. (x .GE. rR)) THEN
+              x = (rL + rR)*0.5
+              IF (dmp) print *, '  Averaged x = ', x                    <<<
+            ENDIF
+          IF ((x .EQ. rL) .OR. (x .EQ. rR))  GOTO 900
+          IF (dmp) THEN                                                 <<<
+              print *, ' Iteration # = ', k                             <<<
+              print *, '          rL = ', rL                            <<<
+              print *, '           x = ', x                             <<<
+              print *, '          rR = ', rR                            <<<
+            ENDIF                                                       <<<
+          qo = qx
+          dx = Qs(x, b, g, h, qx)
+          IF (dmp) THEN                                                 <<<
+              print *, '          dx = ', dx                            <<<
+              print *, '          qx = ', qx                            <<<
+            ENDIF                                                       <<<
+        END DO
+
+  900 Tqbc1r = x
+      RETURN
+      END
+c=====   ==============================================================
+
+      REAL*10 FUNCTION  Qs(x, b, g, h, q)
+      REAL*10  q0, q1,     x, b, g, h, q
+c     Qs = q/q1  with  q = x^3 - b*x^2 + g*x + h  &  q1 = dq/dx .  NOTE:
+c     q  MUST be a variable's name,  NOT an expression nor constant!
+c     Moreover,  we expect  q1 > 0  despite roundoff.
+      REAL*4  eps
+      DATA    eps /5.0e-20/
+      q1 = x - b
+      q0 = q1*x + g
+      q1 = (q1 + x)*x
+      q1 = (q1 + q0) + eps*(ABS(q1) + ABS(q0))
+      q = q0*x + h
+      Qs = q/q1
+      RETURN
+      END
+c==== ... of  Qs  in  Tqbc1r  =========================================
+
+      INCLUDE  Tqdrtc1.ftn
+      INCLUDE  Tqbrt.ftn
+c==== End of Tqbc1r  ==================================================
+
+

@@ -1,0 +1,89 @@
+      real*10 function Tqbrt(x)
+      implicit none
+      real*10                x
+c     Real*10 q = Tqbrt(x)  is the real cube root of  real*10 x .
+c                                                W. Kahan,  16 Jan. 2014
+$     rightmargin(72)
+      real*10  u, v, w, y, z, T14_81, T2_9, T1_3
+      real*4  d
+      integer*2  j, k(5), k1
+      integer*4  ig, m, n
+      equivalence  (z, k, d), (m, k(3)), (n, k(4))
+      data  k1 /#8000h/,  ig /1431564048/
+c                            = Nint(( 16383*4/3 - 0.06616291174 )*2**16)
+      real*8  p129, p43_1, p_43,  s
+      data  p129 / 6.8056473384187692693T38 /
+c                = 2.0D0**129 exactly when rounded correctly
+      data  p43_1 / 8796093022209.0T0 /
+c                 = 1 + 2.0D0**43 exactly
+      data  p_43 / 1.136868377216160297T-13 /
+c                = 1/2.0D0**43 exactly when rounded correctly
+      data  T14_81 / 0.17283950617283950617T0 /
+      data  T2_9 / 0.222222222222222222222T0 /
+      data  T1_3 / 3.3333333333333333334T-1 /
+
+c     Filter out  Invalid,  0.0 ,  Infinity  and  NaN :
+      Tqbrt = x
+      z = abs(x)
+      if ((z .eq. 0.0) .or. ((k(5) .or. k1) .eq. -1))  return
+
+c     Scaled  w = s*|x|  guards against over/underflows and subnormals:
+      if ( k(5) .LT. 129 ) then
+          s = p_43
+          w = z*p129
+        elseif ( k(5) .GT. 32765 ) then
+          s = 2.0D0
+          k(5) = k(5) - 3
+          w = z
+        else
+          s = 1.0D0
+          w = z
+        endif
+
+c     Get a rough cube root  z  of  1/w :
+
+c z = |+ bias+expt |<-- 1.fraction ----------------------------------->|
+c k = |<-- k(5) -->|<-- k(4) -->|<-- k(3) -->|<-- k(2) -->|<-- k(1) -->|
+c d =                                        |+bias+expt|<- .fraction->|
+c m =              |<---------   m  -------->|
+c n = |<---------   n  -------->|
+
+      z = w
+C     print *, '  z = w = ', z                                          <<<
+      m = ishft(m, 1)
+      n = ig - n/3
+C     print *, ' n = ', n                                               <<<
+      m = ishft(m, -1)
+      k(4) = k1 .or. k(4)
+C     print *, ' n = ', n                                               <<<
+      d = 0.0
+      k(3) = 0
+C     print *, ' n = ', n                                               <<<
+c     Now  z  approximates  Tqbrt(1/w)  with rel. error  < 0.0345 .
+C     print *, ' near cube root of  1/w :  z = ', z                     <<<
+      do 100  j = 1,3
+          y = z*z
+          z = z + (z - (w*y)*y)*T1_3
+  100   end do
+c         .... with rel. errors  < 0.0024 ,  < 0.0000114 ,  < 2.6e-10
+C     print *, ' nearer cube root of  1/w :  z = ', z                   <<<
+
+      y = (w*z)*z
+C     print *, ' near cube root of  w :  y = ', y                       <<<
+c     Now  y = Tqbrt(w) to  31  sig.bits;  round it to  21 :
+      v = p43_1*y
+      y = v - y
+      y = v - y
+
+c     Now  y = Tqbrt(w) to 21 sig.bits so  y*y*y  is exact:
+C     print *, ' 21 sig.bit cube root of  w :  y = ', y                 <<<
+      v = (y*y*y - w)/w
+      Tqbrt = SIGN(  y - y*v*( (T14_81*v - T2_9)*v + T1_3 ) ,  x  )
+c     ... Accuracy quadrupled to  83  sig.bits is then rounded to  64.
+      if (s .eq. 1.0D0) return
+      Tqbrt = s*Tqbrt
+      return
+      end
+c==== ... of Tqbrt  ==================================================
+
+
