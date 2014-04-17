@@ -193,6 +193,18 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     return true;
   }
+
+  if (callInst->getCalledFunction() != NULL &&
+      callInst->getCalledFunction()->getName() == "cos") {
+    //
+    // the case for cos function
+    //
+    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_cos", iid, noUnwindC, cLine, kind, inx);
+    instrs.push_back(call);
+    InsertAllBefore(instrs, callInst);
+
+    return true;
+  }
   else {
     //
     // the case for general function call

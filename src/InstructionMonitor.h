@@ -154,6 +154,7 @@ extern "C" {
   void llvm_call_acos(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_fabs(IID iid, bool nounwind, int pc, KIND type, int x);
+  void llvm_call_cos(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int x, KVALUE* mallocAddress);
   void llvm_vaarg();
   void llvm_landingpad();

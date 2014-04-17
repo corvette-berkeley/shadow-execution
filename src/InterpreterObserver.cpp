@@ -3225,6 +3225,61 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   post_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 }
 
+void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+
+  safe_assert(myStack.size() == 1);
+  KVALUE *arg = myStack.top();
+  myStack.pop();
+  double argValue;
+  VALUE value;
+  SCOPE argScope;
+  int64_t argValueOrIndex;
+
+  //
+  // Get the operand value.
+  //
+  if (arg->inx != -1) {
+    IValue *iArg;
+
+    if (arg->isGlobal) {
+      iArg = globalSymbolTable[arg->inx];
+      argScope = GLOBAL;
+    } else {
+      iArg = executionStack.top()[arg->inx];
+      argScope = LOCAL;
+    }
+
+    safe_assert(iArg);
+
+    safe_assert(iArg);
+    argValue = iArg->getFlpValue();
+  } else {
+    argScope = CONSTANT;
+    argValue = arg->value.as_flp;
+  }
+
+  if (argScope == CONSTANT) {
+    int64_t *ptr = (int64_t*)&argValue;
+    argValueOrIndex = *ptr;
+  } else {
+    argValueOrIndex = arg->inx;
+  }
+
+  pre_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+  value.as_flp = cos(argValue); 
+  IValue *returnValue = new IValue(type, value);
+  returnValue->setLineNumber(pc);
+
+  delete(executionStack.top()[inx]);
+  executionStack.top()[inx] = returnValue;
+
+  DEBUG_STDOUT(executionStack.top()[inx]->toString());
+
+  post_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+}
+
+
 
 void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, int size, int inx, KVALUE* mallocAddress) {
 

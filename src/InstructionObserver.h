@@ -164,6 +164,7 @@ public:
 	virtual void call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
+	virtual void call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 
 				 int size UNUSED, int inx UNUSED, KVALUE* mallocAddress UNUSED) {};
 	virtual void vaarg() {};
