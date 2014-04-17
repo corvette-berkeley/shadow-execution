@@ -5,6 +5,7 @@ int main () {
   double x = 5.0;
 
   double y = gsl_sf_bessel_J0 (x);
+  double result = y + 0.0;
 
   printf ("J0(%g) = %.18e\n", x, y);
   return 0;
