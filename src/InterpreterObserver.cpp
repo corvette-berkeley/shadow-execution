@@ -2877,8 +2877,6 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::create_global_symbol_table(int size) {
 
-  pre_analysis();
-
   pre_create_global_symbol_table();
   //
   // instantiate copyShadow
@@ -2909,6 +2907,8 @@ void InterpreterObserver::create_global_symbol_table(int size) {
     IValue* value = new IValue();
     globalSymbolTable.push_back(value);
   }
+
+  pre_analysis();
 
   post_create_global_symbol_table();
   return;

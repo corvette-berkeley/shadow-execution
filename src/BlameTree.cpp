@@ -236,7 +236,6 @@ void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
   post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sqrt");
 }
 
-
 void BlameTree::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
   post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "fabs");
 }
