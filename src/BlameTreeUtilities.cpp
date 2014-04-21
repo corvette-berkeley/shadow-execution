@@ -123,6 +123,8 @@ HIGHPRECISION BlameTreeUtilities::evalFunc(HIGHPRECISION value, string func) {
     return acos(value);
   } else if (func.compare("sqrt") == 0) {
     return sqrt(value);
+  } else if (func.compare("fabs") == 0) {
+    return fabs(value);
   } else {
     DEBUG_STDERR("Unsupport function " << func);
     safe_assert(false);
