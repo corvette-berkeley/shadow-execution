@@ -84,7 +84,7 @@ class BlameTree : public InterpreterObserver {
     virtual void post_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND
         kind, int size, int inx);
 
-    virtual void post_create_global_symbol_table();
+    virtual void pre_analysis();
 
     virtual void post_analysis();
 
@@ -137,6 +137,10 @@ class BlameTree : public InterpreterObserver {
 
     void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
 		     rValue, KIND type, int file, int line, int col,  int inx, BINOP op);
+
+    void post_lib_call(IID iid, bool nounwind, int pc, KIND type, int inx,
+        SCOPE argScope, int64_t argValueOrIndex, string func);
+
 };
 
 #endif

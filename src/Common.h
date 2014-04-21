@@ -70,7 +70,7 @@ using namespace std;
 //
 // Macros for debugging mode
 //
-// #define DEBUG_BUILD 1
+//#define DEBUG_BUILD 1
 
 #ifdef DEBUG_BUILD
 #define DEBUG(x) x

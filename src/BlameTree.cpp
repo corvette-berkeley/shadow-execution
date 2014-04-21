@@ -45,88 +45,88 @@ int BlameTree::dynamicCounter = 0;
 /******* HELPER FUNCTIONS *******/
 
 void BlameTree::copyShadow(IValue *src, IValue *dest) {
-  //
-  // copy shadow object from source to destination, only if they are
-  // floating-point value
-  //
-  if (src->isFlpValue() && dest->isFlpValue()) {
-    if (src->getShadow() != NULL) {
-      BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
+  if (src->getShadow() != NULL) {
+    BlameTreeShadowObject<HIGHPRECISION> *btmSOSrc, *btmSODest;
 
-      btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*) src->getShadow();
-      btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
+    btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*) src->getShadow();
+    btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
 
-      dest->setShadow(btmSODest);
-    } else {
-      dest->setShadow(NULL); 
-    }
+    dest->setShadow(btmSODest);
+  } else {
+    dest->setShadow(NULL); 
   }
 }
 
-void BlameTree::post_create_global_symbol_table() {
-  //
-  // instantiate copyShadow
-  //
+void BlameTree::pre_analysis() {
   IValue::setCopyShadow(&copyShadow);
 }
 
 void BlameTree::setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
+  IValue *iv;
 
-  if (scope == CONSTANT) {
-    return; // no need to associate this shadow object with any IValue
-  } else {
-    IValue *iv;
-    if (scope == GLOBAL) {
+  switch (scope) {
+    case CONSTANT:
+      return;
+    case GLOBAL:
       iv = globalSymbolTable[inx];
-    }
-    else {
+      break;
+    case LOCAL:
       iv = executionStack.top()[inx];
-    }
-    iv->setShadow(shadowObject);
+      break;
+    default:
+      DEBUG_STDERR("Unknown scope " << scope); 
+      safe_assert(false);
   }
-  return;
+
+  iv->setShadow(shadowObject);
 }
 
 BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadowObject(SCOPE scope, int64_t inx) {
+  IValue *iv;
 
-  if (scope == CONSTANT) {
-    return NULL;
-  } else {
-    IValue *iv;
-    if (scope == GLOBAL) {
+  switch (scope) {
+    case CONSTANT:
+      return NULL;
+    case GLOBAL:
       iv = globalSymbolTable[inx];
-    }
-    else {
+      break;
+    case LOCAL:
       iv = executionStack.top()[inx];
-    }
-    return (BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow();
+      break;
+    default: 
+      DEBUG_STDERR("Unknown scope " << scope); 
+      safe_assert(false);
   }
+
+  return (BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow();
 }
 
 
 HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
   HIGHPRECISION result;
+  IValue *iv;
+  double *ptr;
 
-  if (scope == CONSTANT) {
-    double *ptr;
-    ptr = (double*) &inx;
-    result = *ptr;
-
-  } else {
-    IValue *iv;
-    if (scope == GLOBAL) {
+  switch (scope) {
+    case CONSTANT:
+      ptr = (double*) &inx;
+      result = *ptr;
+      return result;
+    case GLOBAL:
       iv = globalSymbolTable[inx];
-    }
-    else {
+      break;
+    case LOCAL:
       iv = executionStack.top()[inx];
-    }
+      break;    
+    default: 
+      DEBUG_STDERR("Unknown scope " << scope); 
+      safe_assert(false);
+  }
 
-    if (iv->getShadow() == NULL) {
-      result = iv->getFlpValue();
-    }
-    else {
-      result = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(precision);
-    }
+  if (iv->getShadow() == NULL) {
+    result = iv->getFlpValue();
+  } else {
+    result = ((BlameTreeShadowObject<HIGHPRECISION>*) iv->getShadow())->getValue(precision);
   }
 
   return result;
@@ -135,26 +135,33 @@ HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION prec
 
 LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   LOWPRECISION actualValue;
+  IValue *iv;
+  double *ptr;
 
-  if (scope == CONSTANT) {
-    double *ptr;
-
-    ptr = (double *) &value;
-    actualValue = *ptr;
-  } else {
-    IValue *iv;
-
-    iv = (scope == GLOBAL) ? globalSymbolTable[value] :
-      executionStack.top()[value];
-    actualValue = iv->getFlpValue();
+  switch (scope) {
+    case CONSTANT:
+      ptr = (double*) &value;
+      actualValue = *ptr;
+      return actualValue;
+    case GLOBAL:
+      iv = globalSymbolTable[value];
+      break;
+    case LOCAL:
+      iv = executionStack.top()[value];
+      break;  
+    default: 
+      DEBUG_STDERR("Unknown scope " << scope); 
+      safe_assert(false);
   }
+
+  actualValue = iv->getFlpValue();
 
   return actualValue;
 }
 
 /******* ANALYSIS FUNCTIONS *******/
 
-void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+void BlameTree::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex, string func) {
   BlameTreeShadowObject<HIGHPRECISION> *shadow;
   LOWPRECISION arg, result;
   HIGHPRECISION sarg, sresult;
@@ -169,7 +176,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
   shadow = getShadowObject(argScope, argValueOrIndex);
 
   //
-  // Perform sin function on shadow values
+  // Perform library function on shadow values
   // 
   HIGHPRECISION values[PRECISION_NO];
 
@@ -184,7 +191,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
       values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION) arg, 52 -
           BlameTreeUtilities::exactBits(p));
     }
-    
+
     shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
         BINOP_INVALID, "NONE", values);
     setShadowObject(argScope, argValueOrIndex, shadow);
@@ -193,7 +200,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
 
   // retrieve the value in higher precision
   sarg = shadow->getValue(BITS_DOUBLE);
-  sresult = sin(sarg);
+  sresult = BlameTreeUtilities::evalFunc(sarg, func);
 
   values[BITS_FLOAT] = result;
   values[BITS_DOUBLE] = sresult;
@@ -204,7 +211,7 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
 
   // creating shadow object for the result
   BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sin",
+    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, func,
         values); 
   executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -214,198 +221,29 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
 
   dynamicCounter++; 
   return;
+
+}
+
+void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sin");
 }
 
 void BlameTree::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
-  BlameTreeShadowObject<HIGHPRECISION> *shadow;
-  LOWPRECISION arg, result;
-  HIGHPRECISION sarg, sresult;
-  PRECISION p;
-
-  //
-  // Obtain actual values and shadow values
-  //
-  arg = getActualValue(argScope, argValueOrIndex);
-  result = executionStack.top()[inx]->getFlpValue();
-
-  shadow = getShadowObject(argScope, argValueOrIndex);
-
-  //
-  // Perform acos function on shadow values
-  // 
-  HIGHPRECISION values[PRECISION_NO];
-
-  // shadow object for operands
-  if (!shadow) {
-    // constructing and setting shadow object
-    HIGHPRECISION values[PRECISION_NO];
-    PRECISION p;
-    values[BITS_FLOAT] = arg;
-    values[BITS_DOUBLE] = (HIGHPRECISION) arg;
-    for (p = PRECISION(BITS_FLOAT+1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-      values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION) arg, 52 -
-          BlameTreeUtilities::exactBits(p));
-    }
-    
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
-        BINOP_INVALID, "NONE", values);
-    setShadowObject(argScope, argValueOrIndex, shadow);
-  }
-
-
-  // retrieve the value in higher precision
-  sarg = shadow->getValue(BITS_DOUBLE);
-  sresult = acos(sarg);
-
-  values[BITS_FLOAT] = result;
-  values[BITS_DOUBLE] = sresult;
-  for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-    values[p] = BlameTreeUtilities::clearBits(sresult, 52 -
-        BlameTreeUtilities::exactBits(p));
-  }
-
-  // creating shadow object for the result
-  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "acos",
-        values); 
-  executionStack.top()[inx]->setShadow(resultShadow);
-
-  // adding to the trace
-  trace[dynamicCounter].push_back(*resultShadow);
-  trace[dynamicCounter].push_back(*shadow);
-
-  dynamicCounter++; 
-  return;
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "acos");
 }
 
 void BlameTree::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
-  BlameTreeShadowObject<HIGHPRECISION> *shadow;
-  LOWPRECISION arg, result;
-  HIGHPRECISION sarg, sresult;
-  PRECISION p;
-
-  //
-  // Obtain actual values and shadow values
-  //
-  arg = getActualValue(argScope, argValueOrIndex);
-  result = executionStack.top()[inx]->getFlpValue();
-
-  shadow = getShadowObject(argScope, argValueOrIndex);
-
-  //
-  // Perform sqrt function on shadow values
-  // 
-  HIGHPRECISION values[PRECISION_NO];
-
-  // shadow object for operands
-  if (!shadow) {
-    // constructing and setting shadow object
-    HIGHPRECISION values[PRECISION_NO];
-    PRECISION p;
-    values[BITS_FLOAT] = arg;
-    values[BITS_DOUBLE] = (HIGHPRECISION) arg;
-    for (p = PRECISION(BITS_FLOAT+1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-      values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION) arg, 52 -
-          BlameTreeUtilities::exactBits(p));
-    }
-    
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
-        BINOP_INVALID, "NONE", values);
-    setShadowObject(argScope, argValueOrIndex, shadow);
-  }
-
-
-  // retrieve the value in higher precision
-  sarg = shadow->getValue(BITS_DOUBLE);
-  sresult = sqrt(sarg);
-
-  values[BITS_FLOAT] = result;
-  values[BITS_DOUBLE] = sresult;
-  for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-    values[p] = BlameTreeUtilities::clearBits(sresult, 52 -
-        BlameTreeUtilities::exactBits(p));
-  }
-
-  // creating shadow object for the result
-  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sqrt",
-        values); 
-  executionStack.top()[inx]->setShadow(resultShadow);
-
-  // adding to the trace
-  trace[dynamicCounter].push_back(*resultShadow);
-  trace[dynamicCounter].push_back(*shadow);
-
-  dynamicCounter++; 
-  return;
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sqrt");
 }
 
 
 void BlameTree::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
-  BlameTreeShadowObject<HIGHPRECISION> *shadow;
-  LOWPRECISION arg, result;
-  HIGHPRECISION sarg, sresult;
-  PRECISION p;
-
-  //
-  // Obtain actual values and shadow values
-  //
-  arg = getActualValue(argScope, argValueOrIndex);
-  result = executionStack.top()[inx]->getFlpValue();
-
-  shadow = getShadowObject(argScope, argValueOrIndex);
-
-  //
-  // Perform sqrt function on shadow values
-  // 
-  HIGHPRECISION values[PRECISION_NO];
-
-  // shadow object for operands
-  if (!shadow) {
-    // constructing and setting shadow object
-    HIGHPRECISION values[PRECISION_NO];
-    PRECISION p;
-    values[BITS_FLOAT] = arg;
-    values[BITS_DOUBLE] = (HIGHPRECISION) arg;
-    for (p = PRECISION(BITS_FLOAT+1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-      values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION) arg, 52 -
-          BlameTreeUtilities::exactBits(p));
-    }
-    
-    shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CONSTANT_INTR,
-        BINOP_INVALID, "NONE", values);
-    setShadowObject(argScope, argValueOrIndex, shadow);
-  }
-
-
-  // retrieve the value in higher precision
-  sarg = shadow->getValue(BITS_DOUBLE);
-  sresult = fabs(sarg);
-
-  values[BITS_FLOAT] = result;
-  values[BITS_DOUBLE] = sresult;
-  for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p+1)) {
-    values[p] = BlameTreeUtilities::clearBits(sresult, 52 -
-        BlameTreeUtilities::exactBits(p));
-  }
-
-  // creating shadow object for the result
-  BlameTreeShadowObject<HIGHPRECISION> *resultShadow = new
-    BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dynamicCounter, CALL_INTR, BINOP_INVALID, "sqrt",
-        values); 
-  executionStack.top()[inx]->setShadow(resultShadow);
-
-  // adding to the trace
-  trace[dynamicCounter].push_back(*resultShadow);
-  trace[dynamicCounter].push_back(*shadow);
-
-  dynamicCounter++; 
-  return;
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "fabs");
 }
 
 
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, 
-			    KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
+    KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
 
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
   HIGHPRECISION sv1, sv2, sresult;
@@ -423,7 +261,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
   //
   v1 = getActualValue(lScope, lValue);
   v2 = getActualValue(rScope, rValue);
-  
+
   s1 = getShadowObject(lScope, lValue);
   s2 = getShadowObject(rScope, rValue);
 
@@ -637,6 +475,6 @@ void BlameTree::post_analysis() {
     blametree << bta.toDot();
     blametree.close();
   }
-  
+
   return;
 }

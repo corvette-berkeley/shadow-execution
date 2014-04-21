@@ -2,6 +2,7 @@
  * @file InterpreterObserver.h
  * @brief
  */
+  //
 
 /*
  * Copyright (c) 2013, UC Berkeley All rights reserved.
@@ -328,7 +329,7 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void pre_fptosi(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
 
-
+  virtual void pre_analysis() {};
 
   virtual void pre_create_global_symbol_table();
 
