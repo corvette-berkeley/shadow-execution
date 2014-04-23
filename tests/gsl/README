@@ -7,11 +7,11 @@ PREPARING the files and INSTRUMENTING THE CODE:
 5. Instrument the code as usual using the erebus tests/gsl/instrument.sh script.
 
 COLLECTING RESULTS:
-1. Run the instrumented code with each input file and save the configurations found by erebus. Check in each configuration for the record. How many bits to use? Record running time.
+1. Run the instrumented code with each input file and save the configurations found by erebus. Check in each configuration for the record. How many bits to use? 27 bits.  Record running time.
 2. Merge the configurations by hand. 
-3. Create a "erebus" folder for the corresponding benchmark in the precimonious directory. E.g., benchmarks/gsl/blas-thresholds/erebus.
+3. Create a "erebus" folder for the corresponding benchmark in the precimonious directory. E.g., benchmarks/gsl/blas-thresholds/erebus. 2^-27.
 4. Copy all the files from benchmarks/gsl/blas-thresholds/blasX, where X is the error threshold. Which error threshold to use?
-5. Record running time, number of configurations explored, and final configuration. Repeat with both dd2.py and dd2_notime.py.
+5. Record running time, number of configurations explored, and final configuration. Repeat with dd2_notime.py.
 
 BENCHMARKS:
 bessel
@@ -20,5 +20,6 @@ gaussian
 polyroots
 rootnewt
 roots
+
 sum (final_inputs missing).
 fft (interpretation fails, final_inputs missing).
