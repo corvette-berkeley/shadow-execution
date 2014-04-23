@@ -5,6 +5,7 @@ LPATH=$GOLD_LLVM_BIN
 export CC=$LPATH"/clang -use-gold-plugin"
 export RANLIB="/bin/true"
 export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib" 
+loggingPath=$CORVETTE_PATH"/logging"
 
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --break-constgeps -f -o $1-ngep.bc $1.bc
 
@@ -14,8 +15,6 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument -f -
 
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
 
-llvm-dis tmppass.bc
-llvm-dis tmppass-allocas.bc
-
+gcc -c $loggingPath/cov_serializer.c -o $2/cov_serializer.o
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog $2/cov_serializer.o
 
