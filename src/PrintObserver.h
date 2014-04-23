@@ -199,6 +199,14 @@ public:
 
   virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
 
+  virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
+
 	virtual void vaarg();
 
 	virtual void landingpad();

@@ -244,6 +244,13 @@ void BlameTree::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIN
   post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "fabs");
 }
 
+void BlameTree::post_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "log");
+}
+
+void BlameTree::post_call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "floor");
+}
 
 void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, 
     KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {

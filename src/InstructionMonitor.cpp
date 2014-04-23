@@ -419,6 +419,20 @@ void llvm_call_cos(IID iid, bool nounwind, int pc, KIND type, int inx) {
   DISPATCH_TO_OBSERVERS(call_cos, iid, nounwind, pc, type, inx)
 }
 
+void llvm_call_log(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DISPATCH_TO_OBSERVERS(call_log, iid, nounwind, pc, type, inx)
+}
+
+/*
+void llvm_call_exp(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DISPATCH_TO_OBSERVERS(call_exp, iid, nounwind, pc, type, inx)
+}
+*/
+
+void llvm_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DISPATCH_TO_OBSERVERS(call_floor, iid, nounwind, pc, type, inx)
+}
+
 void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx, KVALUE* mallocAddress) {
   DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, size, inx, mallocAddress)
 }
@@ -445,11 +459,11 @@ ObserverPtrList observers_;
 
 // active observers
 //REGISTER_OBSERVER(PrintObserver, "print")
-//REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 //REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 //REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
-REGISTER_OBSERVER(BlameTree, "blametree")
+//REGISTER_OBSERVER(BlameTree, "blametree")
 //REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
 
 /*******************************************************************************************/

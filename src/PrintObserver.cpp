@@ -411,9 +411,26 @@ void PrintObserver::call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx
   DEBUG_STDOUT("<<<<< CALL SQRT >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
 }
 
+void PrintObserver::call_cos(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL COS >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
+void PrintObserver::call_log(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL LOG >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
+void PrintObserver::call_floor(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL FLOOR >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
+void PrintObserver::call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx) {
+  DEBUG_STDOUT("<<<<< CALL FABS >>>>> " << IID_ToString(iid) << ", nounwind:" << (nounwind ? 1 : 0) << ", line:" << pc << ", return type:" << KIND_ToString(type) << " [INX: " << inx << "]");
+}
+
 void PrintObserver::vaarg() {
   DEBUG_STDOUT("<<<<< VAARG >>>>>\n");
 }
+
 
 void PrintObserver::landingpad() {
   DEBUG_STDOUT("<<<<< LANDINGPAD >>>>>\n");

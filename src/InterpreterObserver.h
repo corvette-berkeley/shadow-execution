@@ -248,6 +248,10 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
 
+  virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
+
+  virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
+
   virtual void call_malloc(IID iid, bool nounwind, KIND type, KVALUE* call_value, int size, int inx, KVALUE* mallocAddress);
   
   virtual void vaarg();
@@ -292,6 +296,14 @@ class InterpreterObserver : public InstructionObserver {
   virtual void pre_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
 
   virtual void post_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
+
+  virtual void pre_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
+
+  virtual void post_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
+
+  virtual void pre_call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {}; 
+
+  virtual void post_call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED, SCOPE argScope UNUSED, int64_t argValueOrIndex UNUSED) {};
 
   virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx);
 

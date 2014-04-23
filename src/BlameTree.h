@@ -68,6 +68,11 @@ class BlameTree : public InterpreterObserver {
 
     virtual void post_call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
 
+    virtual void post_call_log(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+
+    virtual void post_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+
+
     virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
 			   int64_t rValue, KIND type, int file, int line, int col, int inx);
 
