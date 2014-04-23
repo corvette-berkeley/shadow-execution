@@ -3,7 +3,7 @@ PREPARING the files and INSTRUMENTING THE CODE:
 1. Change the original program to read the input from a file, serialize it, and take the input file name as argument (e.g., tests/gsl/bessel/bessel.c).
 2. Make sure *-include.txt file does not include any of the cov_* functions.
 3. Create input files from "final_inputs" to contain only one input. Naming convention: inputN.txt.
-4. Compile using the erebus tests/gsl/compile.sh script. Make sure the precimonious GSL directory has the LLVM 3.3 bitcode for the GSL library.
+4. Compile using the erebus tests/gsl/compile.sh script.
 5. Instrument the code as usual using the erebus tests/gsl/instrument.sh script.
 
 COLLECTING RESULTS:
