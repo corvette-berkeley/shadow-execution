@@ -1,0 +1,24 @@
+
+PREPARING the files and INSTRUMENTING THE CODE:
+1. Change the original program to read the input from a file, serialize it, and take the input file name as argument (e.g., tests/gsl/bessel/bessel.c).
+2. Make sure *-include.txt file does not include any of the cov_* functions.
+3. Create input files from "final_inputs" to contain only one input. Naming convention: inputN.txt.
+4. Compile using the erebus tests/gsl/compile.sh script. Make sure the precimonious GSL directory has the LLVM 3.3 bitcode for the GSL library.
+5. Instrument the code as usual using the erebus tests/gsl/instrument.sh script.
+
+COLLECTING RESULTS:
+1. Run the instrumented code with each input file and save the configurations found by erebus. Check in each configuration for the record. How many bits to use? Record running time.
+2. Merge the configurations by hand. 
+3. Create a "erebus" folder for the corresponding benchmark in the precimonious directory. E.g., benchmarks/gsl/blas-thresholds/erebus.
+4. Copy all the files from benchmarks/gsl/blas-thresholds/blasX, where X is the error threshold. Which error threshold to use?
+5. Record running time, number of configurations explored, and final configuration. Repeat with both dd2.py and dd2_notime.py.
+
+BENCHMARKS:
+bessel
+blas
+gaussian
+polyroots
+rootnewt
+roots
+sum (final_inputs missing).
+fft (interpretation fails, final_inputs missing).
