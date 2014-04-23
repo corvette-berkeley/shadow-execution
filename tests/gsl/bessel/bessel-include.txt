@@ -1,8 +1,4 @@
 cheb_eval_e1579
-cov_check
-cov_deserialize
-cov_log
-cov_serialize
 gsl_error
 gsl_sf_bessel_J0
 gsl_sf_bessel_J0_e
