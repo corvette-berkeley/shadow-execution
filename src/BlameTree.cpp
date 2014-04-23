@@ -228,6 +228,10 @@ void BlameTree::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND
   post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sin");
 }
 
+void BlameTree::post_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
+  post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "cos");
+}
+
 void BlameTree::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx, SCOPE argScope, int64_t argValueOrIndex) {
   post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "acos");
 }

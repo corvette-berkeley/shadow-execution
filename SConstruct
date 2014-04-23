@@ -86,7 +86,7 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
-	'papers/interpreter',
+	#'papers/interpreter',
         ],
     exports='env',
     )
