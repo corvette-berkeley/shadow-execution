@@ -1,8 +1,4 @@
 GSL_MIN_DBL
-cov_check
-cov_deserialize
-cov_log
-cov_serialize
 gsl_error
 gsl_root_fsolver_alloc
 gsl_root_fsolver_free
