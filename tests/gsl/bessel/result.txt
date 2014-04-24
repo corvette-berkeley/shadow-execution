@@ -1,0 +1,82 @@
+
+input1
+=====
+
+0(4.87645) = -2.171071155031238653e-01
+
+DPC: 38
+	[SHADOW]<pc: 25, col: 0, dpc: 38, float:-0.2171071172, 12 bits:-0.2171020508, 13 bits:-0.2171020508, 14 bits:-0.2171020508, 15 bits:-0.2171058655, 16 bits:-0.2171058655, 17 bits:-0.2171068192, 18 bits:-0.2171068192, 19 bits:-0.2171070576, 20 bits:-0.2171070576, 21 bits:-0.2171070576, 22 bits:-0.2171070874, 23 bits:-0.2171071023, 24 bits:-0.2171071097, 25 bits:-0.2171071135, 26 bits:-0.2171071153, 27 bits:-0.2171071153, 28 bits:-0.2171071153, 29 bits:-0.2171071153, 30 bits:-0.2171071154, 31 bits:-0.2171071155, 32 bits:-0.2171071155, 33 bits:-0.2171071155, double:-0.2171071155, op: FADD, func:NONE, file: 1
+
+Analysis result:
+	 File: 0, Line 95:
+		 Result: double precision
+	 File: 1, Line 25: 
+		 Result: double precision
+		 Operator: double precision
+		 (main bessel.c, 
+		 y)
+	 File: 4, Line 796:
+		 Result: double precision
+		 Operator: double precision
+		 (specfun/bessel.c, function:gsl_sf_bessel_cos_pi4_e, 
+		 seps, s, ceps, d)
+	 File: 5, Line 96:
+		 Result: double precision
+		 Operator: double precision
+		 (bessel_J0.c, gsl_sf_bessel_J0_e,
+		 ampl, sqrty)
+	 File: 5, Line 97:
+		 Result: double precision
+		 Operator: double precision
+
+/bessel.c:1
+bessel.c:4
+bessel_J0.c:5
+error.c:2
+n/a:0
+stream.c:3
+
+input 2
+=====
+
+J0(0.1791) = 9.919968451474151516e-01
+
+DPC: 4
+	[SHADOW]<pc: 25, col: 0, dpc: 4, float:0.9919968247, 12 bits:0.9919433594, 13 bits:0.9919433594, 14 bits:0.991973877, 15 bits:0.9919891357, 16 bits:0.9919967651, 17 bits:0.9919967651, 18 bits:0.9919967651, 19 bits:0.9919967651, 20 bits:0.9919967651, 21 bits:0.9919967651, 22 bits:0.9919967651, 23 bits:0.9919968247, 24 bits:0.9919968247, 25 bits:0.9919968396, 26 bits:0.9919968396, 27 bits:0.9919968434, 28 bits:0.9919968434, 29 bits:0.9919968443, 30 bits:0.9919968448, 31 bits:0.991996845, 32 bits:0.9919968451, 33 bits:0.9919968451, double:0.9919968451, op: FADD, func:NONE, file: 1
+
+
+	 File: 1, Line 25:
+		 Result: double precision
+		 Operator: double precision
+
+
+input 3 (same configuration as input 1)
+=====
+
+J0(442.668) = -1.780987027420673219e-02
+
+DPC: 48
+	[SHADOW]<pc: 25, col: 0, dpc: 48, float:-0.01781019568, 12 bits:-0.01780700684, 13 bits:-0.01780891418, 14 bits:-0.01780986786, 15 bits:-0.01780986786, 16 bits:-0.01780986786, 17 bits:-0.01780986786, 18 bits:-0.01780986786, 19 bits:-0.01780986786, 20 bits:-0.01780986786, 21 bits:-0.01780986786, 22 bits:-0.01780986786, 23 bits:-0.01780986972, 24 bits:-0.01780986972, 25 bits:-0.01780987019, 26 bits:-0.01780987019, 27 bits:-0.01780987019, 28 bits:-0.01780987025, 29 bits:-0.01780987025, 30 bits:-0.01780987026, 31 bits:-0.01780987027, 32 bits:-0.01780987027, 33 bits:-0.01780987027, double:-0.01780987027, op: FADD, func:NONE, file: 1
+
+Analysis result:
+	 File: 0, Line 75:
+		 Result: double precision
+	 File: 1, Line 25:
+		 Result: double precision
+		 Operator: double precision
+	 File: 4, Line 796:
+		 Result: double precision
+		 Operator: double precision
+	 File: 5, Line 96:
+		 Result: double precision
+		 Operator: double precision
+	 File: 5, Line 97:
+		 Result: double precision
+		 Operator: double precision
+
+/bessel.c:1
+bessel.c:4
+bessel_J0.c:5
+error.c:2
+n/a:0
+stream.c:3
