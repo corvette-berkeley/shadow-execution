@@ -5,4 +5,269 @@ Global variables.
 Modelling phi instruction.
 Loading struct pointer (struct-return, ls).
 
+Notes:
+Implementation of copyShadow. Because we implement it as a static function
+pointer and assign it as create_global_symbol_table, we cannot enable
+multiple anlaysis at once. Prefer to use inheritance in some way.
+
+Optimizations for Instrumentation:
+
+- Remove KVALUE for binary operations
+- Remove KVALUE for bitwise operations
+- Remove use of push_array in allocax
+- Remove KVALUE for load instruction
+- Remove KVALUE for store instruction
+- Fix error in initialization of global array
+- Wrote pass to remove constantGEP 
+
+Need to do:
+- Remove the push calls as much as possible
+- Remove fields in KVALUE as much as possible
+
+NAS benchmarks.
+
+     
+Program |    Binary time | Inst time v1 | Note | Inst v2 |
+LU.S |  0.14s | 24.99s | 22.49 | Reduce the number of push_getelementptr_inx with push_getelementptr_inx5. | 19.63 | Reduce the number of push_array_size with push_array_size5. | 15.79 | Get rid of push_getelementptr_inx and push_array_size for common cases | 15.91 | Get rid of KVALUE for load instruction |
+LU.A | 1m 27s
+CG.S | 0.18s | 14.13s | 13.85 | 13.66 | 13.08 | 13.14
+EP.S | 3.02s | 42.33s | 42.31 | 40.07 | 39.48 | Seems that array is not dominant here.
+EP.A
+MG.S | 0.05s | 2.78s | 2.77 | 2.69 | 2.67 | 2.67
+MG.A | 6.13s | 
+IS.S | 0.04s | 1s | 0.93 | 0.81 | 0.85 | 0.89
+IS.A
+BT.S | 0.43s | 52.4s
+DC.S
+
+Optimizations/Usability for Interpretation/Analysis:
+
+- Index accessing for array
+- Free memory
+- Design pattern
+
+
+NAS Parallel Benchmarks (Interpretation)
+==========================
+Setup: Debugging information off. Logging disabled.
+
+SMALL INPUTS.
+
+FFBENCH: (0.338s) (332X) 
+real  1m49.661s
+user  1m45.803s
+sys 0m3.400s
+
+CG: (0.211s) (955X)
+real  3m3.505s
+user  2m59.515s
+sys 0m3.280s
+
+EP: (3.05s) (175X)
+real  8m55.631s
+user  8m27.932s
+sys 0m23.777s
+
+IS: (0.059s) (526X)
+real  0m31.051s
+user  0m21.081s
+sys 0m9.141s
+
+LU: (0.180s) (3750X)
+real  11m15.448s
+user  10m31.947s
+sys 0m38.342s
+== Disble BreakConstantGEPS
+real	3m6.812s now 10min.
+user	2m55.447s
+sys	0m10.061s
+==
+
+SP: (0.223s) (1677X)
+real  6m14.328s
+user  5m57.350s
+sys 0m14.553s
+
+BT: (0.350s) (2002X)
+real  11m41.712s
+user  10m31.343s
+sys 1m3.300s
+
+FT: (0.606s) (1509X)
+real  15m15.198s
+user  14m30.802s
+sys 0m38.038s
+
+Assertion at store.
+DC
+
+Out of memory:
+MG
+
+
+INPUTS CLASS A.
+bt.A.x [SEG FAULT]
+bt.S.x [SEG FAULT]
+cg.A.x [SEG FAULT]
+dc.A.x [BRANCH DIVERGE]
+ep.A.x [SEG FAULT]
+ft.A.x [SEG FAULT]
+lu.A.x [SEG FAULT]
+mg.A.x [SEG FAULT]
+sp.A.x [SEG FAULT]
+
+
+
+
+
+TESTING:
+  Checking at store
+  Checking for branch divergence
+  TODO:
+    Model printf to check stdout
+  COMMENT: 
+    We also have syncing at load
+
+TODO:
+review bitwise operators.
+printing operators makes it very helpful.
+comparison fixing.
+	   why would pwd go through?
+checking for divergence.
+how to compare two utilities.
+output and logging info.
+ptrtoint.
+check in example (example + foo).
+re-run everything.
+
+CORE UTILITIES (97/100).
+
+Latest run on 1/30/2014 at 9:59am.
+
+=== 97 programs passing ===
+
+base64 list.txt
+basename list.txt   
+cat list.txt
+chcon -R --type=ssh_home_t
+chgrp staff /usr/local
+chmod +x temp.txt
+chown root temp.txt
+chroot
+cksum list.txt
+cp list.txt temp.txt
+csplit -f xyz list.txt 11 72 98 
+cut -c2 list.txt
+dir ../arrayoutofbound/
+dircolors ../arrayoutofbound/
+dirname /usr/local
+dd if=/dev/zero of=mytestfile.out bs=1 count=0 seek=1K
+echo
+env
+expand list.txt
+false --version
+fmt list.txt
+fold -5 list.txt
+groups
+hostid
+id
+install -b list.txt backup.txt
+join list.txt list.txt
+link list.txt link.txt
+ln -s list.txt list.txt.2
+ls ../arrayoutofbound/
+logname
+md5sum list.txt
+mkdir hello
+mkfifo temp
+mknod temp.txt b 12 5
+mktemp testingXXX
+mv temp.txt out.txt
+nice
+nl list.txt
+nohup time
+nproc
+numfmt 2
+paste list.txt list.txt
+pathchk -p /usr/local
+pinky
+printenv
+pwd
+readlink
+realpath -L list.txt
+rm out.txt 
+rmdir hello
+runcon
+seq 2
+sha1sum list.txt
+sha224sum list.txt
+sha256sum list.txt
+sha384sum list.txt
+sha512sum list.txt
+shred -n 2 list.txt
+shuf list.txt
+split -b 22 list.txt list
+stdbuf
+sum list.txt
+sync
+tac list.txt
+touch out.txt
+tr
+true --version
+truncate -s 5 list.txt
+tsort list.txt 
+tty
+uname
+unexpand list.txt
+uniq list.txt
+unlink list.txt
+uptime
+whoami
+wc list.txt
+factor 8
+timeout 1 sleep 10; date
+ls | ./tee.out out
+kill id
+yes 1234567 | grep 1234567 | head -10
+stat list.txt 
+pr list.txt
+sleep 2
+who 
+printf "%s" hello 
+df -h 
+od -b list.txt 
+stty
+tsort list.txt 
+du -h 
+tail -10 list.txt
+head -10 list.txt
+comm list.txt list.txt
+vdir
+expr  linux : lin 
+
+**************
+FAILING (5)
+**************
+
+INTERPRETATION:
+    ./users.out (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./sort.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+    ./ptx.out list.txt (packed assertion fails) [UNINTERPRETED CALL INVOKES INSTRUMENTED FUNCTIONS - QSORT]
+
+
+
+
+GSL Programs
+=========
+
+blas [PASS]
+bessel [PASS]
+fft [PASS]
+gaussian [PASS]
+polyroots [PASS]
+roots [PASS]
+sum [PASS]
+=======
+=======
 Upgrade to LLVM 3.3.
+>>>>>>> .r6570
