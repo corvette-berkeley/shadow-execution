@@ -77,7 +77,6 @@ class IValue {
     unsigned size, index, firstByte, length; 
     int offset, bitOffset, fileNumber, lineNumber; 
     SCOPE scope; 
-    MACHINEFLAG flag;
     void* shadow;
 
     /**

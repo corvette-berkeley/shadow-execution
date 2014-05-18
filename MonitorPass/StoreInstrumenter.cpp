@@ -52,6 +52,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     //
     // Obtain source value
     //
+    cSrcValue = NULL;
     if (valueOpType->isIntegerTy()) {
 
       cSrcValue = INTMAX_CAST_INSTR(valueOp, true);

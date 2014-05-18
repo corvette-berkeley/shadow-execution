@@ -54,7 +54,8 @@ env = conf.Finish()
 env.AppendUnique(
     #SHLINKFLAGS='-Wl,--no-undefined',
     SHLINKFLAGS='-Wl',
-    LIBS='LLVM-$llvm_version',
+    LIBS=['LLVM-$llvm_version','glog'],
+    LIBPATH=os.environ['GLOG_PATH']+'/lib',
     CPPPATH=os.environ['GLOG_PATH']+'/include',
     )
 env.MergeFlags('!llvm-config --cxxflags --ldflags')

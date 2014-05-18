@@ -62,7 +62,7 @@ void BlameTree::pre_analysis() {
 }
 
 void BlameTree::setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
-  IValue *iv;
+  IValue *iv = NULL;
 
   switch (scope) {
     case CONSTANT:
@@ -82,7 +82,7 @@ void BlameTree::setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<
 }
 
 BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadowObject(SCOPE scope, int64_t inx) {
-  IValue *iv;
+  IValue *iv = NULL;
 
   switch (scope) {
     case CONSTANT:
@@ -104,7 +104,7 @@ BlameTreeShadowObject<HIGHPRECISION>* BlameTree::getShadowObject(SCOPE scope, in
 
 HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
   HIGHPRECISION result;
-  IValue *iv;
+  IValue *iv = NULL;
   double *ptr;
 
   switch (scope) {
@@ -135,7 +135,7 @@ HIGHPRECISION BlameTree::getShadowValue(SCOPE scope, int64_t inx, PRECISION prec
 
 LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   LOWPRECISION actualValue;
-  IValue *iv;
+  IValue *iv = NULL;
   double *ptr;
 
   switch (scope) {
@@ -155,7 +155,6 @@ LOWPRECISION BlameTree::getActualValue(SCOPE scope, int64_t value) {
   }
 
   actualValue = iv->getFlpValue();
-
   return actualValue;
 }
 
@@ -256,7 +255,7 @@ void BlameTree::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t 
     KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
 
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
-  HIGHPRECISION sv1, sv2, sresult;
+  HIGHPRECISION sv1, sv2, sresult = 0.0;
   LOWPRECISION v1, v2;
   PRECISION i;
 

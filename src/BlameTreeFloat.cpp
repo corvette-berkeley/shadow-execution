@@ -461,7 +461,7 @@ void BlameTreeFloat::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int
 			    KIND type, int file, int line, int col, int inx UNUSED, BINOP op) {
 
   BlameTreeShadowObject<HIGHPRECISION> *s1, *s2;
-  LOWPRECISION sv1, sv2, sresult;
+  LOWPRECISION sv1, sv2, sresult = 0.0;
   HIGHPRECISION v1, v2;
   PRECISION i;
 
