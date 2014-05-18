@@ -188,6 +188,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     // checking struct packing
     //////////////////////////
+    /*
     if (structType->isPacked()) {
       structType->dump();
       cout << "The struct is packed" << endl;
@@ -206,6 +207,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 	//abort();
       }
     }
+    */
     //////////////////////////
 
     pushStructType(structType, instrs);

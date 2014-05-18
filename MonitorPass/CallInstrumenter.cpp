@@ -31,13 +31,16 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   Constant* inx = computeIndex(callInst);
   Constant *cLine = INT32_CONSTANT(getLineNumber(callInst), SIGNED);
 
-  // for later reference: iid and function name
   Function *callee = callInst->getCalledFunction();
+
+  // for later reference: iid and function name
+  /*
   if (callee) {
     cout << "called function: " << callee->getName().str() << " id: " << endl;
     iid->dump();
     cout << endl;
   }
+  */
 
   // whether this call unwinds the stack
   if (callee != NULL && callee->getName() == "malloc") {
@@ -88,7 +91,6 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     Constant* size = NULL;
     if (bitcast != NULL) {
-      bitcast->dump();
 
       //PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
       PointerType *dest = dyn_cast<PointerType>(bitcast->getDestTy());
@@ -97,7 +99,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       //  dest->getElementType()->getPrimitiveSizeInBits() << endl;
 
       //cout << "Number of bytes requested: " << endl;
-      callInst->getOperand(0)->dump();      
+      //callInst->getOperand(0)->dump();      
 
       returnKind = TypeToKind(dest->getElementType());
       if(returnKind == INV_KIND) {
@@ -111,7 +113,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
         StructType* structType = (StructType*) dest->getElementType();
 	
-        structType->dump();
+        //structType->dump();
 	
         unsigned sum = getFlatSize(structType) * 8;
 	
@@ -127,8 +129,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       else {
         size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
       }
-      cout << "Size of struct: ";
-      size->dump();
+      //cout << "Size of struct: ";
+      //size->dump();
     }
     else {
       returnKind = INT8_KIND;

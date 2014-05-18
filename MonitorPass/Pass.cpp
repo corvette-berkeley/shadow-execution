@@ -259,8 +259,8 @@ namespace {
         if (kind == PTR_KIND) {
           PointerType *ptrType = (PointerType*) elemType;
           elemType = ptrType->getElementType();
-          elemType->dump();
-          cout << "" << endl;
+          //elemType->dump();
+          //cout << "" << endl;
           kind = instrumenter->TypeToKind(elemType);
 
           if (kind == ARRAY_KIND) {
