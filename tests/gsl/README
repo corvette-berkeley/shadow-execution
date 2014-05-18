@@ -23,3 +23,13 @@ roots
 
 sum (final_inputs missing).
 fft (interpretation fails, final_inputs missing).
+
+erebus all
+real	145m7.609s
+user	100m7.271s
+sys	5m38.169s
+
+erebus config
+real	55m1.582s
+user	32m36.906s
+sys	2m22.725s

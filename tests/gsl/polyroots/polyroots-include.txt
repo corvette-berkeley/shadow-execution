@@ -1,8 +1,4 @@
 balance_companion_matrix
-cov_check
-cov_deserialize
-cov_log
-cov_serialize
 gsl_error
 gsl_poly_complex_solve
 gsl_poly_complex_workspace_alloc
