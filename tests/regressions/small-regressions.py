@@ -18,7 +18,12 @@ def main():
   # setting some variables
   llvm = os.getenv("GOLD_LLVM_BIN")
   instrumentorpath = os.getenv("INSTRUMENTOR_PATH")
-  monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
+  
+  if platform.system() == 'Darwin':
+      monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.dylib"
+  else:
+      monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
+      
   sourcepath = instrumentorpath + "/src"
   glogpath = os.getenv("GLOG_PATH") + "/lib"
   glog_log_dir = os.getenv("GLOG_log_dir")
@@ -77,8 +82,8 @@ def main():
       iexecutablefile = executable + '.out' 
       iexecutable = open(iexecutablefile, 'w')
 
-      # added -lgmp for expr and other core utility
-      command = [llvm + '/clang', '-use-gold-plugin', ibitcodefile, '-L' + sourcepath, '-L' + glogpath, '-lmonitor', '-lpthread', '-lm', '-lrt', '-lgmp', '-lglog', '-o', iexecutablefile]
+      # add -lgmp for expr and other core utility
+      command = [llvm + '/clang', '-use-gold-plugin', ibitcodefile, '-L' + sourcepath, '-L' + glogpath, '-lmonitor', '-lpthread', '-lm', '-lglog', '-o', iexecutablefile]
       retval = call(command, stdin=None, stdout=iexecutable, stderr=None)
 
       # return -1 if running LLVM passes fails
