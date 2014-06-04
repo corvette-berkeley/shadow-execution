@@ -1563,7 +1563,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   index = index + basePtrLocation->getIndex();
 
   safe_assert(index < (int) basePtrLocation->getLength());
-  if (index < 0 || (int) array[index].getFirstByte() != index*size/8 || KIND_GetSize(array[index].getType()) != (int) size/8) {
+  if (index < 0 || (int) array[index].getFirstByte() != index*(int)size/8 || KIND_GetSize(array[index].getType()) != (int) size/8) {
     index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
         basePtrLocation->getLength()); 
   } 

@@ -1,4 +1,5 @@
 import os
+import platform
 import SCons.Warnings
 from distutils.version import StrictVersion
 
@@ -51,9 +52,14 @@ env = conf.Finish()
 #  LLVM plugin building
 #
 
+LibInstallDir=os.getcwd()
+
+if platform.system() == 'Darwin':
+   env.Append(SHLINKFLAGS='-Wl,-install_name,%s/${TARGET.file}'%LibInstallDir)
+
 env.AppendUnique(
     #SHLINKFLAGS='-Wl,--no-undefined',
-    SHLINKFLAGS='-Wl',
+    #SHLINKFLAGS='-Wl',
     LIBS=['LLVM-$llvm_version','glog'],
     LIBPATH=os.environ['GLOG_PATH']+'/lib',
     CPPPATH=os.environ['GLOG_PATH']+'/include',
