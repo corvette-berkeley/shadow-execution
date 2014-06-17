@@ -662,13 +662,11 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   int internalOffset = 0;
 
   // retrieve source
-  bool removeSrc = false;
   if (srcScope == CONSTANT) {
     VALUE value;
     value.as_int = srcValue;
 
     srcLocation = new IValue(srcKind, value);
-    removeSrc = true;
     srcLocation->setLength(0); // uninitialized constant pointer 
     if (srcKind == INT1_KIND) {
       srcLocation->setBitOffset(1);
@@ -724,8 +722,6 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
   }
-  delete(writtenValue);
-  if (removeSrc) { delete(srcLocation); }
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
 
@@ -1249,10 +1245,6 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   ptrLocation->setLength(1);
   ptrLocation->setLineNumber(line);
 
-  if (executionStack.top()[inx] != NULL) {
-    delete(executionStack.top()[inx]);
-    // pending: if pointer delete other pointed to objects?
-  }
   executionStack.top()[inx] = ptrLocation;
 
   DEBUG_STDOUT("Location: " << location->toString());
@@ -2294,12 +2286,7 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
   // free memory
   //
   for (std::vector< IValue* >::iterator it = iValues.begin(); it != iValues.end(); ++it) {
-    IValue *value = (IValue*)(*it);
-    if (value->getType() == PTR_KIND) {
-      IValue *other = (IValue*)value->getIPtrValue();
-      delete(other);
-    }
-    delete(value);
+    delete((IValue *)(*it));
   }
 
   isReturn = true;
@@ -2924,7 +2911,6 @@ void InterpreterObserver::create_global_symbol_table(int size) {
   pre_analysis();
 
   post_create_global_symbol_table();
-  free(log);
   return;
 }
 
