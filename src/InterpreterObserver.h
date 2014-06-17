@@ -80,6 +80,8 @@ class InterpreterObserver : public InstructionObserver {
   map<int, int> phinodeValues; // store phinode value pairs for values
 
   stack<int> recentBlock; // record the most recent block visited
+  vector<IValue*> collect_new;
+  vector<void*> collect_malloc;
 
   bool isReturn; // whether return instruction is just executed
 

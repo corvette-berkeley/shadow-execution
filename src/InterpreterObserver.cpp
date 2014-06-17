@@ -52,6 +52,34 @@
 
 /***************************** Helper Functions *****************************/
 
+
+/*
+void release(IValue* value) {
+  delete value;
+  return;
+}
+*/
+
+/*
+void release(IValue* value) {
+  if (value->getType() == PTR_KIND) {
+    IValue *other = (IValue*)value->getIPtrValue();
+    //cout << "[RELEASE] " << other->toString() << endl; 
+    release(other);
+  }
+  delete value;
+  return;
+}
+*/
+
+
+
+
+void release(IValue* value UNUSED) {
+  return;
+}
+
+
 unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned length) {
   int low, high, index;
 
@@ -439,7 +467,8 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       // first create a KVALUE pointer to concreteStructElem because sync load
       // expect the KVALUE to be a pointer to the concrete value
       //
-      concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE));
+      //concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE)); // changed on 6/17
+      concreteStructElemPtr = new KVALUE();
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
       if (syncLoad(structElem, concreteStructElemPtr, type)) {
         DEBUG_LOG("[LOAD STRUCT] Syncing load at " << file << ":" << line);
@@ -454,7 +483,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
   dest->setSourceInfo(file, line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = dest;
 
   DEBUG_STDOUT("Destination result: " << dest->toString());
@@ -604,7 +633,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
 
-    delete(executionStack.top()[inx]);
+    release(executionStack.top()[inx]);
     executionStack.top()[inx] = destLocation;
 
     DEBUG_STDOUT(destLocation->toString());
@@ -662,11 +691,13 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   int internalOffset = 0;
 
   // retrieve source
+  bool removeSrc = false;
   if (srcScope == CONSTANT) {
     VALUE value;
     value.as_int = srcValue;
 
     srcLocation = new IValue(srcKind, value);
+    removeSrc = true;
     srcLocation->setLength(0); // uninitialized constant pointer 
     if (srcKind == INT1_KIND) {
       srcLocation->setBitOffset(1);
@@ -722,6 +753,8 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
   }
+  delete(writtenValue); // cindy
+  if (removeSrc) { delete(srcLocation); } // cindy
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
 
@@ -824,7 +857,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   iResult = new IValue(type, result);
   iResult->setSourceInfo(file, line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1107,7 +1140,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   iResult = new IValue(type, result);
   iResult->setSourceInfo(file, line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1207,7 +1240,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
     iResult->setValue(aggKValue->value);
   }
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -1245,6 +1278,10 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   ptrLocation->setLength(1);
   ptrLocation->setLineNumber(line);
 
+  if (executionStack.top()[inx] != NULL) {
+    release(executionStack.top()[inx]); // cindy
+    // pending: if pointer delete other pointed to objects?
+  }
   executionStack.top()[inx] = ptrLocation;
 
   DEBUG_STDOUT("Location: " << location->toString());
@@ -1272,7 +1309,8 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   if (type == STRUCT_KIND) {
     structSize = structType.size(); 
   }
-  KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND));
+  //KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND)); // changed on 6/17
+  KIND* structKind = new KIND[structSize];
   if (type == STRUCT_KIND) {
     for (uint64_t i = 0; i < structSize; i++) {
       structKind[i] = structType.front();
@@ -1280,7 +1318,8 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
     }
   }
 
-  IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue));
+  //IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue)); // changed on 6/17
+  IValue* locArr = new IValue[size*structSize];
   for (uint64_t i = 0; i < size; i++) {
     if (type == STRUCT_KIND) {
       for (uint64_t j = 0; j < structSize; j++) {
@@ -1315,7 +1354,7 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   locArrPtr->setLength(length);
   locArrPtr->setLineNumber(line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = locArrPtr;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -1331,7 +1370,8 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
   unsigned length = 0;
-  IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue));
+  //IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue)); // changed on 6/17
+  IValue* ptrToStructVar = new IValue[size];
   for (uint64_t i = 0; i < size; i++) {
     KIND type = structType.front();
     IValue* var = new IValue(type);
@@ -1352,7 +1392,7 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   structPtrVar->setLength(length);
   structPtrVar->setLineNumber(line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = structPtrVar;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -1475,57 +1515,75 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
     DEBUG_STDOUT("Old length: " << length);
     DEBUG_STDOUT("New length: " << newLength);
 
-    newArray = (IValue *) malloc(newLength * sizeof(IValue));
+    // newArray = (IValue *) malloc(newLength * sizeof(IValue)); // changed on 6/17
+    newArray = new IValue[newLength];
+    collect_new.push_back(newArray);
     array = (IValue*) basePtrLocation->getIPtrValue();
 
     for (i = 0; i < newLength; i++) {
       IValue oldElement; 
-      IValue *newElement; 
       VALUE value;
 
       value.as_int = 0;
 
       if (newOffset < 0) { // newOffset is negative, append at the beginning at the array new elements
         if (i < newLength - length) {
-          newElement = new IValue(type, value);
+          //newElement = new IValue(type, value);
+	  newArray[i].setType(type);
+	  newArray[i].setValue(value);
+
           if (i == 0) {
-            newElement->setFirstByte(0);
+            //newElement->setFirstByte(0);
+            newArray[i].setFirstByte(0);
           } else {
-            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //    KIND_GetSize(newArray[i-1].getType()));
+            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
         } else {
-          newElement = new IValue();
+          //newElement = new IValue();
           oldElement = array[i + length - newLength];
-          oldElement.copy(newElement);
+          //oldElement.copy(newElement);
+          oldElement.copy(&newArray[i]);
           if (i == 0) {
-            newElement->setFirstByte(0);
+            //newElement->setFirstByte(0);
+	    newArray[i].setFirstByte(0);
           } else {
-            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //    KIND_GetSize(newArray[i-1].getType()));
+            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
         }
       } else { // newOffset is positive, append at the end of the array new element
         if (i < length) {
-          newElement = new IValue();
+          //newElement = new IValue();
           oldElement = array[i];
-          oldElement.copy(newElement);
-          newElement->setFirstByte(oldElement.getFirstByte());
+          //oldElement.copy(newElement);
+          oldElement.copy(&newArray[i]);
+          //newElement->setFirstByte(oldElement.getFirstByte());
+          newArray[i].setFirstByte(oldElement.getFirstByte());
         } else {
-          newElement = new IValue(type, value);
+          //newElement = new IValue(type, value);
+	  newArray[i].setType(type);
+	  newArray[i].setValue(value);
           if (i == 0) {
-            newElement->setFirstByte(0);
+            //newElement->setFirstByte(0);
+            newArray[i].setFirstByte(0);
           } else {
-            newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
+            //    KIND_GetSize(newArray[i-1].getType()));
+            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
         }
       }
 
       DEBUG_STDOUT("\tNew element at index " << i << " is: " <<
-          newElement->toString());
+          newArray[i].toString());
 
-      newArray[i] = *newElement;
+      //newArray[i] = *newElement;
     }
 
     basePtrLocation->setLength(newLength);
@@ -1574,7 +1632,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
   ptrLocation->setLineNumber(line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = ptrLocation;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
   return;
@@ -1629,9 +1687,11 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
 
     safe_assert(getIndexNo != 0);
 
-    arraySizeVec = (int*) malloc(getIndexNo * sizeof(int));
+    //arraySizeVec = (int*) malloc(getIndexNo * sizeof(int)); // changed on 6/17
+    //indexVec = (int*) malloc(getIndexNo * sizeof(int));
 
-    indexVec = (int*) malloc(getIndexNo * sizeof(int));
+    arraySizeVec = new int[getIndexNo];
+    indexVec = new int[getIndexNo];
 
     // the size of out-most dimension; 
     // we do not need this to compute the index
@@ -1677,6 +1737,8 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
       index += indexVec[i] * arraySizeVec[i];
     }
 
+    delete[] arraySizeVec; // cindy
+    delete[] indexVec; // cindy
     DEBUG_STDOUT("\tIndex: " << index);
 
     //
@@ -1713,7 +1775,7 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
 
   safe_assert(getElementPtrIndexList.empty());
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = arrayElemPtr;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
 }
@@ -1743,8 +1805,12 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
     //
     structPtr = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
     structElemNo = structType.size();
-    structElemSize = (int*) malloc(sizeof(int)*structElemNo);
-    structElem = (int*) malloc(sizeof(int)*structElemNo);
+    
+    //structElemSize = (int*) malloc(sizeof(int)*structElemNo); // changed on 6/17
+    //structElem = (int*) malloc(sizeof(int)*structElemNo);
+
+    structElemSize = new int[structElemNo];
+    structElem = new int[structElemNo];
 
     //
     // record struct element size
@@ -1838,7 +1904,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
     }
   }
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = structElemPtr;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -2148,7 +2214,7 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
     iResult = new IValue(type, result);
   }
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
@@ -2285,9 +2351,27 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
   //
   // free memory
   //
-  for (std::vector< IValue* >::iterator it = iValues.begin(); it != iValues.end(); ++it) {
-    delete((IValue *)(*it));
+
+  // should not be erasing above stuff twice
+
+  
+  for (unsigned int i = 0; i < iValues.size(); i++) { // cindy
+    release(iValues[i]);
   }
+  
+  
+
+  /*
+  for(unsigned int i = collect_new.size() - 1; i <= collect_new.size(); i++) {
+    delete[] collect_new[i];
+    collect_new.pop_back();
+  }
+
+  for(unsigned int i = collect_malloc.size() - 1; i <= collect_malloc.size(); i++) {
+    free(collect_malloc[i]);
+    collect_malloc.pop_back();
+  }
+  */
 
   isReturn = true;
   return;
@@ -2324,7 +2408,8 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
 
     // reconstruct struct value
     unsigned size = returnStruct.size();
-    IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
+    //IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue)); // changed on 6/17
+    IValue* structValue = new IValue[returnStruct.size()];
     unsigned i = 0;
     while (!returnStruct.empty()) {
       KVALUE* value = returnStruct.front();
@@ -2457,7 +2542,7 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   nloc->setSize(KIND_GetSize(INT1_KIND));
   nloc->setLineNumber(line);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
   return;
@@ -2565,7 +2650,7 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setLineNumber(line);
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
 
@@ -2593,7 +2678,7 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
   phinodeConstantValues.clear();
   phinodeValues.clear();
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = phiNode;
   DEBUG_STDOUT(phiNode->toString());
 
@@ -2632,7 +2717,7 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
     }
   }
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = result;
 
   DEBUG_STDOUT("Result is " << result->toString());
@@ -2761,9 +2846,11 @@ void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
 
     // empty myStack and callArgs
     while (!myStack.empty()) {
+      delete myStack.top();
       myStack.pop();
     }
     while (!callArgs.empty()) {
+      delete callArgs.top();
       callArgs.pop();
     }
 
@@ -2820,7 +2907,8 @@ void InterpreterObserver::after_struct_call() {
     safe_assert(!returnStruct.empty());
 
     // reconstruct struct value
-    IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue));
+    //IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue)); //
+    IValue* structValue = new IValue[returnStruct.size()];
     unsigned i = 0;
     while (!returnStruct.empty()) {
       KVALUE* value = returnStruct.front();
@@ -2890,7 +2978,8 @@ void InterpreterObserver::create_global_symbol_table(int size) {
   char* log;
 
   length = logName.size();
-  log = (char*) malloc(sizeof(char) * (length+1));
+  // log = (char*) malloc(sizeof(char) * (length+1)); // changed on 6/17
+  log = new char[length+1];
 
   for (i = 0; i < length; i++) {
     log[length-i-1] = logName.top();
@@ -2911,6 +3000,14 @@ void InterpreterObserver::create_global_symbol_table(int size) {
   pre_analysis();
 
   post_create_global_symbol_table();
+
+  // free memory
+  /*
+  for(unsigned int i = 0; i < globalSymbolTable.size(); i++) {
+    delete globalSymbolTable[i];
+  }
+  */
+  delete[] log;
   return;
 }
 
@@ -2926,6 +3023,7 @@ void InterpreterObserver::record_block_id(int id) {
 
 void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIND type) {
   IValue *location = new IValue[size];
+  collect_new.push_back(location);
   uint32_t i, elemSize;
   VALUE zero, value;
 
@@ -2934,10 +3032,14 @@ void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIN
   //
   elemSize = KIND_GetSize(type);
   zero.as_int = 0;
-  for (i = 0; i < size; i++) {
-    IValue *elem = new IValue(type, zero, REGISTER);
-    elem->setFirstByte(i*elemSize);
-    location[i] = *elem;
+  for (i = 0; i < size; i++) {    
+    //IValue *elem = new IValue(type, zero, REGISTER);
+    //elem->setFirstByte(i*elemSize);
+    //location[i] = *elem;
+    location[i].setType(type);
+    location[i].setValue(zero);
+    location[i].setScope(REGISTER);
+    location[i].setFirstByte(i*elemSize);
   } 
 
   value.as_ptr = kvalue->value.as_ptr;
@@ -2946,6 +3048,7 @@ void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIN
   ptrLocation->setLength(size);
   ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
+  release(globalSymbolTable[kvalue->inx]);
   globalSymbolTable[kvalue->inx] = ptrLocation;
   DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
 }
@@ -3001,7 +3104,7 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
   IValue* callValue = new IValue(type);
   callValue->setLength(0);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = callValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3056,7 +3159,7 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3110,7 +3213,7 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3164,7 +3267,7 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3218,7 +3321,7 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3272,7 +3375,7 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3327,7 +3430,7 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3381,7 +3484,7 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   IValue *returnValue = new IValue(type, value);
   returnValue->setLineNumber(pc);
 
-  delete(executionStack.top()[inx]);
+  release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
@@ -3399,14 +3502,18 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
   if (type != STRUCT_KIND) {
     // allocating space
     int numObjects = argValue->value.as_int*8 / size;
-    int actualSize = sizeof(IValue) * numObjects;    
-    void *addr = malloc(actualSize);
+    //int actualSize = sizeof(IValue) * numObjects;    
+    //void *addr = malloc(actualSize);
+    //collect_malloc.push_back(addr);
+    IValue *addr = new IValue[numObjects];
+    collect_new.push_back(addr);
 
     // creating pointer object
     VALUE returnValue;
     returnValue.as_ptr = mallocAddress->value.as_ptr;
     IValue* newPointer = new IValue(PTR_KIND, returnValue, size/8, 0, 0, numObjects);
     newPointer->setValueOffset((int64_t)addr - (int64_t)returnValue.as_ptr);
+    release(executionStack.top()[inx]);
     executionStack.top()[inx] = newPointer;
 
     // creating locations
@@ -3415,10 +3522,15 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
       // creating object
       VALUE iValue;
       // TODO: check if we need uninitialized value
-      IValue *var = new IValue(type, iValue, currOffset);
-      ((IValue*)addr)[i] = *var;
-      ((IValue*)addr)[i].setValueOffset(newPointer->getValueOffset()); //setting basepointer value offset?
-
+      //IValue *var = new IValue(type, iValue, currOffset);
+      //((IValue*)addr)[i] = *var;
+      //((IValue*)addr)[i].setValueOffset(newPointer->getValueOffset()); //setting basepointer value offset?
+      
+      addr[i].setType(type);
+      addr[i].setValue(iValue);
+      addr[i].setFirstByte(currOffset);
+      addr[i].setValueOffset(newPointer->getValueOffset());
+      
       // updating offset
       currOffset += (size/8);
     }
@@ -3430,9 +3542,12 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     unsigned numStructs = ceil(argValue->value.as_int*8.0 / size);
     unsigned fields = structType.size();
 
-    int actualSize = sizeof(IValue) * numStructs * fields;    
-    void *addr = malloc(actualSize);
-    IValue* ptrToStructVar = (IValue*)addr;
+    //int actualSize = sizeof(IValue) * numStructs * fields;    
+    //void *addr = malloc(actualSize);
+    //collect_malloc.push_back(addr);
+    //IValue* ptrToStructVar = (IValue*)addr;
+    IValue *ptrToStructVar = new IValue[numStructs*fields];
+    collect_new.push_back(ptrToStructVar);
 
     DEBUG_STDOUT("\nTotal size of malloc in bits: " << argValue->value.as_int*8);
     DEBUG_STDOUT("Size: " << size);
@@ -3450,10 +3565,13 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     for(unsigned i = 0; i < numStructs; i++) {
       for (unsigned j = 0; j < fields; j++) {
         KIND type = fieldTypes[j];
-        IValue* var = new IValue(type);
-        var->setFirstByte(firstByte);
+
+	ptrToStructVar[length].setType(type);
+	ptrToStructVar[length].setFirstByte(firstByte);
+        //IValue* var = new IValue(type);
+        //var->setFirstByte(firstByte);
         firstByte = firstByte + KIND_GetSize(type);
-        ptrToStructVar[length] = *var;
+        //ptrToStructVar[length] = *var;
         DEBUG_STDOUT("Created a field of struct: " << length);
         DEBUG_STDOUT(ptrToStructVar[length].toString());
         length++;
@@ -3469,7 +3587,7 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
 
-    delete(executionStack.top()[inx]);
+    release(executionStack.top()[inx]);
     executionStack.top()[inx] = structPtrVar;
     DEBUG_STDOUT(structPtrVar->toString());
   }
