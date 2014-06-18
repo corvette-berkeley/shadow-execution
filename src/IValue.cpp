@@ -41,6 +41,9 @@
 
 #include "IValue.h"
 
+//int IValue::counterNew = 0;
+//int IValue::counterDelete = 0;
+
 void (*IValue::copyShadow)(IValue*,IValue*) = NULL;
 
 string IValue::toString() {

@@ -53,12 +53,30 @@
 /***************************** Helper Functions *****************************/
 
 
+
 /*
-void release(IValue* value) {
-  delete value;
+void release(IValue* value UNUSED) {
   return;
 }
 */
+
+
+void release(IValue* value) {
+  if (value->getScope() == REGISTER || value->getScope() == LOCAL) {
+    if (!value->isStruct()) {
+      delete value;
+    }
+    else {
+      //cout << "DID not delete because it is a struct" << endl;
+    }
+  }
+  else {
+    cout << "[GLOBAL?] " << value->toString() << endl;
+  }
+  return;
+}
+
+
 
 /*
 void release(IValue* value) {
@@ -71,14 +89,6 @@ void release(IValue* value) {
   return;
 }
 */
-
-
-
-
-void release(IValue* value UNUSED) {
-  return;
-}
-
 
 unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned length) {
   int low, high, index;
@@ -2280,7 +2290,9 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
   // free memory
   // should not be erasing above stuff twice
   
-  for (unsigned int i = 0; i < iValues.size(); i++) { // cindy
+  IValue::printCounters();
+
+  for (unsigned int i = 0; i < iValues.size(); i++) {
     release(iValues[i]);
   }
 
@@ -2303,12 +2315,23 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
 void InterpreterObserver::return2_(IID iid UNUSED, int inx UNUSED) {
 
   safe_assert(!executionStack.empty());
+
+  std::vector< IValue* > iValues;
+  iValues = executionStack.top();
+
   executionStack.pop();
 
   if (!executionStack.empty()) {
     DEBUG_STDOUT("New stack size: " << executionStack.size());
   } else {
     cout << "The execution stack is empty.\n";
+  }
+
+  IValue::printCounters();
+
+  // freeing memory
+  for (unsigned int i = 0; i < iValues.size(); i++) {
+    release(iValues[i]);
   }
 
   isReturn = true;
@@ -2318,6 +2341,9 @@ void InterpreterObserver::return2_(IID iid UNUSED, int inx UNUSED) {
 void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int valInx) {
 
   safe_assert(!executionStack.empty());
+
+  std::vector< IValue* > iValues;
+  iValues = executionStack.top();
 
   IValue* returnValue = (valInx == -1) ? NULL : executionStack.top()[valInx];
 
@@ -2334,20 +2360,17 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
     unsigned i = 0;
     while (!returnStruct.empty()) {
       KVALUE* value = returnStruct.front();
-      IValue* iValue;
 
       if (returnValue == NULL) {
-        iValue = new IValue(value->kind);
-        iValue->setValue(value->value);
-        iValue->setLength(0);
+	structValue[i].setType(value->kind);
+	structValue[i].setValue(value->value);
+	structValue[i].setLength(0);
       } 
       else {
-        iValue = new IValue();
-        returnValue->copy(iValue);
+	returnValue->copy(&structValue[i]);
         returnValue++;
       }
 
-      structValue[i] = *iValue; 
       DEBUG_STDOUT(cout << structValue[i].toString());
       i++;
       returnStruct.pop();
@@ -2355,9 +2378,12 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
 
     safe_assert(returnStruct.empty());
 
+    structValue->setStruct(true);
+
     executionStack.top()[callerVarIndex.top()] = structValue;
-    for (i = 0; i < size; i++)
+    for (i = 0; i < size; i++) {
       DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+    }
   } 
   else {
     cout << "The execution stack is empty.\n";
@@ -2365,6 +2391,15 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
 
   safe_assert(!callerVarIndex.empty());
   callerVarIndex.pop();
+
+  IValue::printCounters();
+ 
+ // freeing memory
+  for (unsigned int i = 0; i < iValues.size(); i++) {
+    if (i != (unsigned)valInx) { // TODO: do not delete struct from now, make copy first!
+      release(iValues[i]);
+    }
+  }
 
   isReturn = true;
   return;

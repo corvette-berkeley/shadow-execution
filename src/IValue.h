@@ -78,6 +78,9 @@ class IValue {
     int offset, bitOffset, fileNumber, lineNumber; 
     SCOPE scope; 
     void* shadow;
+    //static int counterNew;
+    //static int counterDelete;
+    bool struct_;
 
     /**
      * Define how to copy shadow values. This varies analysis by analysis.
@@ -107,34 +110,49 @@ class IValue {
  public:
     IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1),
       size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-      fileNumber(0), lineNumber(0), scope(s), shadow(NULL) {}
+      fileNumber(0), lineNumber(0), scope(s), shadow(NULL) {
+      //counterNew++;
+    }
       
     IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0),
       index(0), firstByte(0), length(0), offset(0), bitOffset(0), 
-      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+      //counterNew++;
+    }
 
     IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1),
       size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0),
-      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+      //counterNew++;
+    }
 
     IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t),
       value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l),
-      offset(o), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {}
+      offset(o), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+      //counterNew++;
+    }
     
     IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0),
       length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
-      shadow(NULL) { value.as_int = 0; }
+      shadow(NULL) { 
+      value.as_int = 0; 
+      //counterNew++;
+    }
 
     IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0),
       length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
-      shadow(NULL) {}
+      shadow(NULL) {
+      //counterNew++;
+    }
 
     IValue(const IValue& iv) {
       create(iv);
+      //counterNew++;
     };
 
     ~IValue() {
       uncreate();
+      //counterDelete++;
     };
 
     IValue& operator=(const IValue& iv) {
@@ -187,6 +205,10 @@ class IValue {
       }
     };
 
+    void setStruct(bool flag) {
+      struct_ = flag;
+    }
+
     KIND getType() const { return this->type; };
 
     VALUE getValue() const { return this->value; };
@@ -216,6 +238,10 @@ class IValue {
     uint64_t getUIntValue();
 
     void* getPtrValue() { return value.as_ptr; };
+
+    bool isStruct() {
+      return struct_;
+    }
 
     double getFlpValue();
 
@@ -288,6 +314,20 @@ class IValue {
      * @return true if this is an IValue; false otherwise.
      */
     bool isIValue(KIND t);
+
+    
+    static void printCounters() {
+    }
+    
+    /*
+    static void printCounters() {
+      int diff = counterNew - counterDelete;
+      if (diff) {
+	cout << "LOST: " << diff << " out of " << counterNew << endl;
+      }
+    }
+    */
+    
 };
 
 #endif /* IVALUE_H_ */
