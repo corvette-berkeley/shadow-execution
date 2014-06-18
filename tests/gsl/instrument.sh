@@ -18,3 +18,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f
 gcc -c $loggingPath/cov_serializer.c -o $2/cov_serializer.o
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lglog $2/cov_serializer.o
 llvm-dis tmppass-allocas.bc
+
+# create executable for uninstrumented bitcode
+$CC $1.bc -o $2/$1.out2 -L$LDFLAGS -lpthread -lm -lrt -lgmp -lglog $2/cov_serializer.o
+
