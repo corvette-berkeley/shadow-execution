@@ -83,24 +83,18 @@ void release(IValue* value UNUSED) {
 unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned length) {
   int low, high, index;
 
-  //
   // assert: offset cannot larger than the size of the array itself (int byte)
-  //
   // safe_assert(offset <= array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType()));
 
-  //
   // initializing lowerbound and upperbound of the index
-  //
   low = 0;
   high = length - 1;
 
   DEBUG_STDOUT("\t" << "[findIndex] Offset: " << offset << " Length: " << length);
 
-  //
   // search for the index using binary search
   // the IValue at the index should have the largest byteOffset that is less
   // than or equal to the offset
-  //
   index = -1;
   while(low < high){
 
@@ -116,21 +110,21 @@ unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned
     if (firstByte == offset) {
       index = mid;
       break;
-    } else if ((mid + 1 <= length -1) && (firstByte < offset) && (offset < array[mid+1].getFirstByte())) {
+    } 
+    else if ((mid + 1 <= length -1) && (firstByte < offset) && (offset < array[mid+1].getFirstByte())) {
       index = mid;
       break;
-    } else if (offset < firstByte) {
+    } 
+    else if (offset < firstByte) {
       high = mid - 1;
-    } else {
+    } 
+    else {
       low = mid + 1;
     }
-
   }
 
   index = (index == -1) ? high : index;
-
   DEBUG_STDOUT("\t" << "[findIndex] Returning index: " << index); 
-
   return index; 
 }
 
@@ -177,7 +171,8 @@ bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValu
     case FLP32_KIND:
       if (isnan((float)dest->getValue().as_flp) && isnan((float)dpValue)) {
         result = true;
-      } else {
+      } 
+      else {
         result = ((float)dest->getValue().as_flp) == ((float)dpValue);
       }
       break;
@@ -195,7 +190,6 @@ bool InterpreterObserver::checkStore(IValue *dest, KIND srcKind, int64_t srcValu
     default: //safe_assert(false);
       break;
   }
-
   return result;
 }
 
@@ -256,7 +250,6 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
     default: //safe_assert(false);
       break;
   }
-
   return result;
 }
 
