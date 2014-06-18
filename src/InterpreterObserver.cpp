@@ -261,7 +261,7 @@ bool InterpreterObserver::checkStore(IValue *dest, KVALUE *kv) {
 }
 
 void InterpreterObserver::copyShadow(IValue* src UNUSED, IValue* dest UNUSED) {
-  // done nothing
+  // do nothing
   // shadow value is not used in the core interpreter
 }
 
@@ -399,17 +399,12 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   DEBUG_LOG("[LOAD STRUCT] Performing load at " << file << ":" << line); 
 
   structSize = returnStruct.size();
-  dest = new IValue [structSize];
+  dest = new IValue[structSize];
     
-//    (IValue*) malloc(structSize*sizeof(IValue));
-
   if (src->inx == -1) {
 
-    //
     // Case 1: struct constant.
-    //
     // Create an IValue struct that has all values in structReturn.
-    //
     
     i = 0;
     while (!returnStruct.empty()) {
@@ -435,11 +430,10 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
     
     safe_assert(false);
 
-  } else {
+  } 
+  else {
     
-    //
     // Case 2: local or global struct.
-    //
     
     IValue* srcPointer;
     IValue* structSrc;
@@ -453,21 +447,16 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       IValue *structElem;
       int type;
 
-      //
       // get concrete value in case we need to sync
-      //
       concreteStructElem = returnStruct.front();
 
       structElem = new IValue();
       structSrc[i].copy(structElem);
       type = structElem->getType();
 
-      //
       // sync load
       // first create a KVALUE pointer to concreteStructElem because sync load
       // expect the KVALUE to be a pointer to the concrete value
-      //
-      //concreteStructElemPtr = (KVALUE*) malloc(sizeof(KVALUE)); // changed on 6/17
       concreteStructElemPtr = new KVALUE();
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
       if (syncLoad(structElem, concreteStructElemPtr, type)) {
@@ -487,11 +476,11 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   executionStack.top()[inx] = dest;
 
   DEBUG_STDOUT("Destination result: " << dest->toString());
-
   return;
 }
 
-void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {
+void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, 
+			       int loadInx, int file, int line, int inx) {
 
   pre_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
 
@@ -504,9 +493,11 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   // obtain source pointer value
   if (opScope == CONSTANT) {
     isPointerConstant = true;
-  } else if (opScope == GLOBAL) {
+  } 
+  else if (opScope == GLOBAL) {
     srcPtrLocation = globalSymbolTable[opInx];
-  } else {
+  } 
+  else {
     srcPtrLocation = executionStack.top()[opInx];
   }
 
@@ -558,13 +549,10 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
         if (srcOffset + KIND_GetSize(type) <= lastElement->getFirstByte() + KIND_GetSize(lastElement->getType())) {
           srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
         }
-      }
-      
-    } else {
-
-      //
+      }  
+    }
+    else {
       // Source pointer is not initialized.
-      //
 
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
@@ -578,9 +566,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       // sync load
       sync = syncLoad(destLocation, opAddr, type);
 
-      //
       // initialized source pointer
-      //
       DEBUG_STDOUT("\tInitializing source pointer.");
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
       elem = new IValue();
@@ -590,9 +576,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       srcPtrLocation->setValueOffset((int64_t) elem - srcPtrLocation->getValue().as_int);
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
 
-      //
       // update load variable
-      //
       if (loadInx != -1) {
         IValue *elem, *values, *loadInst;
 
@@ -644,11 +628,11 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   }
 
   post_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
-
   return;
 }
 
-void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file UNUSED, int line UNUSED, int inx UNUSED) {
+void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, 
+				int file UNUSED, int line UNUSED, int inx UNUSED) {
 
   pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
@@ -658,17 +642,13 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     return; // otherwise compiler warning
   }
 
-  //
   // pointer constant; we simply ignore this case
-  //
   if (destScope == CONSTANT) {
     DEBUG_STDOUT("\tIgnoring pointer constant.");
     return; 
   }
 
-  //
   // retrieve destination pointer operand
-  //
   IValue* destPtrLocation = (destScope == GLOBAL) ? globalSymbolTable[destInx] :
     executionStack.top()[destInx];
 
@@ -702,9 +682,11 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     if (srcKind == INT1_KIND) {
       srcLocation->setBitOffset(1);
     }
-  } else if (srcScope == GLOBAL) {
+  } 
+  else if (srcScope == GLOBAL) {
       srcLocation = globalSymbolTable[srcInx];
-  } else {
+  } 
+  else {
     srcLocation = executionStack.top()[srcInx];
   }
 
@@ -753,8 +735,10 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     DEBUG_STDERR("\tMismatched values found in Store");
     safe_assert(false);
   }
-  delete(writtenValue); // cindy
-  if (removeSrc) { delete(srcLocation); } // cindy
+  delete writtenValue;
+  if (removeSrc) { 
+    delete srcLocation; 
+  }
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
 
@@ -763,7 +747,8 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 }
 
 // **** Binary Operations *** //
-void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col UNUSED, int inx, BINOP op) {
+void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+				int file, int line, int col UNUSED, int inx, BINOP op) {
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
@@ -776,17 +761,16 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   VALUE result;
   IValue* iResult;
 
-  //
   // Get values from two operands. They can be either integer or double so we
   // need 4 variables.
-  //
   if (lScope == CONSTANT) { // constant
     double *ptr;
 
     v1 = lValue;
     ptr = (double *) &lValue;
     d1 = *ptr;
-  } else { // register
+  } 
+  else { // register
     IValue *loc1; 
 
     loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
@@ -802,7 +786,8 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
     v2 = rValue;
     ptr = (double *) &rValue;
     d2 = *ptr;
-  } else { // register
+  } 
+  else { // register
     IValue *loc2; 
 
     loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
@@ -861,70 +846,82 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
-
   return;
 }
 
-void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			      int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, ADD);
 }
 
-void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   pre_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FADD);
   post_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			      int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SUB);
 }
 
-void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   pre_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FSUB);
   post_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			      int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, MUL);
 }
 
-void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   pre_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FMUL);
   post_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, UDIV);
 }
 
-void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SDIV);
 }
 
-void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   pre_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FDIV);
   post_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, UREM);
 }
 
-void InterpreterObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SREM);
 }
 
-void InterpreterObserver::frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, int file UNUSED, int line UNUSED, int col UNUSED, int inx UNUSED) {
+void InterpreterObserver::frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
+			       int file UNUSED, int line UNUSED, int col UNUSED, int inx UNUSED) {
   DEBUG_STDERR("UNSUPPORTED IN C???");
   safe_assert(false);
 }
 
 // **** Bitwise Operations *** //
 
-void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file UNUSED, int line, int inx, int col UNUSED, BITWISE op) {
+void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+				  int file UNUSED, int line, int inx, int col UNUSED, BITWISE op) {
   int64_t v64_1, v64_2;
   uint64_t uv64_1, uv64_2;
   int32_t v32_1, v32_2;
@@ -937,21 +934,18 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   VALUE result;
   IValue* iResult;
 
-  //
-  // Unsupport for INT80_KIND right now
-  //
+  // INT80_KIND is not supported right now
   if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80.");
     safe_assert(false);
     return;
   }
 
-  //
   // Get values of two operands
-  //
   if (lScope == CONSTANT) {
     v64_1 = lValue;
-  } else {
+  } 
+  else {
     IValue* iOp1; 
 
     iOp1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
@@ -960,17 +954,15 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
 
   if (rScope == CONSTANT) {
     v64_2 = rValue;
-  } else {
+  } 
+  else {
     IValue* iOp2; 
 
     iOp2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
     v64_2 = iOp2->getIntValue();
   }
 
-
-  //
   // Initialize values for other integer variables depending on type
-  //
   v8_1 = (int8_t) v64_1;
   uv8_1 = (uint8_t) v8_1;
   v8_2 = (int8_t) v64_2;
@@ -986,9 +978,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   uv64_1 = (uint64_t) v64_1;
   uv64_2 = (uint64_t) v64_2;
 
-  //
   // Compute the result of the bitwise operator
-  //
   switch (op) {
     case SHL:
       switch (type) {
@@ -1144,31 +1134,36 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
-
   return;
 } 
 
-void InterpreterObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			      int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, SHL);
 }
 
-void InterpreterObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, LSHR);
 }
 
-void InterpreterObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, ASHR);
 }
 
-void InterpreterObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, AND);
 }
 
-void InterpreterObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			      int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, OR);
 }
 
-void InterpreterObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int file, int line, int col, int inx) {
+void InterpreterObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+			       int file, int line, int col, int inx) {
   bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, XOR);
 }
 
@@ -1197,21 +1192,18 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   IValue *aggIValue, *iResult;
   KVALUE *aggKValue;
 
-  //
   // We expect only one index in the getElementPtrIndexList.
-  //
   index = getElementPtrIndexList.front();
   getElementPtrIndexList.pop();
   safe_assert(getElementPtrIndexList.empty());
 
-  //
   // Obtain KVALUE and IValue objects.
-  //
   aggKValue = returnStruct.front();
 
   if (opinx == -1) {
     aggIValue = NULL;
-  } else {
+  } 
+  else {
     aggIValue = aggKValue->isGlobal ? globalSymbolTable[opinx] :
       executionStack.top()[opinx];
   }
@@ -1228,14 +1220,13 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
 
   DEBUG_STDOUT("KVALUE: " << KVALUE_ToString(aggKValue));
 
-  //
   // Compute the result
-  //
   iResult = new IValue();
   if (aggIValue != NULL) { 
     aggIValue += index;
     aggIValue->copy(iResult);
-  } else { // constant struct, use KVALUE to create iResult
+  } 
+  else { // constant struct, use KVALUE to create iResult
     iResult->setType(aggKValue->kind);
     iResult->setValue(aggKValue->value);
   }
@@ -1244,7 +1235,6 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
-
   return;
 }
 
@@ -1278,10 +1268,12 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   ptrLocation->setLength(1);
   ptrLocation->setLineNumber(line);
 
+  /*
   if (executionStack.top()[inx] != NULL) {
-    release(executionStack.top()[inx]); // cindy
+    release(executionStack.top()[inx]);
     // pending: if pointer delete other pointed to objects?
   }
+  */
   executionStack.top()[inx] = ptrLocation;
 
   DEBUG_STDOUT("Location: " << location->toString());
@@ -1301,15 +1293,11 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   bitOffset = 0;
   length = 0; 
 
-  //
-  // if array element is struct, get list of primitive types for each struct
-  // element
-  //
+  // if array element is struct, get list of primitive types for each struct element
   uint64_t structSize = 1;
   if (type == STRUCT_KIND) {
     structSize = structType.size(); 
   }
-  //KIND* structKind = (KIND*) malloc(structSize*sizeof(KIND)); // changed on 6/17
   KIND* structKind = new KIND[structSize];
   if (type == STRUCT_KIND) {
     for (uint64_t i = 0; i < structSize; i++) {
@@ -1318,7 +1306,6 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
     }
   }
 
-  //IValue* locArr = (IValue*) malloc(size*structSize*sizeof(IValue)); // changed on 6/17
   IValue* locArr = new IValue[size*structSize];
   for (uint64_t i = 0; i < size; i++) {
     if (type == STRUCT_KIND) {
@@ -1333,7 +1320,8 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
         bitOffset = (structType == INT1_KIND) ? bitOffset + 1 : bitOffset;
         locArr[i*structSize+j] = *var;
       }
-    } else {
+    } 
+    else {
       IValue* var = new IValue(type);
       length++;
       var->setFirstByte(firstByte + bitOffset/8);
@@ -1370,8 +1358,8 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   unsigned firstByte = 0;
   unsigned bitOffset = 0;
   unsigned length = 0;
-  //IValue* ptrToStructVar = (IValue*) malloc(size*sizeof(IValue)); // changed on 6/17
   IValue* ptrToStructVar = new IValue[size];
+
   for (uint64_t i = 0; i < size; i++) {
     KIND type = structType.front();
     IValue* var = new IValue(type);
@@ -1402,24 +1390,22 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
 }
 
 void InterpreterObserver::fence() {
-
   cerr << "[InterpreterObserver::fence] => Unimplemented\n";
   safe_assert(false);
 }
 
 void InterpreterObserver::cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* kv1 UNUSED, KVALUE* kv2 UNUSED, int inx UNUSED) {
-
   cerr << "[InterpreterObserver::cmpxchg] => Unimplemented\n";
   safe_assert(false);
 }
 
 void InterpreterObserver::atomicrmw() {
-
   cerr << "[InterpreterObserver::atomicrmw] => Unimplemented\n";
   safe_assert(false);
 }
 
-void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base, KVALUE* offset, KIND type, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base, KVALUE* offset, KIND type, 
+					uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("[getelementptr] Unsupported INT80_KIND");
@@ -1432,28 +1418,23 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   int newOffset;
   bool reInit;
 
-  //
   // get base pointer operand
-  //
   if (base->inx == -1) {
     // constant base pointer
     basePtrLocation = new IValue(PTR_KIND, base->value, 0, 0, 0, 0);
-  } else {
+  } 
+  else {
     basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
       executionStack.top()[base->inx];
   }
 
   DEBUG_STDOUT("\tPointer operand " << basePtrLocation->toString());
 
-  //
   // get index operand
-  // 
   index = offset->inx == -1 ? offset->value.as_int :
     executionStack.top()[offset->inx]->getValue().as_int; 
 
-  //
   // compute new offset from base pointer in bytes 
-  // 
   newOffset = (index * (size/8)) + basePtrLocation->getOffset();
 
   DEBUG_STDOUT("\tSize: " << size);
@@ -1461,9 +1442,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   DEBUG_STDOUT("\tIndex: " << index);
   DEBUG_STDOUT("\tnewOffset: " << newOffset);
 
-  //
   // check whether the pointer need to be (re)initialized.
-  //
   reInit = false;
   if (basePtrLocation->isInitialized()) {
     IValue *array; 
@@ -1476,13 +1455,12 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
         KIND_GetSize(array[length-1].getType())) {
       reInit = true;
     }
-  } else {
+  } 
+  else {
     reInit = true;
   }
 
-  //
   // compute index, (re)initialized the pointer if neccessary
-  //
   if (reInit) {
     DEBUG_STDERR("\tPointer is re-initialized!");
     DEBUG_STDOUT("\tPointer is re-initialized!");
@@ -1495,10 +1473,12 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
       if (basePtrLocation->isInitialized()) {
         extraBytes = newOffset + size/8 -
           array[length-1].getFirstByte() - KIND_GetSize(array[length-1].getType()); 
-      } else {
+      } 
+      else {
         extraBytes = newOffset + size/8;
       }
-    } else { // newOffset is negative
+    } 
+    else { // newOffset is negative
       DEBUG_STDOUT("New offset is negative.");
       extraBytes = abs(newOffset);
     }
@@ -1506,16 +1486,14 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
     DEBUG_STDOUT("Extra bytes: " << extraBytes);
 
     newLength = length + ceil((double)extraBytes/(double)(size/8));
-    //
+
     // optimization: allocate twice more space than required to reduce future
     // allocation overhead
-    //
     newLength = index >= 0 ? 2 * newLength : newLength;
 
     DEBUG_STDOUT("Old length: " << length);
     DEBUG_STDOUT("New length: " << newLength);
 
-    // newArray = (IValue *) malloc(newLength * sizeof(IValue)); // changed on 6/17
     newArray = new IValue[newLength];
     collect_new.push_back(newArray);
     array = (IValue*) basePtrLocation->getIPtrValue();
@@ -1528,52 +1506,44 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 
       if (newOffset < 0) { // newOffset is negative, append at the beginning at the array new elements
         if (i < newLength - length) {
-          //newElement = new IValue(type, value);
+
 	  newArray[i].setType(type);
 	  newArray[i].setValue(value);
 
           if (i == 0) {
-            //newElement->setFirstByte(0);
             newArray[i].setFirstByte(0);
-          } else {
-            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
-            //    KIND_GetSize(newArray[i-1].getType()));
+          } 
+	  else {
             newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
-        } else {
-          //newElement = new IValue();
+        } 
+	else {
           oldElement = array[i + length - newLength];
-          //oldElement.copy(newElement);
           oldElement.copy(&newArray[i]);
+
           if (i == 0) {
-            //newElement->setFirstByte(0);
 	    newArray[i].setFirstByte(0);
-          } else {
-            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
-            //    KIND_GetSize(newArray[i-1].getType()));
+          } 
+	  else {
             newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
         }
-      } else { // newOffset is positive, append at the end of the array new element
+      } 
+      else { // newOffset is positive, append at the end of the array new element
         if (i < length) {
-          //newElement = new IValue();
           oldElement = array[i];
-          //oldElement.copy(newElement);
           oldElement.copy(&newArray[i]);
-          //newElement->setFirstByte(oldElement.getFirstByte());
           newArray[i].setFirstByte(oldElement.getFirstByte());
-        } else {
-          //newElement = new IValue(type, value);
+        } 
+	else {
 	  newArray[i].setType(type);
 	  newArray[i].setValue(value);
           if (i == 0) {
-            //newElement->setFirstByte(0);
             newArray[i].setFirstByte(0);
-          } else {
-            //newElement->setFirstByte(newArray[i-1].getFirstByte() +
-            //    KIND_GetSize(newArray[i-1].getType()));
+          } 
+	  else {
             newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
                 KIND_GetSize(newArray[i-1].getType()));
           }
@@ -1582,17 +1552,13 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
 
       DEBUG_STDOUT("\tNew element at index " << i << " is: " <<
           newArray[i].toString());
-
-      //newArray[i] = *newElement;
     }
 
     basePtrLocation->setLength(newLength);
     basePtrLocation->setSize(size/8);
     basePtrLocation->setValueOffset((int64_t) newArray - basePtrLocation->getValue().as_int);
 
-    //
     // update load variable
-    //
     if (loadInx != -1) {
       IValue *elem, *values;
 
@@ -1638,7 +1604,9 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   return;
 }
 
-void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
+void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, 
+					      int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, 
+					      int size01 UNUSED, int size02,  int inx) {
 
   IValue* arrayElemPtr;
   int newOffset;
@@ -1654,7 +1622,8 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
     while (!arraySize.empty()) {
       arraySize.pop();
     }
-  } else {
+  } 
+  else {
     IValue *ptrArray, *array;
     int *arraySizeVec, *indexVec;
     int index, arrayDim, getIndexNo, i, j;
@@ -1664,10 +1633,8 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
 
     DEBUG_STDOUT("\tPointer operand: " << ptrArray->toString());
 
-    //
     // compute the index for flatten array representation of
     // the program's multi-dimensional array
-    //
     arrayDim = (size02 != -1) ? arraySize.size() + 2 : 1;
 
     if (scopeInx02 == SCOPE_INVALID) {
@@ -1677,18 +1644,15 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
 
     if (scopeInx03 == SCOPE_INVALID) {
       getIndexNo = 1;
-    } else {
+    } 
+    else {
       getIndexNo = getElementPtrIndexList.size() + 2;
     }
 
     DEBUG_STDOUT("arrayDim " << arrayDim);
-
     DEBUG_STDOUT("getIndexNo " << getIndexNo);
 
     safe_assert(getIndexNo != 0);
-
-    //arraySizeVec = (int*) malloc(getIndexNo * sizeof(int)); // changed on 6/17
-    //indexVec = (int*) malloc(getIndexNo * sizeof(int));
 
     arraySizeVec = new int[getIndexNo];
     indexVec = new int[getIndexNo];
@@ -1737,19 +1701,14 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
       index += indexVec[i] * arraySizeVec[i];
     }
 
-    delete[] arraySizeVec; // cindy
-    delete[] indexVec; // cindy
+    delete[] arraySizeVec;
+    delete[] indexVec;
     DEBUG_STDOUT("\tIndex: " << index);
 
-    //
     // compute new offset for flatten array
-    //
     newOffset = ptrArray->getOffset() + elementSize*index; 
 
-    //
     // compute the index for the casted fatten array
-    //
-
     if (ptrArray->isInitialized()) {
       index = findIndex((IValue*) ptrArray->getIPtrValue(), newOffset, ptrArray->getLength()); 
     }
@@ -1765,7 +1724,8 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
       arrayElemPtr->setLength(ptrArray->getLength());
       arrayElemPtr->setSize(KIND_GetSize(arrayElem[0].getType()));
       arrayElemPtr->setOffset(arrayElem[0].getFirstByte());
-    } else {
+    } 
+    else {
       VALUE arrayElemPtrValue;
       arrayElemPtrValue.as_int = ptrArray->getValue().as_int + newOffset;
       arrayElemPtr = new IValue(PTR_KIND, arrayElemPtrValue, ptrArray->getSize(), 0, 0, 0);
@@ -1778,9 +1738,11 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = arrayElemPtr;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
+  return;
 }
 
-void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, KIND arrayKind UNUSED, int inx) {
+void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, 
+					       KIND arrayKind UNUSED, int inx) {
 
   DEBUG_STDOUT("\tstructType size " << structType.size());
 
@@ -1799,23 +1761,17 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
     while (!structElementSize.empty()) {
       structElementSize.pop();
     }
-  } else {
-    //
+  } 
+  else {
     // get the struct operand
-    //
     structPtr = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
     structElemNo = structType.size();
     
-    //structElemSize = (int*) malloc(sizeof(int)*structElemNo); // changed on 6/17
-    //structElem = (int*) malloc(sizeof(int)*structElemNo);
-
     structElemSize = new int[structElemNo];
     structElem = new int[structElemNo];
 
-    //
     // record struct element size
     // compute struct size
-    //
     structSize = 0;
     i = 0;
     while (!structType.empty()) {
@@ -1858,20 +1814,15 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
     }
 
     newOffset = newOffset + structPtr->getOffset();
-
     size = KIND_GetSize(structElem[index % structElemNo]);
-
 
     DEBUG_STDOUT("\tNew offset is: " << newOffset);
 
-    //
     // compute the result; consider two cases: the struct pointer operand is
     // initialized and is not initialized
-    //
     if (structPtr->isInitialized()) {
+
       IValue* structBase = static_cast<IValue*>(structPtr->getIPtrValue());
-
-
       index = findIndex((IValue*) structPtr->getIPtrValue(), newOffset, structPtr->getLength()); // TODO: revise offset, getValue().as_ptr
 
       DEBUG_STDOUT("\tNew index is: " << index);
@@ -1887,11 +1838,13 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
         structElemPtr->setLength(structPtr->getLength());
         structElemPtr->setSize(size);
         structElemPtr->setOffset(newOffset);
-      } else {
+      } 
+      else {
         structElemPtr = new IValue(PTR_KIND, structPtr->getValue(), structPtr->getSize(), 0, 0, 0);
         structElemPtr->setValueOffset(structPtr->getValueOffset());
       }
-    } else {
+    } 
+    else {
       DEBUG_STDOUT("\tPointer is not initialized");
       VALUE structElemPtrValue;
 
@@ -1908,6 +1861,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
   executionStack.top()[inx] = structElemPtr;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
+  return;
 }
 
 // ***** Conversion Operations ***** //
@@ -1921,17 +1875,13 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
   int32_t v32, sign;
   double opFlpValue;
 
-  //
   // assert: we do not support INT80 yet.
-  //
   if (type == INT80_KIND || opType == INT80_KIND) {
     DEBUG_STDERR("Do not support INT80 type yet.");
     safe_assert(false);
   }
 
-  //
   // Obtain value and type of the operand.
-  //
   if (opScope == CONSTANT) {
     double *ptr;
 
@@ -1943,7 +1893,8 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
     opFlpValue = *ptr;
     opPtrValue = op;
 
-  } else {
+  } 
+  else {
 
     iOp = (opScope == GLOBAL) ? globalSymbolTable[opVal] :
       executionStack.top()[opVal];
@@ -1951,25 +1902,18 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
     opUIntValue = iOp->getUIntValue();
     opFlpValue = iOp->getFlpValue();
     opPtrValue = iOp->getValue().as_int + iOp->getOffset();
-
   }
 
-  //
   // Compute 64-bit, 32-bit and sign representation of value. 
-  //
   v64 = opIntValue;
   v64Ptr = &v64;
   v32 = *((int32_t *) v64Ptr);
   sign = v32 & 0x1;
 
-  //
   // Compute the result based on castop and type
-  //
   switch (op) {
     case TRUNC:
-      //
       // assert: size of opType is larger than or equal to (result) type.
-      //
       safe_assert(KIND_GetSize(opType) >= KIND_GetSize(type));
       switch (type) {
         case INT1_KIND:
@@ -1995,9 +1939,7 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
       break;
 
     case ZEXT:
-      //
       // assert: size of opType is smaller than or equal to (result) type.
-      //
       safe_assert(KIND_GetSize(opType) <= KIND_GetSize(type));
       switch (type) {
         case INT1_KIND:
@@ -2014,9 +1956,7 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
       break;
 
     case SEXT:
-      //
       // assert: size of opType is smaller than or equal to (result) type.
-      //
       safe_assert(KIND_GetSize(opType) <= KIND_GetSize(type));
       switch (type) {
         case INT1_KIND:
@@ -2035,9 +1975,7 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
       break;
 
     case FPTRUNC:
-      //
       // assert: size of opType is larger than or equal to (result) type.
-      //
       safe_assert(KIND_GetSize(opType) >= KIND_GetSize(type));
       switch (type) {
         case FLP32_KIND:
@@ -2056,9 +1994,7 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
       break;
 
     case FPEXT:
-      //
       // assert: size of opType is smaller than or equal to (result) type.
-      //
       safe_assert(KIND_GetSize(opType) <= KIND_GetSize(type));
       switch (type) {
         case FLP32_KIND:
@@ -2137,7 +2073,6 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
           safe_assert(false);
-
       }
       break;
 
@@ -2155,7 +2090,6 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
         default:
           DEBUG_STDERR("Unsupported float type: " << KIND_ToString(type));
           safe_assert(false);
-
       }
       break;
 
@@ -2204,13 +2138,15 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
       iResult->setValue(val);
       iResult->setSize(size/8);
       iResult->setType(type);
-    } else {
+    } 
+    else {
       iResult = new IValue();
       iOp->copy(iResult);
       iResult->setSize(size/8);
       iResult->setType(type);
     }
-  } else {
+  } 
+  else {
     iResult = new IValue(type, result);
   }
 
@@ -2218,7 +2154,6 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
   executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
-
   return;
 }
 
@@ -2290,6 +2225,7 @@ void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, KVALUE
     DEBUG_STDERR("\tShadow and concrete executions diverge at this branch.");
     safe_assert(false);
   }
+  return;
 }
 
 void InterpreterObserver::branch2(IID iid UNUSED, bool conditional UNUSED, int inx UNUSED) {
@@ -2348,18 +2284,12 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
     post_analysis();
   }
 
-  //
   // free memory
-  //
-
   // should not be erasing above stuff twice
-
   
   for (unsigned int i = 0; i < iValues.size(); i++) { // cindy
     release(iValues[i]);
   }
-  
-  
 
   /*
   for(unsigned int i = collect_new.size() - 1; i <= collect_new.size(); i++) {
@@ -2389,7 +2319,6 @@ void InterpreterObserver::return2_(IID iid UNUSED, int inx UNUSED) {
   }
 
   isReturn = true;
-
   return;
 }
 
@@ -2408,7 +2337,6 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
 
     // reconstruct struct value
     unsigned size = returnStruct.size();
-    //IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue)); // changed on 6/17
     IValue* structValue = new IValue[returnStruct.size()];
     unsigned i = 0;
     while (!returnStruct.empty()) {
@@ -2419,7 +2347,8 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
         iValue = new IValue(value->kind);
         iValue->setValue(value->value);
         iValue->setLength(0);
-      } else {
+      } 
+      else {
         iValue = new IValue();
         returnValue->copy(iValue);
         returnValue++;
@@ -2436,7 +2365,8 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
     executionStack.top()[callerVarIndex.top()] = structValue;
     for (i = 0; i < size; i++)
       DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-  } else {
+  } 
+  else {
     cout << "The execution stack is empty.\n";
   }
 
@@ -2444,7 +2374,6 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
   callerVarIndex.pop();
 
   isReturn = true;
-
   return;
 }
 
@@ -2460,7 +2389,6 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   if (type == INT80_KIND) {
     cout << "[icmp] Unsupported INT80_KIND" << endl;
     safe_assert(false);
-    return;
   }
 
   int64_t v1, v2;
@@ -2468,7 +2396,8 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   // get value of v1
   if (lScope == CONSTANT) { // constant
     v1 = lValue;
-  } else {
+  } 
+  else {
     IValue *loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] :
       executionStack.top()[lValue];
     v1 = loc1->getType() == PTR_KIND ? loc1->getIntValue() + loc1->getOffset()
@@ -2478,7 +2407,8 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   // get value of v2
   if (rScope == CONSTANT) { // constant
     v2 = rValue;
-  } else {
+  } 
+  else {
     IValue *loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] :
       executionStack.top()[rValue];
     v2 = loc2->getType() == PTR_KIND ? loc2->getIntValue() + loc2->getOffset()
@@ -2559,7 +2489,8 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
     ptr = (double *) &lValue;
     v1 = *ptr;
-  } else {
+  } 
+  else {
     IValue *loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] :
       executionStack.top()[lValue];
     v1 = loc1->getFlpValue();
@@ -2571,7 +2502,8 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
     ptr = (double *) &rValue;
     v2 = *ptr;
-  } else {
+  } 
+  else {
     IValue *loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] :
       executionStack.top()[rValue];
     v2 = loc2->getFlpValue();
@@ -2668,7 +2600,8 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
     KVALUE* constant = phinodeConstantValues[recentBlock.top()];
     phiNode = new IValue(constant->kind, constant->value);
     phiNode->setLength(0);
-  } else {
+  } 
+  else {
     safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
     IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
     phiNode = new IValue();
@@ -2681,7 +2614,6 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = phiNode;
   DEBUG_STDOUT(phiNode->toString());
-
   return;
 }
 
@@ -2692,7 +2624,8 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
 
   if (cond->inx == -1) {
     condition = cond->value.as_int;
-  } else {
+  } 
+  else {
     conditionValue = cond->isGlobal ? globalSymbolTable[cond->inx] : executionStack.top()[cond->inx];
     condition = conditionValue->getValue().as_int;
   }
@@ -2701,16 +2634,19 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
   if (condition) {
     if (tvalue->inx == -1) {
       result = new IValue(tvalue->kind, tvalue->value, REGISTER);
-    } else {
+    } 
+    else {
       result = new IValue();
       trueValue = tvalue->isGlobal ? globalSymbolTable[tvalue->inx] :
         executionStack.top()[tvalue->inx];
       trueValue->copy(result);
     }
-  } else {
+  } 
+  else {
     if (fvalue->inx == -1) {
       result = new IValue(fvalue->kind, fvalue->value, REGISTER);
-    } else {
+    } 
+    else {
       result = new IValue();
       falseValue = fvalue->isGlobal ? globalSymbolTable[fvalue->inx] : executionStack.top()[fvalue->inx];
       falseValue->copy(result);
@@ -2727,42 +2663,43 @@ void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, K
 void InterpreterObserver::push_string(int diff) {
   char c = (char)(((int)'0') + diff);
   logName.push(c);
+  return;
 }
 
 void InterpreterObserver::push_stack(KVALUE* value) {
-
   myStack.push(value);
+  return;
 }
 
 void InterpreterObserver::push_phinode_constant_value(KVALUE* value, int blockId) {
-
   phinodeConstantValues[blockId] = value;
+  return;
 }
 
 void InterpreterObserver::push_phinode_value(int valId, int blockId) {
-
   phinodeValues[blockId] = valId;
+  return;
 }
 
 void InterpreterObserver::push_return_struct(KVALUE* value) {
-
   returnStruct.push(value);
+  return;
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {
-
   structType.push(kind);
+  return;
 }
 
 void InterpreterObserver::push_struct_element_size(uint64_t s) {
-
   structElementSize.push(s);
+  return;
 }
 
 void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
   int idx = int_value->value.as_int;
-
   getElementPtrIndexList.push(idx);
+  return;
 }
 
 int InterpreterObserver::actualValueToIntValue(int scope, int64_t vori) {
@@ -2804,17 +2741,18 @@ void InterpreterObserver::push_getelementptr_inx5(int scope01, int scope02, int
       }
     }
   }
-};
+  return;
+}
 
 void InterpreterObserver::push_getelementptr_inx2(int int_value) {
   int idx = int_value;
-
   getElementPtrIndexList.push(idx);
+  return;
 }
 
 void InterpreterObserver::push_array_size(uint64_t size) {
-
   arraySize.push(size);
+  return;
 }
 
 void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s5) {
@@ -2833,6 +2771,7 @@ void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s
       }
     }
   }
+  return;
 }
 
 void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
@@ -2872,6 +2811,7 @@ void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
 
   safe_assert(!recentBlock.empty());
   recentBlock.pop();
+  return;
 }
 
 void InterpreterObserver::after_void_call() {
@@ -2888,6 +2828,7 @@ void InterpreterObserver::after_void_call() {
   while (!callArgs.empty()) {
     callArgs.pop();
   }
+  return;
 }
 
 void InterpreterObserver::after_struct_call() {
@@ -2929,7 +2870,8 @@ void InterpreterObserver::after_struct_call() {
     DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()]->toString());
 
     callerVarIndex.pop();
-  } else {
+  } 
+  else {
     while (!returnStruct.empty()) {
       returnStruct.pop();
     }
@@ -2942,7 +2884,7 @@ void InterpreterObserver::after_struct_call() {
 
   safe_assert(!recentBlock.empty());
   recentBlock.pop();
-
+  return;
 }
 
 void InterpreterObserver::create_stack_frame(int size) {
@@ -2955,30 +2897,28 @@ void InterpreterObserver::create_stack_frame(int size) {
       frame[i] = callArgs.top();
       DEBUG_STDOUT("\t Argument " << i << ": " << frame[i]->toString());
       callArgs.pop();
-    } else {
+    } 
+    else {
       frame[i] = new IValue();
     }
   }
   safe_assert(callArgs.empty());
   executionStack.push(frame);
+  return;
 }
 
 void InterpreterObserver::create_global_symbol_table(int size) {
 
   pre_create_global_symbol_table();
-  //
+
   // instantiate copyShadow
-  //
   IValue::setCopyShadow(&copyShadow);
 
-  //
   // get log name
-  //
   int length, i;
   char* log;
 
   length = logName.size();
-  // log = (char*) malloc(sizeof(char) * (length+1)); // changed on 6/17
   log = new char[length+1];
 
   for (i = 0; i < length; i++) {
@@ -3015,10 +2955,12 @@ void InterpreterObserver::record_block_id(int id) {
 
   if (recentBlock.empty()) {
     recentBlock.push(id);
-  } else {
+  } 
+  else {
     recentBlock.pop();
     recentBlock.push(id);
   }
+  return;
 }
 
 void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIND type) {
@@ -3027,15 +2969,10 @@ void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIN
   uint32_t i, elemSize;
   VALUE zero, value;
 
-  //
   // initialize the array
-  //
   elemSize = KIND_GetSize(type);
   zero.as_int = 0;
   for (i = 0; i < size; i++) {    
-    //IValue *elem = new IValue(type, zero, REGISTER);
-    //elem->setFirstByte(i*elemSize);
-    //location[i] = *elem;
     location[i].setType(type);
     location[i].setValue(zero);
     location[i].setScope(REGISTER);
@@ -3051,6 +2988,7 @@ void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIN
   release(globalSymbolTable[kvalue->inx]);
   globalSymbolTable[kvalue->inx] = ptrLocation;
   DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
+  return;
 }
 
 void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
@@ -3072,6 +3010,7 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   globalSymbolTable[kvalue->inx] = ptrLocation;
   DEBUG_STDOUT("\tloc: " << location->toString());
   DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
+  return;
 }
 
 void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, int inx) {
@@ -3089,7 +3028,8 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
       safe_assert(arg);
       argCopy = new IValue();
       arg->copy(argCopy);
-    } else {
+    } 
+    else {
       // argument is a constant
       argCopy = new IValue(value->kind, value->value, LOCAL);
       argCopy->setLength(0); // uninitialized pointer
@@ -3111,6 +3051,7 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
 
   // new recentBLock stack frame for the new call
   recentBlock.push(0);
+  return;
 }
 
 void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3123,25 +3064,24 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3149,7 +3089,8 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3163,8 +3104,8 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3177,25 +3118,24 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3203,7 +3143,8 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3217,8 +3158,8 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3231,25 +3172,24 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3257,7 +3197,8 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3271,8 +3212,8 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3285,25 +3226,24 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3311,7 +3251,8 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3325,8 +3266,8 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3339,25 +3280,24 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3365,7 +3305,8 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3379,8 +3320,8 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 
@@ -3394,25 +3335,24 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3420,7 +3360,8 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3434,8 +3375,8 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
 void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
@@ -3448,25 +3389,24 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   SCOPE argScope;
   int64_t argValueOrIndex;
 
-  //
   // Get the operand value.
-  //
   if (arg->inx != -1) {
     IValue *iArg;
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
       argScope = GLOBAL;
-    } else {
+    } 
+    else {
       iArg = executionStack.top()[arg->inx];
       argScope = LOCAL;
     }
 
     safe_assert(iArg);
 
-    safe_assert(iArg);
     argValue = iArg->getFlpValue();
-  } else {
+  } 
+  else {
     argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
@@ -3474,7 +3414,8 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
-  } else {
+  } 
+  else {
     argValueOrIndex = arg->inx;
   }
 
@@ -3488,11 +3429,12 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   post_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  return;
 }
 
-void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, int size, int inx, KVALUE* mallocAddress) {
+void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, 
+				      int size, int inx, KVALUE* mallocAddress) {
 
   // retrieving original number of bytes
   KVALUE* argValue = myStack.top();
@@ -3502,9 +3444,6 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
   if (type != STRUCT_KIND) {
     // allocating space
     int numObjects = argValue->value.as_int*8 / size;
-    //int actualSize = sizeof(IValue) * numObjects;    
-    //void *addr = malloc(actualSize);
-    //collect_malloc.push_back(addr);
     IValue *addr = new IValue[numObjects];
     collect_new.push_back(addr);
 
@@ -3522,10 +3461,6 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
       // creating object
       VALUE iValue;
       // TODO: check if we need uninitialized value
-      //IValue *var = new IValue(type, iValue, currOffset);
-      //((IValue*)addr)[i] = *var;
-      //((IValue*)addr)[i].setValueOffset(newPointer->getValueOffset()); //setting basepointer value offset?
-      
       addr[i].setType(type);
       addr[i].setValue(iValue);
       addr[i].setFirstByte(currOffset);
@@ -3542,10 +3477,6 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     unsigned numStructs = ceil(argValue->value.as_int*8.0 / size);
     unsigned fields = structType.size();
 
-    //int actualSize = sizeof(IValue) * numStructs * fields;    
-    //void *addr = malloc(actualSize);
-    //collect_malloc.push_back(addr);
-    //IValue* ptrToStructVar = (IValue*)addr;
     IValue *ptrToStructVar = new IValue[numStructs*fields];
     collect_new.push_back(ptrToStructVar);
 
@@ -3568,10 +3499,7 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
 
 	ptrToStructVar[length].setType(type);
 	ptrToStructVar[length].setFirstByte(firstByte);
-        //IValue* var = new IValue(type);
-        //var->setFirstByte(firstByte);
         firstByte = firstByte + KIND_GetSize(type);
-        //ptrToStructVar[length] = *var;
         DEBUG_STDOUT("Created a field of struct: " << length);
         DEBUG_STDOUT(ptrToStructVar[length].toString());
         length++;
@@ -3591,18 +3519,15 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     executionStack.top()[inx] = structPtrVar;
     DEBUG_STDOUT(structPtrVar->toString());
   }
-
   return;
 }
 
 void InterpreterObserver::vaarg() {
-
   cerr << "[InterpreterObserver::vaarg] => Unimplemented\n";
   safe_assert(false);
 }
 
 void InterpreterObserver::landingpad() {
-
   cerr << "[InterpreterObserver::landingpad] => Unimplemented\n";
   safe_assert(false);
 }
