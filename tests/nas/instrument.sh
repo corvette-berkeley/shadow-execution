@@ -5,8 +5,8 @@ export CC=$LPATH"/clang -use-gold-plugin"
 export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib -L"$PROFILER_PATH"/lib"
 
 # variables related to profiling
-# export PROFILER=""
-export PROFILER="-lprofiler"
+export PROFILER=""
+#export PROFILER="-lprofiler"
 #export PROFILER="-ltcmalloc"
 
 # remove constant geps
@@ -21,11 +21,12 @@ llvm-dis tmppass-allocas.bc -o $1-inst.ll
 
 # create executable 
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER
+#ld tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER
 
 # create executable for uninstrumented bitcode
 $CC $1.bc -o $1.out2 -L$LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER
 
 # inspecting profile information
 # pprof --text executable.out cpu.prof
-# pprof --text gfs_master heap.prof
+# pprof --text executable.out heap.prof
 

@@ -2409,6 +2409,7 @@ void InterpreterObserver::switch_(IID iid UNUSED, KVALUE* op UNUSED, int inx UNU
 }
 
 void InterpreterObserver::unreachable() {
+  safe_assert(false);
 }
 
 // ***** Other Operations ***** //

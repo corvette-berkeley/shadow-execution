@@ -41,6 +41,7 @@
 
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
+#include "EmptyObserver.h"
 #include "PrintObserver.h"
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
@@ -458,13 +459,14 @@ ObserverPtrList observers_;
 		static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
+//REGISTER_OBSERVER(EmptyObserver, "empty")
 //REGISTER_OBSERVER(PrintObserver, "print")
-//REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 //REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
 //REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
 //REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
 //REGISTER_OBSERVER(BlameTree, "blametree")
-REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
+//REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
 
 /*******************************************************************************************/
 
