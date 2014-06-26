@@ -48,6 +48,9 @@ def main():
         log.write("[FAILED INSTRUMENTATION]: i_" + executable + ".bc\n")
         continue 
 
+      # creating ll file for original program
+      command = ['llvm-dis', bitcodefile, '-o', executable + '-orig.ll']
+      call(command, stdin=None, stdout=None, stderr=None)
       
       ##########################################
       # instrumented bitcode file
@@ -60,7 +63,11 @@ def main():
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED INSTRUMENTATION]: i_" + executable + ".bc\n")
-        continue 
+        continue
+
+      # creating ll file for instrumented code
+      command = ['llvm-dis', ibitcodefile, '-o', executable + '.ll']
+      call(command, stdin=None, stdout=None, stderr=None)
 
       ###########################################
       # instrumented executable file
