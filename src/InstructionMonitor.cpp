@@ -254,9 +254,15 @@ void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, i
 
 
 // **** Terminator Instructions ***** //
-void llvm_branch(IID iid, bool conditional, KVALUE* op1, int inx) {
-	DISPATCH_TO_OBSERVERS(branch, iid, conditional, op1, inx)
+/*void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, int64_t value, int inx) {
+  DISPATCH_TO_OBSERVERS(branch, iid, conditional, valInx, scope, type, value, inx)
 }
+*/
+
+void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int inx) {
+  DISPATCH_TO_OBSERVERS(branch, iid, conditional, valInx, scope, type, value, inx)
+}
+
 
 void llvm_branch2(IID iid, bool conditional, int inx) {
 	DISPATCH_TO_OBSERVERS(branch2, iid, conditional, inx)

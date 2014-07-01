@@ -161,8 +161,9 @@ public:
   
   virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 
-	// ***** TerminatorInst ***** //
-	virtual void branch(IID iid, bool conditional, KVALUE* op1, int inx);
+  // ***** TerminatorInst ***** //
+  //virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, int64_t value, int inx);
+  virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int inx);
 
 	virtual void branch2(IID iid, bool conditional, int inx);
 

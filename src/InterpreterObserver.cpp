@@ -2217,15 +2217,17 @@ void InterpreterObserver::bitcast(int64_t opVal, SCOPE opScope, KIND opKind, KIN
 }
 
 // ***** TerminatorInst ***** //
-void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, KVALUE* op1, int inx UNUSED) {
+void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value, int inx UNUSED) {
 
-  IValue* cond = (op1->inx == -1) ? NULL : executionStack.top()[op1->inx];
+  IValue* cond = (valInx == -1) ? NULL : executionStack.top()[valInx];
 
-  if (cond != NULL && ((bool) cond->getIntValue() != (bool) op1->value.as_int)) {
-    DEBUG_STDERR("\tKVALUE: " << KVALUE_ToString(op1));
+  //cout << "index: " << valInx << " value: " << value << endl;
+  if (cond != NULL && ((bool) cond->getIntValue() != (bool)value)) { // revise this: before value.as_int
+    DEBUG_STDERR("\tKVALUE: " << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value);
     DEBUG_STDERR("\tIVALUE: " << cond->toString());
 
     DEBUG_STDERR("\tShadow and concrete executions diverge at this branch.");
+    cout << "divergence" << endl;
     safe_assert(false);
   }
   return;

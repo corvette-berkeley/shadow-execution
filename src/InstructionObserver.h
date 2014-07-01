@@ -121,7 +121,8 @@ public:
 	virtual void bitcast(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
 
 	// ***** Terminator Instructions *****/
-	virtual void branch(IID iid UNUSED, bool conditional UNUSED,  KVALUE* op1 UNUSED, int inx UNUSED) {};
+	//virtual void branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {};
+	virtual void branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED, int inx UNUSED) {};
 	virtual void branch2(IID iid UNUSED, bool conditional UNUSED, int inx UNUSED) {};
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
 	virtual void invoke(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};

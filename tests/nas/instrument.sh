@@ -9,6 +9,8 @@ export PROFILER=""
 #export PROFILER="-lprofiler"
 #export PROFILER="-ltcmalloc"
 
+llvm-dis $1.bc -o $1-orig.ll
+
 # remove constant geps
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --break-constgeps -f -o $1-ngep.bc $1.bc
 
@@ -17,7 +19,7 @@ $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --fi
 
 # move alloca instructions to top of each function
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
-llvm-dis tmppass-allocas.bc -o $1-inst.ll
+llvm-dis tmppass-allocas.bc -o $1.ll
 
 # create executable 
 $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER
