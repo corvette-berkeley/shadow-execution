@@ -211,7 +211,7 @@ void EmptyObserver::invoke(IID iid UNUSED, KVALUE* call_value UNUSED, int inx UN
 void EmptyObserver::resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {
 }
 
-void EmptyObserver::return_(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {
+void EmptyObserver::return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {
 }
 
 void EmptyObserver::return2_(IID iid UNUSED, int inx UNUSED) {

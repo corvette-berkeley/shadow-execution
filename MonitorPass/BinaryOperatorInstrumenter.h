@@ -37,7 +37,7 @@
  *
  */
 
-// Author: Cuong Nguyen
+// Author: Cindy Rubio-Gonzalez and Cuong Nguyen
 
 #ifndef BINARY_OPERATORS_INSTRUMENTER_H_
 #define BINARY_OPERATORS_INSTRUMENTER_H_

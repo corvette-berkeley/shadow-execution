@@ -273,8 +273,8 @@ void PrintObserver::resume(IID iid, KVALUE* op1, int inx) {
   DEBUG_STDOUT("<<<<< RESUME >>>>> " << IID_ToString(iid) << ", acc value:" << KVALUE_ToString(op1) << " [INX: " << inx << "]");
 }
 
-void PrintObserver::return_(IID iid, KVALUE* op1, int inx) {
-  DEBUG_STDOUT("<<<<< RETURN >>>>> " << IID_ToString(iid) << ", return value:" << KVALUE_ToString(op1) << " [INX: " << inx << "]");
+void PrintObserver::return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx) {
+  DEBUG_STDOUT("<<<<< RETURN >>>>> " << IID_ToString(iid) << ",inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << " [INX: " << inx << "]");
 }
 
 void PrintObserver::return2_(IID iid, int inx) {

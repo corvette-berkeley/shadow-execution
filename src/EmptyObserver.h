@@ -172,7 +172,7 @@ public:
   
   virtual void resume(IID iid, KVALUE* op1, int inx);
   
-  virtual void return_(IID iid, KVALUE* op1, int inx);
+  virtual void return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx);
   
   virtual void return2_(IID iid, int inx);
   

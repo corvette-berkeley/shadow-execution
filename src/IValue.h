@@ -171,6 +171,8 @@ class IValue {
     void setType(KIND type) { this->type = type; };
 
     void setValue(VALUE value) { this->value = value; };
+    
+    void setValue(int64_t value);
 
     void setValueOffset(int64_t valueOffset) { this->valueOffset = valueOffset; };
 

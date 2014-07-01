@@ -1117,7 +1117,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
           result.as_int = v64_1 ^ v64_2;
           break;
         default:
-          DEBUG_STDERR("Unsupport integer type: " << type);
+          DEBUG_STDERR("Unsupported integer type: " << type);
           safe_assert(false);
           return;
       }
@@ -1125,7 +1125,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
 
 
     default:
-      DEBUG_STDERR("Unsupport bitwise operator: " << BITWISE_ToString(op));
+      DEBUG_STDERR("Unsupported bitwise operator: " << BITWISE_ToString(op));
       safe_assert(false);
       return;
   }
@@ -2258,13 +2258,13 @@ void InterpreterObserver::resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNU
   safe_assert(false);
 }
 
-void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
+void InterpreterObserver::return_(IID iid UNUSED, int valInx, SCOPE scope UNUSED, KIND type, int64_t value, int inx UNUSED) {
   safe_assert(!executionStack.empty());
 
   std::vector< IValue* > iValues;
   iValues = executionStack.top();
 
-  IValue* returnValue = op1->inx == -1 ? NULL : executionStack.top()[op1->inx];
+  IValue* returnValue = valInx == -1 ? NULL : executionStack.top()[valInx];
 
   executionStack.pop();
 
@@ -2273,8 +2273,8 @@ void InterpreterObserver::return_(IID iid UNUSED, KVALUE* op1, int inx UNUSED) {
     safe_assert(!callerVarIndex.empty());
 
     if (returnValue == NULL) {
-      executionStack.top()[callerVarIndex.top()]->setValue(op1->value); 
-      executionStack.top()[callerVarIndex.top()]->setType(op1->kind); 
+      executionStack.top()[callerVarIndex.top()]->setType(type); 
+      executionStack.top()[callerVarIndex.top()]->setValue(value);
     } else {
       returnValue->copy(executionStack.top()[callerVarIndex.top()]);
     }

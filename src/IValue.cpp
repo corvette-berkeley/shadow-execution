@@ -473,3 +473,28 @@ void IValue::create(const IValue& iv) {
   scope = iv.getScope();
   shadow = iv.getShadow();
 }
+
+
+// precondition: setting type first
+void IValue::setValue(int64_t v) {
+  if (isIntValue()) {
+    this->value.as_int = v;
+    //cout << "value: " << v << endl;
+  }
+  else if (isFlpValue()) {
+    double *ptr;
+    ptr = (double*)&v;
+    this->value.as_flp = *ptr;
+    //cout << "double: " << this->value.as_flp << endl;
+  }
+  else if (isPtrValue()) {
+    // TODO: revise this
+    this->value.as_ptr = (void*)v;
+    cout << "ptr" << endl;
+    safe_assert(false);
+  }
+  else {
+    cout << "ERROR" << endl;
+  }
+  return;
+}

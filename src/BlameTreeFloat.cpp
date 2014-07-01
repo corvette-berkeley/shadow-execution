@@ -597,6 +597,7 @@ void BlameTreeFloat::post_fpext(int64_t op, SCOPE opScope, KIND opKind UNUSED, K
 void BlameTreeFloat::post_analysis() {
   cout << "Printing trace after analysis: " << dynamicCounter << endl;
   cout << "Trace length: " << dynamicCounter << endl;
+
   std::string line;
 
   //
@@ -674,6 +675,9 @@ void BlameTreeFloat::post_analysis() {
   bta.printResult();
 
   cout << endl;
+  
+
+  /*
   cout << "Do you want to visualize the blame tree? (yes|no)" << endl;
   std::getline(std::cin, line);
 
@@ -687,6 +691,6 @@ void BlameTreeFloat::post_analysis() {
     blametree << bta.toDot();
     blametree.close();
   }
-  
+  */
   return;
 }

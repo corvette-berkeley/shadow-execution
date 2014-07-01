@@ -117,7 +117,7 @@ extern "C" {
   void llvm_indirectbr(IID iid, KVALUE* op1, int x);
   void llvm_invoke(IID iid, KVALUE op, int x);
   void llvm_resume(IID iid, KVALUE* op1, int x);
-  void llvm_return_(IID iid, KVALUE* op1, int x);
+  void llvm_return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int x);
   void llvm_return2_(IID iid, int x);
   void llvm_return_struct_(IID iid, int x, int valInx);
   void llvm_switch_(IID iid, KVALUE* op, int x);

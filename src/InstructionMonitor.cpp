@@ -274,8 +274,8 @@ void llvm_resume(IID iid, KVALUE* op1, int inx) {
 	DISPATCH_TO_OBSERVERS(resume, iid, op1, inx)
 }
 
-void llvm_return_(IID iid, KVALUE* op1, int inx) {
-	DISPATCH_TO_OBSERVERS(return_, iid, op1, inx)
+void llvm_return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx) {
+  DISPATCH_TO_OBSERVERS(return_, iid, valInx, scope, type, value, inx)
 }
 
 void llvm_return_struct_(IID iid, int inx, int valInx) {

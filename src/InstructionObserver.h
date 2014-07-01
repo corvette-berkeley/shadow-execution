@@ -126,7 +126,7 @@ public:
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
 	virtual void invoke(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
-	virtual void return_(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
+	virtual void return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {};
 	virtual void return2_(IID iid UNUSED, int inx UNUSED) {};
 	virtual void return_struct_(IID iid UNUSED, int inx UNUSED, int valInx UNUSED) {};
 	virtual void switch_(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};

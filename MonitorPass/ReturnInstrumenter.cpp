@@ -22,6 +22,8 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Value* retVal = returnInst->getReturnValue();
 
+    Constant *cInx, *cScope, *cType, *cValue; // new
+
     if (retVal == NULL || retVal->getType()->isVoidTy()) {
 
       Instruction* call = CALL_IID_INT("llvm_return2_", iidC, inxC);
@@ -38,10 +40,16 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
       
     } else {
 
-      Value* ret = KVALUE_VALUE(retVal, instrs, NOSIGN);
-      if (ret == NULL) return false;
+      cInx = computeIndex(retVal);
+      cScope = INT32_CONSTANT(getScope(retVal), SIGNED);
+      cType = KIND_CONSTANT(TypeToKind(retVal->getType()));
+      cValue = getValueOrIndex(retVal);
 
-      Instruction* call = CALL_IID_KVALUE_INT("llvm_return_", iidC, ret, inxC);
+      //Value* ret = KVALUE_VALUE(retVal, instrs, NOSIGN);
+      //if (ret == NULL) return false;
+
+      // Instruction* call = CALL_IID_KVALUE_INT("llvm_return_", iidC, ret, inxC);
+      Instruction* call = CALL_IID_INT_INT_KIND_INT64_INT("llvm_return_", iidC, cInx, cScope, cType, cValue, inxC);
       instrs.push_back(call);
 
     }
