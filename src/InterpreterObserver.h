@@ -163,7 +163,7 @@ class InterpreterObserver : public InstructionObserver {
   virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
   
   // ***** Memory Access and Addressing Operations ***** //
-  virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result);
+  virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND opType, uint64_t value);
 
   virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
 

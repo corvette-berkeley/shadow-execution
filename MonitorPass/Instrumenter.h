@@ -314,28 +314,81 @@ string getFileName(Instruction* inst) {
 
 /*******************************************************************************************/
 
- Instruction* CAST_VALUE(Value *v, bool isSigned) {
+/*
+Instruction* CAST_VALUE(Value *v, bool isSigned) {
 
    Instruction* I_cast = NULL;
-   Type* T = v->getType();
 
   // easier to fix here
   if (v->getType()->isIntegerTy(1)) {
     isSigned = false;
   }
 
-   if(T->isIntegerTy()) {
-     I_cast = INTMAX_CAST_INSTR(v, isSigned);
-   } else if(T->isFloatingPointTy()) {
-     I_cast = FLPMAX_CAST_INSTR(v);
-   } else if(T->isPointerTy()) {
-     I_cast = PTRTOINT_CAST_INSTR(v);
-   } else {
-     printf("Unsupported KVALUE type\n");
-     T->dump();
-   }
-   return I_cast;
+  Type* T = v->getType();
+
+  KIND kind = TypeToKind(T);
+  // if unsupported kind, return NULL
+  if(kind == INV_KIND) {
+    return;
+  }
+  
+  if(T->isIntegerTy()) {
+    I_cast = INTMAX_CAST_INSTR(v, isSigned);
+  } else if(T->isFloatingPointTy()) {
+    I_cast = FLPMAX_CAST_INSTR(v);
+  } else if(T->isPointerTy()) {
+    I_cast = PTRTOINT_CAST_INSTR(v);
+  } else {
+    printf("Unsupported KVALUE type\n");
+    T->dump();
+  }
+
+  return I_cast;
+}
+*/
+
+
+Instruction* CAST_VALUE(Value *v, InstrPtrVector& Instrs, bool isSigned) {
+
+   Instruction* I_cast = NULL;
+
+  // easier to fix here
+  if (v->getType()->isIntegerTy(1)) {
+    isSigned = false;
+  }
+
+  // TODO(elmas): what else is OK?
+  if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
+    return NULL;
+  }
+
+  Type* T = v->getType();
+
+  KIND kind = TypeToKind(T);
+  // if unsupported kind, return NULL
+  if(kind == INV_KIND) {
+    return NULL;
+  }
+
+  if(T->isIntegerTy()) {
+    I_cast = INTMAX_CAST_INSTR(v, isSigned);
+  } else if(T->isFloatingPointTy()) {
+    I_cast = FLPMAX_CAST_INSTR(v);
+  } else if(T->isPointerTy()) {
+    I_cast = PTRTOINT_CAST_INSTR(v);
+  } else {
+    printf("Unsupported KVALUE type\n");
+    T->dump();
+  }
+
+  safe_assert(I_cast != NULL);
+  Instrs.push_back(I_cast);
+
+  // bitcast to the value type in the KVALUE struct
+  I_cast = VALUE_CAST_INSTR(I_cast);
+  return I_cast;
  }
+
 
 Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
   safe_assert(v != NULL);
@@ -1298,7 +1351,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/
+  /*******************************************************************************************/ // DELETE!
   Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE(const char* func, Value* iid, Value* k1, Value* size, Value* inx, Value* line, Value* arg, Value* result) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
@@ -1317,6 +1370,37 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(line);
     Args.push_back(arg);
     Args.push_back(result);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+
+  /*******************************************************************************************/
+  Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64(const char* func, Value* iid, Value* k1, Value* size, Value* inx, Value* line, Value* arg, Value* opInx, 
+								   Value* opScope, Value* opType, Value* opValue) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(k1);
+    Args.push_back(size);
+    Args.push_back(inx);
+    Args.push_back(line);
+    Args.push_back(arg);
+    Args.push_back(opInx);
+    Args.push_back(opScope);
+    Args.push_back(opType);
+    Args.push_back(opValue);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

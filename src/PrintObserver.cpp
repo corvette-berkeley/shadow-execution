@@ -162,8 +162,8 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* result) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", result:" << KVALUE_ToString(result) << ", [INX: " << inx << "]");
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t value) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", result:" << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << ", [INX: " << inx << "]");
 }
 
 void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
@@ -255,7 +255,7 @@ void PrintObserver::bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, i
 // ***** TerminatorInst ***** //
 void PrintObserver::branch(IID iid, bool conditional, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value, int inx) {
   DEBUG_STDOUT("<<<<< BRANCH >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0") << ", condition value:" 
-	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << ((KVALUE*)value)->value.as_int << " [INX: " << inx << "]");
+	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << " [INX: " << inx << "]");
 }
 
 

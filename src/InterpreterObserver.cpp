@@ -1248,9 +1248,10 @@ void InterpreterObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, KVALUE* actualAddress) {
-
-  pre_allocax(iid, type, size, inx, line, arg, actualAddress);
+void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, 
+				  int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
+  // KVALUE* actualAddress
+  //pre_allocax(iid, type, size, inx, line, arg, actualAddress);
 
   IValue *ptrLocation, *location;
 
@@ -1261,10 +1262,11 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   location->setLength(0);
 
   VALUE value;
-  value.as_ptr = actualAddress->value.as_ptr;
+  value.as_ptr = (void*)actualAddress;
+ 
   ptrLocation = new IValue(PTR_KIND, value, LOCAL);
   ptrLocation->setValueOffset((int64_t)location - (int64_t)value.as_ptr);
-  DEBUG_STDOUT("actual address: " << actualAddress->value.as_ptr);
+  DEBUG_STDOUT("actual address: " << value.as_ptr);
   DEBUG_STDOUT("location" << location);
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
@@ -1284,7 +1286,7 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
 
   safe_assert(ptrLocation->getValueOffset() != -1);
 
-  post_allocax(iid, type, size, inx, line, arg, actualAddress);
+  //post_allocax(iid, type, size, inx, line, arg, actualAddress);
   return;
 }
 

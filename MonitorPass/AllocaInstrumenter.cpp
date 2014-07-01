@@ -42,13 +42,20 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     }	
     Constant* isArgumentC = BOOL_CONSTANT(isArgument);
 
-    Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN);
-    
+    // allocaAddress value split into fields
+    Constant *cInx, *cScope, *cType;
+    cInx = computeIndex(allocaInst);
+    cScope = INT32_CONSTANT(getScope(allocaInst), NOSIGN); // or SIGNED?
+    cType = KIND_CONSTANT(TypeToKind(allocaInst->getType()));
+
+    //Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls
+
     if (type->isArrayTy()) {
       //
       // alloca for array type
       //
-      
+      Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls      
+
       Constant *cElemKind, *cSize;
       Type* elemType; 
       KIND elemKind;
@@ -88,6 +95,8 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     } else if (type->isStructTy()) {
       // alloca for struct type
+      Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls
+
       StructType* structType = (StructType*) type;
       uint64_t size = pushStructType(structType, instrs);
 
@@ -98,18 +107,23 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     } else {
       // alloca for scalar and pointer type
       
+      Instruction *allocaInstCast = CAST_VALUE(allocaInst, instrs, NOSIGN);
+      //CAST_VALUE(allocaInst, instrs, NOSIGN);
+
+      if (!allocaInstCast) return NULL;
+      instrs.push_back(allocaInstCast);
+
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, allocaAddress);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, cInx, cScope, cType, allocaInstCast);
       instrs.push_back(call);
     }
 
     // instrument
     InsertAllAfter(instrs, allocaInst);
-
     return true;
-
-  } else {
+  } 
+  else {
     return false;
   }
 }

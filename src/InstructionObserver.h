@@ -88,7 +88,7 @@ public:
 	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* result UNUSED) {};
+	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED) {};
 	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {};
 	virtual void load(IID iid UNUSED, KIND kind UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED,  bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
