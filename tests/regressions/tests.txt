@@ -84,3 +84,4 @@ struct_return
 struct_union
 sub
 var_args
+xor
