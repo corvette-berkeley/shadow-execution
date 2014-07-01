@@ -253,11 +253,6 @@ void PrintObserver::bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, i
 }
 
 // ***** TerminatorInst ***** //
-/*void PrintObserver::branch(IID iid, bool conditional, int valInx, SCOPE scope UNUSED, KIND type UNUSED, int64_t value, int inx) {
-  DEBUG_STDOUT("<<<<< BRANCH >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0") << ", condition value:" 
-<< "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << " [INX: " << inx << "]");
-}*/
-
 void PrintObserver::branch(IID iid, bool conditional, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value, int inx) {
   DEBUG_STDOUT("<<<<< BRANCH >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0") << ", condition value:" 
 	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << ((KVALUE*)value)->value.as_int << " [INX: " << inx << "]");

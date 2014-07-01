@@ -2221,13 +2221,11 @@ void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, int va
 
   IValue* cond = (valInx == -1) ? NULL : executionStack.top()[valInx];
 
-  //cout << "index: " << valInx << " value: " << value << endl;
   if (cond != NULL && ((bool) cond->getIntValue() != (bool)value)) { // revise this: before value.as_int
     DEBUG_STDERR("\tKVALUE: " << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value);
     DEBUG_STDERR("\tIVALUE: " << cond->toString());
 
     DEBUG_STDERR("\tShadow and concrete executions diverge at this branch.");
-    cout << "divergence" << endl;
     safe_assert(false);
   }
   return;

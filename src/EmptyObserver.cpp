@@ -196,9 +196,6 @@ void EmptyObserver::bitcast(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind
 }
 
 // ***** TerminatorInst ***** //
-/*void EmptyObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {
-  }*/
-
 void EmptyObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED, int inx UNUSED) {
 }
 
