@@ -163,8 +163,8 @@ void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bo
   DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, line, arg, valInx, scope, type, addr)
 }
 
-void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
-  DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, line, arg, addr);
+void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
+  DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, line, arg, valInx, scope, type, addr);
 }
 
 void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx) {

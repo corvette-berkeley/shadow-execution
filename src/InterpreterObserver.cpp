@@ -1341,7 +1341,6 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
     }
   }
 
-  //IValue* locArrPtr = new IValue(PTR_KIND, addr->value, LOCAL); // HERE!
   VALUE value;
   value.as_ptr = (void*)actualAddress;
   IValue* locArrPtr = new IValue(PTR_KIND, value, LOCAL); // HERE!
@@ -1359,7 +1358,8 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   return;
 }
 
-void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx, int line, bool arg UNUSED, KVALUE* addr) {
+void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx, int line, bool arg UNUSED, 
+					 int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
 
   safe_assert(structType.size() == size);
 
@@ -1382,7 +1382,9 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   }
   safe_assert(structType.empty());
 
-  IValue* structPtrVar = new IValue(PTR_KIND, addr->value);
+  VALUE value;
+  value.as_ptr = (void*)actualAddress;
+  IValue* structPtrVar = new IValue(PTR_KIND, value);
   structPtrVar->setValueOffset((int64_t) ptrToStructVar - (int64_t) structPtrVar->getPtrValue());
   structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
   structPtrVar->setLength(length);

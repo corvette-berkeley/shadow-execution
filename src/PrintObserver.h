@@ -120,7 +120,7 @@ public:
 
 	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr);
 
-	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr);
+	virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr);
 
 	virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int file, int line, int inx);
 

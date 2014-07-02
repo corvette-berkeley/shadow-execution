@@ -47,23 +47,20 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     cInx = computeIndex(allocaInst);
     cScope = INT32_CONSTANT(getScope(allocaInst), NOSIGN); // or SIGNED?
     cType = KIND_CONSTANT(TypeToKind(allocaInst->getType()));
+    Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
 
-    //Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls
+    if (!allocaAddress) return NULL;
+    instrs.push_back(allocaAddress);
+
 
     if (type->isArrayTy()) {
-      //
       // alloca for array type
-      //
-      //Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls      
-
       Constant *cElemKind, *cSize;
       Type* elemType; 
       KIND elemKind;
       int size;
       
-      //
-      // Computing the overall flatten size of the array
-      //
+      // computing the overall flatten size of the array
       elemType = type;
       size = 1;
       while (dyn_cast<ArrayType>(elemType)) {
@@ -75,23 +72,18 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
         elemType = aryType->getElementType();
       }
 
-      //
-      // Push all struct flatten type if element is truct
-      //
+      // pushing all struct flatten type if element is truct
       elemKind = TypeToKind(elemType);
       safe_assert(elemKind != INV_KIND);
       if (elemKind == STRUCT_KIND)  {
         pushStructType((StructType*) elemType, instrs); 
       }
 
-      //
-      // Generate constant arguments for call back
-      //
+      // generating constant arguments for call back
       cElemKind = KIND_CONSTANT(elemKind);
       cSize = INT64_CONSTANT(size, UNSIGNED);
 
       Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
-      //CAST_VALUE(allocaInst, instrs, NOSIGN);
 
       if (!allocaAddress) return NULL;
       instrs.push_back(allocaAddress);
@@ -100,26 +92,21 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 									      cInx, cScope, cType, allocaAddress);
       instrs.push_back(call);
 
-    } else if (type->isStructTy()) {
+    } 
+    else if (type->isStructTy()) {
       // alloca for struct type
-      Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls
-
       StructType* structType = (StructType*) type;
       uint64_t size = pushStructType(structType, instrs);
 
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
-      Instruction* call = CALL_IID_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC, allocaAddress);
+      Instruction* call = CALL_IID_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC, 
+									 cInx, cScope, cType, allocaAddress);
       instrs.push_back(call);
-    } else {
+
+    } 
+    else {
       // alloca for scalar and pointer type
-      
-      Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
-      //CAST_VALUE(allocaInst, instrs, NOSIGN);
-
-      if (!allocaAddress) return NULL;
-      instrs.push_back(allocaAddress);
-
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
       Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, 
