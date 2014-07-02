@@ -314,41 +314,7 @@ string getFileName(Instruction* inst) {
 
 /*******************************************************************************************/
 
-/*
-Instruction* CAST_VALUE(Value *v, bool isSigned) {
-
-   Instruction* I_cast = NULL;
-
-  // easier to fix here
-  if (v->getType()->isIntegerTy(1)) {
-    isSigned = false;
-  }
-
-  Type* T = v->getType();
-
-  KIND kind = TypeToKind(T);
-  // if unsupported kind, return NULL
-  if(kind == INV_KIND) {
-    return;
-  }
-  
-  if(T->isIntegerTy()) {
-    I_cast = INTMAX_CAST_INSTR(v, isSigned);
-  } else if(T->isFloatingPointTy()) {
-    I_cast = FLPMAX_CAST_INSTR(v);
-  } else if(T->isPointerTy()) {
-    I_cast = PTRTOINT_CAST_INSTR(v);
-  } else {
-    printf("Unsupported KVALUE type\n");
-    T->dump();
-  }
-
-  return I_cast;
-}
-*/
-
-
-Instruction* CAST_VALUE(Value *v, InstrPtrVector& Instrs, bool isSigned) {
+ Instruction* CAST_VALUE(Value *v, bool isSigned) {
 
    Instruction* I_cast = NULL;
 
@@ -382,10 +348,6 @@ Instruction* CAST_VALUE(Value *v, InstrPtrVector& Instrs, bool isSigned) {
   }
 
   safe_assert(I_cast != NULL);
-  Instrs.push_back(I_cast);
-
-  // bitcast to the value type in the KVALUE struct
-  I_cast = VALUE_CAST_INSTR(I_cast);
   return I_cast;
  }
 
@@ -520,7 +482,6 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
-  // cindy
   Instruction* CALL_IID_PTR_IID_KVALUE_INT(const char* func, Value* iid, Value* ptr, Value* dest_iid, Value* kvalue, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
@@ -542,7 +503,6 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
 
   /*******************************************************************************************/
-  // cindy
   Instruction* CALL_IID_PTR_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* ptr, Value* kvalue1, Value* kvalue2, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
@@ -933,26 +893,6 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/ // DELETE!
-  Instruction* CALL_IID_INT64_INT_INT_BOOL_KVALUE(const char* func, Value* iid, Value* size, Value* inx, Value* line, Value* arg, Value* addr) {
-    TypePtrVector ArgTypes;
-    ArgTypes.push_back(IID_TYPE());
-    ArgTypes.push_back(INT64_TYPE());
-    ArgTypes.push_back(INT32_TYPE());
-    ArgTypes.push_back(INT32_TYPE());
-    ArgTypes.push_back(BOOL_TYPE());
-    ArgTypes.push_back(KVALUEPTR_TYPE());
-
-    ValuePtrVector Args;
-    Args.push_back(iid);
-    Args.push_back(size);
-    Args.push_back(inx);
-    Args.push_back(line);
-    Args.push_back(arg);
-    Args.push_back(addr);
-
-    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
-  }
 
   /*******************************************************************************************/
   Instruction* CALL_IID_INT64_INT_INT_BOOL_INT_INT_KIND_INT64(const char* func, Value* iid, Value* size, Value* inx, Value* line, Value* arg, 
@@ -1376,29 +1316,6 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(k1);
     Args.push_back(size);
     Args.push_back(inx);
-
-    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
-  }
-
-  /*******************************************************************************************/ // DELETE!
-  Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE(const char* func, Value* iid, Value* k1, Value* size, Value* inx, Value* line, Value* arg, Value* result) {
-    TypePtrVector ArgTypes;
-    ArgTypes.push_back(IID_TYPE());
-    ArgTypes.push_back(KIND_TYPE());
-    ArgTypes.push_back(INT64_TYPE());
-    ArgTypes.push_back(INT32_TYPE());
-    ArgTypes.push_back(INT32_TYPE());
-    ArgTypes.push_back(BOOL_TYPE());
-    ArgTypes.push_back(KVALUEPTR_TYPE());
-
-    ValuePtrVector Args;
-    Args.push_back(iid);
-    Args.push_back(k1);
-    Args.push_back(size);
-    Args.push_back(inx);
-    Args.push_back(line);
-    Args.push_back(arg);
-    Args.push_back(result);
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }

@@ -47,7 +47,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     cInx = computeIndex(allocaInst);
     cScope = INT32_CONSTANT(getScope(allocaInst), NOSIGN); // or SIGNED?
     cType = KIND_CONSTANT(TypeToKind(allocaInst->getType()));
-    Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
+    Instruction *allocaAddress = CAST_VALUE(allocaInst, NOSIGN);
 
     if (!allocaAddress) return NULL;
     instrs.push_back(allocaAddress);
@@ -82,11 +82,6 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       // generating constant arguments for call back
       cElemKind = KIND_CONSTANT(elemKind);
       cSize = INT64_CONSTANT(size, UNSIGNED);
-
-      Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
-
-      if (!allocaAddress) return NULL;
-      instrs.push_back(allocaAddress);
 
       Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax_array", iidC, cElemKind, cSize, inxC, lineC, isArgumentC, 
 									      cInx, cScope, cType, allocaAddress);

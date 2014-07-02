@@ -32,7 +32,7 @@ bool BranchInstrumenter::CheckAndInstrument(Instruction* inst) {
       cType = KIND_CONSTANT(TypeToKind(condition->getType()));
 
       Value *ptrOp = condition;
-      Instruction *ptrOpCast = CAST_VALUE(ptrOp, instrs, NOSIGN);
+      Instruction *ptrOpCast = CAST_VALUE(ptrOp, /*instrs, */NOSIGN);
 
       if (!ptrOpCast) return NULL;
       instrs.push_back(ptrOpCast);
