@@ -367,8 +367,8 @@ void llvm_construct_array_type(uint64_t i) {
   DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
-void llvm_after_call(KVALUE* value, int line) {
-  DISPATCH_TO_OBSERVERS(after_call, value, line)
+void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue, int line) {
+  DISPATCH_TO_OBSERVERS(after_call, retInx, retScope, retType, retValue, line)
 }
 
 void llvm_after_void_call() {

@@ -383,7 +383,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
 
-  void after_call(KVALUE* value, int line);
+  void after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue, int line);
 
   void after_void_call();
 

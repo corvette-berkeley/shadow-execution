@@ -286,7 +286,7 @@ void EmptyObserver::push_array_size5(int s1 UNUSED, int s2 UNUSED, int s3 UNUSED
 void EmptyObserver::construct_array_type(uint64_t i UNUSED) {
 }
 
-void EmptyObserver::after_call(KVALUE* value UNUSED, int line UNUSED) {
+void EmptyObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED, int line UNUSED) {
 }
 
 void EmptyObserver::after_void_call() {

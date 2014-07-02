@@ -239,7 +239,7 @@ public:
 	
 	void construct_array_type(uint64_t i);
 	
-	void after_call(KVALUE* value, int line);
+	void after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue, int line);
 	
 	void after_void_call();
 	

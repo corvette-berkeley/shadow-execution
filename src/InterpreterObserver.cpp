@@ -2840,7 +2840,7 @@ void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s
   return;
 }
 
-void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
+void InterpreterObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType, int64_t retValue, int line) {
 
   if (!isReturn) {
     int callerId = callerVarIndex.top();
@@ -2860,7 +2860,10 @@ void InterpreterObserver::after_call(KVALUE* kvalue, int line) {
     }
 
     IValue* reg = executionStack.top()[callerVarIndex.top()];
-    reg->setValue(kvalue->value);
+
+    // setting return value
+    reg->setType(retType);
+    reg->setValue(retValue);
     reg->setValueOffset(0); // new
     reg->setShadow(0);
     callerVarIndex.pop();

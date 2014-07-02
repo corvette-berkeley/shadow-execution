@@ -490,8 +490,8 @@ void IValue::setValue(int64_t v) {
   else if (isPtrValue()) {
     // TODO: revise this
     this->value.as_ptr = (void*)v;
-    cout << "ptr" << endl;
-    safe_assert(false);
+    //cout << "ptr" << endl;
+    //safe_assert(false);
   }
   else {
     cout << "ERROR" << endl;

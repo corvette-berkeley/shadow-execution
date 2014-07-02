@@ -244,8 +244,16 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       call = CALL("llvm_after_struct_call");
     } 
     else {
-      Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
-      call = CALL_KVALUE_INT("llvm_after_call", callReturnValue, cLine);
+      // fields to reconstruct KVALUE during interpretation
+      Constant* cInx = computeIndex(callInst);
+      Constant* cScope = INT32_CONSTANT(getScope(callInst), NOSIGN);
+      Constant* cType = KIND_CONSTANT(TypeToKind(callInst->getType()));
+      Instruction* callReturnValue = CAST_VALUE(callInst, instrsAfter, SIGNED);
+      
+      if (!callReturnValue) return NULL;
+      instrsAfter.push_back(callReturnValue);
+
+      call = CALL_INT_INT_KIND_INT64_INT("llvm_after_call", cInx, cScope, cType, callReturnValue, cLine);
     }
     instrsAfter.push_back(call);
     InsertAllAfter(instrsAfter, callInst);
