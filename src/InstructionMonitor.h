@@ -132,7 +132,7 @@ extern "C" {
   void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
   void llvm_phinode(IID iid, int inx);
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
-  void llvm_push_stack(KVALUE* value);
+  void llvm_push_stack(int inx, SCOPE scope, KIND type, uint64_t addr);
   void llvm_push_string(int c);
   void llvm_push_phinode_constant_value(KVALUE* value, int blockId);
   void llvm_push_phinode_value(int valId, int blockId);

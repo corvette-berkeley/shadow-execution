@@ -2722,8 +2722,18 @@ void InterpreterObserver::push_string(int diff) {
   return;
 }
 
-void InterpreterObserver::push_stack(KVALUE* value) {
-  myStack.push(value);
+void InterpreterObserver::push_stack(int inx, SCOPE scope, KIND type, uint64_t addr) {
+  KVALUE* kvalue = new KVALUE();
+  kvalue->inx = inx;
+  if (scope == GLOBAL) {
+    kvalue->isGlobal = true;
+  }
+  else {
+    kvalue->isGlobal = false;
+  }
+  kvalue->kind = type;
+  kvalue->value.as_ptr = (void*)addr;
+  myStack.push(kvalue);
   return;
 }
 

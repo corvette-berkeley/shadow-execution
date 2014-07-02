@@ -47,7 +47,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     cInx = computeIndex(allocaInst);
     cScope = INT32_CONSTANT(getScope(allocaInst), NOSIGN); // or SIGNED?
     cType = KIND_CONSTANT(TypeToKind(allocaInst->getType()));
-    Instruction *allocaAddress = CAST_VALUE(allocaInst, NOSIGN);
+    Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
 
     if (!allocaAddress) return NULL;
     instrs.push_back(allocaAddress);

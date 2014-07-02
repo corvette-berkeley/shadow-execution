@@ -32,7 +32,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   Value *basePtr = gepInst->getPointerOperand();
   Constant *baseInx = computeIndex(basePtr);
   Constant *baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
-  Instruction *baseAddr = CAST_VALUE(basePtr, NOSIGN);
+  Instruction *baseAddr = CAST_VALUE(basePtr, instrs, NOSIGN);
   
   if (!baseAddr) return false;
   instrs.push_back(baseAddr);
@@ -244,7 +244,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // offset data
     Value *offset = gepInst->idx_begin()->get();
     Constant *offsetInx = computeIndex(offset);
-    Instruction *offsetValue = CAST_VALUE(offset, SIGNED);
+    Instruction *offsetValue = CAST_VALUE(offset, instrs, SIGNED);
 
     if (!offsetValue) return false;
     instrs.push_back(offsetValue);

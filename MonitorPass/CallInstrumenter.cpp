@@ -63,8 +63,20 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   // push each arguments to the argument stack
   for (i = 0; i < numArgs; i++) {
-    Value* arg = KVALUE_VALUE(callInst->getArgOperand(i), instrs, NOSIGN);
-    Instruction* call = CALL_KVALUE("llvm_push_stack", arg);
+    //Value* arg = KVALUE_VALUE(callInst->getArgOperand(i), instrs, NOSIGN);
+
+    // fields to reconstruct KVALUE during interpretation
+    Value* arg = callInst->getArgOperand(i);
+    Constant* cInx = computeIndex(arg);
+    Constant* cScope = INT32_CONSTANT(getScope(arg), NOSIGN); // or SIGNED?
+    Constant* cType = KIND_CONSTANT(TypeToKind(arg->getType()));
+    Instruction* argAddress = CAST_VALUE(arg, instrs, NOSIGN);
+
+    if (!argAddress) return NULL;
+    instrs.push_back(argAddress);
+
+    //Instruction* call = CALL_KVALUE("llvm_push_stack", arg);
+    Instruction* call = CALL_INT_INT_KIND_INT64("llvm_push_stack", cInx, cScope, cType, argAddress);
     instrs.push_back(call);
   }
 

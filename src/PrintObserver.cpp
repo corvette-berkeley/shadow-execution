@@ -326,8 +326,8 @@ void PrintObserver::push_string(int c) {
   DEBUG_STDOUT("<<<<< PUSH STRING >>>>> character: " << (char)(((int)'0')+c));
 }
 
-void PrintObserver::push_stack(KVALUE* value) {
-  DEBUG_STDOUT("<<<<< PUSH VALUE >>>>> value: " << KVALUE_ToString(value));
+void PrintObserver::push_stack(int inx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
+  DEBUG_STDOUT("<<<<< PUSH VALUE >>>>> value: TOPRINT");
 }
 
 void PrintObserver::push_phinode_constant_value(KVALUE* value, int blockId) {

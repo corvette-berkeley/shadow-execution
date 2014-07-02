@@ -250,7 +250,7 @@ void EmptyObserver::select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue U
 void EmptyObserver::push_string(int c UNUSED) {
 }
 
-void EmptyObserver::push_stack(KVALUE* value UNUSED) {
+void EmptyObserver::push_stack(int inx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
 }
 
 void EmptyObserver::push_phinode_constant_value(KVALUE* value UNUSED, int blockId UNUSED) {

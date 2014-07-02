@@ -97,8 +97,8 @@ public:
 	inline Instruction* VALUE_CAST_INSTR(Value* v)				{ return BITCAST_INSTR(v, VALUE_TYPE()); }
 
 	inline Instruction* BITCAST_INSTR(Value* v, Type* T) {
-		safe_assert(CastInst::castIsValid(Instruction::CastOps(Instruction::BitCast), v, T));
-		return CastInst::CreateTruncOrBitCast(v, T);
+	  safe_assert(CastInst::castIsValid(Instruction::CastOps(Instruction::BitCast), v, T));
+	  return CastInst::CreateTruncOrBitCast(v, T);
 	}
 
 	/*******************************************************************************************/
@@ -319,7 +319,7 @@ string getFileName(Instruction* inst) {
 
 /*******************************************************************************************/
 
- Instruction* CAST_VALUE(Value *v, bool isSigned) {
+ Instruction* CAST_VALUE(Value *v, InstrPtrVector& instrs, bool isSigned) {
 
    Instruction* I_cast = NULL;
 
@@ -353,9 +353,54 @@ string getFileName(Instruction* inst) {
   }
 
   safe_assert(I_cast != NULL);
+
+  // bitcast to VALUE (i64) if needed
+  if (!I_cast->getType()->isIntegerTy(64)) {
+    instrs.push_back(I_cast);
+    I_cast = VALUE_CAST_INSTR(I_cast);
+  }
   return I_cast;
  }
 
+ /*
+ Instruction* CAST_VALUE(Value *v, bool isSigned) {
+
+   Instruction* I_cast = NULL;
+
+  // easier to fix here
+  if (v->getType()->isIntegerTy(1)) {
+    isSigned = false;
+  }
+
+  // TODO(elmas): what else is OK?
+  if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
+    return NULL;
+  }
+
+  Type* T = v->getType();
+
+  KIND kind = TypeToKind(T);
+  // if unsupported kind, return NULL
+  if(kind == INV_KIND) {
+    return NULL;
+  }
+
+  if(T->isIntegerTy()) {
+    I_cast = INTMAX_CAST_INSTR(v, isSigned);
+  } else if(T->isFloatingPointTy()) {
+    I_cast = FLPMAX_CAST_INSTR(v);
+    cout << "here?" << endl;
+  } else if(T->isPointerTy()) {
+    I_cast = PTRTOINT_CAST_INSTR(v);
+  } else {
+    printf("Unsupported KVALUE type\n");
+    T->dump();
+  }
+
+  safe_assert(I_cast != NULL);
+  return I_cast;
+ }
+ */
 
 Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
   safe_assert(v != NULL);
@@ -811,6 +856,24 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_KIND_INT64(const char* func, Value* inx, Value* scope, Value* type, Value* value) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(inx);
+    Args.push_back(scope);
+    Args.push_back(type);
+    Args.push_back(value);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
 
   /*******************************************************************************************/
   Instruction* CALL_INT_INT_INT_INT_INT(const char* func, Value *i1, Value *i2, Value *i3, Value *i4, Value *i5) {

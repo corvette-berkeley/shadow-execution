@@ -138,122 +138,122 @@ public:
 
 	virtual void getelementptr_struct(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, KIND arrayKind, int inx); 
 
-  // ***** Conversion Operations ***** //
-  virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-  
-  virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
-
-  // ***** TerminatorInst ***** //
-  virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int inx);
-
-  virtual void branch2(IID iid, bool conditional, int inx);
-
-  virtual void indirectbr(IID iid, KVALUE* op1, int inx);
-  
-  virtual void invoke(IID iid, KVALUE* call_value, int inx);
-  
-  virtual void resume(IID iid, KVALUE* op1, int inx);
-  
-  virtual void return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx);
-
-  virtual void return2_(IID iid, int inx);
-  
-  virtual void return_struct_(IID iid, int inx, int valInx);
-
-  virtual void switch_(IID iid, KVALUE* op, int inx);
-
-  virtual void unreachable();
-
-  // ***** Other Operations ***** //
-  virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
-  
-  virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+	// ***** Conversion Operations ***** //
+	virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  virtual void phinode(IID iid, int inx);
-
-  virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
-
-  virtual void call(IID iid, bool nounwind, KIND type, int inx);
-
-  virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-  virtual void vaarg();
-
-  virtual void landingpad();
+	virtual void zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  void push_string(int c);
-
-  void push_stack(KVALUE* value);
-
-  void push_phinode_value(int valId, int blockId);
-
-  void push_phinode_constant_value(KVALUE* value, int blockId);
-
-  void push_return_struct(KVALUE* value);
-
-  void push_struct_type(KIND kind);
+	virtual void sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  void push_struct_element_size(uint64_t size);
+	virtual void fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  void push_getelementptr_inx(KVALUE* value);
-
-  void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
-
-  void push_array_size(uint64_t size);
-
-  void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
-
-  void push_getelementptr_inx2(int value);
+	virtual void fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  void construct_array_type(uint64_t i);
+	virtual void fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 	
-  void after_call(KVALUE* value, int line);
-
-  void after_void_call();
-
-  void after_struct_call();
-
-  void create_stack_frame(int size);
-
-  void create_global_symbol_table(int size);
-
-  void record_block_id(int id);
-
-  void create_global(KVALUE* value, KVALUE* initializer);
-
-  void create_global_array(KVALUE *value, uint32_t size, KIND type);
+	virtual void fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	virtual void uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	virtual void sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	virtual void ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	virtual void inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
+	
+	// ***** TerminatorInst ***** //
+	virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int inx);
+	
+	virtual void branch2(IID iid, bool conditional, int inx);
+	
+	virtual void indirectbr(IID iid, KVALUE* op1, int inx);
+	
+	virtual void invoke(IID iid, KVALUE* call_value, int inx);
+	
+	virtual void resume(IID iid, KVALUE* op1, int inx);
+	
+	virtual void return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx);
+	
+	virtual void return2_(IID iid, int inx);
+	
+	virtual void return_struct_(IID iid, int inx, int valInx);
+	
+	virtual void switch_(IID iid, KVALUE* op, int inx);
+	
+	virtual void unreachable();
+	
+	// ***** Other Operations ***** //
+	virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+	
+	virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+	
+	virtual void phinode(IID iid, int inx);
+	
+	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx);
+	
+	virtual void call(IID iid, bool nounwind, KIND type, int inx);
+	
+	virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
+	
+	virtual void vaarg();
+	
+	virtual void landingpad();
+	
+	void push_string(int c);
+	
+	void push_stack(int inx, SCOPE scope, KIND type, uint64_t addr);
+	
+	void push_phinode_value(int valId, int blockId);
+	
+	void push_phinode_constant_value(KVALUE* value, int blockId);
+	
+	void push_return_struct(KVALUE* value);
+	
+	void push_struct_type(KIND kind);
+	
+	void push_struct_element_size(uint64_t size);
+	
+	void push_getelementptr_inx(KVALUE* value);
+	
+	void push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05);
+	
+	void push_array_size(uint64_t size);
+	
+	void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
+	
+	void push_getelementptr_inx2(int value);
+	
+	void construct_array_type(uint64_t i);
+	
+	void after_call(KVALUE* value, int line);
+	
+	void after_void_call();
+	
+	void after_struct_call();
+	
+	void create_stack_frame(int size);
+	
+	void create_global_symbol_table(int size);
+	
+	void record_block_id(int id);
+	
+	void create_global(KVALUE* value, KVALUE* initializer);
+	
+	void create_global_array(KVALUE *value, uint32_t size, KIND type);
 };
 
 

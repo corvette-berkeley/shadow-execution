@@ -319,8 +319,8 @@ void llvm_push_string(int c) {
   DISPATCH_TO_OBSERVERS(push_string, c);
 }
 
-void llvm_push_stack(KVALUE* value) {
-	DISPATCH_TO_OBSERVERS(push_stack, value)
+void llvm_push_stack(int inx, SCOPE scope, KIND type, uint64_t addr) {
+  DISPATCH_TO_OBSERVERS(push_stack, inx, scope, type, addr)
 }
 
 void llvm_push_phinode_constant_value(KVALUE* value, int blockId) {

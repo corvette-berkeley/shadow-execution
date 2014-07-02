@@ -361,7 +361,7 @@ class InterpreterObserver : public InstructionObserver {
   
   void push_string(int c);
 
-  void push_stack(KVALUE* value);
+  void push_stack(int inx, SCOPE scope, KIND type, uint64_t addr);
 
   void push_return_struct(KVALUE* value);
 
