@@ -44,9 +44,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   elemT = T->getElementType();
 
   if (elemT->isArrayTy()) {
-    //
     // this branch is the case for local array
-    //
     
     Type *gepInstType;
     KIND kind;
@@ -56,21 +54,17 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     queue < Value* > arrIndices;
     queue < int64_t > arrSize;
     
-    //
-    // Collect all array indices
-    //
+    // collecting all array indices
     for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
       arrIndices.push((Value*) idx->get());
     } 
 
-    //
     // Create constants for array indices. Because array is usually up to size
     // 2, getelementptr usually has indices up to size 3. We cover this usual case,
     // and put array indices as arguments to the callback for
     // getelementptr_array. If the array is of dimension greater than two,
     // push_getelementptr_in and push_array_size will be used to push the remain indices
     // and sizes
-    //
     for (i = 0; i < 3; i++) {
       if (!arrIndices.empty()) {
         Value *value;
@@ -81,15 +75,14 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
         scopeInx[i] = INT32_CONSTANT(av.scope, SIGNED);
         valOrInxInx[i] = av.valOrInx;
         arrIndices.pop();
-      } else {
+      } 
+      else {
         scopeInx[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
         valOrInxInx[i] = INT64_CONSTANT(-1, SIGNED);
       }
     }
 
-    //
-    // Callbacks for pushing array indices
-    //
+    // adding callbacks for pushing array indices
     while (!arrIndices.empty()){
       Constant *scope[5], *valOrInx[5];
       Instruction *call;
@@ -105,7 +98,8 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
           scope[i] = INT32_CONSTANT(av.scope, SIGNED);
           valOrInx[i] = av.valOrInx;
           arrIndices.pop();
-        } else {
+        } 
+	else {
           scope[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
           valOrInx[i] = INT64_CONSTANT(-1, SIGNED);
         }
@@ -118,33 +112,28 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     } 
 
-    //
-    // Collect all array sizes
-    //
+    // collecting all array sizes
     while (dyn_cast<ArrayType>(elemT)) {
       arrSize.push(((ArrayType *)elemT)->getNumElements());
       elemT = ((ArrayType *)elemT)->getElementType();
     }
 
-    //
     // Create constants for array sizes. Array is usually up to two dimensions. We cover this usual case,
     // and put array sizes as arguments to the callback for
     // getelementptr_array. If the array is of dimension greater than two,
     // push_getelementptr_in and push_array_size will be used to push the
     // remain indices and sizes
-    //
     for (i = 0; i < 2; i++) {
       if (!arrSize.empty()) {
         sizeC[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
         arrSize.pop();
-      } else {
+      } 
+      else {
         sizeC[i] = INT32_CONSTANT(-1, SIGNED);
       }
     }
 
-    //
-    // Callbacks for pushing array sizes
-    //
+    // adding callbacks for pushing array sizes
     while (!arrSize.empty()) {
       Constant *size[5];
       Instruction *call;
@@ -154,7 +143,8 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
         if (!arrSize.empty()) {
           size[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
           arrSize.pop();
-        } else {
+        } 
+	else {
           size[i] = INT32_CONSTANT(-1, SIGNED);
         }
       } 
@@ -170,9 +160,11 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     if (kind == ARRAY_KIND) {
       elementSize = getFlatSize((ArrayType*) gepInstType);
-    } else if (kind == STRUCT_KIND) {
+    } 
+    else if (kind == STRUCT_KIND) {
       elementSize = getFlatSize((StructType*) gepInstType);
-    } else {
+    } 
+    else {
       elementSize = KIND_GetSize(kind);
     }
 
@@ -182,7 +174,8 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     instrs.push_back(call);
 
-  } else if (elemT->isStructTy()) {
+  } 
+  else if (elemT->isStructTy()) {
     // this branch is the case for local struct
     StructType* structType = (StructType*) elemT;
 
@@ -234,7 +227,8 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     instrs.push_back(call);
 
-  } else {
+  } 
+  else {
     // this branch is the case for heap
 
     if (gepInst->getNumIndices() != 1) {
@@ -271,7 +265,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   // instrument
   InsertAllBefore(instrs, gepInst);
-
   return true;
 }
 
@@ -285,9 +278,11 @@ void GetElementPtrInstrumenter::pushStructElementSize(StructType* structType, In
     safe_assert(elemKind != INV_KIND);
     if (elemKind == ARRAY_KIND) {
       allocation = getFlatLength((ArrayType*) elemType);
-    } else if (elemKind == STRUCT_KIND) {
+    } 
+    else if (elemKind == STRUCT_KIND) {
       allocation = getFlatLength((StructType*) elemType);
-    } else {
+    } 
+    else {
       allocation = 1;
     }
     Constant* allocC = INT64_CONSTANT(allocation, NOSIGN);
@@ -302,10 +297,7 @@ uint64_t GetElementPtrInstrumenter::getFlatSize(ArrayType* arrayType) {
   uint64_t allocation;
   KIND elemKind;
 
-  // 
-  // for multi-dimensional array
-  // get flatten size
-  //
+  // for multi-dimensional array get flatten size
   size = 1;
   elemTy = arrayType;
   while (dyn_cast<ArrayType>(elemTy)) {
@@ -313,21 +305,17 @@ uint64_t GetElementPtrInstrumenter::getFlatSize(ArrayType* arrayType) {
     elemTy = ((ArrayType*)elemTy)->getElementType();
   }
 
-  //
-  // get element kind
-  //
+  // retrieving the element's type
   elemKind = TypeToKind(elemTy);
   safe_assert(elemKind != INV_KIND);
 
-  //
   // element kind can be struct or primitive type
-  //
   if (elemKind == STRUCT_KIND) {
     allocation = size * getFlatSize( (StructType*) elemTy );
-  } else {
+  } 
+  else {
     allocation = size * KIND_GetSize(elemKind); 
   }
-
   return allocation;
 }
 
@@ -337,10 +325,7 @@ uint64_t GetElementPtrInstrumenter::getFlatSize(StructType* structType) {
   allocation = 0;
   size = structType->getNumElements();
 
-  //
-  // iterate through all struct element types
-  // accumulate allocation size
-  //
+  // iterating through all struct element types accumulate allocation size
   for (i = 0; i < size; i++) {
     Type* elemType = structType->getElementType(i);
     KIND elemKind = TypeToKind(elemType);
@@ -348,9 +333,11 @@ uint64_t GetElementPtrInstrumenter::getFlatSize(StructType* structType) {
 
     if (elemKind == ARRAY_KIND) {
       allocation += getFlatSize((ArrayType*) elemType);
-    } else if (elemKind == STRUCT_KIND) {
+    } 
+    else if (elemKind == STRUCT_KIND) {
       allocation += getFlatSize((StructType*) elemType);
-    } else {
+    } 
+    else {
       allocation += KIND_GetSize(elemKind);
     }
   }
@@ -364,10 +351,7 @@ uint64_t GetElementPtrInstrumenter::getFlatLength(ArrayType* arrayType) {
   uint64_t allocation;
   KIND elemKind;
 
-  // 
-  // for multi-dimensional array
-  // get flatten size
-  //
+  // for multi-dimensional array get flatten size
   size = 1;
   elemTy = arrayType;
   while (dyn_cast<ArrayType>(elemTy)) {
@@ -375,18 +359,15 @@ uint64_t GetElementPtrInstrumenter::getFlatLength(ArrayType* arrayType) {
     elemTy = ((ArrayType*)elemTy)->getElementType();
   }
 
-  //
-  // get element kind
-  //
+  // retrieving element's type
   elemKind = TypeToKind(elemTy);
   safe_assert(elemKind != INV_KIND);
 
-  //
   // element kind can be struct or primitive type
-  //
   if (elemKind == STRUCT_KIND) {
     allocation = size* getFlatLength( (StructType*) elemTy );
-  } else {
+  } 
+  else {
     allocation = size; 
   }
 
@@ -399,10 +380,7 @@ uint64_t GetElementPtrInstrumenter::getFlatLength(StructType* structType) {
   allocation = 0;
   size = structType->getNumElements();
 
-  //
-  // iterate through all struct element types
-  // accumulate allocation size
-  //
+  // iterating through all struct element types accumulate allocation size
   for (i = 0; i < size; i++) {
     Type* elemType = structType->getElementType(i);
     KIND elemKind = TypeToKind(elemType);
@@ -410,9 +388,11 @@ uint64_t GetElementPtrInstrumenter::getFlatLength(StructType* structType) {
 
     if (elemKind == ARRAY_KIND) {
       allocation += getFlatLength((ArrayType*) elemType);
-    } else if (elemKind == STRUCT_KIND) {
+    } 
+    else if (elemKind == STRUCT_KIND) {
       allocation += getFlatLength((StructType*) elemType);
-    } else {
+    } 
+    else {
       allocation += 1;
     }
   }
@@ -437,7 +417,8 @@ uint64_t GetElementPtrInstrumenter::pushStructType(ArrayType* arrayType, InstrPt
     for (int i = 0; i < size; i++) {
       allocation += pushStructType((StructType*)elemTy, instrs);
     }
-  } else {
+  } 
+  else {
     Constant* elemKindC = KIND_CONSTANT(elemKind);
 
     for (int i = 0; i < size; i++) {
@@ -459,9 +440,11 @@ uint64_t GetElementPtrInstrumenter::pushStructType(StructType* structType, Instr
     safe_assert(elemKind != INV_KIND);
     if (elemKind == ARRAY_KIND) {
       allocation += pushStructType((ArrayType*)elemType, instrs);
-    } else if (elemKind == STRUCT_KIND) {
+    } 
+    else if (elemKind == STRUCT_KIND) {
       allocation += pushStructType((StructType*)elemType, instrs);
-    } else {
+    } 
+    else {
       Constant* elemKindC = KIND_CONSTANT(elemKind);
       Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
       instrs.push_back(call);
