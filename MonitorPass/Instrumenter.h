@@ -227,11 +227,16 @@ int KIND_GetSize(int kind) {
   }
 
 SCOPE getScope(Value *value) {
-  if (isa<Constant>(value)) {
-    return CONSTANT;
-  } else if (isa<GlobalVariable>(value)) {
+  if (isa<GlobalValue>(value)) {
     return GLOBAL;
-  } else {
+  }
+  else if (isa<Constant>(value)) {
+    return CONSTANT;
+  } 
+  else if (isa<GlobalVariable>(value)) {
+    return GLOBAL;
+  } 
+  else {
     safe_assert(isa<Instruction>(value) || isa<Argument>(value));
     return LOCAL;
   }
@@ -521,7 +526,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/
+  /*******************************************************************************************/ // DELETE!!
   Instruction* CALL_KVALUE_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT(const char* func, Value* kvalue, Value *kind, Value *i0, Value *i1, Value *i2, Value *i3, Value *i64_0, Value *i64_1, Value *i64_2, Value *i4, Value *i5, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(KVALUEPTR_TYPE());
@@ -553,6 +558,46 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
+
+
+  /*******************************************************************************************/
+  Instruction* CALL_INT_INT_INT64_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT(const char* func, Value* baseInx, Value* baseScope, Value* baseAddr, Value *kind, 
+										     Value *i0, Value *i1, Value *i2, Value *i3, Value *i64_0, Value *i64_1, Value *i64_2, Value *i4, Value *i5, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(baseInx);
+    Args.push_back(baseScope);
+    Args.push_back(baseAddr);
+    Args.push_back(kind);
+    Args.push_back(i0);
+    Args.push_back(i1);
+    Args.push_back(i2);
+    Args.push_back(i3);
+    Args.push_back(i64_0);
+    Args.push_back(i64_1);
+    Args.push_back(i64_2);
+    Args.push_back(i4);
+    Args.push_back(i5);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
 
   /*******************************************************************************************/
   Instruction* CALL_IID_BOOL_KVALUE_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* inx) {
@@ -652,7 +697,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/
+  /*******************************************************************************************/ // DELETE!!
   Instruction* CALL_IID_BOOL_KVALUE_KIND_KIND_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind1, Value* kind2, Value* inx) {
     TypePtrVector ArgTypes;
     ArgTypes.push_back(IID_TYPE());
@@ -666,6 +711,31 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     Args.push_back(iid);
     Args.push_back(b1);
     Args.push_back(kvalue);
+    Args.push_back(kind1);
+    Args.push_back(kind2);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+  /*******************************************************************************************/
+  Instruction* CALL_IID_BOOL_INT_INT_INT64_KIND_KIND_INT(const char* func, Value* iid, Value* b1, Value* baseInx, Value* baseScope, Value* baseAddr, Value* kind1, Value* kind2, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(b1);
+    Args.push_back(baseInx);
+    Args.push_back(baseScope);
+    Args.push_back(baseAddr);
     Args.push_back(kind1);
     Args.push_back(kind2);
     Args.push_back(inx);

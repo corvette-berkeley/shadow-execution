@@ -202,12 +202,13 @@ void PrintObserver::getelementptr(IID iid, bool inbound, int baseInx UNUSED, SCO
   DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value: TOPRINT" << ", offsetValue: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
 }
 
-void PrintObserver::getelementptr_array(KVALUE* op, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> pointer value:" << KVALUE_ToString(op) << ", elementSize:" << elementSize <<  ", kind:" << KIND_ToString(kind) << ", scopeInx01:" << scopeInx01 << ", scopeInx02:" << scopeInx02 << ", scopeInx03:" << scopeInx03 << ", valOrInx01:" << valOrInx01 << ", valOrInx02:" << valOrInx02 << ", valOrInx03:" << valOrInx03 << ", size01:" << size01 << ", size02:" << size02 << " [INX: " << inx << "]");
+void PrintObserver::getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind, int elementSize, 
+					int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> pointer value: TOPRINT" << ", elementSize:" << elementSize <<  ", kind:" << KIND_ToString(kind) << ", scopeInx01:" << scopeInx01 << ", scopeInx02:" << scopeInx02 << ", scopeInx03:" << scopeInx03 << ", valOrInx01:" << valOrInx01 << ", valOrInx02:" << valOrInx02 << ", valOrInx03:" << valOrInx03 << ", size01:" << size01 << ", size02:" << size02 << " [INX: " << inx << "]");
 }
 
-void PrintObserver::getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR STRUCT >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", kind:" << KIND_ToString(kind) << ", arrayKind:" << KIND_ToString(arrayKind) << " [INX: " << inx << "]");
+void PrintObserver::getelementptr_struct(IID iid, bool inbound, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind, KIND arrayKind, int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR STRUCT >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", arrayKind:" << KIND_ToString(arrayKind) << " [INX: " << inx << "]");
 }
 
 // ***** Conversion Operations ***** //

@@ -96,10 +96,10 @@ extern "C" {
 
   void llvm_getelementptr(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
 			  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int x);
-  void llvm_getelementptr_array(KVALUE* value, KIND kind, int elementSize, int
-      scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t
-      valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
-  void llvm_getelementptr_struct(IID iid, bool inbound, KVALUE* value, KIND kind1, KIND kind2, int x);
+  void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, int elementSize, 
+				int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, 
+				int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
+  void llvm_getelementptr_struct(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind1, KIND kind2, int x);
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);

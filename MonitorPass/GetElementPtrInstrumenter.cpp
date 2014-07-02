@@ -9,7 +9,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   GetElementPtrInst* gepInst; 
   InstrPtrVector instrs;
   Constant *iidC, *inxC, *loadInxC, *inbound, *loadGlobal;
-  Value *ptrOp;
+  //Value *ptrOp;
   PointerType *T;
   Type *elemT;
 
@@ -27,6 +27,16 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   loadInxC = INT32_CONSTANT(-1, SIGNED);
   inbound = BOOL_CONSTANT(gepInst->isInBounds());
   loadGlobal = BOOL_CONSTANT(false);
+
+  // base pointer (now here)
+  Value *basePtr = gepInst->getPointerOperand();
+  Constant *baseInx = computeIndex(basePtr);
+  Constant *baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
+  Instruction *baseAddr = CAST_VALUE(basePtr, NOSIGN);
+  
+  if (!baseAddr) return false;
+  instrs.push_back(baseAddr);
+
   /*
   ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
   if (ptrOp == NULL) {
@@ -49,10 +59,12 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // this branch is the case for local array
 
     // remove later
+    /*
     ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
     if (ptrOp == NULL) {
       return false;
     }
+    */
     
     Type *gepInstType;
     KIND kind;
@@ -178,7 +190,12 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
      
-    call = CALL_KVALUE_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", ptrOp, kindC, elementSizeC, scopeInx[0], scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
+    //call = CALL_KVALUE_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", ptrOp, kindC, elementSizeC, scopeInx[0], 
+    //									  scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
+
+    call = CALL_INT_INT_INT64_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", baseInx, baseScope, baseAddr, kindC, elementSizeC, scopeInx[0], 
+    									  scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
+
 
     instrs.push_back(call);
 
@@ -187,10 +204,12 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // this branch is the case for local struct
 
     // remove later
+    /*
     ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
     if (ptrOp == NULL) {
       return false;
     }
+    */
 
 
     StructType* structType = (StructType*) elemT;
@@ -239,7 +258,8 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     KIND elemArrayKind = TypeToKind(elemArrayType);
     Constant* elemArrayKindC = KIND_CONSTANT(elemArrayKind);
 
-    Instruction* call = CALL_IID_BOOL_KVALUE_KIND_KIND_INT("llvm_getelementptr_struct", iidC, inbound, ptrOp, kindC, elemArrayKindC, inxC);
+    //Instruction* call = CALL_IID_BOOL_KVALUE_KIND_KIND_INT("llvm_getelementptr_struct", iidC, inbound, ptrOp, kindC, elemArrayKindC, inxC);
+    Instruction* call = CALL_IID_BOOL_INT_INT_INT64_KIND_KIND_INT("llvm_getelementptr_struct", iidC, inbound, baseInx, baseScope, baseAddr, kindC, elemArrayKindC, inxC);
 
     instrs.push_back(call);
 
@@ -251,15 +271,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       cout << "[GetElementPtr] => Multiple indices" << endl;
       abort();
     }
-
-    // base pointer (for now here)
-    Value *basePtr = gepInst->getPointerOperand();
-    Constant *baseInx = computeIndex(basePtr);
-    Constant *baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
-    Instruction *baseAddr = CAST_VALUE(basePtr, NOSIGN);
-
-    if (!baseAddr) return false;
-    instrs.push_back(baseAddr);
 
     /*
     Value *ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);

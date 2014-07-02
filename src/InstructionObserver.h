@@ -108,12 +108,12 @@ public:
 	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
 				   int offsetInx UNUSED, int64_t offsetValue UNUSED, 
 				   KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void getelementptr_array(KVALUE* value UNUSED, KIND kind UNUSED, int
-      elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, int
-      scopeInx03 UNUSED, int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED,
-      int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx
-      UNUSED) {};
-  virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* value UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
+	virtual void getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind UNUSED, 
+					 int elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, 
+					 int scopeInx03 UNUSED, int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED,
+					 int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx UNUSED) {};
+	virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, 
+					  uint64_t baseAddr UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};

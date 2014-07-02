@@ -1624,18 +1624,19 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int
   return;
 }
 
-void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, 
-					      int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, 
-					      int size01 UNUSED, int size02,  int inx) {
+void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, 
+					      int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
 
   IValue* arrayElemPtr;
   int newOffset;
 
-  if (op->inx == -1) {
+  if (baseInx == -1) {
     // TODO: review this
     // constant pointer
     // return a dummy object
-    arrayElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
+    VALUE value;
+    value.as_ptr = (void*)baseAddr;
+    arrayElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
     while (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
@@ -1647,8 +1648,13 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
     IValue *ptrArray, *array;
     int *arraySizeVec, *indexVec;
     int index, arrayDim, getIndexNo, i, j;
-
-    ptrArray = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
+    
+    if (baseScope == GLOBAL) {
+      ptrArray = globalSymbolTable[baseInx];
+    }
+    else {
+      ptrArray = executionStack.top()[baseInx];
+    }
     array = static_cast<IValue*>(ptrArray->getIPtrValue());
 
     DEBUG_STDOUT("\tPointer operand: " << ptrArray->toString());
@@ -1761,7 +1767,7 @@ void InterpreterObserver::getelementptr_array(KVALUE* op, KIND kind UNUSED, int 
   return;
 }
 
-void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, KVALUE* op, KIND kind UNUSED, 
+void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, KIND kind UNUSED, 
 					       KIND arrayKind UNUSED, int inx) {
 
   DEBUG_STDOUT("\tstructType size " << structType.size());
@@ -1770,11 +1776,13 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
   int structElemNo, structSize, index, size, i, newOffset;
   int* structElemSize, *structElem;
 
-  if (op->inx == -1) {
+  if (baseInx == -1) {
     // TODO: review this
     // constant pointer
     // return a dummy object
-    structElemPtr = new IValue(PTR_KIND, op->value, 0, 0, 0, 0);
+    VALUE value;
+    value.as_ptr = (void*)baseAddr;
+    structElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
     while (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
@@ -1784,7 +1792,12 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUS
   } 
   else {
     // get the struct operand
-    structPtr = op->isGlobal ? globalSymbolTable[op->inx] : executionStack.top()[op->inx];
+    if (baseScope == GLOBAL) {
+      structPtr = globalSymbolTable[baseInx];
+    }
+    else {
+      structPtr = executionStack.top()[baseInx];
+    }
     structElemNo = structType.size();
     
     structElemSize = new int[structElemNo];

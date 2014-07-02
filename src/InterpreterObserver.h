@@ -180,9 +180,10 @@ class InterpreterObserver : public InstructionObserver {
   virtual void getelementptr(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
 			     KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx);
 
-  virtual void getelementptr_array(KVALUE* value, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
+  virtual void getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, int elementSize, int scopeInx01, 
+				   int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
 
-  virtual void getelementptr_struct(IID iid, bool inbound, KVALUE* op, KIND kind, KIND arrayKind, int inx);
+  virtual void getelementptr_struct(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, KIND arrayKind, int inx);
 
   // ***** Conversion Operations ***** //
   virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);

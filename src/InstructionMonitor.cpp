@@ -196,12 +196,13 @@ void llvm_getelementptr(IID iid, bool isbound, int baseInx, SCOPE baseScope, uin
   DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, baseInx, baseScope, baseAddr, offsetInx, offsetValue, kind, size, loadGlobal, loadInx, line, inx)
 }
 
-void llvm_getelementptr_array(KVALUE* value, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_array, value, kind, elementSize, scopeInx01, scopeInx02, scopeInx03, valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
+void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, int elementSize, 
+			      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_array, baseInx, baseScope, baseAddr, kind, elementSize, scopeInx01, scopeInx02, scopeInx03, valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
 }
 
-void llvm_getelementptr_struct(IID iid, bool isbound, KVALUE* value, KIND kind1, KIND kind2, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, isbound, value, kind1, kind2, inx)
+void llvm_getelementptr_struct(IID iid, bool isbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind1, KIND kind2, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, isbound, baseInx, baseScope, baseAddr, kind1, kind2, inx)
 }
 
 // ***** Conversion Operations ***** //
