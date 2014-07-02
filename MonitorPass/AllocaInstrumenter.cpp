@@ -54,7 +54,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       //
       // alloca for array type
       //
-      Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls      
+      //Value* allocaAddress = KVALUE_VALUE(allocaInst, instrs, NOSIGN); // delete when replacing the other two calls      
 
       Constant *cElemKind, *cSize;
       Type* elemType; 
@@ -90,7 +90,14 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       cElemKind = KIND_CONSTANT(elemKind);
       cSize = INT64_CONSTANT(size, UNSIGNED);
 
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_KVALUE("llvm_allocax_array", iidC, cElemKind, cSize, inxC, lineC, isArgumentC, allocaAddress);
+      Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
+      //CAST_VALUE(allocaInst, instrs, NOSIGN);
+
+      if (!allocaAddress) return NULL;
+      instrs.push_back(allocaAddress);
+
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax_array", iidC, cElemKind, cSize, inxC, lineC, isArgumentC, 
+									      cInx, cScope, cType, allocaAddress);
       instrs.push_back(call);
 
     } else if (type->isStructTy()) {
@@ -107,15 +114,16 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     } else {
       // alloca for scalar and pointer type
       
-      Instruction *allocaInstCast = CAST_VALUE(allocaInst, instrs, NOSIGN);
+      Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
       //CAST_VALUE(allocaInst, instrs, NOSIGN);
 
-      if (!allocaInstCast) return NULL;
-      instrs.push_back(allocaInstCast);
+      if (!allocaAddress) return NULL;
+      instrs.push_back(allocaAddress);
 
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, cInx, cScope, cType, allocaInstCast);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, 
+									      cInx, cScope, cType, allocaAddress);
       instrs.push_back(call);
     }
 

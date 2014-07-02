@@ -155,12 +155,12 @@ void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t value) {
-  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, line, arg, valInx, scope, type, value)
+void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
+  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, line, arg, valInx, scope, type, addr)
 }
 
-void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
-  DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, line, arg, addr)
+void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
+  DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, line, arg, valInx, scope, type, addr)
 }
 
 void llvm_allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {

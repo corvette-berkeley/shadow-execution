@@ -127,10 +127,12 @@ void EmptyObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 
 }
 
 // ***** Memory Access and Addressing Operations ***** //
-void EmptyObserver::allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED) {
+void EmptyObserver::allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
+			    int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
 }
 
-void EmptyObserver::allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {
+void EmptyObserver::allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
+				  int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
 }
 
 void EmptyObserver::allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, KVALUE* addr UNUSED) {

@@ -162,12 +162,16 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t value) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", result:" << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << ", [INX: " << inx << "]");
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line 
+	       << ", result:" << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << (void*)addr 
+	       << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line << ", address:" << KVALUE_ToString(addr) << ", [INX: " << inx << "]");
+void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line 
+	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << (void*)addr  
+	       << ", [INX: " << inx << "]");
 }
 
 void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, KVALUE* addr) {

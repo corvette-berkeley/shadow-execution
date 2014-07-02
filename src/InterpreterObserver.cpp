@@ -1248,8 +1248,7 @@ void InterpreterObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, 
-				  int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
+void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
   // KVALUE* actualAddress
   //pre_allocax(iid, type, size, inx, line, arg, actualAddress);
 
@@ -1290,7 +1289,8 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   return;
 }
 
-void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size, int inx, int line, bool arg UNUSED, KVALUE* addr) {
+void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size, int inx, int line, bool arg UNUSED, 
+					int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
 
   unsigned firstByte, bitOffset, length;
 
@@ -1341,7 +1341,10 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
     }
   }
 
-  IValue* locArrPtr = new IValue(PTR_KIND, addr->value, LOCAL);
+  //IValue* locArrPtr = new IValue(PTR_KIND, addr->value, LOCAL); // HERE!
+  VALUE value;
+  value.as_ptr = (void*)actualAddress;
+  IValue* locArrPtr = new IValue(PTR_KIND, value, LOCAL); // HERE!
   locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
