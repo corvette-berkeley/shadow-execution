@@ -1417,8 +1417,6 @@ void InterpreterObserver::atomicrmw() {
 void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, int offsetInx, 
 					int64_t offsetValue, KIND type, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
 
-  //base, offset
-
   if (type == INT80_KIND) {
     DEBUG_STDERR("[getelementptr] Unsupported INT80_KIND");
     safe_assert(false);
@@ -1445,7 +1443,6 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int
     else {
       basePtrLocation = executionStack.top()[baseInx];
     }
-    //basePtrLocation = base->isGlobal ? globalSymbolTable[baseInx] : executionStack.top()[baseInx];
   }
 
   DEBUG_STDOUT("\tPointer operand " << basePtrLocation->toString());
