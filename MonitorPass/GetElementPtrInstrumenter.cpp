@@ -27,10 +27,12 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   loadInxC = INT32_CONSTANT(-1, SIGNED);
   inbound = BOOL_CONSTANT(gepInst->isInBounds());
   loadGlobal = BOOL_CONSTANT(false);
+  /*
   ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
   if (ptrOp == NULL) {
     return false;
   }
+  */
 
   if (LoadInst* loadInst = dyn_cast<LoadInst>(gepInst->getPointerOperand())) {
     Value *loadPtr; 
@@ -45,6 +47,12 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   if (elemT->isArrayTy()) {
     // this branch is the case for local array
+
+    // remove later
+    ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+    if (ptrOp == NULL) {
+      return false;
+    }
     
     Type *gepInstType;
     KIND kind;
@@ -63,7 +71,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // 2, getelementptr usually has indices up to size 3. We cover this usual case,
     // and put array indices as arguments to the callback for
     // getelementptr_array. If the array is of dimension greater than two,
-    // push_getelementptr_in and push_array_size will be used to push the remain indices
+    // push_getelementptr_in and push_array_size will be used to push the remaining indices
     // and sizes
     for (i = 0; i < 3; i++) {
       if (!arrIndices.empty()) {
@@ -177,6 +185,14 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   } 
   else if (elemT->isStructTy()) {
     // this branch is the case for local struct
+
+    // remove later
+    ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+    if (ptrOp == NULL) {
+      return false;
+    }
+
+
     StructType* structType = (StructType*) elemT;
 
     // checking struct packing
@@ -229,15 +245,41 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
   } 
   else {
-    // this branch is the case for heap
+    // this branch is the case for pointers
 
     if (gepInst->getNumIndices() != 1) {
       cout << "[GetElementPtr] => Multiple indices" << endl;
       abort();
     }
 
+    // base pointer (for now here)
+    Value *basePtr = gepInst->getPointerOperand();
+    Constant *baseInx = computeIndex(basePtr);
+    Constant *baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
+    Instruction *baseAddr = CAST_VALUE(basePtr, NOSIGN);
+
+    if (!baseAddr) return false;
+    instrs.push_back(baseAddr);
+
+    /*
+    Value *ptrOp = KVALUE_VALUE(gepInst->getPointerOperand(), instrs, NOSIGN);
+    if (ptrOp == NULL) {
+      return false;
+    }
+    */
+
+    // offset (for now here)
+    Value *offset = gepInst->idx_begin()->get();
+    Constant *offsetInx = computeIndex(offset);
+    Instruction *offsetValue = CAST_VALUE(offset, SIGNED);
+
+    if (!offsetValue) return false;
+    instrs.push_back(offsetValue);
+
+    /*
     Value* idxOp = KVALUE_VALUE(gepInst->idx_begin()->get(), instrs, SIGNED);
     if(idxOp == NULL) return false;  
+    */
 
     KIND kind = TypeToKind(elemT);
 
@@ -258,9 +300,14 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* line = INT32_CONSTANT(getLineNumber(gepInst), SIGNED);
 
-    Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_BOOL_INT_INT_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, size, loadGlobal, loadInxC, line, inxC);
-    instrs.push_back(call);
+    //Instruction* call = CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_BOOL_INT_INT_INT("llvm_getelementptr", iidC, inbound, ptrOp, idxOp, kindC, 
+    //										size, loadGlobal, loadInxC, line, inxC);
 
+    Instruction* call = CALL_IID_BOOL_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT_INT("llvm_getelementptr", iidC, inbound, 
+											  baseInx, baseScope, baseAddr, 
+											  offsetInx, offsetValue, 
+											  kindC, size, loadGlobal, loadInxC, line, inxC);
+    instrs.push_back(call);
   }
 
   // instrument

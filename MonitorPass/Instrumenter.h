@@ -697,7 +697,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/
+  /*******************************************************************************************/ // DELETE!!
   Instruction* CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_BOOL_INT_INT_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* index,
       Value* kind, Value* size, Value* loadGlobal, Value* loadInx, Value* line, Value* inx) {
     TypePtrVector ArgTypes;
@@ -726,6 +726,47 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
+
+
+  /*******************************************************************************************/
+  Instruction* CALL_IID_BOOL_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT_INT(const char* func, Value* iid, Value* b1, 
+										 Value* baseInx, Value* baseScope, Value* baseAddr, 
+										 Value* offsetInx, Value* offsetValue, Value* kind, Value* size, 
+										 Value* loadGlobal, Value* loadInx, Value* line, Value* inx) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(b1);
+    Args.push_back(baseInx);
+    Args.push_back(baseScope);
+    Args.push_back(baseAddr);
+    Args.push_back(offsetInx);
+    Args.push_back(offsetValue);
+    Args.push_back(kind);
+    Args.push_back(size);
+    Args.push_back(loadGlobal);
+    Args.push_back(loadInx);
+    Args.push_back(line);
+    Args.push_back(inx);
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+
+
   /*******************************************************************************************/
   Instruction* CALL_IID_KVALUE_INT(const char* func, Value* iid, Value* kvalue, Value* inx) {
     TypePtrVector ArgTypes;

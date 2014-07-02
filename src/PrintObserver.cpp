@@ -196,8 +196,10 @@ void PrintObserver::atomicrmw() {
   DEBUG_STDOUT("<<<<< ATOMICRMW >>>>>");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, KVALUE* op, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value:" << KVALUE_ToString(op) << ", index:" << KVALUE_ToString(index) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
+void PrintObserver::getelementptr(IID iid, bool inbound, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
+				  int offsetInx UNUSED, int64_t offsetValue UNUSED, 
+				  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value: TOPRINT" << ", offsetValue: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
 }
 
 void PrintObserver::getelementptr_array(KVALUE* op, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {

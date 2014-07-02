@@ -151,7 +151,9 @@ void EmptyObserver::cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* kv1 UNUSED,
 void EmptyObserver::atomicrmw() {
 }
 
-void EmptyObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* op UNUSED, KVALUE* index UNUSED, KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {
+void EmptyObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
+				  int offsetInx UNUSED, int64_t offsetValue UNUSED, 
+				  KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {
 }
 
 void EmptyObserver::getelementptr_array(KVALUE* op UNUSED, KIND kind UNUSED, int elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, int scopeInx03 UNUSED, int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED, int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx UNUSED) {

@@ -1414,8 +1414,10 @@ void InterpreterObserver::atomicrmw() {
   safe_assert(false);
 }
 
-void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVALUE* base, KVALUE* offset, KIND type, 
-					uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, int offsetInx, 
+					int64_t offsetValue, KIND type, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+
+  //base, offset
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("[getelementptr] Unsupported INT80_KIND");
@@ -1429,20 +1431,28 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, KVA
   bool reInit;
 
   // get base pointer operand
-  if (base->inx == -1) {
+  if (baseInx == -1) {
     // constant base pointer
-    basePtrLocation = new IValue(PTR_KIND, base->value, 0, 0, 0, 0);
+    VALUE value;
+    value.as_ptr = (void*)baseAddr;
+    basePtrLocation = new IValue(PTR_KIND, value, 0, 0, 0, 0);
   } 
   else {
-    basePtrLocation = base->isGlobal ? globalSymbolTable[base->inx] :
-      executionStack.top()[base->inx];
+    
+    if (baseScope == GLOBAL) {
+      basePtrLocation = globalSymbolTable[baseInx];
+    }
+    else {
+      basePtrLocation = executionStack.top()[baseInx];
+    }
+    //basePtrLocation = base->isGlobal ? globalSymbolTable[baseInx] : executionStack.top()[baseInx];
   }
 
   DEBUG_STDOUT("\tPointer operand " << basePtrLocation->toString());
 
   // get index operand
-  index = offset->inx == -1 ? offset->value.as_int :
-    executionStack.top()[offset->inx]->getValue().as_int; 
+  index = offsetInx == -1 ? offsetValue :
+    executionStack.top()[offsetInx]->getValue().as_int; 
 
   // compute new offset from base pointer in bytes 
   newOffset = (index * (size/8)) + basePtrLocation->getOffset();

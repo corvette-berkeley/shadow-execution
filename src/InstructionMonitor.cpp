@@ -191,8 +191,9 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, bool isbound, KVALUE* value, KVALUE* index, KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, value, index, kind, size, loadGlobal, loadInx, line, inx)
+void llvm_getelementptr(IID iid, bool isbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
+			KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+  DISPATCH_TO_OBSERVERS(getelementptr, iid, isbound, baseInx, baseScope, baseAddr, offsetInx, offsetValue, kind, size, loadGlobal, loadInx, line, inx)
 }
 
 void llvm_getelementptr_array(KVALUE* value, KIND kind, int elementSize, int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
