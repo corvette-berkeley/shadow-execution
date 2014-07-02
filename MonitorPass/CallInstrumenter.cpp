@@ -63,32 +63,26 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   // push each arguments to the argument stack
   for (i = 0; i < numArgs; i++) {
-    //Value* arg = KVALUE_VALUE(callInst->getArgOperand(i), instrs, NOSIGN);
-
     // fields to reconstruct KVALUE during interpretation
     Value* arg = callInst->getArgOperand(i);
     Constant* cInx = computeIndex(arg);
-    Constant* cScope = INT32_CONSTANT(getScope(arg), NOSIGN); // or SIGNED?
+    Constant* cScope = INT32_CONSTANT(getScope(arg), NOSIGN); // original instrumentation was not signed
     Constant* cType = KIND_CONSTANT(TypeToKind(arg->getType()));
     Instruction* argAddress = CAST_VALUE(arg, instrs, NOSIGN);
 
     if (!argAddress) return NULL;
     instrs.push_back(argAddress);
 
-    //Instruction* call = CALL_KVALUE("llvm_push_stack", arg);
     Instruction* call = CALL_INT_INT_KIND_INT64("llvm_push_stack", cInx, cScope, cType, argAddress);
     instrs.push_back(call);
   }
 
   Instruction* call = NULL;
 
-  //
   // the case for MALLOC
-  //
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "malloc") {
     Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
-
 
     // there can be more than 1 use
     // e.g., checking for NULL
@@ -161,74 +155,52 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     InsertAllBefore(instrs, callInst);
     InsertAllAfter(instrsAfter, callInst); // new
   }
-
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sin") {
-    //
     // the case for sin function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sin", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "acos") {
-    //
     // the case for acos function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_acos", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sqrt") {
-    //
     // the case for sqrt function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sqrt", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
-
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "fabs") {
-    //
     // the case for fabs function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_fabs", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
-
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "cos") {
-    //
     // the case for cos function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_cos", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
-
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "log") {
-    //
     // the case for cos function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_log", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
 /*
@@ -247,20 +219,14 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "floor") {
-    //
     // the case for cos function
-    //
     call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_floor", iid, noUnwindC, cLine, kind, inx);
     instrs.push_back(call);
     InsertAllBefore(instrs, callInst);
-
     return true;
   }
-
   else {
-    //
     // the case for general function call
-    //
     // kind is the return type of the function
     call = CALL_IID_BOOL_KIND_INT("llvm_call", iid, noUnwindC, kind, inx);
     instrs.push_back(call);
@@ -272,15 +238,14 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
     if (returnType->isVoidTy()) {
       call = CALL("llvm_after_void_call");
-
-    } else if (returnType->isStructTy()){
+    } 
+    else if (returnType->isStructTy()){
       KVALUE_STRUCTVALUE(callInst, instrsAfter);
       call = CALL("llvm_after_struct_call");
-
-    } else {
+    } 
+    else {
       Value* callReturnValue = KVALUE_VALUE(callInst, instrsAfter, SIGNED); 
       call = CALL_KVALUE_INT("llvm_after_call", callReturnValue, cLine);
-
     }
     instrsAfter.push_back(call);
     InsertAllAfter(instrsAfter, callInst);

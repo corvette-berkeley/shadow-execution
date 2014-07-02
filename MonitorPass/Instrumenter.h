@@ -323,85 +323,48 @@ string getFileName(Instruction* inst) {
 
    Instruction* I_cast = NULL;
 
-  // easier to fix here
-  if (v->getType()->isIntegerTy(1)) {
-    isSigned = false;
-  }
+   // easier to fix here
+   if (v->getType()->isIntegerTy(1)) {
+     isSigned = false;
+   }
+   
+   // TODO(elmas): what else is OK?
+   if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
+     return NULL;
+   }
+   
+   Type* T = v->getType();
+   
+   KIND kind = TypeToKind(T);
+   // if unsupported kind, return NULL
+   if(kind == INV_KIND) {
+     return NULL;
+   }
 
-  // TODO(elmas): what else is OK?
-  if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
-    return NULL;
-  }
-
-  Type* T = v->getType();
-
-  KIND kind = TypeToKind(T);
-  // if unsupported kind, return NULL
-  if(kind == INV_KIND) {
-    return NULL;
-  }
-
-  if(T->isIntegerTy()) {
-    I_cast = INTMAX_CAST_INSTR(v, isSigned);
-  } else if(T->isFloatingPointTy()) {
-    I_cast = FLPMAX_CAST_INSTR(v);
-  } else if(T->isPointerTy()) {
-    I_cast = PTRTOINT_CAST_INSTR(v);
-  } else {
-    printf("Unsupported KVALUE type\n");
-    T->dump();
-  }
-
-  safe_assert(I_cast != NULL);
-
-  // bitcast to VALUE (i64) if needed
-  if (!I_cast->getType()->isIntegerTy(64)) {
-    instrs.push_back(I_cast);
-    I_cast = VALUE_CAST_INSTR(I_cast);
-  }
-  return I_cast;
+   if(T->isIntegerTy()) {
+     I_cast = INTMAX_CAST_INSTR(v, isSigned);
+   } 
+   else if(T->isFloatingPointTy()) {
+     I_cast = FLPMAX_CAST_INSTR(v);
+   } 
+   else if(T->isPointerTy()) {
+     I_cast = PTRTOINT_CAST_INSTR(v);
+   } 
+   else {
+     printf("Unsupported KVALUE type\n");
+     T->dump();
+   }
+   
+   safe_assert(I_cast != NULL);
+   
+   // bitcast to VALUE (i64) if needed
+   if (!I_cast->getType()->isIntegerTy(64)) {
+     instrs.push_back(I_cast);
+     I_cast = VALUE_CAST_INSTR(I_cast);
+   }
+   return I_cast;
  }
-
- /*
- Instruction* CAST_VALUE(Value *v, bool isSigned) {
-
-   Instruction* I_cast = NULL;
-
-  // easier to fix here
-  if (v->getType()->isIntegerTy(1)) {
-    isSigned = false;
-  }
-
-  // TODO(elmas): what else is OK?
-  if(!isa<Instruction>(v) && !isa<Constant>(v) && !isa<Argument>(v)) {
-    return NULL;
-  }
-
-  Type* T = v->getType();
-
-  KIND kind = TypeToKind(T);
-  // if unsupported kind, return NULL
-  if(kind == INV_KIND) {
-    return NULL;
-  }
-
-  if(T->isIntegerTy()) {
-    I_cast = INTMAX_CAST_INSTR(v, isSigned);
-  } else if(T->isFloatingPointTy()) {
-    I_cast = FLPMAX_CAST_INSTR(v);
-    cout << "here?" << endl;
-  } else if(T->isPointerTy()) {
-    I_cast = PTRTOINT_CAST_INSTR(v);
-  } else {
-    printf("Unsupported KVALUE type\n");
-    T->dump();
-  }
-
-  safe_assert(I_cast != NULL);
-  return I_cast;
- }
- */
-
+ 
 Value* KVALUE_VALUE(Value* v, InstrPtrVector& Instrs, bool isSigned) {
   safe_assert(v != NULL);
 
