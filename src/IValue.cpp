@@ -490,7 +490,7 @@ void IValue::setValue(int64_t v) {
   }
   else {
     cout << "ERROR" << endl;
-    
+    safe_assert(false);
   }
   return;
 }

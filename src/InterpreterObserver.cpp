@@ -2762,9 +2762,8 @@ void InterpreterObserver::push_struct_element_size(uint64_t s) {
   return;
 }
 
-void InterpreterObserver::push_getelementptr_inx(KVALUE* int_value) {
-  int idx = int_value->value.as_int;
-  getElementPtrIndexList.push(idx);
+void InterpreterObserver::push_getelementptr_inx(uint64_t index) {
+  getElementPtrIndexList.push(index);
   return;
 }
 

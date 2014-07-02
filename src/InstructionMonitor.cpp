@@ -335,7 +335,7 @@ void llvm_push_return_struct(KVALUE* value) {
 	DISPATCH_TO_OBSERVERS(push_return_struct, value)
 }
 
-void llvm_push_getelementptr_inx(KVALUE* value) {
+void llvm_push_getelementptr_inx(uint64_t value) {
   DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
 }
 

@@ -212,8 +212,16 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     pushStructType(structType, instrs);
     
     for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
-      Value* idxOp = KVALUE_VALUE(idx->get(), instrs, NOSIGN);
-      Instruction* call = CALL_KVALUE("llvm_push_getelementptr_inx", idxOp);
+
+      Instruction* idxOp = CAST_VALUE(idx->get(), instrs, NOSIGN);
+
+      if (!idxOp) return NULL;
+      instrs.push_back(idxOp);
+
+      //Value* idxOp = KVALUE_VALUE(idx->get(), instrs, NOSIGN);
+      //Instruction* call = CALL_KVALUE("llvm_push_getelementptr_inx", idxOp);
+
+      Instruction* call = CALL_INT64("llvm_push_getelementptr_inx", idxOp);
       instrs.push_back(call);
     } 
 
