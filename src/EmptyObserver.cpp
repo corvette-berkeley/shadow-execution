@@ -307,7 +307,7 @@ void EmptyObserver::record_block_id(int id UNUSED) {
 void EmptyObserver::create_global(KVALUE* kvalue UNUSED, KVALUE* initializer UNUSED) {
 }
 
-void EmptyObserver::create_global_array(KVALUE *value UNUSED, uint32_t size UNUSED, KIND type UNUSED) {
+void EmptyObserver::create_global_array(int valInx UNUSED, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {
 }
 
 void EmptyObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {

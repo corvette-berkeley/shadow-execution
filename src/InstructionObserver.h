@@ -167,7 +167,7 @@ public:
 	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};
 	virtual void create_global(KVALUE* value UNUSED, KVALUE* initializer UNUSED) {};
-	virtual void create_global_array(KVALUE *value UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
+	virtual void create_global_array(int valInx UNUSED, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};

@@ -246,8 +246,10 @@ namespace {
         KIND kind;
         bool aryOfPrim; 
 
-        Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
-        args.push_back(global);
+
+
+        //Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
+        //args.push_back(global);
 
         //
         // Case for global of array of primitive type
@@ -273,6 +275,22 @@ namespace {
 
             kind = instrumenter->TypeToKind(elemType);
             if (kind != STRUCT_KIND) {
+	      ////////
+	      // allocaAddress value split into fields
+	      Constant* cInx = instrumenter->computeIndex(i);
+	      Constant* cScope = instrumenter->INT32_CONSTANT(instrumenter->getScope(i), NOSIGN);
+	      Constant* cType = instrumenter->KIND_CONSTANT(instrumenter->TypeToKind(i->getType()));
+	      Instruction* global = instrumenter->CAST_VALUE(i, instrs, NOSIGN);
+	      
+	      if (!global) return NULL;
+	      instrs.push_back(global);
+	      
+	      args.push_back(cInx);
+	      args.push_back(cScope);
+	      args.push_back(cType);
+	      args.push_back(global);
+	      ////////
+
               aryOfPrim = true;
               Constant *sizeC = instrumenter->INT32_CONSTANT(size, false); // no sign
               Constant *kindC = instrumenter->KIND_CONSTANT(kind);
@@ -280,7 +298,10 @@ namespace {
               args.push_back(kindC);
 
               TypePtrVector argTypes;
-              argTypes.push_back(instrumenter->KVALUEPTR_TYPE());
+              argTypes.push_back(instrumenter->INT32_TYPE());
+              argTypes.push_back(instrumenter->INT32_TYPE());
+              argTypes.push_back(instrumenter->KIND_TYPE());
+              argTypes.push_back(instrumenter->INT64_TYPE());
               argTypes.push_back(instrumenter->INT32_TYPE());
               argTypes.push_back(instrumenter->KIND_TYPE());
 
@@ -294,6 +315,9 @@ namespace {
         // Case for global of other types
         //
         if (!aryOfPrim) {
+	  Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
+	  args.push_back(global);
+
           if (i->hasInitializer()) {
             KIND initKind = instrumenter->TypeToKind(i->getInitializer()->getType());
             if (initKind != ARRAY_KIND && initKind != STRUCT_KIND) {

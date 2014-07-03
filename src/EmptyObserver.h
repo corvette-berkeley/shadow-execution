@@ -253,7 +253,7 @@ public:
 
 	void create_global(KVALUE* value, KVALUE* initializer);
 
-	void create_global_array(KVALUE *value, uint32_t size, KIND type);
+	void create_global_array(int valInx, SCOPE scope, KIND varType, uint64_t addr, uint32_t size, KIND type);
 };
 
 

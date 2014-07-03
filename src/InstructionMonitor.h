@@ -152,7 +152,7 @@ extern "C" {
   void llvm_create_global_symbol_table(int size);
   void llvm_record_block_id(int id);
   void llvm_create_global(KVALUE* value, KVALUE* initializer);
-  void llvm_create_global_array(KVALUE* value, uint32_t size, KIND type);
+  void llvm_create_global_array(int valInx, SCOPE scope, KIND varType, uint64_t addr, uint32_t size, KIND type);
   void llvm_call(IID iid, bool nounwind, KIND type, int x);
   void llvm_call_sin(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_acos(IID iid, bool nounwind, int pc, KIND type, int x);

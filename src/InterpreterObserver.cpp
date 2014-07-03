@@ -3031,7 +3031,7 @@ void InterpreterObserver::record_block_id(int id) {
   return;
 }
 
-void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIND type) {
+void InterpreterObserver::create_global_array(int valInx, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr, uint32_t size, KIND type) {
   IValue *location = new IValue[size];
   collect_new.push_back(location);
   uint32_t i, elemSize;
@@ -3047,14 +3047,14 @@ void InterpreterObserver::create_global_array(KVALUE *kvalue, uint32_t size, KIN
     location[i].setFirstByte(i*elemSize);
   } 
 
-  value.as_ptr = kvalue->value.as_ptr;
+  value.as_ptr = (void*)addr;
   IValue *ptrLocation = new IValue(PTR_KIND, value, GLOBAL);
   ptrLocation->setSize(KIND_GetSize(type));
   ptrLocation->setLength(size);
   ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
-  release(globalSymbolTable[kvalue->inx]);
-  globalSymbolTable[kvalue->inx] = ptrLocation;
+  release(globalSymbolTable[valInx]);
+  globalSymbolTable[valInx] = ptrLocation;
   DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
   return;
 }
