@@ -162,7 +162,7 @@ extern "C" {
   void llvm_call_log(IID iid, bool nounwind, int pc, KIND type, int x);
 //  void llvm_call_exp(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_floor(IID iid, bool nounwind, int pc, KIND type, int x);
-  void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int x, KVALUE* mallocAddress);
+  void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int x, uint64_t mallocAddress);
   void llvm_vaarg();
   void llvm_landingpad();
 

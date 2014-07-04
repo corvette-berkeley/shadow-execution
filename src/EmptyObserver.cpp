@@ -313,8 +313,8 @@ void EmptyObserver::create_global_array(int valInx UNUSED, SCOPE scope UNUSED, K
 void EmptyObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {
 }
 
-void EmptyObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* call_value UNUSED, 
-				      int size UNUSED, int inx UNUSED, KVALUE* mallocAddress UNUSED) {
+void EmptyObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, 
+				      int size UNUSED, int inx UNUSED, uint64_t mallocAddress UNUSED) {
 }
 
 void EmptyObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {

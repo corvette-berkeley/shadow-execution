@@ -1548,7 +1548,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
 
-  /*******************************************************************************************/
+  /*******************************************************************************************/ // DELETE!
 
   Instruction* CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE(const char* func, Value* iid, Value* nounwind, Value* kind, Value* k, Value* size, Value* inx, Value* mallocAddress) {
     TypePtrVector ArgTypes;
@@ -1571,8 +1571,29 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
 
     return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
   }
-}; // end Instrumenter
 
+  /*******************************************************************************************/
+
+  Instruction* CALL_IID_BOOL_KIND_INT_INT_INT64(const char* func, Value* iid, Value* nounwind, Value* kind, Value* size, Value* inx, Value* mallocAddress) {
+    TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
+    ArgTypes.push_back(BOOL_TYPE());
+    ArgTypes.push_back(KIND_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT32_TYPE());
+    ArgTypes.push_back(INT64_TYPE());
+
+    ValuePtrVector Args;
+    Args.push_back(iid);
+    Args.push_back(nounwind);
+    Args.push_back(kind);
+    Args.push_back(size);
+    Args.push_back(inx);
+    Args.push_back(mallocAddress);	  
+
+    return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+  }
+}; // end Instrumenter
 
 
 /*******************************************************************************************/

@@ -177,8 +177,8 @@ public:
 	virtual void call_log(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 //	virtual void call_exp(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
-	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, KVALUE* value UNUSED, 
-				 int size UNUSED, int inx UNUSED, KVALUE* mallocAddress UNUSED) {};
+	virtual void call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, 
+				 int size UNUSED, int inx UNUSED, uint64_t mallocAddress UNUSED) {};
 	virtual void vaarg() {};
 	virtual void landingpad() {};
 

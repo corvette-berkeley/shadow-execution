@@ -437,8 +437,8 @@ void llvm_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx) {
   DISPATCH_TO_OBSERVERS(call_floor, iid, nounwind, pc, type, inx)
 }
 
-void llvm_call_malloc(IID iid, bool nounwind, KIND type, KVALUE* value, int size, int inx, KVALUE* mallocAddress) {
-  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, value, size, inx, mallocAddress)
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx, uint64_t mallocAddress) {
+  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, size, inx, mallocAddress)
 }
 
 void llvm_vaarg() {

@@ -3501,8 +3501,8 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   return;
 }
 
-void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, KVALUE* call_value UNUSED, 
-				      int size, int inx, KVALUE* mallocAddress) {
+void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
+				      int size, int inx, uint64_t mallocAddress) {
 
   // retrieving original number of bytes
   KVALUE* argValue = myStack.top();
@@ -3517,7 +3517,7 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
 
     // creating pointer object
     VALUE returnValue;
-    returnValue.as_ptr = mallocAddress->value.as_ptr;
+    returnValue.as_ptr = (void*)mallocAddress;
     IValue* newPointer = new IValue(PTR_KIND, returnValue, size/8, 0, 0, numObjects);
     newPointer->setValueOffset((int64_t)addr - (int64_t)returnValue.as_ptr);
     release(executionStack.top()[inx]);
@@ -3577,9 +3577,9 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     safe_assert(structType.empty());
 
     VALUE structPtrVal;
-    structPtrVal.as_ptr = mallocAddress->value.as_ptr;
+    structPtrVal.as_ptr = (void*)mallocAddress;
     IValue* structPtrVar = new IValue(PTR_KIND, structPtrVal);
-    structPtrVar->setValueOffset((int64_t)ptrToStructVar - (int64_t)mallocAddress->value.as_ptr);  ////////////
+    structPtrVar->setValueOffset((int64_t)ptrToStructVar - (int64_t)mallocAddress);  ////////////
     structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
     structPtrVar->setLength(length);
 

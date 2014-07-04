@@ -82,7 +82,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
   // the case for MALLOC
   if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "malloc") {
-    Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
+    //Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN); 
 
     // there can be more than 1 use
     // e.g., checking for NULL
@@ -148,12 +148,19 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
     // kind is the type of each element (the return type is known to be PTR)
     noUnwind = false;
 
-    Value* mallocAddress = KVALUE_VALUE(callInst, instrsAfter, NOSIGN);
-    call = CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx, mallocAddress);
-    instrsAfter.push_back(call); // new
+    //Value* mallocAddress = KVALUE_VALUE(callInst, instrsAfter, NOSIGN);
+    //call = CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx, mallocAddress);
+
+    Instruction *mallocAddress = CAST_VALUE(callInst, instrsAfter, NOSIGN);
+
+    if (!mallocAddress) return NULL;
+    instrsAfter.push_back(mallocAddress);
+    
+    call = CALL_IID_BOOL_KIND_INT_INT_INT64("llvm_call_malloc", iid, noUnwindC, kind, size, inx, mallocAddress);
+    instrsAfter.push_back(call);
 
     InsertAllBefore(instrs, callInst);
-    InsertAllAfter(instrsAfter, callInst); // new
+    InsertAllAfter(instrsAfter, callInst);
   }
   else if (callInst->getCalledFunction() != NULL &&
       callInst->getCalledFunction()->getName() == "sin") {

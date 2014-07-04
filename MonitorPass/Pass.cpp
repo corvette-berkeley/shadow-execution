@@ -237,8 +237,6 @@ namespace {
       // call back to create each global
       for(Module::global_iterator i = M.global_begin(), e = M.global_end(); i != e; i++) {    
         //if (GlobalValue::isPrivateLinkage(i->getLinkage())) {
-        // i->dump();
-        // i->getType()->dump();
 
         InstrPtrVector instrs;
         ValuePtrVector args;
@@ -246,14 +244,10 @@ namespace {
         KIND kind;
         bool aryOfPrim; 
 
-
-
         //Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
         //args.push_back(global);
 
-        //
-        // Case for global of array of primitive type
-        //
+        // case for global of array of primitive type
         elemType = i->getType();
         kind = instrumenter->TypeToKind(elemType);
 
@@ -261,8 +255,6 @@ namespace {
         if (kind == PTR_KIND) {
           PointerType *ptrType = (PointerType*) elemType;
           elemType = ptrType->getElementType();
-          //elemType->dump();
-          //cout << "" << endl;
           kind = instrumenter->TypeToKind(elemType);
 
           if (kind == ARRAY_KIND) {
@@ -275,8 +267,8 @@ namespace {
 
             kind = instrumenter->TypeToKind(elemType);
             if (kind != STRUCT_KIND) {
-	      ////////
-	      // allocaAddress value split into fields
+
+	      // global value split into fields
 	      Constant* cInx = instrumenter->computeIndex(i);
 	      Constant* cScope = instrumenter->INT32_CONSTANT(instrumenter->getScope(i), NOSIGN);
 	      Constant* cType = instrumenter->KIND_CONSTANT(instrumenter->TypeToKind(i->getType()));
@@ -289,7 +281,6 @@ namespace {
 	      args.push_back(cScope);
 	      args.push_back(cType);
 	      args.push_back(global);
-	      ////////
 
               aryOfPrim = true;
               Constant *sizeC = instrumenter->INT32_CONSTANT(size, false); // no sign
@@ -311,9 +302,7 @@ namespace {
           }
         }
 
-        //
-        // Case for global of other types
-        //
+        // case for global of other types
         if (!aryOfPrim) {
 	  Value* global = instrumenter->KVALUE_VALUE(i, instrs, NOSIGN);
 	  args.push_back(global);
