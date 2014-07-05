@@ -1,6 +1,8 @@
 #!/bin/bash
 
-while read line           
+
+while read program           
 do           
-    echo $line           
+    echo $program
+    ./main.py $program.out
 done < tests.txt           

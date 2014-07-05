@@ -12,6 +12,7 @@ import signal
 def RunJob(job,timeout=None,name=None,stdin=None,stdout=None,stderr=None,shell=True):
     jm = JobMonitor(job,timeout,name,stdin,stdout,stderr,shell)
     jm.Run()
+    jm.printResult()
     return jm.Result()
 
 ## #######################################################
@@ -99,6 +100,9 @@ class JobMonitor:
 
     def Result(self):
         return (self.cmd , self.rc , self.time , self.max)
+
+    def printResult(self):
+        print 'stats, %s' % self.cmd + ', ' + str(self.time) + ', ' + str(self.max)
 
     def Command(self):
         return self.cmd
