@@ -314,14 +314,13 @@ namespace {
               args.push_back(initializer);
             }
             else {
-              // TODO: this is wrong
-              // for now
+              // TODO: do we need a case for create_global_struct? (array already being handled above)
+	      //safe_assert(false);
               args.push_back(global);
             }
           }
           else {
-            // TODO: this is wrong
-            // for now
+            // TODO: do we need to handle the uninitialized case here?
             args.push_back(global);
           }
 
