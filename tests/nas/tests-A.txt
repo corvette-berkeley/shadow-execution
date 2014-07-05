@@ -1,0 +1,9 @@
+bt.A.x
+cg.A.x
+dc.A.x
+ep.A.x
+ft.A.x
+is.A.x
+lu.A.x
+mg.A.x
+sp.A.x

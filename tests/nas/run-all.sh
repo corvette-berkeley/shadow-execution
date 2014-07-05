@@ -1,16 +1,12 @@
 #!/bin/bash
 
 # ######################################
-# Running a subset of the NAS programs
+# Running a subset NAS programs in $1
 # ######################################
 
-echo "Running BT..."
-./main.py ./bt.S.x.out
+while read program           
+do           
+    echo $program
+    ./main.py $program.out .
+done < $1           
 
-echo "Running CG..."
-./main.py ./cg.S.x.out
-
-echo "Running EP..."
-./main.py ./ep.S.x.out
-
-echo "===== DONE ====="

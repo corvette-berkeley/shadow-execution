@@ -1,16 +1,12 @@
 #!/bin/bash
 
 # ######################################
-# Instrumenting a subset of the NAS programs
+# Instrumenting NAS programs in $1
 # ######################################
 
-echo "Instrumenting BT..."
-./instrument.sh bt.S.x .
 
-echo "Instrumenting CG..."
-./instrument.sh cg.S.x .
-
-echo "Instrumenting EP..."
-./instrument.sh ep.S.x .
-
-echo "===== DONE ====="
+while read program           
+do           
+    echo $program
+    ./instrument.sh $program .
+done < $1           
