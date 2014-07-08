@@ -177,3 +177,15 @@ void Instrumentation::PrintFiles(string name) {
   myfile.close();
   return;
 }
+
+
+void Instrumentation::PrintDebugMap() {
+  map<IID, DebugInfo*>::iterator it;
+
+  cout << "Printing all debugging info" << endl;
+  for(it = debugMap.begin(); it != debugMap.end(); it++) {
+    cout << "IID: " << it->first << "\t";
+    cout << it->second->file << ":" << it->second->line << endl;
+  }
+  return;
+}

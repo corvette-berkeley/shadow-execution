@@ -142,6 +142,12 @@ struct kvalue_t {
 } __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
 #define KVALUE kvalue_t
 
+struct DebugInfo {
+  string file;
+  int line;
+};
+
+
 //
 // Inlined error functions
 //

@@ -343,6 +343,7 @@ namespace {
       // printing filenames
       Instrumentation *instrumentation = Instrumentation::GetInstance();
       instrumentation->PrintFiles(FileName);
+      //instrumentation->PrintDebugMap();
 
       return Instrumentation::GetInstance()->Finalize(M);
     }
@@ -511,8 +512,6 @@ REGISTER_INSTRUMENTER(SelectInstrumenter, "select")
 REGISTER_INSTRUMENTER(CallInstrumenter, "call") 
 REGISTER_INSTRUMENTER(VAArgInstrumenter, "va_arg")
 REGISTER_INSTRUMENTER(LandingPadInstrumenter, "landingpad")
-
-
 /*******************************************************************************************/
 
 char MonitorPass::ID = 0;

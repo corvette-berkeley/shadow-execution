@@ -199,6 +199,14 @@ public:
    */
   void PrintFiles(string name);
 
+/**
+   * Printing debugMap.
+   *
+   * @note Printing the contents of the debugging map.
+   */
+  void PrintDebugMap();
+
+
 
 public:
   BasicBlock* BB_;
@@ -212,7 +220,8 @@ public:
   int globalVarCount;
   std::map<uint64_t, int> globalIndices;
   int fileCount; // counter of number of files 
-  std::map<std::string, int> fileNames; // map from filename to file index 
+  std::map<std::string, int> fileNames; // map from filename to file index
+  std::map<IID, DebugInfo*> debugMap;
 
 private:
   InstrumenterPtrList instrumenters_;

@@ -29,7 +29,17 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       loadInx = computeIndex(loadPtr);
     }
 
+    // debugging info
     string filename = getFileName(loadInst);
+    int line = getLineNumber(loadInst);
+
+    DebugInfo *debug = new DebugInfo;
+    debug->file = filename;
+    debug->line = line;
+    IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(loadInst));  
+    parent_->debugMap[address] = debug;
+    // end of debugging info
+
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
       fileC = INT32_CONSTANT(parent_->fileCount, SIGNED);
@@ -69,7 +79,8 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
       InsertAllAfter(instrs, loadInst);
 
-    } else {
+    } 
+    else {
 
       /*
        * Load for non-struct. 
