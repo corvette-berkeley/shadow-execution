@@ -143,7 +143,7 @@ struct kvalue_t {
 #define KVALUE kvalue_t
 
 struct DebugInfo {
-  string file;
+  const char* file;
   int line;
 };
 

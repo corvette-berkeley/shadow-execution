@@ -206,6 +206,7 @@ public:
    */
   void PrintDebugMap();
 
+  void WriteDebugMap(string name);
 
 
 public:

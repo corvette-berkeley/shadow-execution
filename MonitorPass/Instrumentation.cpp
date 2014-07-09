@@ -189,3 +189,40 @@ void Instrumentation::PrintDebugMap() {
   }
   return;
 }
+
+
+void Instrumentation::WriteDebugMap(string name) {
+  map<IID, DebugInfo*>::iterator it;
+  cout << "writing debug map " << name << endl;
+  
+  FILE *myfile;
+  myfile=fopen(name.c_str(),"wb");
+  if (!myfile) {
+    printf("Unable to open file!");
+    return;
+  }
+
+  for(it = debugMap.begin(); it != debugMap.end(); it++) {
+    fwrite(&(it->first), sizeof(uint64_t), 1, myfile);
+    fwrite(it->second, sizeof(struct DebugInfo), 1, myfile);
+  }
+  fclose(myfile);
+
+  
+  // reading
+  /*
+  cout << "reading file" << endl;
+  struct DebugInfo temp;
+  uint64_t temp_iid;
+  FILE* ptr_myfile2 = fopen(name.c_str(), "rb");
+
+  while(fread(&temp_iid,sizeof(uint64_t),1,ptr_myfile2) &&
+	fread(&temp,sizeof(struct DebugInfo),1,ptr_myfile2)) {
+    cout << "iid: "  << temp_iid << " --- "  <<  temp.file << ":" << temp.line << endl;
+  }
+  fclose(ptr_myfile2);
+  */
+
+  return;
+}
+

@@ -343,6 +343,7 @@ namespace {
       // printing filenames
       Instrumentation *instrumentation = Instrumentation::GetInstance();
       instrumentation->PrintFiles(FileName);
+      instrumentation->WriteDebugMap(FileName);
       //instrumentation->PrintDebugMap();
 
       return Instrumentation::GetInstance()->Finalize(M);
