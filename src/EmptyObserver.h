@@ -59,9 +59,9 @@ class EmptyObserver : public InstructionObserver {
 public:
 	DEFAULT_CONSTRUCTOR(EmptyObserver);
 	
-	virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int file, int line, int inx);
+	virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int inx);
 
-	virtual void load_struct(IID iid, KIND kind, KVALUE* op, int file, int line, int inx);
+	virtual void load_struct(IID iid, KIND kind, KVALUE* op, int inx);
 
 	// ***** Binary Operations ***** //
   

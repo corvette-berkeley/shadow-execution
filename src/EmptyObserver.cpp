@@ -45,10 +45,11 @@
 
 using namespace std;
 	
-void EmptyObserver::load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {
+void EmptyObserver::load(IID iid UNUSED, KIND type UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, 
+			 int inx UNUSED) {
 }
 
-void EmptyObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {
+void EmptyObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* op UNUSED, int inx UNUSED) {
 }
 
 // ***** Binary Operations ***** //

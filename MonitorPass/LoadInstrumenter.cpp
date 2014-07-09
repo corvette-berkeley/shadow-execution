@@ -13,13 +13,9 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     Constant* inx = computeIndex(loadInst);
 
-    Constant* CLine = INT32_CONSTANT(getLineNumber(loadInst), SIGNED);
-
     Constant* loadGlobal = BOOL_CONSTANT(false);
 
     Constant* loadInx = INT32_CONSTANT(-1, SIGNED);
-
-    Constant* fileC = NULL;
 
     if (LoadInst* parentLoadInst = dyn_cast<LoadInst>(loadInst->getPointerOperand())) {
       Value *loadPtr; 
@@ -42,11 +38,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
-      fileC = INT32_CONSTANT(parent_->fileCount, SIGNED);
       parent_->fileCount++;
-    }
-    else {
-      fileC = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
     }
 
     InstrPtrVector instrs;
@@ -74,7 +66,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       if (kind == INV_KIND) return false;
       Constant* kindC = KIND_CONSTANT(kind);
 
-      Instruction* call = CALL_IID_KIND_KVALUE_INT_INT_INT("llvm_load_struct", iid, kindC, op, fileC, CLine, inx);
+      Instruction* call = CALL_IID_KIND_KVALUE_INT("llvm_load_struct", iid, kindC, op, inx);
       instrs.push_back(call);
 
       InsertAllAfter(instrs, loadInst);
@@ -103,8 +95,8 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       instrs.push_back(ptrOpCast);
 
       call =
-        CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT_INT_INT("llvm_load", iid,
-            kindC, cScope, cOpInx, ptrOpCast, loadGlobal, loadInx, fileC, CLine, inx);
+        CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT("llvm_load", iid,
+            kindC, cScope, cOpInx, ptrOpCast, loadGlobal, loadInx, inx);
       instrs.push_back(call);
 
       InsertAllBefore(instrs, loadInst);

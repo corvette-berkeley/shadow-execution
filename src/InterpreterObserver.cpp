@@ -395,11 +395,11 @@ std::string InterpreterObserver::CASTOP_ToString(int castop) {
 
 // *** Load and Store Operations *** //
 
-void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int file, int line, int inx) {
+void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int inx) {
   int i, structSize;
   IValue* dest;
 
-  DEBUG_LOG("[LOAD STRUCT] Performing load at " << file << ":" << line); 
+  DEBUG_LOG("[LOAD STRUCT] Performing load "); 
 
   structSize = returnStruct.size();
   dest = new IValue[structSize];
@@ -463,7 +463,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       concreteStructElemPtr = new KVALUE();
       concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
       if (syncLoad(structElem, concreteStructElemPtr, type)) {
-        DEBUG_LOG("[LOAD STRUCT] Syncing load at " << file << ":" << line);
+        DEBUG_LOG("[LOAD STRUCT] Syncing load");
       }
 
       dest[i] = *structElem;
@@ -473,7 +473,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
     }
   }
 
-  dest->setSourceInfo(file, line);
+  //dest->setSourceInfo(file, line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = dest;
@@ -483,15 +483,15 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 }
 
 void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, 
-			       int loadInx, int file, int line, int inx) {
+			       int loadInx, int inx) {
 
-  pre_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
+  //pre_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
 
   bool isPointerConstant = false;
   bool sync = false;
   IValue* srcPtrLocation;
 
-  DEBUG_LOG("[LOAD] Performing load at " << file << ":" << line);
+  DEBUG_LOG("[LOAD] Performing load");
 
   // obtain source pointer value
   if (opScope == CONSTANT) {
@@ -595,7 +595,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     }
 
-    destLocation->setSourceInfo(file, line);
+    //destLocation->setSourceInfo(file, line);
     destLocation->copy(executionStack.top()[inx]);
     delete(destLocation);
     DEBUG_STDOUT(destLocation->toString());
@@ -615,7 +615,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     destLocation->setType(type);
     destLocation->setValue(zeroValue);
-    destLocation->setSourceInfo(file, line);
+    //destLocation->setSourceInfo(file, line);
 
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
@@ -627,10 +627,10 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   }
 
   if (sync) {
-    DEBUG_LOG("[LOAD] Syncing load at " << file << ":" << line);
+    DEBUG_LOG("[LOAD] Syncing load");
   }
 
-  post_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
+  //post_load(iid, type, opScope, opInx, opAddr, loadGlobal, loadInx, file, line, inx);
   return;
 }
 
