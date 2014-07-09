@@ -342,7 +342,6 @@ namespace {
     bool doFinalization(Module &M) {
       // printing filenames
       Instrumentation *instrumentation = Instrumentation::GetInstance();
-      instrumentation->PrintFiles(FileName);
       instrumentation->WriteDebugMap(FileName);
       //instrumentation->PrintDebugMap();
 

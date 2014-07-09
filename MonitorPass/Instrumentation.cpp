@@ -166,7 +166,7 @@ bool Instrumentation::CheckAndInstrument(Instruction* I) {
   return false;
 }
 
-void Instrumentation::PrintFiles(string name) {
+void Instrumentation::WriteFileNames(string name) {
   map<string, int>::iterator it;
   ofstream myfile;
 
