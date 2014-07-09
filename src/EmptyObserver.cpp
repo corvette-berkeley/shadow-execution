@@ -140,7 +140,7 @@ void EmptyObserver::allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx
 				   int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
 }
 
-void EmptyObserver::store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED,  int file UNUSED, int line UNUSED, int inx UNUSED) {
+void EmptyObserver::store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, int inx UNUSED) {
 }
 
 void EmptyObserver::fence() {

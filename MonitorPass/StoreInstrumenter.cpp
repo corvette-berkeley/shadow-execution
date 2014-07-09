@@ -15,16 +15,13 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     InstrPtrVector instrs;
     Value *valueOp, *pointerOp;
     Type *valueOpType;
-    Constant *cPointerInx, *cScope, *cInx, *cLine, *cFile, *cSrcType, *cSrcScope, *cSrcInx; 
+    Constant *cPointerInx, *cScope, *cInx, *cSrcType, *cSrcScope, *cSrcInx; 
     Instruction* cSrcValue;
-    string filename;
     Instruction *call;
 
     count_++;
 
-    //
-    // skip stores in main if operands are arguments
-    //
+    // skipping stores in main if operands are arguments
     if (BasicBlock *basicBlock = storeInst->getParent()) {
       if (Function *function = basicBlock->getParent()) {
         if (function->getName() == "main") {
@@ -47,11 +44,8 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     cPointerInx = computeIndex(pointerOp);
     cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
     cInx = computeIndex(storeInst);
-    cLine = INT32_CONSTANT(getLineNumber(storeInst), SIGNED);
 
-    //
-    // Obtain source value
-    //
+    // retrieving source value
     cSrcValue = NULL;
     if (valueOpType->isIntegerTy()) {
 
@@ -74,20 +68,24 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(cSrcValue);
     }
 
-    //
-    // Obtain file name
-    //
-    filename = getFileName(storeInst);
+
+    // debugging info
+    string filename = getFileName(storeInst);
+    int line = getLineNumber(storeInst);
+
+    DebugInfo *debug = new DebugInfo;
+    debug->file = strdup(filename.c_str());
+    debug->line = line;
+    IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(storeInst));  
+    parent_->debugMap[address] = debug;
+    // end of debugging info
+
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
-      cFile = INT32_CONSTANT(parent_->fileCount, SIGNED);
       parent_->fileCount++;
     }
-    else {
-      cFile = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
-    }
 
-    call = CALL_INT_INT_KIND_INT_INT_INT64_INT_INT_INT("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue, cFile, cLine, cInx);
+    call = CALL_INT_INT_KIND_INT_INT_INT64_INT("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue, cInx);
     instrs.push_back(call);
 
     // instrument

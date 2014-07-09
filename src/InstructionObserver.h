@@ -100,7 +100,7 @@ public:
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 
 	virtual void store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, 
-			   int64_t srcValue UNUSED, int file UNUSED, int line UNUSED, int inx UNUSED) {};
+			   int64_t srcValue UNUSED, int inx UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};

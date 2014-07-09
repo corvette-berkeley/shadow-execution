@@ -634,10 +634,9 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   return;
 }
 
-void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, 
-				int file UNUSED, int line UNUSED, int inx UNUSED) {
+void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int inx UNUSED) {
 
-  pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
+  //pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
   if (srcKind == INT80_KIND) {
     cout << "[store] Unsupported INT80_KIND" << endl;
@@ -745,7 +744,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
 
-  post_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
+  //post_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
   return;
 }
 
