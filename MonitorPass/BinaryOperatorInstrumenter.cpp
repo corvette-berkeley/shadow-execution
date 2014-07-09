@@ -21,24 +21,29 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
     Value *lValue, *rValue;
-    Constant *cInx, *cFile, *cLine, *cCol, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
+    Constant *cInx, *cType, *cLScope, *cRScope, *cLValue, *cRValue;
 
     lValue = binInst->getOperand(0);
     rValue = binInst->getOperand(1);
 
     cInx = computeIndex(binInst);
-    cLine = INT32_CONSTANT(getLineNumber(binInst), SIGNED);
-    cCol = INT32_CONSTANT(getColumnNumber(binInst), SIGNED);
     cType = KIND_CONSTANT(TypeToKind(binInst->getType()));
 
+    // debugging info
     string filename = getFileName(binInst);
+    int line = getLineNumber(binInst);
+
+    DebugInfo *debug = new DebugInfo;
+    debug->file = strdup(filename.c_str());
+    debug->line = line;
+    IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(binInst));  
+    parent_->debugMap[address] = debug;
+    // end of debugging info
+
+
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
-      cFile = INT32_CONSTANT(parent_->fileCount, SIGNED);
       parent_->fileCount++;
-    }
-    else {
-      cFile = INT32_CONSTANT(parent_->fileNames[filename], SIGNED);
     }
 
     cLScope = INT32_CONSTANT(getScope(lValue), SIGNED);
@@ -117,8 +122,8 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     }
 
     Instruction *call =
-      CALL_INT_INT_INT64_INT64_KIND_INT_INT_INT_INT(callback.str().c_str(), cLScope,
-					    cRScope, cLValue, cRValue, cType, cFile, cLine, cCol, cInx);
+      CALL_INT_INT_INT64_INT64_KIND_INT(callback.str().c_str(), cLScope,
+					    cRScope, cLValue, cRValue, cType, cInx);
 
     instrs.push_back(call);
 

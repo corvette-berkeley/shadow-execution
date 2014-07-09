@@ -751,7 +751,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 
 // **** Binary Operations *** //
 void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-				int file, int line, int col UNUSED, int inx, BINOP op) {
+				int inx, BINOP op) {
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
@@ -843,7 +843,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   }
 
   iResult = new IValue(type, result);
-  iResult->setSourceInfo(file, line);
+  //iResult->setSourceInfo(file, line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
@@ -852,79 +852,67 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   return;
 }
 
-void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			      int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, ADD);
+void InterpreterObserver::add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, ADD);
 }
 
-void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  pre_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FADD);
-  post_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+void InterpreterObserver::fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  //pre_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+  binop(lScope, rScope, lValue, rValue, type, inx, FADD);
+  //post_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			      int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SUB);
+void InterpreterObserver::sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, SUB);
 }
 
-void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  pre_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FSUB);
-  post_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+void InterpreterObserver::fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  //pre_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+  binop(lScope, rScope, lValue, rValue, type, inx, FSUB);
+  //post_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			      int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, MUL);
+void InterpreterObserver::mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, MUL);
 }
 
-void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  pre_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FMUL);
-  post_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+void InterpreterObserver::fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  //pre_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+  binop(lScope, rScope, lValue, rValue, type, inx, FMUL);
+  //post_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, UDIV);
+void InterpreterObserver::udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, UDIV);
 }
 
-void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SDIV);
+void InterpreterObserver::sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, SDIV);
 }
 
-void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  pre_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FDIV);
-  post_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+void InterpreterObserver::fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  //pre_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+  binop(lScope, rScope, lValue, rValue, type, inx, FDIV);
+  //post_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
 }
 
-void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, UREM);
+void InterpreterObserver::urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, UREM);
 }
 
-void InterpreterObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  binop(lScope, rScope, lValue, rValue, type, file, line, col, inx, SREM);
+void InterpreterObserver::srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  binop(lScope, rScope, lValue, rValue, type, inx, SREM);
 }
 
 void InterpreterObserver::frem(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
-			       int file UNUSED, int line UNUSED, int col UNUSED, int inx UNUSED) {
+			       int inx UNUSED) {
   DEBUG_STDERR("UNSUPPORTED IN C???");
   safe_assert(false);
 }
 
 // **** Bitwise Operations *** //
 
-void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-				  int file UNUSED, int line, int inx, int col UNUSED, BITWISE op) {
+void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx, BITWISE op) {
   int64_t v64_1, v64_2;
   uint64_t uv64_1, uv64_2;
   int32_t v32_1, v32_2;
@@ -1131,7 +1119,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   }
 
   iResult = new IValue(type, result);
-  iResult->setSourceInfo(file, line);
+  //iResult->setSourceInfo(file, line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
@@ -1140,34 +1128,28 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
   return;
 } 
 
-void InterpreterObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			      int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, SHL);
+void InterpreterObserver::shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, SHL);
 }
 
-void InterpreterObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, LSHR);
+void InterpreterObserver::lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, LSHR);
 }
 
-void InterpreterObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, ASHR);
+void InterpreterObserver::ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, ASHR);
 }
 
-void InterpreterObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, AND);
+void InterpreterObserver::and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, AND);
 }
 
-void InterpreterObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			      int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, OR);
+void InterpreterObserver::or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, OR);
 }
 
-void InterpreterObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
-			       int file, int line, int col, int inx) {
-  bitwise(lScope, rScope, lValue, rValue, type, file, line, col, inx, XOR);
+void InterpreterObserver::xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
+  bitwise(lScope, rScope, lValue, rValue, type, inx, XOR);
 }
 
 // ***** Vector Operations ***** //
