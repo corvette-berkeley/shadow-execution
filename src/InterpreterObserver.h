@@ -163,13 +163,13 @@ class InterpreterObserver : public InstructionObserver {
   virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
   
   // ***** Memory Access and Addressing Operations ***** //
-  virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND opType, uint64_t addr);
+  virtual void allocax(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr);
 
-  virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND opType, uint64_t addr);
+  virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr);
 
-  virtual void allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND opType, uint64_t addr);
+  virtual void allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr);
   
-  virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int inx);
+  virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue);
   
   virtual void fence();
   
@@ -177,13 +177,13 @@ class InterpreterObserver : public InstructionObserver {
 
   virtual void atomicrmw();
 
-  virtual void getelementptr(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
-			     KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx);
+  virtual void getelementptr(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
+			     KIND kind, uint64_t size, bool loadGlobal, int loadInx, int inx);
 
-  virtual void getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, int elementSize, int scopeInx01, 
+  virtual void getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, int scopeInx01, 
 				   int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
 
-  virtual void getelementptr_struct(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, KIND arrayKind, int inx);
+  virtual void getelementptr_struct(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int inx);
 
   // ***** Conversion Operations ***** //
   virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
@@ -211,9 +211,9 @@ class InterpreterObserver : public InstructionObserver {
   virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
   
   // ***** TerminatorInst ***** //
-  virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int inx);
+  virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value);
   
-  virtual void branch2(IID iid, bool conditional, int inx);
+  virtual void branch2(IID iid, bool conditional);
   
   virtual void indirectbr(IID iid, KVALUE* op1, int inx);
   
@@ -221,7 +221,7 @@ class InterpreterObserver : public InstructionObserver {
   
   virtual void resume(IID iid, KVALUE* op1, int inx);
   
-  virtual void return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx);
+  virtual void return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value);
   
   virtual void return2_(IID iid, int inx);
   
@@ -232,9 +232,9 @@ class InterpreterObserver : public InstructionObserver {
   virtual void unreachable();
   
   // ***** Other Operations ***** //
-  virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+  virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx);
   
-  virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+  virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx);
   
   virtual void phinode(IID iid, int inx);
   
@@ -383,7 +383,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
 
-  void after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue, int line);
+  void after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue);
 
   void after_void_call();
 
@@ -397,7 +397,7 @@ class InterpreterObserver : public InstructionObserver {
 
   void create_global(KVALUE* value, KVALUE* initializer);
 
-  void create_global_array(int valInx, SCOPE scope, KIND varType, uint64_t addr, uint32_t size, KIND type);
+  void create_global_array(int valInx, uint64_t addr, uint32_t size, KIND type);
 
   void printCurrentFrame();
 

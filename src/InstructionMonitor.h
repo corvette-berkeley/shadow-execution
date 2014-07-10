@@ -82,24 +82,24 @@ extern "C" {
   void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int x);
 
   // ***** Memory Access and Addressing Operations ***** //
-  void llvm_allocax(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr);
-  void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int x, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr);
-  void llvm_allocax_struct(IID iid, uint64_t size, int x, int line,  bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr);
+  void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr);
+  void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr);
+  void llvm_allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr);
 
-  void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int x);
-  void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int x);
+  void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int inx);
+  void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int inx);
 
-  void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int x);
+  void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue);
   void llvm_fence();
   void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int x);
   void llvm_atomicrmw();
 
-  void llvm_getelementptr(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
-			  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int x);
-  void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind, int elementSize, 
+  void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
+			  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int inx);
+  void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, 
 				int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, 
 				int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx);
-  void llvm_getelementptr_struct(IID iid, bool inbound, int baseInx, SCOPE baseScope, uint64_t baseAddr, KIND kind1, KIND kind2, int x);
+  void llvm_getelementptr_struct(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int inx);
 
   // ***** Conversion Operations ***** //
   void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
@@ -116,20 +116,20 @@ extern "C" {
   void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 
   // ***** Terminator Instructions ***** //
-  void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value, int x);
-  void llvm_branch2(IID iid, bool conditional, int x);
-  void llvm_indirectbr(IID iid, KVALUE* op1, int x);
-  void llvm_invoke(IID iid, KVALUE op, int x);
-  void llvm_resume(IID iid, KVALUE* op1, int x);
-  void llvm_return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int x);
-  void llvm_return2_(IID iid, int x);
-  void llvm_return_struct_(IID iid, int x, int valInx);
-  void llvm_switch_(IID iid, KVALUE* op, int x);
+  void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value);
+  void llvm_branch2(IID iid, bool conditional);
+  void llvm_indirectbr(IID iid, KVALUE* op1, int inx);
+  void llvm_invoke(IID iid, KVALUE op, int inx);
+  void llvm_resume(IID iid, KVALUE* op1, int inx);
+  void llvm_return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value);
+  void llvm_return2_(IID iid, int inx);
+  void llvm_return_struct_(IID iid, int inx, int valInx);
+  void llvm_switch_(IID iid, KVALUE* op, int inx);
   void llvm_unreachable();
 
   // ***** Other Operations ***** //
-  void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
-  void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx);
+  void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx);
+  void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx);
   void llvm_phinode(IID iid, int inx);
   void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int x);
   void llvm_push_stack(int inx, SCOPE scope, KIND type, uint64_t addr);
@@ -145,14 +145,14 @@ extern "C" {
   void llvm_push_array_size(uint64_t i);
   void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05);
   void llvm_construct_array_type(uint64_t i);
-  void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue, int line);
+  void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue);
   void llvm_after_void_call();
   void llvm_after_struct_call();
   void llvm_create_stack_frame(int size);
   void llvm_create_global_symbol_table(int size);
   void llvm_record_block_id(int id);
   void llvm_create_global(KVALUE* value, KVALUE* initializer);
-  void llvm_create_global_array(int valInx, SCOPE scope, KIND varType, uint64_t addr, uint32_t size, KIND type);
+  void llvm_create_global_array(int valInx, uint64_t addr, uint32_t size, KIND type);
   void llvm_call(IID iid, bool nounwind, KIND type, int x);
   void llvm_call_sin(IID iid, bool nounwind, int pc, KIND type, int x);
   void llvm_call_acos(IID iid, bool nounwind, int pc, KIND type, int x);

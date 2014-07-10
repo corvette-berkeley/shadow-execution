@@ -178,26 +178,22 @@ void PrintObserver::insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line 
-	       << ", result:" << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << (void*)addr 
-	       << ", [INX: " << inx << "]");
+void PrintObserver::allocax(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size 
+	       << ", value: " << (void*)addr << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", arg:" << arg << ", line:" << line 
-	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << (void*)addr  
-	       << ", [INX: " << inx << "]");
+void PrintObserver::allocax_array(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", kind:" << KIND_ToString(kind) << ", size:" << size 
+	       << ", value: " << (void*)addr  << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, int line, bool arg, int valInx, SCOPE scope, KIND type, uint64_t addr) {
-  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", size:" << size << ", arg:" << arg << ", line:" << line 
-	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << (void*)addr 
-	       << ", [INX: " << inx << "]");
+void PrintObserver::allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr) {
+  DEBUG_STDOUT("<<<<< ALLOCA >>>>> " << IID_ToString(iid) << ", size:" << size << ", value: " << (void*)addr << ", [INX: " << inx << "]");
 }
 
-void PrintObserver::store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue,  int inx) {
-  DEBUG_STDOUT("<<<<< STORE >>>>> pInx:" << pInx << ", pScope:" << SCOPE_ToString(pScope) << ", srcKind:" << KIND_ToString(srcKind) << ", srcScope:" << SCOPE_ToString(srcScope) << ", srcInx:" << srcInx << ", srcValue:" << srcValue << ", [INX: " << inx << "]");
+void PrintObserver::store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
+  DEBUG_STDOUT("<<<<< STORE >>>>> pInx:" << pInx << ", pScope:" << SCOPE_ToString(pScope) << ", srcKind:" << KIND_ToString(srcKind) << ", srcScope:" << SCOPE_ToString(srcScope) << ", srcInx:" << srcInx << ", srcValue:" << srcValue);
 }
 
 void PrintObserver::fence() {
@@ -212,19 +208,19 @@ void PrintObserver::atomicrmw() {
   DEBUG_STDOUT("<<<<< ATOMICRMW >>>>>");
 }
 
-void PrintObserver::getelementptr(IID iid, bool inbound, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
+void PrintObserver::getelementptr(IID iid, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
 				  int offsetInx UNUSED, int64_t offsetValue UNUSED, 
-				  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value: TOPRINT" << ", offsetValue: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << ", line:" << line << " [INX: " << inx << "]");
+				  KIND kind, uint64_t size, bool loadGlobal, int loadInx, int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR >>>>> " << IID_ToString(iid) << ", pointer value: TOPRINT" << ", offsetValue: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", size:" << size << ", loadGlobal:" << loadGlobal << ", loadInx:" << loadInx << " [INX: " << inx << "]");
 }
 
-void PrintObserver::getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind, int elementSize, 
+void PrintObserver::getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, int elementSize, 
 					int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> pointer value: TOPRINT" << ", elementSize:" << elementSize <<  ", kind:" << KIND_ToString(kind) << ", scopeInx01:" << scopeInx01 << ", scopeInx02:" << scopeInx02 << ", scopeInx03:" << scopeInx03 << ", valOrInx01:" << valOrInx01 << ", valOrInx02:" << valOrInx02 << ", valOrInx03:" << valOrInx03 << ", size01:" << size01 << ", size02:" << size02 << " [INX: " << inx << "]");
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR ARRAY >>>>> pointer value: TOPRINT" << ", elementSize:" << elementSize <<  ", scopeInx01:" << scopeInx01 << ", scopeInx02:" << scopeInx02 << ", scopeInx03:" << scopeInx03 << ", valOrInx01:" << valOrInx01 << ", valOrInx02:" << valOrInx02 << ", valOrInx03:" << valOrInx03 << ", size01:" << size01 << ", size02:" << size02 << " [INX: " << inx << "]");
 }
 
-void PrintObserver::getelementptr_struct(IID iid, bool inbound, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind, KIND arrayKind, int inx) {
-  DEBUG_STDOUT("<<<<< GETELEMENTPTR STRUCT >>>>> " << IID_ToString(iid) << ", inbound" << (inbound ? "1" : "0") << ", pointer value: TOPRINT" << ", kind:" << KIND_ToString(kind) << ", arrayKind:" << KIND_ToString(arrayKind) << " [INX: " << inx << "]");
+void PrintObserver::getelementptr_struct(IID iid, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, int inx) {
+  DEBUG_STDOUT("<<<<< GETELEMENTPTR STRUCT >>>>> " << IID_ToString(iid) << ", pointer value: TOPRINT" << " [INX: " << inx << "]");
 }
 
 // ***** Conversion Operations ***** //
@@ -278,14 +274,14 @@ void PrintObserver::bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, i
 }
 
 // ***** TerminatorInst ***** //
-void PrintObserver::branch(IID iid, bool conditional, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value, int inx) {
+void PrintObserver::branch(IID iid, bool conditional, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value) {
   DEBUG_STDOUT("<<<<< BRANCH >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0") << ", condition value:" 
-	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << " [INX: " << inx << "]");
+	       << "inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value);
 }
 
 
-void PrintObserver::branch2(IID iid, bool conditional, int inx) {
-  DEBUG_STDOUT("<<<<< BRANCH [GOTO] >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0") << " [INX: " << inx << "]");
+void PrintObserver::branch2(IID iid, bool conditional) {
+  DEBUG_STDOUT("<<<<< BRANCH [GOTO] >>>>> " << IID_ToString(iid) << ", cond:" << (conditional ? "1" : "0"));
 }
 
 void PrintObserver::indirectbr(IID iid, KVALUE* op1, int inx) {
@@ -300,8 +296,8 @@ void PrintObserver::resume(IID iid, KVALUE* op1, int inx) {
   DEBUG_STDOUT("<<<<< RESUME >>>>> " << IID_ToString(iid) << ", acc value:" << KVALUE_ToString(op1) << " [INX: " << inx << "]");
 }
 
-void PrintObserver::return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value, int inx) {
-  DEBUG_STDOUT("<<<<< RETURN >>>>> " << IID_ToString(iid) << ",inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value << " [INX: " << inx << "]");
+void PrintObserver::return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value) {
+  DEBUG_STDOUT("<<<<< RETURN >>>>> " << IID_ToString(iid) << ",inx: " << valInx << ", scope: " << SCOPE_ToString(scope) << ", type: " << KIND_ToString(type) << ", value: " << value);
 }
 
 void PrintObserver::return2_(IID iid, int inx) {
@@ -322,12 +318,12 @@ void PrintObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void PrintObserver::icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
-  DEBUG_STDOUT("<<<<< ICMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << ", line:" << line << " [INX: " << inx << "]");
+void PrintObserver::icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
+  DEBUG_STDOUT("<<<<< ICMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << " [INX: " << inx << "]");
 }
 
-void PrintObserver::fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
-  DEBUG_STDOUT("<<<<< FCMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << ", line:" << line << " [INX: " << inx << "]");
+void PrintObserver::fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
+  DEBUG_STDOUT("<<<<< FCMP >>>>> " << ", lScope:" << SCOPE_ToString(lScope) << ", rScope: " << SCOPE_ToString(rScope) << ", lValue:" << lValue << ", rValue:" << rValue << ", kind:" << KIND_ToString(type) << ", pred:" << pred << " [INX: " << inx << "]");
 }
 
 void PrintObserver::phinode(IID iid, int inx) {
@@ -390,8 +386,8 @@ void PrintObserver::construct_array_type(uint64_t i) {
   DEBUG_STDOUT("<<<<< CONSTRUCT ARRAY TYPE >>>>> size: " << i);
 }
 
-void PrintObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED, int line) {
-  DEBUG_STDOUT("<<<<< AFTER CALL >>>>> value: TOPRINT" << ", line: " << line);
+void PrintObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED) {
+  DEBUG_STDOUT("<<<<< AFTER CALL >>>>> value: TOPRINT");
 }
 
 void PrintObserver::after_void_call() {
@@ -418,7 +414,7 @@ void PrintObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   DEBUG_STDOUT("<<<<< CREATE GLOBAL >>>>> value:" << KVALUE_ToString(kvalue) << ", initializer:" << KVALUE_ToString(initializer));
 }
 
-void PrintObserver::create_global_array(int valInx UNUSED, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr UNUSED, uint32_t size, KIND type) {
+void PrintObserver::create_global_array(int valInx UNUSED, uint64_t addr UNUSED, uint32_t size, KIND type) {
   DEBUG_STDOUT("<<<<< CREATE GLOBAL ARRAY >>>>> value: TOPRINT" << ", size:" << size<< ", type:" << KIND_ToString(type));
 }
 

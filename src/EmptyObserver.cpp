@@ -128,19 +128,16 @@ void EmptyObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 
 }
 
 // ***** Memory Access and Addressing Operations ***** //
-void EmptyObserver::allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
-			    int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
+void EmptyObserver::allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {
 }
 
-void EmptyObserver::allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
-				  int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
+void EmptyObserver::allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {
 }
 
-void EmptyObserver::allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
-				   int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {
+void EmptyObserver::allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {
 }
 
-void EmptyObserver::store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED, int inx UNUSED) {
+void EmptyObserver::store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, int64_t srcValue UNUSED) {
 }
 
 void EmptyObserver::fence() {
@@ -152,18 +149,17 @@ void EmptyObserver::cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* kv1 UNUSED,
 void EmptyObserver::atomicrmw() {
 }
 
-void EmptyObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
+void EmptyObserver::getelementptr(IID iid UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
 				  int offsetInx UNUSED, int64_t offsetValue UNUSED, 
-				  KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {
+				  KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int inx UNUSED) {
 }
 
 void EmptyObserver::getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
-					KIND kind UNUSED, int elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, int scopeInx03 UNUSED, 
+					int elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, int scopeInx03 UNUSED, 
 					int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED, int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx UNUSED) {
 }
 
-void EmptyObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
-					 KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {
+void EmptyObserver::getelementptr_struct(IID iid UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, int inx UNUSED) {
 }
 
 // ***** Conversion Operations ***** //
@@ -205,10 +201,10 @@ void EmptyObserver::bitcast(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind
 }
 
 // ***** TerminatorInst ***** //
-void EmptyObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED, int inx UNUSED) {
+void EmptyObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED) {
 }
 
-void EmptyObserver::branch2(IID iid UNUSED, bool conditional UNUSED, int inx UNUSED) {
+void EmptyObserver::branch2(IID iid UNUSED, bool conditional UNUSED) {
 }
 
 void EmptyObserver::indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {
@@ -220,7 +216,7 @@ void EmptyObserver::invoke(IID iid UNUSED, KVALUE* call_value UNUSED, int inx UN
 void EmptyObserver::resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {
 }
 
-void EmptyObserver::return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {
+void EmptyObserver::return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED) {
 }
 
 void EmptyObserver::return2_(IID iid UNUSED, int inx UNUSED) {
@@ -236,11 +232,11 @@ void EmptyObserver::unreachable() {
 }
 
 // ***** Other Operations ***** //
-void EmptyObserver::icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {
-}
+void EmptyObserver::icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
+			 PRED pred UNUSED, int inx UNUSED) {}
 
-void EmptyObserver::fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {
-}
+void EmptyObserver::fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
+			 PRED pred UNUSED, int inx UNUSED) {}
 
 void EmptyObserver::phinode(IID iid UNUSED, int inx UNUSED) {
 }
@@ -287,7 +283,7 @@ void EmptyObserver::push_array_size5(int s1 UNUSED, int s2 UNUSED, int s3 UNUSED
 void EmptyObserver::construct_array_type(uint64_t i UNUSED) {
 }
 
-void EmptyObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED, int line UNUSED) {
+void EmptyObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED) {
 }
 
 void EmptyObserver::after_void_call() {
@@ -308,7 +304,7 @@ void EmptyObserver::record_block_id(int id UNUSED) {
 void EmptyObserver::create_global(KVALUE* kvalue UNUSED, KVALUE* initializer UNUSED) {
 }
 
-void EmptyObserver::create_global_array(int valInx UNUSED, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {
+void EmptyObserver::create_global_array(int valInx UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {
 }
 
 void EmptyObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {

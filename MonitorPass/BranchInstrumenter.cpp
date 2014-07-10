@@ -20,8 +20,6 @@ bool BranchInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* iidC = IID_CONSTANT(branchInst);
 
-    Constant* inxC = computeIndex(branchInst);
-
     Constant *cInx, *cScope, *cType; // new
 
     if (branchInst->isConditional()) {
@@ -37,11 +35,11 @@ bool BranchInstrumenter::CheckAndInstrument(Instruction* inst) {
       if (!ptrOpCast) return NULL;
       instrs.push_back(ptrOpCast);
 
-      Instruction* call = CALL_IID_BOOL_INT_INT_KIND_INT64_INT("llvm_branch", iidC, isConditionalC, cInx, cScope, cType, ptrOpCast, inxC);
+      Instruction* call = CALL_IID_BOOL_INT_INT_KIND_INT64("llvm_branch", iidC, isConditionalC, cInx, cScope, cType, ptrOpCast);
       instrs.push_back(call);
     } 
     else {
-      Instruction* call = CALL_IID_BOOL_INT("llvm_branch2", iidC, isConditionalC, inxC);
+      Instruction* call = CALL_IID_BOOL("llvm_branch2", iidC, isConditionalC);
       instrs.push_back(call);
     }
 

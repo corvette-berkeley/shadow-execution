@@ -17,7 +17,7 @@ bool CmpInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     InstrPtrVector instrs;
     Value *lValue, *rValue;
-    Constant *cInx, *cLine, *cType, *cLScope, *cRScope, *cPred;
+    Constant *cInx, *cType, *cLScope, *cRScope, *cPred;
     Value *cLValue, *cRValue;
     std::stringstream callback;
     PRED pred;
@@ -27,7 +27,6 @@ bool CmpInstrumenter::CheckAndInstrument(Instruction* inst) {
     rValue = cmpInst->getOperand(1);
 
     cInx = computeIndex(cmpInst);
-    cLine = INT32_CONSTANT(getLineNumber(cmpInst), SIGNED);
     cType = KIND_CONSTANT(TypeToKind(cmpInst->getType()));
 
     cLScope = INT32_CONSTANT(getScope(lValue), SIGNED);
@@ -63,8 +62,8 @@ bool CmpInstrumenter::CheckAndInstrument(Instruction* inst) {
     callback << "llvm_";
     callback << Instruction::getOpcodeName(cmpInst->getOpcode());
 
-    call = CALL_INT_INT_INT64_INT64_KIND_PRED_INT_INT(callback.str().c_str(),
-        cLScope, cRScope, cLValue, cRValue, cType, cPred, cLine, cInx);
+    call = CALL_INT_INT_INT64_INT64_KIND_PRED_INT(callback.str().c_str(),
+        cLScope, cRScope, cLValue, cRValue, cType, cPred, cInx);
       
     instrs.push_back(call);
 

@@ -8,7 +8,7 @@
 bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   GetElementPtrInst* gepInst; 
   InstrPtrVector instrs;
-  Constant *iidC, *inxC, *loadInxC, *inbound, *loadGlobal;
+  Constant *iidC, *inxC, *loadInxC, *loadGlobal;
   //Value *ptrOp;
   PointerType *T;
   Type *elemT;
@@ -25,7 +25,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   iidC = IID_CONSTANT(gepInst);
   inxC = computeIndex(gepInst);
   loadInxC = INT32_CONSTANT(-1, SIGNED);
-  inbound = BOOL_CONSTANT(gepInst->isInBounds());
   loadGlobal = BOOL_CONSTANT(false);
 
   // base pointer (now here)
@@ -53,7 +52,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Type *gepInstType;
     KIND kind;
-    Constant *kindC, *elementSizeC, *scopeInx[3], *valOrInxInx[3], *sizeC[2];
+    Constant *elementSizeC, *scopeInx[3], *valOrInxInx[3], *sizeC[2];
     Instruction *call;
     int elementSize, i;
     queue < Value* > arrIndices;
@@ -159,9 +158,9 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       instrs.push_back(call);
     }
 
+    
     gepInstType = ((PointerType*) gepInst->getType())->getElementType();
     kind = TypeToKind(gepInstType);
-    kindC = KIND_CONSTANT(kind);
 
     if (kind == ARRAY_KIND) {
       elementSize = getFlatSize((ArrayType*) gepInstType);
@@ -175,7 +174,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
      
-    call = CALL_INT_INT_INT64_KIND_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", baseInx, baseScope, baseAddr, kindC, elementSizeC, scopeInx[0], 
+    call = CALL_INT_INT_INT64_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", baseInx, baseScope, baseAddr, elementSizeC, scopeInx[0], 
     									  scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
     instrs.push_back(call);
 
@@ -218,9 +217,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
       if (!idxOp) return NULL;
       instrs.push_back(idxOp);
 
-      //Value* idxOp = KVALUE_VALUE(idx->get(), instrs, NOSIGN);
-      //Instruction* call = CALL_KVALUE("llvm_push_getelementptr_inx", idxOp);
-
       Instruction* call = CALL_INT64("llvm_push_getelementptr_inx", idxOp);
       instrs.push_back(call);
     } 
@@ -228,16 +224,7 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     // size of struct elements
     pushStructElementSize((StructType*) elemT, instrs);
 
-    Type* gepInstType = ((PointerType*) gepInst->getType())->getElementType();
-    KIND kind = TypeToKind(gepInstType);
-    Constant* kindC = KIND_CONSTANT(kind);
-
-    Type* elemArrayType = gepInstType; // used only when element is array type
-
-    KIND elemArrayKind = TypeToKind(elemArrayType);
-    Constant* elemArrayKindC = KIND_CONSTANT(elemArrayKind);
-
-    Instruction* call = CALL_IID_BOOL_INT_INT_INT64_KIND_KIND_INT("llvm_getelementptr_struct", iidC, inbound, baseInx, baseScope, baseAddr, kindC, elemArrayKindC, inxC);
+    Instruction* call = CALL_IID_INT_INT_INT64_INT("llvm_getelementptr_struct", iidC, baseInx, baseScope, baseAddr, inxC);
     instrs.push_back(call);
 
   } 
@@ -274,12 +261,10 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
     }
     assert(isize != 0);
 
-    Constant* line = INT32_CONSTANT(getLineNumber(gepInst), SIGNED);
-
-    Instruction* call = CALL_IID_BOOL_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT_INT("llvm_getelementptr", iidC, inbound, 
+    Instruction* call = CALL_IID_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT("llvm_getelementptr", iidC, 
 											  baseInx, baseScope, baseAddr, 
 											  offsetInx, offsetValue, 
-											  kindC, size, loadGlobal, loadInxC, line, inxC);
+											  kindC, size, loadGlobal, loadInxC, inxC);
     instrs.push_back(call);
   }
 

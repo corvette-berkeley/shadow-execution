@@ -634,7 +634,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   return;
 }
 
-void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue, int inx UNUSED) {
+void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
 
   //pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
@@ -1229,7 +1229,7 @@ void InterpreterObserver::insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE
 
 // ***** Memory Access and Addressing Operations ***** //
 
-void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, int line, bool arg UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
+void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSED, int inx, uint64_t actualAddress) {
   // KVALUE* actualAddress
   //pre_allocax(iid, type, size, inx, line, arg, actualAddress);
 
@@ -1251,7 +1251,7 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
   ptrLocation->setLength(1);
-  ptrLocation->setLineNumber(line);
+  //ptrLocation->setLineNumber(line);
 
   /*
   if (executionStack.top()[inx] != NULL) {
@@ -1270,8 +1270,7 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
   return;
 }
 
-void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size, int inx, int line, bool arg UNUSED, 
-					int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
+void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size, int inx, uint64_t actualAddress) {
 
   unsigned firstByte, bitOffset, length;
 
@@ -1328,7 +1327,7 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
-  locArrPtr->setLineNumber(line);
+  //locArrPtr->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = locArrPtr;
@@ -1339,8 +1338,7 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   return;
 }
 
-void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx, int line, bool arg UNUSED, 
-					 int valInx UNUSED, SCOPE scope UNUSED, KIND opType UNUSED, uint64_t actualAddress) {
+void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx, uint64_t actualAddress) {
 
   safe_assert(structType.size() == size);
 
@@ -1369,7 +1367,7 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   structPtrVar->setValueOffset((int64_t) ptrToStructVar - (int64_t) structPtrVar->getPtrValue());
   structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
   structPtrVar->setLength(length);
-  structPtrVar->setLineNumber(line);
+  //structPtrVar->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = structPtrVar;
@@ -1395,8 +1393,8 @@ void InterpreterObserver::atomicrmw() {
   safe_assert(false);
 }
 
-void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, int offsetInx, 
-					int64_t offsetValue, KIND type, uint64_t size, bool loadGlobal, int loadInx, int line, int inx) {
+void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, 
+					int64_t offsetValue, KIND type, uint64_t size, bool loadGlobal, int loadInx, int inx) {
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("[getelementptr] Unsupported INT80_KIND");
@@ -1594,7 +1592,7 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int
   ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
 
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
-  ptrLocation->setLineNumber(line);
+  //ptrLocation->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = ptrLocation;
@@ -1602,8 +1600,9 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, bool inbound UNUSED, int
   return;
 }
 
-void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, KIND kind UNUSED, int elementSize, int scopeInx01, int scopeInx02, 
-					      int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
+void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, 
+					      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, 
+					      int size01 UNUSED, int size02,  int inx) {
 
   IValue* arrayElemPtr;
   int newOffset;
@@ -1745,8 +1744,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope UNUSE
   return;
 }
 
-void InterpreterObserver::getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, int baseInx, SCOPE baseScope UNUSED, uint64_t baseAddr, KIND kind UNUSED, 
-					       KIND arrayKind UNUSED, int inx) {
+void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOPE baseScope, uint64_t baseAddr, int inx) {
 
   DEBUG_STDOUT("\tstructType size " << structType.size());
 
@@ -2225,7 +2223,9 @@ void InterpreterObserver::bitcast(int64_t opVal, SCOPE opScope, KIND opKind, KIN
 }
 
 // ***** TerminatorInst ***** //
-void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value, int inx UNUSED) {
+void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, int valInx, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value) {
+
+  // TODO: how about the SCOPE == GLOBAL?
 
   IValue* cond = (valInx == -1) ? NULL : executionStack.top()[valInx];
 
@@ -2239,7 +2239,7 @@ void InterpreterObserver::branch(IID iid UNUSED, bool conditional UNUSED, int va
   return;
 }
 
-void InterpreterObserver::branch2(IID iid UNUSED, bool conditional UNUSED, int inx UNUSED) {
+void InterpreterObserver::branch2(IID iid UNUSED, bool conditional UNUSED) {
 }
 
 void InterpreterObserver::indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {
@@ -2266,7 +2266,7 @@ void InterpreterObserver::resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNU
   safe_assert(false);
 }
 
-void InterpreterObserver::return_(IID iid UNUSED, int valInx, SCOPE scope UNUSED, KIND type, int64_t value, int inx UNUSED) {
+void InterpreterObserver::return_(IID iid UNUSED, int valInx, SCOPE scope UNUSED, KIND type, int64_t value) {
   safe_assert(!executionStack.empty());
 
   std::vector< IValue* > iValues;
@@ -2422,7 +2422,7 @@ void InterpreterObserver::unreachable() {
 
 // ***** Other Operations ***** //
 
-void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int line, int inx) {
+void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
   if (type == INT80_KIND) {
     cout << "[icmp] Unsupported INT80_KIND" << endl;
     safe_assert(false);
@@ -2507,7 +2507,7 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setSize(KIND_GetSize(INT1_KIND));
-  nloc->setLineNumber(line);
+  //nloc->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
@@ -2515,8 +2515,8 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   return;
 }
 
-void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int line, int inx) {
-  pre_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
+void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type UNUSED, PRED pred, int inx) {
+  //pre_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
 
   double v1, v2;
 
@@ -2618,12 +2618,12 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   vresult.as_int = result;
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
-  nloc->setLineNumber(line);
+  //nloc->setLineNumber(line);
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
 
-  post_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
+  //post_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
   return;
 }
 
@@ -2820,11 +2820,11 @@ void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s
   return;
 }
 
-void InterpreterObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType, int64_t retValue, int line) {
+void InterpreterObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType, int64_t retValue) {
 
   if (!isReturn) {
-    int callerId = callerVarIndex.top();
-    pre_sync_call(callerId, line);
+    //int callerId = callerVarIndex.top();
+    //pre_sync_call(callerId, line);
 
     // call is not interpreted
     safe_assert(!callerVarIndex.empty());
@@ -2848,7 +2848,7 @@ void InterpreterObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, K
     reg->setShadow(0);
     callerVarIndex.pop();
 
-    post_sync_call(callerId, line);
+    //post_sync_call(callerId, line);
 
     DEBUG_STDOUT(reg->toString());
   } else {
@@ -3012,7 +3012,7 @@ void InterpreterObserver::record_block_id(int id) {
   return;
 }
 
-void InterpreterObserver::create_global_array(int valInx, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr, uint32_t size, KIND type) {
+void InterpreterObserver::create_global_array(int valInx, uint64_t addr, uint32_t size, KIND type) {
   IValue *location = new IValue[size];
   collect_new.push_back(location);
   uint32_t i, elemSize;

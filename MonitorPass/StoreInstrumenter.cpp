@@ -15,7 +15,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     InstrPtrVector instrs;
     Value *valueOp, *pointerOp;
     Type *valueOpType;
-    Constant *cPointerInx, *cScope, *cInx, *cSrcType, *cSrcScope, *cSrcInx; 
+    Constant *cPointerInx, *cScope, *cSrcType, *cSrcScope, *cSrcInx; 
     Instruction* cSrcValue;
     Instruction *call;
 
@@ -43,7 +43,6 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
     cSrcInx = computeIndex(valueOp);
     cPointerInx = computeIndex(pointerOp);
     cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
-    cInx = computeIndex(storeInst);
 
     // retrieving source value
     cSrcValue = NULL;
@@ -85,7 +84,7 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
       parent_->fileCount++;
     }
 
-    call = CALL_INT_INT_KIND_INT_INT_INT64_INT("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue, cInx);
+    call = CALL_INT_INT_KIND_INT_INT_INT64("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue);
     instrs.push_back(call);
 
     // instrument

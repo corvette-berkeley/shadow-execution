@@ -45,11 +45,7 @@ bool ReturnInstrumenter::CheckAndInstrument(Instruction* inst) {
       cType = KIND_CONSTANT(TypeToKind(retVal->getType()));
       cValue = getValueOrIndex(retVal);
 
-      //Value* ret = KVALUE_VALUE(retVal, instrs, NOSIGN);
-      //if (ret == NULL) return false;
-
-      // Instruction* call = CALL_IID_KVALUE_INT("llvm_return_", iidC, ret, inxC);
-      Instruction* call = CALL_IID_INT_INT_KIND_INT64_INT("llvm_return_", iidC, cInx, cScope, cType, cValue, inxC);
+      Instruction* call = CALL_IID_INT_INT_KIND_INT64("llvm_return_", iidC, cInx, cScope, cType, cValue);
       instrs.push_back(call);
 
     }

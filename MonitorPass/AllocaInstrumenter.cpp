@@ -20,8 +20,6 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
     Constant* inxC = computeIndex(allocaInst);
 
-    Constant* lineC = INT32_CONSTANT(getLineNumber(inst), SIGNED);
-
     Type *type = allocaInst->getAllocatedType();
     if (!type) return false;
 
@@ -29,24 +27,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
     if (kind == INV_KIND) return false;
     Constant* kindC = KIND_CONSTANT(kind);
 
-    // alloca for argument?
-    bool isArgument = false;
-    Value::use_iterator it = allocaInst->use_begin();
-    for(; it != allocaInst->use_end(); it++) {
-      if (StoreInst *store = dyn_cast<StoreInst>(*it)) {
-        if (dyn_cast<Argument>(store->getValueOperand())) {
-          isArgument = true;
-          break;
-        }
-      }
-    }	
-    Constant* isArgumentC = BOOL_CONSTANT(isArgument);
-
     // allocaAddress value split into fields
-    Constant *cInx, *cScope, *cType;
-    cInx = computeIndex(allocaInst);
-    cScope = INT32_CONSTANT(getScope(allocaInst), NOSIGN); // or SIGNED?
-    cType = KIND_CONSTANT(TypeToKind(allocaInst->getType()));
     Instruction *allocaAddress = CAST_VALUE(allocaInst, instrs, NOSIGN);
 
     if (!allocaAddress) return NULL;
@@ -83,8 +64,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       cElemKind = KIND_CONSTANT(elemKind);
       cSize = INT64_CONSTANT(size, UNSIGNED);
 
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax_array", iidC, cElemKind, cSize, inxC, lineC, isArgumentC, 
-									      cInx, cScope, cType, allocaAddress);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT64("llvm_allocax_array", iidC, cElemKind, cSize, inxC, allocaAddress);
       instrs.push_back(call);
 
     } 
@@ -95,8 +75,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
 
       Constant* sizeC = INT64_CONSTANT(size, UNSIGNED);
       
-      Instruction* call = CALL_IID_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax_struct", iidC, sizeC, inxC, lineC, isArgumentC, 
-									 cInx, cScope, cType, allocaAddress);
+      Instruction* call = CALL_IID_INT64_INT_INT64("llvm_allocax_struct", iidC, sizeC, inxC, allocaAddress);
       instrs.push_back(call);
 
     } 
@@ -104,8 +83,7 @@ bool AllocaInstrumenter::CheckAndInstrument(Instruction* inst) {
       // alloca for scalar and pointer type
       Constant* size;
       size = INT64_CONSTANT(0, UNSIGNED);
-      Instruction* call = CALL_IID_KIND_INT64_INT_INT_BOOL_INT_INT_KIND_INT64("llvm_allocax", iidC, kindC, size, inxC, lineC, isArgumentC, 
-									      cInx, cScope, cType, allocaAddress);
+      Instruction* call = CALL_IID_KIND_INT64_INT_INT64("llvm_allocax", iidC, kindC, size, inxC, allocaAddress);
       instrs.push_back(call);
     }
 

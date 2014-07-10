@@ -270,16 +270,12 @@ namespace {
 
 	      // global value split into fields
 	      Constant* cInx = instrumenter->computeIndex(i);
-	      Constant* cScope = instrumenter->INT32_CONSTANT(instrumenter->getScope(i), NOSIGN);
-	      Constant* cType = instrumenter->KIND_CONSTANT(instrumenter->TypeToKind(i->getType()));
 	      Instruction* global = instrumenter->CAST_VALUE(i, instrs, NOSIGN);
 	      
 	      if (!global) return NULL;
 	      instrs.push_back(global);
 	      
 	      args.push_back(cInx);
-	      args.push_back(cScope);
-	      args.push_back(cType);
 	      args.push_back(global);
 
               aryOfPrim = true;
@@ -290,8 +286,6 @@ namespace {
 
               TypePtrVector argTypes;
               argTypes.push_back(instrumenter->INT32_TYPE());
-              argTypes.push_back(instrumenter->INT32_TYPE());
-              argTypes.push_back(instrumenter->KIND_TYPE());
               argTypes.push_back(instrumenter->INT64_TYPE());
               argTypes.push_back(instrumenter->INT32_TYPE());
               argTypes.push_back(instrumenter->KIND_TYPE());

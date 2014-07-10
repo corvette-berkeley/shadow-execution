@@ -260,7 +260,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
       if (!callReturnValue) return NULL;
       instrsAfter.push_back(callReturnValue);
 
-      call = CALL_INT_INT_KIND_INT64_INT("llvm_after_call", cInx, cScope, cType, callReturnValue, cLine);
+      call = CALL_INT_INT_KIND_INT64("llvm_after_call", cInx, cScope, cType, callReturnValue);
     }
     instrsAfter.push_back(call);
     InsertAllAfter(instrsAfter, callInst);

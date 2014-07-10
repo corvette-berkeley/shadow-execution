@@ -88,32 +88,28 @@ public:
 	virtual void insertvalue(IID iid UNUSED, KVALUE* op1 UNUSED, KVALUE* op2 UNUSED, int inx UNUSED) {};
 
 	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
-			     int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {};
-	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED,
-				   int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {};
-	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, int line UNUSED, bool arg UNUSED, 
-				    int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t addr UNUSED) {};
+	virtual void allocax(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {};
+	virtual void allocax_array(IID iid UNUSED, KIND kind UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {};
+	virtual void allocax_struct(IID iid UNUSED, uint64_t size UNUSED, int inx UNUSED, uint64_t addr UNUSED) {};
 
 	virtual void load(IID iid UNUSED, KIND kind UNUSED, SCOPE opScope UNUSED, int opInx UNUSED, uint64_t opAddr UNUSED,  
 			  bool loadGlobal UNUSED, int loadInx UNUSED, int inx UNUSED) {};
 	virtual void load_struct(IID iid UNUSED, KIND kind UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 
 	virtual void store(int pInx UNUSED, SCOPE pScope UNUSED, KIND srcKind UNUSED, SCOPE srcScope UNUSED, int srcInx UNUSED, 
-			   int64_t srcValue UNUSED, int inx UNUSED) {};
+			   int64_t srcValue UNUSED) {};
 	virtual void fence() {};
 	virtual void cmpxchg(IID iid UNUSED, PTR addr UNUSED, KVALUE* value1 UNUSED, KVALUE* value2 UNUSED, int inx UNUSED) {};
 	virtual void atomicrmw() {};
 
-	virtual void getelementptr(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
+	virtual void getelementptr(IID iid UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
 				   int offsetInx UNUSED, int64_t offsetValue UNUSED, 
-				   KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, KIND kind UNUSED, 
+				   KIND kind UNUSED, uint64_t size UNUSED, bool loadGlobal UNUSED, int loadInx UNUSED, int inx UNUSED) {};
+	virtual void getelementptr_array(int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, 
 					 int elementSize UNUSED, int scopeInx01 UNUSED, int scopeInx02 UNUSED, 
 					 int scopeInx03 UNUSED, int64_t valOrInx01 UNUSED, int64_t valOrInx02 UNUSED,
 					 int64_t valOrInx03 UNUSED, int size01 UNUSED, int size02 UNUSED,  int inx UNUSED) {};
-	virtual void getelementptr_struct(IID iid UNUSED, bool inbound UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, 
-					  uint64_t baseAddr UNUSED, KIND kind UNUSED, KIND arrayKind UNUSED, int inx UNUSED) {};
+	virtual void getelementptr_struct(IID iid UNUSED, int baseInx UNUSED, SCOPE baseScope UNUSED, uint64_t baseAddr UNUSED, int inx UNUSED) {};
 
 	// ***** Conversion Operations ***** //
 	virtual void trunc(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
@@ -130,20 +126,22 @@ public:
 	virtual void bitcast(int64_t op UNUSED, SCOPE opScope UNUSED, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED, int inx UNUSED) {};
 
 	// ***** Terminator Instructions *****/
-	virtual void branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED, int inx UNUSED) {};
-	virtual void branch2(IID iid UNUSED, bool conditional UNUSED, int inx UNUSED) {};
+	virtual void branch(IID iid UNUSED, bool conditional UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, uint64_t value UNUSED) {};
+	virtual void branch2(IID iid UNUSED, bool conditional UNUSED) {};
 	virtual void indirectbr(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
 	virtual void invoke(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void resume(IID iid UNUSED, KVALUE* op1 UNUSED, int inx UNUSED) {};
-	virtual void return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED, int inx UNUSED) {};
+	virtual void return_(IID iid UNUSED, int valInx UNUSED, SCOPE scope UNUSED, KIND type UNUSED, int64_t value UNUSED) {};
 	virtual void return2_(IID iid UNUSED, int inx UNUSED) {};
 	virtual void return_struct_(IID iid UNUSED, int inx UNUSED, int valInx UNUSED) {};
 	virtual void switch_(IID iid UNUSED, KVALUE* op UNUSED, int inx UNUSED) {};
 	virtual void unreachable() {};
 
 	// ***** Other Operations ***** //
-	virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {};
-	virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, PRED pred UNUSED, int line UNUSED, int inx UNUSED) {};
+	virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
+			  PRED pred UNUSED, int inx UNUSED) {};
+	virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue UNUSED, int64_t rValue UNUSED, KIND type UNUSED, 
+			  PRED pred UNUSED, int inx UNUSED) {};
 	virtual void phinode(IID iid UNUSED, int inx UNUSED) {};
 	virtual void select(IID iid UNUSED, KVALUE* cond UNUSED, KVALUE* tvalue UNUSED, KVALUE* fvealue UNUSED, int inx UNUSED) {};
 	virtual void push_string(int c UNUSED){};
@@ -160,14 +158,14 @@ public:
 	virtual void push_array_size(uint64_t i UNUSED) {};
 	virtual void push_array_size5(int scope01 UNUSED, int scope02 UNUSED, int scope03 UNUSED, int scope04 UNUSED, int scope05 UNUSED) {}; 
 	virtual void construct_array_type(uint64_t i UNUSED) {};
-	virtual void after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED, int line UNUSED) {};
+	virtual void after_call(int retInx UNUSED, SCOPE retScope UNUSED, KIND retType UNUSED, int64_t retValue UNUSED) {};
 	virtual void after_void_call() {};
 	virtual void after_struct_call() {};
 	virtual void create_stack_frame(int size UNUSED) {};
 	virtual void create_global_symbol_table(int size UNUSED) {};
 	virtual void record_block_id(int id UNUSED) {};
 	virtual void create_global(KVALUE* value UNUSED, KVALUE* initializer UNUSED) {};
-	virtual void create_global_array(int valInx UNUSED, SCOPE scope UNUSED, KIND varType UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
+	virtual void create_global_array(int valInx UNUSED, uint64_t addr UNUSED, uint32_t size UNUSED, KIND type UNUSED) {};
 	virtual void call(IID iid UNUSED, bool nounwind UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
 	virtual void call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type UNUSED, int inx UNUSED) {};
