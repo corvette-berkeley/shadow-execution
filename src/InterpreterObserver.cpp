@@ -473,8 +473,6 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
     }
   }
 
-  //dest->setSourceInfo(file, line);
-
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = dest;
 
@@ -595,7 +593,6 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     }
 
-    //destLocation->setSourceInfo(file, line);
     destLocation->copy(executionStack.top()[inx]);
     delete(destLocation);
     DEBUG_STDOUT(destLocation->toString());
@@ -615,7 +612,6 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     destLocation->setType(type);
     destLocation->setValue(zeroValue);
-    //destLocation->setSourceInfo(file, line);
 
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
@@ -840,9 +836,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
       DEBUG_STDERR("Unsupported binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
-
   iResult = new IValue(type, result);
-  //iResult->setSourceInfo(file, line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
@@ -1116,9 +1110,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
       safe_assert(false);
       return;
   }
-
   iResult = new IValue(type, result);
-  //iResult->setSourceInfo(file, line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = iResult;
@@ -1251,7 +1243,6 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
 
   ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
   ptrLocation->setLength(1);
-  //ptrLocation->setLineNumber(line);
 
   /*
   if (executionStack.top()[inx] != NULL) {
@@ -1327,7 +1318,6 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
-  //locArrPtr->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = locArrPtr;
@@ -1367,7 +1357,6 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   structPtrVar->setValueOffset((int64_t) ptrToStructVar - (int64_t) structPtrVar->getPtrValue());
   structPtrVar->setSize(KIND_GetSize(ptrToStructVar[0].getType()));
   structPtrVar->setLength(length);
-  //structPtrVar->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = structPtrVar;
@@ -1592,7 +1581,6 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
   ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
 
   ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
-  //ptrLocation->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = ptrLocation;
@@ -2507,7 +2495,6 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
   nloc->setSize(KIND_GetSize(INT1_KIND));
-  //nloc->setLineNumber(line);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
@@ -2618,7 +2605,6 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   vresult.as_int = result;
 
   IValue *nloc = new IValue(INT1_KIND, vresult);
-  //nloc->setLineNumber(line);
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = nloc;
   DEBUG_STDOUT(nloc->toString());
@@ -3147,7 +3133,6 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
   value.as_flp = sin(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3201,7 +3186,6 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
 
   value.as_flp = acos(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3255,7 +3239,6 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
 
   value.as_flp = sqrt(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3309,7 +3292,6 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
 
   value.as_flp = fabs(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3363,7 +3345,6 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
   value.as_flp = cos(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3418,7 +3399,6 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
   value.as_flp = log(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;
@@ -3472,7 +3452,6 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
 
   value.as_flp = floor(argValue); 
   IValue *returnValue = new IValue(type, value);
-  returnValue->setLineNumber(pc);
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = returnValue;

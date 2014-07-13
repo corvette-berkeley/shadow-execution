@@ -71,16 +71,15 @@ class IValue {
      *  flag: machine flag (currently unused)
      *  shadow: pointer to shadow object
      */
-    KIND type; 
-    VALUE value; 
-    int64_t valueOffset; 
-    unsigned size, index, firstByte, length; 
-    int offset, bitOffset, fileNumber, lineNumber; 
-    SCOPE scope; 
-    void* shadow;
-    //static int counterNew;
-    //static int counterDelete;
-    bool struct_;
+  
+  VALUE value;
+  void* shadow;
+  KIND type;
+  int64_t valueOffset; 
+  unsigned size, index, firstByte, length;
+  int offset, bitOffset;
+  SCOPE scope;
+  bool struct_;
 
     /**
      * Define how to copy shadow values. This varies analysis by analysis.
@@ -108,40 +107,38 @@ class IValue {
     void uncreate() {};
 
  public:
-    IValue(KIND t, VALUE v, SCOPE s): type(t), value(v), valueOffset(-1),
+ IValue(KIND t, VALUE v, SCOPE s): value(v), shadow(NULL), type(t), valueOffset(-1),
       size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-      fileNumber(0), lineNumber(0), scope(s), shadow(NULL) {
+      scope(s) {
       //counterNew++;
     }
       
-    IValue(KIND t, VALUE v): type(t), value(v), valueOffset(-1), size(0),
+ IValue(KIND t, VALUE v): value(v), shadow(NULL), type(t), valueOffset(-1), size(0),
       index(0), firstByte(0), length(0), offset(0), bitOffset(0), 
-      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+      scope(REGISTER) {
       //counterNew++;
     }
 
-    IValue(KIND t, VALUE v, unsigned fb): type(t), value(v), valueOffset(-1),
+ IValue(KIND t, VALUE v, unsigned fb): value(v), shadow(NULL), type(t), valueOffset(-1),
       size(0), index(0), firstByte(fb), length(0), offset(0), bitOffset(0),
-      fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+      scope(REGISTER) {
       //counterNew++;
     }
 
-    IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): type(t),
-      value(v), valueOffset(-1), size(s), index(i), firstByte(0), length(l),
-      offset(o), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER), shadow(NULL) {
+ IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l): value(v), shadow(NULL), type(t),
+      valueOffset(-1), size(s), index(i), firstByte(0), length(l),
+      offset(o), bitOffset(0), scope(REGISTER) {
       //counterNew++;
     }
     
-    IValue(KIND t): type(t), valueOffset(-1), size(0), index(0), firstByte(0),
-      length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
-      shadow(NULL) { 
+ IValue(KIND t): shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0),
+      length(0), offset(0), bitOffset(0), scope(REGISTER) { 
       value.as_int = 0; 
       //counterNew++;
     }
 
-    IValue(): type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0),
-      length(0), offset(0), bitOffset(0), fileNumber(0), lineNumber(0), scope(REGISTER),
-      shadow(NULL) {
+ IValue(): shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0),
+      length(0), offset(0), bitOffset(0), scope(REGISTER) {
       //counterNew++;
     }
 
@@ -190,12 +187,6 @@ class IValue {
 
     void setBitOffset(int bitOffset) { this->bitOffset = bitOffset; };
 
-    void setLineNumber(int lineNumber) { this->lineNumber = lineNumber; };
-
-    void setFileNumber(int fileNumber) { this->fileNumber = fileNumber; };
-
-    void setSourceInfo(int fileNumber, int lineNumber) { this->fileNumber = fileNumber; this->lineNumber = lineNumber;};
-
     void setShadow(void* shadow) { this->shadow = shadow; };
 
     static void setCopyShadow(void (*copyShadow)(IValue*, IValue*)) {
@@ -228,8 +219,6 @@ class IValue {
     int getOffset() const { return this->offset; };
 
     int getBitOffset() const { return this->bitOffset; };
-
-    int getLineNumber() const { return this->lineNumber; };
 
     int64_t getValueOffset() const { return this->valueOffset; };
 
