@@ -1169,9 +1169,15 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   KVALUE *aggKValue;
 
   // We expect only one index in the getElementPtrIndexList.
+  /*
   index = getElementPtrIndexList.front();
   getElementPtrIndexList.pop();
   safe_assert(getElementPtrIndexList.empty());
+  */
+  safe_assert(getElementPtrIndexList.size() == 1);
+  index = getElementPtrIndexList[0];
+  getElementPtrIndexList.pop_back();
+
 
   // Obtain KVALUE and IValue objects.
   aggKValue = returnStruct.front();
@@ -1602,9 +1608,13 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     arrayElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
+    /*
     while (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
+    */
+    getElementPtrIndexList.clear();
+
     while (!arraySize.empty()) {
       arraySize.pop();
     }
@@ -1679,12 +1689,20 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     if (scopeInx03 != SCOPE_INVALID) {
       indexVec[1] = actualValueToIntValue(scopeInx03, valOrInx03);
       i = 2;
+      /*
+
       while (!getElementPtrIndexList.empty()) {
         indexVec[i] = getElementPtrIndexList.front();
         getElementPtrIndexList.pop();
         i++;
       }
       safe_assert(getElementPtrIndexList.empty());
+      */
+      for(unsigned int j = 0; j < getElementPtrIndexList.size(); j++) {
+	indexVec[i + j] = getElementPtrIndexList[j];
+      }
+      getElementPtrIndexList.clear();
+
     }
 
     index = 0;
@@ -1747,9 +1765,13 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     structElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
+    /*
     while (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
+    */
+    getElementPtrIndexList.clear();
+
     while (!structElementSize.empty()) {
       structElementSize.pop();
     }
@@ -1785,6 +1807,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
 
     // compute struct index
     DEBUG_STDOUT("\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size());
+    /*
     index = getElementPtrIndexList.front()*structElemNo;
     getElementPtrIndexList.pop();
     if (!getElementPtrIndexList.empty()) {
@@ -1798,6 +1821,17 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
     if (!getElementPtrIndexList.empty()) {
       getElementPtrIndexList.pop();
     }
+    */
+    index = getElementPtrIndexList[0] * structElemNo;
+    if (getElementPtrIndexList.size() > 1) {
+      for(unsigned int i = 0; i < getElementPtrIndexList[1]; i++) {
+	index = index + structElementSize.front();
+	safe_assert(!structElementSize.empty());
+	structElementSize.pop();  
+      }
+    }
+    getElementPtrIndexList.clear();
+    
     while (!structElementSize.empty()) {
       structElementSize.pop();
     }
@@ -1806,7 +1840,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
     DEBUG_STDOUT("\tIndex is " << index);
 
     newOffset = structSize * (index/structElemNo);
-    for (i = 0; i < index % structElemNo; i++) {
+    for (int i = 0; i < index % structElemNo; i++) {
       newOffset = newOffset + KIND_GetSize(structElem[i]);
     }
 
@@ -2730,7 +2764,7 @@ void InterpreterObserver::push_struct_element_size(uint64_t s) {
 }
 
 void InterpreterObserver::push_getelementptr_inx(uint64_t index) {
-  getElementPtrIndexList.push(index);
+  getElementPtrIndexList.push_back(index);
   return;
 }
 
@@ -2759,15 +2793,15 @@ void InterpreterObserver::push_getelementptr_inx5(int scope01, int scope02, int
   v5 = actualValueToIntValue(scope05, vori05);
 
   if (scope01 != SCOPE_INVALID) {
-    getElementPtrIndexList.push(v1);
+    getElementPtrIndexList.push_back(v1);
     if (scope02 != SCOPE_INVALID) {
-      getElementPtrIndexList.push(v2);
+      getElementPtrIndexList.push_back(v2);
       if (scope03 != SCOPE_INVALID) {
-        getElementPtrIndexList.push(v3);
+        getElementPtrIndexList.push_back(v3);
         if (scope04 != SCOPE_INVALID) {
-          getElementPtrIndexList.push(v4);
+          getElementPtrIndexList.push_back(v4);
           if (scope05 != SCOPE_INVALID) {
-            getElementPtrIndexList.push(v5);
+            getElementPtrIndexList.push_back(v5);
           }
         }
       }
@@ -2778,7 +2812,7 @@ void InterpreterObserver::push_getelementptr_inx5(int scope01, int scope02, int
 
 void InterpreterObserver::push_getelementptr_inx2(int int_value) {
   int idx = int_value;
-  getElementPtrIndexList.push(idx);
+  getElementPtrIndexList.push_back(idx);
   return;
 }
 

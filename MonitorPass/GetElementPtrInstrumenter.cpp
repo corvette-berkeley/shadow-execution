@@ -9,7 +9,6 @@ bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
   GetElementPtrInst* gepInst; 
   InstrPtrVector instrs;
   Constant *iidC, *inxC, *loadInxC, *loadGlobal;
-  //Value *ptrOp;
   PointerType *T;
   Type *elemT;
 

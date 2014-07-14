@@ -68,7 +68,7 @@ class InterpreterObserver : public InstructionObserver {
   stack<char> logName;
 
   stack<KVALUE*> myStack; // store arguments of call instruction
-  queue<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
+  vector<uint64_t> getElementPtrIndexList; // store indices of getelementptr instruction
   queue<uint64_t> arraySize; // store size of array
   queue<KIND> structType; // store struct type
   queue<uint64_t> structElementSize; // store struct (non-flatten) element size
