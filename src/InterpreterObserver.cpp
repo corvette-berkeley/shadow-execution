@@ -1169,11 +1169,6 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
   KVALUE *aggKValue;
 
   // We expect only one index in the getElementPtrIndexList.
-  /*
-  index = getElementPtrIndexList.front();
-  getElementPtrIndexList.pop();
-  safe_assert(getElementPtrIndexList.empty());
-  */
   safe_assert(getElementPtrIndexList.size() == 1);
   index = getElementPtrIndexList[0];
   getElementPtrIndexList.pop_back();
@@ -1608,11 +1603,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     arrayElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
-    /*
-    while (!getElementPtrIndexList.empty()) {
-      getElementPtrIndexList.pop();
-    }
-    */
+
     getElementPtrIndexList.clear();
 
     while (!arraySize.empty()) {
@@ -1689,20 +1680,11 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     if (scopeInx03 != SCOPE_INVALID) {
       indexVec[1] = actualValueToIntValue(scopeInx03, valOrInx03);
       i = 2;
-      /*
 
-      while (!getElementPtrIndexList.empty()) {
-        indexVec[i] = getElementPtrIndexList.front();
-        getElementPtrIndexList.pop();
-        i++;
-      }
-      safe_assert(getElementPtrIndexList.empty());
-      */
       for(unsigned int j = 0; j < getElementPtrIndexList.size(); j++) {
 	indexVec[i + j] = getElementPtrIndexList[j];
       }
       getElementPtrIndexList.clear();
-
     }
 
     index = 0;
@@ -1765,11 +1747,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     structElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
-    /*
-    while (!getElementPtrIndexList.empty()) {
-      getElementPtrIndexList.pop();
-    }
-    */
+
     getElementPtrIndexList.clear();
 
     while (!structElementSize.empty()) {
@@ -1807,21 +1785,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
 
     // compute struct index
     DEBUG_STDOUT("\tsize of getElementPtrIndexList: " << getElementPtrIndexList.size());
-    /*
-    index = getElementPtrIndexList.front()*structElemNo;
-    getElementPtrIndexList.pop();
-    if (!getElementPtrIndexList.empty()) {
-      unsigned i;
-      for (i = 0; i < getElementPtrIndexList.front(); i++) {
-        index = index + structElementSize.front();
-        safe_assert(!structElementSize.empty());
-        structElementSize.pop();
-      }
-    }
-    if (!getElementPtrIndexList.empty()) {
-      getElementPtrIndexList.pop();
-    }
-    */
+
     index = getElementPtrIndexList[0] * structElemNo;
     if (getElementPtrIndexList.size() > 1) {
       for(unsigned int i = 0; i < getElementPtrIndexList[1]; i++) {
