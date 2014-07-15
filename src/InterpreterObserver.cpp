@@ -604,7 +604,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   return;
 }
 
-void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
+void InterpreterObserver::store(int dstInx, SCOPE dstScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
 
   //pre_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
 
@@ -615,34 +615,34 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   }
 
   // pointer constant; we simply ignore this case
-  if (destScope == CONSTANT) {
+  if (dstScope == CONSTANT) {
     DEBUG_STDOUT("\tIgnoring pointer constant.");
     return; 
   }
 
-  // retrieve destination pointer operand
-  IValue* destPtrLocation = (destScope == GLOBAL) ? globalSymbolTable[destInx] :
-    executionStack.top()[destInx];
+  // retrieving destination pointer operand
+  IValue* dstPtrLocation = (dstScope == GLOBAL) ? globalSymbolTable[dstInx] :
+    executionStack.top()[dstInx];
 
-  DEBUG_STDOUT("\tDestPtr: " << destPtrLocation->toString());
+  DEBUG_STDOUT("\tDstPtr: " << dstPtrLocation->toString());
 
   // the destination pointer is not initialized
   // initialize with an empty IValue object
-  if (!destPtrLocation->isInitialized()) {
+  if (!dstPtrLocation->isInitialized()) {
     DEBUG_STDOUT("\tDestination pointer location is not initialized");
     IValue* iValue = new IValue(srcKind);
     iValue->setLength(0);
-    destPtrLocation->setValueOffset( (int64_t)iValue - (int64_t)destPtrLocation->getPtrValue() ); 
-    destPtrLocation->setInitialized();
-    DEBUG_STDOUT("\tInitialized destPtr: " << destPtrLocation->toString());
+    dstPtrLocation->setValueOffset((int64_t)iValue - (int64_t)dstPtrLocation->getPtrValue()); 
+    dstPtrLocation->setInitialized();
+    DEBUG_STDOUT("\tInitialized destPtr: " << dstPtrLocation->toString());
   }
 
-  unsigned destPtrOffset = destPtrLocation->getOffset();
-  IValue *destLocation = NULL;
+  unsigned dstPtrOffset = dstPtrLocation->getOffset();
+  IValue *dstLocation = NULL;
   IValue *srcLocation = NULL;
   int internalOffset = 0;
 
-  // retrieve source
+  // retrieving source
   bool removeSrc = false;
   if (srcScope == CONSTANT) {
     VALUE value;
@@ -656,7 +656,7 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
     }
   } 
   else if (srcScope == GLOBAL) {
-      srcLocation = globalSymbolTable[srcInx];
+    srcLocation = globalSymbolTable[srcInx];
   } 
   else {
     srcLocation = executionStack.top()[srcInx];
@@ -665,36 +665,34 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   DEBUG_STDOUT("\tSrc: " << srcLocation->toString());
 
   // retrieve actual destination
-  IValue* values = (IValue*)destPtrLocation->getIPtrValue();
-  unsigned valueIndex = destPtrLocation->getIndex();
+  IValue* values = (IValue*)dstPtrLocation->getIPtrValue();
+  unsigned valueIndex = dstPtrLocation->getIndex();
   unsigned currOffset = values[valueIndex].getFirstByte();
-  destLocation = values + valueIndex;
-  internalOffset = destPtrOffset - currOffset;
+  dstLocation = values + valueIndex;
+  internalOffset = dstPtrOffset - currOffset;
 
-  DEBUG_STDOUT("\tdestPtrOffset: " << destPtrOffset);
-  DEBUG_STDOUT("\tvalueIndex: " << valueIndex << " currOffset: " << currOffset << " Other offset: "  << destPtrOffset);
-  DEBUG_STDOUT("\tinternalOffset: " << internalOffset <<  " Size: " << destPtrLocation->getSize());
-  DEBUG_STDOUT("\tDest: " << destLocation->toString());
-  DEBUG_STDOUT("\tCalling writeValue with offset: " << internalOffset << ", size: " << destPtrLocation->getSize());
+  DEBUG_STDOUT("\tdstPtrOffset: " << dstPtrOffset);
+  DEBUG_STDOUT("\tvalueIndex: " << valueIndex << " currOffset: " << currOffset << " Other offset: "  << dstPtrOffset);
+  DEBUG_STDOUT("\tinternalOffset: " << internalOffset <<  " Size: " << dstPtrLocation->getSize());
+  DEBUG_STDOUT("\tDst: " << dstLocation->toString());
+  DEBUG_STDOUT("\tCalling writeValue with offset: " << internalOffset << ", size: " << dstPtrLocation->getSize());
 
-  // writing src into dest
-  if (destPtrLocation->writeValue(internalOffset, KIND_GetSize(srcKind), srcLocation)) {
-    srcLocation->copy(destLocation);
+  // writing src into destination
+  if (dstPtrLocation->writeValue(internalOffset, KIND_GetSize(srcKind), srcLocation)) {
+    srcLocation->copy(dstLocation);
   }
-  destPtrLocation->setInitialized();
+  dstPtrLocation->setInitialized();
 
-  DEBUG_STDOUT("\tUpdated Dest: " << destLocation->toString());
+  DEBUG_STDOUT("\tUpdated Dst: " << dstLocation->toString());
+  DEBUG_STDOUT("\tCalling readValue with internal offset: " << internalOffset << " size: " << dstPtrLocation->getSize());
 
-  // just read again to check store
-  DEBUG_STDOUT("\tCalling readValue with internal offset: " << internalOffset << " size: " << destPtrLocation->getSize());
-
-  // NOTE: destLocation->getType() before
+  // sanity check
   IValue* writtenValue = new IValue(srcLocation->getType(),
-      destPtrLocation->readValue(internalOffset, srcKind)); 
-  writtenValue->setSize(destLocation->getSize());
-  writtenValue->setIndex(destLocation->getIndex());
-  writtenValue->setOffset(destLocation->getOffset());
-  writtenValue->setBitOffset(destLocation->getBitOffset());
+      dstPtrLocation->readValue(internalOffset, srcKind)); 
+  writtenValue->setSize(dstLocation->getSize());
+  writtenValue->setIndex(dstLocation->getIndex());
+  writtenValue->setOffset(dstLocation->getOffset());
+  writtenValue->setBitOffset(dstLocation->getBitOffset());
 
   DEBUG_STDOUT("\twrittenValue: " << writtenValue->toString());
 
@@ -713,7 +711,6 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
   }
 
   DEBUG_STDOUT("\tsrcLocation: " << srcLocation->toString());
-
   //post_store(destInx, destScope, srcKind, srcScope, srcInx, srcValue, file, line, inx);
   return;
 }
@@ -2451,12 +2448,11 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   //pre_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
 
   double v1, v2;
+  VALUE result;
 
   // get value of v1
   if (lScope == CONSTANT) { // constant
-    double *ptr;
-
-    ptr = (double *) &lValue;
+    double *ptr= (double *) &lValue;
     v1 = *ptr;
   } 
   else {
@@ -2467,9 +2463,7 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
 
   // get value of v2
   if (rScope == CONSTANT) { // constant
-    double *ptr;
-
-    ptr = (double *) &rValue;
+    double *ptr = (double *) &rValue;
     v2 = *ptr;
   } 
   else {
@@ -2481,78 +2475,72 @@ void InterpreterObserver::fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   DEBUG_STDOUT("=============" << v1);
   DEBUG_STDOUT("=============" << v2);
 
-  int result = 0;
   switch(pred) {
     case CmpInst::FCMP_FALSE:
       DEBUG_STDOUT("\tCondition is FALSE");
-      result = 0;
+      result.as_int = 0;
       break;
     case CmpInst::FCMP_TRUE:
       DEBUG_STDOUT("\tCondition is TRUE");
-      result = 1;
+      result.as_int = 1;
       break;
     case CmpInst::FCMP_UEQ:
       DEBUG_STDOUT("\tCondition is UEQ");
-      result = v1 == v2;
+      result.as_int = v1 == v2;
       break;
     case CmpInst::FCMP_UNE:
       DEBUG_STDOUT("\tCondition is UNE");
-      result = v1 != v2;
+      result.as_int = v1 != v2;
       break;
     case CmpInst::FCMP_UGT:
       DEBUG_STDOUT("\tCondition is UGT");
-      result = v1 > v2;
+      result.as_int = v1 > v2;
       break;
     case CmpInst::FCMP_UGE:
       DEBUG_STDOUT("\tCondition is UGE");
-      result = v1 >= v2;
+      result.as_int = v1 >= v2;
       break;
     case CmpInst::FCMP_ULT:
       DEBUG_STDOUT("\tCondition is ULT");
-      result = v1 < v2;
+      result.as_int = v1 < v2;
       break;
     case CmpInst::FCMP_ULE:
       DEBUG_STDOUT("\tCondition is ULT");
-      result = v1 <= v2;
+      result.as_int = v1 <= v2;
       break;
     case CmpInst::FCMP_OEQ:
       DEBUG_STDOUT("\tCondition is OEQ");
-      result = v1 == v2;
+      result.as_int = v1 == v2;
       break;
     case CmpInst::FCMP_ONE:
       DEBUG_STDOUT("\tCondition is ONE"); 
-      result = v1 != v2;
+      result.as_int = v1 != v2;
       break;
     case CmpInst::FCMP_OGT:
       DEBUG_STDOUT("\tCondition is OGT");
-      result = v1 > v2;
+      result.as_int = v1 > v2;
       break;
     case CmpInst::FCMP_OGE:
       DEBUG_STDOUT("\tCondition is OGE");
-      result = v1 >= v2;
+      result.as_int = v1 >= v2;
       break;
     case CmpInst::FCMP_OLT:
       DEBUG_STDOUT("\tCondition is OLT");
-      result = v1 < v2;
+      result.as_int = v1 < v2;
       break;
     case CmpInst::FCMP_OLE:
       DEBUG_STDOUT("\tCondition is OLE");
-      result = v1 <= v2;
+      result.as_int = v1 <= v2;
       break;
     default:
       safe_assert(false);
       break;
   }
 
-  // put result back to VALUE
-  // TODO: incomplete?!
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(INT1_KIND, vresult);
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = nloc;
-  DEBUG_STDOUT(nloc->toString());
+  IValue* iResult = executionStack.top()[inx];
+  iResult->clear();
+  iResult->setTypeValue(INT1_KIND, result);
+  DEBUG_STDOUT(iResult->toString());
 
   //post_fcmp(lScope, rScope, lValue, rValue, type, pred, line, inx);
   return;
