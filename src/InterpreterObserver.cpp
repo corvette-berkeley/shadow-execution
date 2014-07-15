@@ -408,30 +408,6 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
     // Case 1: struct constant.
     // Create an IValue struct that has all values in structReturn.
-    /*    
-    i = 0;
-    while (!returnStruct.empty()) {
-      KVALUE* concreteStructElem; 
-      IValue* structElem; 
-      
-      concreteStructElem = returnStruct.front();
-
-      if (concreteStructElem->inx == -1) {
-        structElem = new IValue(concreteStructElem->kind, concreteStructElem->value,
-            REGISTER);
-      } else {
-        structElem = concreteStructElem->isGlobal ?
-          globalSymbolTable[concreteStructElem->inx] :
-          executionStack.top()[concreteStructElem->inx];
-      }
-
-      dest[i] = *structElem;
-
-      i++;
-      returnStruct.pop();
-    }
-    */
-
     for(unsigned i = 0; structSize; i++) {
       KVALUE* concreteStructElem; 
       IValue* structElem; 
@@ -440,7 +416,8 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
       if (concreteStructElem->inx == -1) {
         structElem = new IValue(concreteStructElem->kind, concreteStructElem->value, REGISTER);
-      } else {
+      } 
+      else {
         structElem = concreteStructElem->isGlobal ?
           globalSymbolTable[concreteStructElem->inx] :
           executionStack.top()[concreteStructElem->inx];
@@ -461,36 +438,6 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
     srcPointer = src->isGlobal ? globalSymbolTable[src->inx] : executionStack.top()[src->inx];
     structSrc = (IValue*) srcPointer->getIPtrValue();
-
-    /*
-    i = 0;
-    while (!returnStruct.empty()) {
-      KVALUE *concreteStructElem, *concreteStructElemPtr; 
-      IValue *structElem;
-      int type;
-
-      // get concrete value in case we need to sync
-      concreteStructElem = returnStruct.front();
-
-      structElem = new IValue();
-      structSrc[i].copy(structElem);
-      type = structElem->getType();
-
-      // sync load
-      // first create a KVALUE pointer to concreteStructElem because sync load
-      // expect the KVALUE to be a pointer to the concrete value
-      concreteStructElemPtr = new KVALUE();
-      concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
-      if (syncLoad(structElem, concreteStructElemPtr, type)) {
-        DEBUG_LOG("[LOAD STRUCT] Syncing load");
-      }
-
-      dest[i] = *structElem;
-
-      i++;
-      returnStruct.pop();
-    }
-    */
 
     for(unsigned i = 0; i < structSize; i++) {
       KVALUE *concreteStructElem, *concreteStructElemPtr; 
@@ -1230,25 +1177,6 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
       executionStack.top()[opinx];
   }
 
-  /*
-  count = 0;
-  while (!returnStruct.empty()) {
-    count++;
-    returnStruct.pop();
-    // obtain the KVALUE corresponding to the index
-    if (count == index) {
-      aggKValue = returnStruct.front(); 
-    }
-  }
-  */
-  /*
-  for(unsigned i = 1; i < returnStruct.size(); i++) {
-    // obtain the KVALUE corresponding to the index
-    if (i == index) {
-      aggKValue = returnStruct[i]; 
-    }
-  }
-  */
   aggKValue = returnStruct[index];
   returnStruct.clear(); // in code some elements stay there
 
