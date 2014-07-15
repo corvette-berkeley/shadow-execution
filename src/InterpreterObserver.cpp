@@ -479,10 +479,11 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   bool isPointerConstant = false;
   bool sync = false;
   IValue* srcPtrLocation;
+  IValue* destLocation = executionStack.top()[inx];
 
   DEBUG_LOG("[LOAD] Performing load");
 
-  // obtain source pointer value
+  // obtaining source pointer value
   if (opScope == CONSTANT) {
     isPointerConstant = true;
   } 
@@ -493,13 +494,12 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     srcPtrLocation = executionStack.top()[opInx];
   }
 
-  // perform load
+  // performing load
   if (!isPointerConstant) {
 
     DEBUG_STDOUT("\tsrcPtrLocation: " << srcPtrLocation->toString());
 
     // creating new value
-    IValue *destLocation = new IValue();    
     if (srcPtrLocation->isInitialized()) {
       IValue *srcLocation;
 
@@ -526,17 +526,14 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
       // copying src into dest
       srcLocation->copy(destLocation);
-      destLocation->setValue(value);
-      destLocation->setType(type);
+      destLocation->setTypeValue(type, value);
 
       // sync load
       sync = syncLoad(destLocation, opAddr, type);
 
       // if sync happens, update srcPtrLocation if possible
       if (sync) {
-        IValue *lastElement;
-
-        lastElement = values + srcPtrLocation->getLength() - 1;
+        IValue *lastElement = values + srcPtrLocation->getLength() - 1;
 
         if (srcOffset + KIND_GetSize(type) <= lastElement->getFirstByte() + KIND_GetSize(lastElement->getType())) {
           srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
@@ -544,16 +541,15 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       }  
     }
     else {
-      // Source pointer is not initialized.
-
+      // source pointer is not initialized.
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
       VALUE zeroValue;
       IValue* elem;
       zeroValue.as_int = 0;
 
-      destLocation->setType(type);
-      destLocation->setValue(zeroValue);
+      destLocation->clear();
+      destLocation->setTypeValue(type, zeroValue);
 
       // sync load
       sync = syncLoad(destLocation, opAddr, type);
@@ -568,7 +564,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       srcPtrLocation->setValueOffset((int64_t) elem - srcPtrLocation->getValue().as_int);
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
 
-      // update load variable
+      // updating load variable
       if (loadInx != -1) {
         IValue *elem, *values, *loadInst;
 
@@ -581,35 +577,22 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
         elem->setSize(srcPtrLocation->getSize());
         elem->setValueOffset(srcPtrLocation->getValueOffset());
       }
-
     }
-
-    destLocation->copy(executionStack.top()[inx]);
-    delete(destLocation);
     DEBUG_STDOUT(destLocation->toString());
-
   }
   else {
     // NEW case for pointer constants
     // TODO: revise again
     DEBUG_STDOUT("[Load] => pointer constant.");
 
-    IValue* destLocation; 
     VALUE zeroValue;
-
-    destLocation = new IValue();
-
     zeroValue.as_int = 0;
 
-    destLocation->setType(type);
-    destLocation->setValue(zeroValue);
+    destLocation->clear();
+    destLocation->setTypeValue(type, zeroValue);
 
     // sync load
     sync = syncLoad(destLocation, opAddr, type);
-
-    release(executionStack.top()[inx]);
-    executionStack.top()[inx] = destLocation;
-
     DEBUG_STDOUT(destLocation->toString());
   }
 
@@ -2408,62 +2391,59 @@ void InterpreterObserver::icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64
   DEBUG_STDOUT("=============" << v1);
   DEBUG_STDOUT("=============" << v2);
 
-  int result = 0;
+  VALUE result;
   switch(pred) {
     case CmpInst::ICMP_EQ:
       DEBUG_STDOUT("PRED = ICMP_EQ");
-      result = v1 == v2;
+      result.as_int = v1 == v2;
       break;
     case CmpInst::ICMP_NE:
       DEBUG_STDOUT("PRED = ICMP_NE");
-      result = v1 != v2;
+      result.as_int = v1 != v2;
       break;
     case CmpInst::ICMP_UGT:
       DEBUG_STDOUT("PRED = ICMP_UGT");
-      result = (uint64_t)v1 > (uint64_t)v2;
+      result.as_int = (uint64_t)v1 > (uint64_t)v2;
       break;
     case CmpInst::ICMP_UGE:
       DEBUG_STDOUT("PRED = ICMP_UGE");
-      result = (uint64_t)v1 >= (uint64_t)v2;
+      result.as_int = (uint64_t)v1 >= (uint64_t)v2;
       break;
     case CmpInst::ICMP_ULT:
       DEBUG_STDOUT("PRED = ICMP_ULT");
-      result = (uint64_t)v1 < (uint64_t)v2;
+      result.as_int = (uint64_t)v1 < (uint64_t)v2;
       break;
     case CmpInst::ICMP_ULE:
       DEBUG_STDOUT("PRED = ICMP_ULE");
-      result = (uint64_t)v1 <= (uint64_t)v2;
+      result.as_int = (uint64_t)v1 <= (uint64_t)v2;
       break;
     case CmpInst::ICMP_SGT:
       DEBUG_STDOUT("PRED = ICMP_SGT");
-      result = v1 > v2;
+      result.as_int = v1 > v2;
       break;
     case CmpInst::ICMP_SGE:
       DEBUG_STDOUT("PRED = ICMP_SGE");
-      result = v1 >= v2;
+      result.as_int = v1 >= v2;
       break;
     case CmpInst::ICMP_SLT:
       DEBUG_STDOUT("PRED = ICMP_SLT");
-      result = v1 < v2;
+      result.as_int = v1 < v2;
       break;
     case CmpInst::ICMP_SLE:
       DEBUG_STDOUT("PRED = ICMP_SLE");
-      result = v1 <= v2;
+      result.as_int = v1 <= v2;
       break;
     default:
       safe_assert(false);
       break;
   }
 
-  VALUE vresult;
-  vresult.as_int = result;
-
-  IValue *nloc = new IValue(INT1_KIND, vresult);
-  nloc->setSize(KIND_GetSize(INT1_KIND));
-
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = nloc;
-  DEBUG_STDOUT(nloc->toString());
+  IValue *iResult = executionStack.top()[inx];
+  iResult->clear();
+  iResult->setTypeValue(INT1_KIND, result);
+  iResult->setSize(0); // size for INT1_KIND
+  
+  DEBUG_STDOUT(iResult->toString());
   return;
 }
 
