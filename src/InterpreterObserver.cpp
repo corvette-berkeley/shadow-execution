@@ -396,7 +396,7 @@ std::string InterpreterObserver::CASTOP_ToString(int castop) {
 // *** Load and Store Operations *** //
 
 void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int inx) {
-  int i, structSize;
+  unsigned /*i, */structSize;
   IValue* dest;
 
   DEBUG_LOG("[LOAD STRUCT] Performing load "); 
@@ -408,7 +408,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
 
     // Case 1: struct constant.
     // Create an IValue struct that has all values in structReturn.
-    
+    /*    
     i = 0;
     while (!returnStruct.empty()) {
       KVALUE* concreteStructElem; 
@@ -430,8 +430,26 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       i++;
       returnStruct.pop();
     }
+    */
+
+    for(unsigned i = 0; structSize; i++) {
+      KVALUE* concreteStructElem; 
+      IValue* structElem; 
+      
+      concreteStructElem = returnStruct[i];
+
+      if (concreteStructElem->inx == -1) {
+        structElem = new IValue(concreteStructElem->kind, concreteStructElem->value, REGISTER);
+      } else {
+        structElem = concreteStructElem->isGlobal ?
+          globalSymbolTable[concreteStructElem->inx] :
+          executionStack.top()[concreteStructElem->inx];
+      }
+      dest[i] = *structElem;
+    }
+    returnStruct.clear();
     
-    safe_assert(false);
+    safe_assert(false); // why?
 
   } 
   else {
@@ -444,6 +462,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
     srcPointer = src->isGlobal ? globalSymbolTable[src->inx] : executionStack.top()[src->inx];
     structSrc = (IValue*) srcPointer->getIPtrValue();
 
+    /*
     i = 0;
     while (!returnStruct.empty()) {
       KVALUE *concreteStructElem, *concreteStructElemPtr; 
@@ -471,6 +490,31 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
       i++;
       returnStruct.pop();
     }
+    */
+
+    for(unsigned i = 0; i < structSize; i++) {
+      KVALUE *concreteStructElem, *concreteStructElemPtr; 
+      IValue *structElem;
+      int type;
+
+      // get concrete value in case we need to sync
+      concreteStructElem = returnStruct[i];
+
+      structElem = new IValue();
+      structSrc[i].copy(structElem);
+      type = structElem->getType();
+
+      // sync load
+      // first create a KVALUE pointer to concreteStructElem because sync load
+      // expect the KVALUE to be a pointer to the concrete value
+      concreteStructElemPtr = new KVALUE();
+      concreteStructElemPtr->value.as_ptr = &(concreteStructElem->value);
+      if (syncLoad(structElem, concreteStructElemPtr, type)) {
+        DEBUG_LOG("[LOAD STRUCT] Syncing load");
+      }
+      dest[i] = *structElem;
+    }
+    returnStruct.clear();
   }
 
   release(executionStack.top()[inx]);
@@ -1164,7 +1208,8 @@ void InterpreterObserver::shufflevector() {
 // ***** AGGREGATE OPERATIONS ***** //
 
 void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
-  int index, count; 
+  //int index, count; 
+  unsigned index;
   IValue *aggIValue, *iResult;
   KVALUE *aggKValue;
 
@@ -1175,7 +1220,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
 
 
   // Obtain KVALUE and IValue objects.
-  aggKValue = returnStruct.front();
+  aggKValue = returnStruct[0];
 
   if (opinx == -1) {
     aggIValue = NULL;
@@ -1185,6 +1230,7 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
       executionStack.top()[opinx];
   }
 
+  /*
   count = 0;
   while (!returnStruct.empty()) {
     count++;
@@ -1194,6 +1240,17 @@ void InterpreterObserver::extractvalue(IID iid UNUSED, int inx, int opinx) {
       aggKValue = returnStruct.front(); 
     }
   }
+  */
+  /*
+  for(unsigned i = 1; i < returnStruct.size(); i++) {
+    // obtain the KVALUE corresponding to the index
+    if (i == index) {
+      aggKValue = returnStruct[i]; 
+    }
+  }
+  */
+  aggKValue = returnStruct[index];
+  returnStruct.clear(); // in code some elements stay there
 
   DEBUG_STDOUT("KVALUE: " << KVALUE_ToString(aggKValue));
 
@@ -2344,11 +2401,11 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
     safe_assert(!returnStruct.empty());
 
     // reconstruct struct value
-    unsigned size = returnStruct.size();
-    IValue* structValue = new IValue[returnStruct.size()];
-    unsigned i = 0;
-    while (!returnStruct.empty()) {
-      KVALUE* value = returnStruct.front();
+    unsigned structSize = returnStruct.size();
+    IValue* structValue = new IValue[structSize];
+    
+    for(unsigned i = 0; i < structSize; i++) {
+      KVALUE* value = returnStruct[i];
 
       if (returnValue == NULL) {
 	structValue[i].setType(value->kind);
@@ -2361,18 +2418,17 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
       }
 
       DEBUG_STDOUT(cout << structValue[i].toString());
-      i++;
-      returnStruct.pop();
     }
-
-    safe_assert(returnStruct.empty());
+    returnStruct.clear();
 
     structValue->setStruct(true);
 
     executionStack.top()[callerVarIndex.top()] = structValue;
+    /*
     for (i = 0; i < size; i++) {
       DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
     }
+    */
   } 
   else {
     cout << "The execution stack is empty.\n";
@@ -2708,7 +2764,7 @@ void InterpreterObserver::push_phinode_value(int valId, int blockId) {
 }
 
 void InterpreterObserver::push_return_struct(KVALUE* value) {
-  returnStruct.push(value);
+  returnStruct.push_back(value);
   return;
 }
 
@@ -2878,20 +2934,15 @@ void InterpreterObserver::after_struct_call() {
     // reconstruct struct value
     //IValue* structValue = (IValue*) malloc(returnStruct.size()*sizeof(IValue)); //
     IValue* structValue = new IValue[returnStruct.size()];
-    unsigned i = 0;
-    while (!returnStruct.empty()) {
-      KVALUE* value = returnStruct.front();
+
+    for(unsigned i = 0; i < returnStruct.size(); i++) {
+      KVALUE* value = returnStruct[i];
       IValue* iValue = new IValue(value->kind);
       iValue->setValue(value->value);
       iValue->setLength(0);
-
       structValue[i] = *iValue; 
-      i++;
-      returnStruct.pop();
     }
-
-    safe_assert(returnStruct.empty());
-
+    returnStruct.clear();
 
     executionStack.top()[callerVarIndex.top()] = structValue;
 
@@ -2900,12 +2951,9 @@ void InterpreterObserver::after_struct_call() {
     callerVarIndex.pop();
   } 
   else {
-    while (!returnStruct.empty()) {
-      returnStruct.pop();
-    }
+    returnStruct.clear();
     safe_assert(callArgs.empty());
     safe_assert(myStack.empty());
-    safe_assert(returnStruct.empty());
   }
 
   isReturn = false;

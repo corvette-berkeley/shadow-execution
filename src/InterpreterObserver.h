@@ -72,7 +72,7 @@ class InterpreterObserver : public InstructionObserver {
   vector<uint64_t> arraySize; // store size of array
   vector<KIND> structType; // store struct type
   queue<uint64_t> structElementSize; // store struct (non-flatten) element size
-  queue<KVALUE*> returnStruct; // store values of returned struct
+  vector<KVALUE*> returnStruct; // store values of returned struct
 
   stack<int> callerVarIndex; // index of callee register; to be assigned to the value of call return
   stack<IValue*> callArgs; // copy value from callers to callee arguments
