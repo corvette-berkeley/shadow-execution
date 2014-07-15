@@ -1605,18 +1605,12 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     arrayElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
 
     getElementPtrIndexList.clear();
-
-    /*
-    while (!arraySize.empty()) {
-      arraySize.pop();
-    }
-    */
     arraySize.clear();
   } 
   else {
     IValue *ptrArray, *array;
     int *arraySizeVec, *indexVec;
-    int index, arrayDim/*, getIndexNo, i, j*/;
+    int index, arrayDim;
     unsigned getIndexNo;
 
     if (baseScope == GLOBAL) {
@@ -1657,17 +1651,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     // we do not need this to compute the index
     if (size02 != -1) {
       arraySizeVec[0] = size02;
-      /*
-      i = 1;
-      while (!arraySize.empty()) {
-        if (i < getIndexNo) {
-          arraySizeVec[i] = arraySize.front();
-        }
-        arraySize.pop();
-        i++;
-      }
-      safe_assert(arraySize.empty());
-      */
+
       for(unsigned i = 1; i < arraySize.size(); i++) {
 	if (i < getIndexNo) {
 	  arraySizeVec[i] = arraySize[i - 1];
