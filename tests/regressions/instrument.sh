@@ -17,7 +17,7 @@ else
 fi
 
 # compiling code
-$CC -c -fpack-struct -emit-llvm -g -pg $1.c -o $1.bc
+$CC -c -fpack-struct -emit-llvm -g $1.c -o $1.bc
 llvm-dis $1.bc -o $1-orig.ll
 
 # removing constant geps
