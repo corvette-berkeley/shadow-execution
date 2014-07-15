@@ -1277,10 +1277,16 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
   }
   KIND* structKind = new KIND[structSize];
   if (type == STRUCT_KIND) {
+    /*
     for (uint64_t i = 0; i < structSize; i++) {
       structKind[i] = structType.front();
       structType.pop();
     }
+    */
+    for(unsigned i = 0; i < structSize; i++) {
+      structKind[i] = structType[i];
+    }
+    structType.clear();
   }
 
   IValue* locArr = new IValue[size*structSize];
@@ -1338,6 +1344,7 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
   unsigned length = 0;
   IValue* ptrToStructVar = new IValue[size];
 
+  /*
   for (uint64_t i = 0; i < size; i++) {
     KIND type = structType.front();
     IValue* var = new IValue(type);
@@ -1351,6 +1358,20 @@ void InterpreterObserver::allocax_struct(IID iid UNUSED, uint64_t size, int inx,
     structType.pop();
   }
   safe_assert(structType.empty());
+  */
+
+  for (unsigned i = 0; i < structType.size(); i++) {
+    KIND type = structType[i];
+    IValue* var = new IValue(type);
+    var->setFirstByte(firstByte + bitOffset/8);
+    var->setBitOffset(bitOffset%8);
+    var->setLength(0);
+    firstByte += KIND_GetSize(type);
+    bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
+    length++;
+    ptrToStructVar[i] = *var;
+  }
+  structType.clear();
 
   VALUE value;
   value.as_ptr = (void*)actualAddress;
@@ -1733,7 +1754,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
   DEBUG_STDOUT("\tstructType size " << structType.size());
 
   IValue *structPtr, *structElemPtr; 
-  int structElemNo, structSize, index, size, i, newOffset;
+  int structElemNo, structSize, index, size, /*i, */newOffset;
   int* structElemSize, *structElem;
 
   if (baseInx == -1) {
@@ -1766,6 +1787,7 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
     // record struct element size
     // compute struct size
     structSize = 0;
+    /*
     i = 0;
     while (!structType.empty()) {
       structElemSize[i] = KIND_GetSize(structType.front());
@@ -1774,6 +1796,14 @@ void InterpreterObserver::getelementptr_struct(IID iid UNUSED, int baseInx, SCOP
       i++;
       structType.pop();
     }
+    */
+    for(unsigned i = 0; i < structType.size(); i++) {
+      structElemSize[i] = KIND_GetSize(structType[i]);
+      structElem[i] = structType[i];
+      structSize += structElemSize[i];
+    }
+    structType.clear();
+
 
     DEBUG_STDOUT("\tstructSize is " << structSize);
 
@@ -2714,7 +2744,7 @@ void InterpreterObserver::push_return_struct(KVALUE* value) {
 }
 
 void InterpreterObserver::push_struct_type(KIND kind) {
-  structType.push(kind);
+  structType.push_back(kind);
   return;
 }
 
@@ -3508,10 +3538,16 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
     DEBUG_STDOUT("Number of fields: " << fields);
 
     KIND fieldTypes[fields];
+    /*
     for(unsigned i = 0; i < fields; i++) {
       fieldTypes[i] = structType.front();
       structType.pop();
     }
+    */
+    for(unsigned i = 0; i < fields; i++) {
+      fieldTypes[i] = structType[i];
+    }
+    structType.clear();
 
     unsigned length = 0;
     unsigned firstByte = 0;
@@ -3527,8 +3563,6 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
         length++;
       }
     }
-
-    safe_assert(structType.empty());
 
     VALUE structPtrVal;
     structPtrVal.as_ptr = (void*)mallocAddress;
