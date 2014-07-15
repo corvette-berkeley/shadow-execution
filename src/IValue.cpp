@@ -41,8 +41,8 @@
 
 #include "IValue.h"
 
-//int IValue::counterNew = 0;
-//int IValue::counterDelete = 0;
+//long IValue::counterNew = 0;
+//long IValue::counterDelete = 0;
 
 void (*IValue::copyShadow)(IValue*,IValue*) = NULL;
 
@@ -486,5 +486,22 @@ void IValue::setValue(int64_t v) {
     cout << "ERROR" << endl;
     safe_assert(false);
   }
+  return;
+}
+
+
+void IValue::clear() {
+  //value;
+  shadow = NULL;
+  type = INV_KIND;
+  valueOffset = -1; 
+  size = 0; 
+  index = 0; 
+  firstByte = 0; 
+  length = 0;
+  offset = 0;
+  bitOffset = 0;
+  //  scope = SCOPE_INVALID;
+  struct_ = false;
   return;
 }

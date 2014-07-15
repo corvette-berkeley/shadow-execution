@@ -80,6 +80,7 @@ class IValue {
   int offset, bitOffset;
   SCOPE scope;
   bool struct_;
+  //static long counterNew, counterDelete;
 
     /**
      * Define how to copy shadow values. This varies analysis by analysis.
@@ -116,7 +117,7 @@ class IValue {
  IValue(KIND t, VALUE v): value(v), shadow(NULL), type(t), valueOffset(-1), size(0),
       index(0), firstByte(0), length(0), offset(0), bitOffset(0), 
       scope(REGISTER) {
-      //counterNew++;
+	//counterNew++;
     }
 
  IValue(KIND t, VALUE v, unsigned fb): value(v), shadow(NULL), type(t), valueOffset(-1),
@@ -170,6 +171,8 @@ class IValue {
     void setValue(VALUE value) { this->value = value; };
     
     void setValue(int64_t value);
+
+    void setTypeValue(KIND type, VALUE value) { this->type = type; this->value = value; };
 
     void setValueOffset(int64_t valueOffset) { this->valueOffset = valueOffset; };
 
@@ -310,6 +313,7 @@ class IValue {
     static void printCounters() {
     }
     
+    
     /*
     static void printCounters() {
       int diff = counterNew - counterDelete;
@@ -318,6 +322,9 @@ class IValue {
       }
     }
     */
+
+    void clear();
+    
     
 };
 

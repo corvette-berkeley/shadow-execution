@@ -396,7 +396,7 @@ std::string InterpreterObserver::CASTOP_ToString(int castop) {
 // *** Load and Store Operations *** //
 
 void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* src, int inx) {
-  unsigned /*i, */structSize;
+  unsigned structSize;
   IValue* dest;
 
   DEBUG_LOG("[LOAD STRUCT] Performing load "); 
@@ -736,8 +736,11 @@ void InterpreterObserver::store(int destInx, SCOPE destScope, KIND srcKind, SCOP
 }
 
 // **** Binary Operations *** //
-void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
+inline void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, 
 				int inx, BINOP op) {
+
+  IValue* iResult = executionStack.top()[inx];
+  iResult->clear();
 
   if (type == INT80_KIND) {
     DEBUG_STDERR("Unsupported INT80_KIND");
@@ -748,41 +751,30 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
   int64_t v1, v2;
   double d1, d2;
   VALUE result;
-  IValue* iResult;
 
   // Get values from two operands. They can be either integer or double so we
   // need 4 variables.
   if (lScope == CONSTANT) { // constant
-    double *ptr;
-
+    double *ptr = (double *) &lValue;
     v1 = lValue;
-    ptr = (double *) &lValue;
     d1 = *ptr;
   } 
   else { // register
-    IValue *loc1; 
-
-    loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
+    IValue *loc1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
     v1 = loc1->getIntValue();
     d1 = loc1->getFlpValue();
-
     DEBUG_STDOUT("\tOperand 01: " << loc1->toString());
   }
 
   if (rScope == CONSTANT) { // constant
-    double *ptr;
-
+    double *ptr = (double *) &rValue;
     v2 = rValue;
-    ptr = (double *) &rValue;
     d2 = *ptr;
   } 
   else { // register
-    IValue *loc2; 
-
-    loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
+    IValue *loc2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
     v2 = loc2->getIntValue();
     d2 = loc2->getFlpValue();
-
     DEBUG_STDOUT("\tOperand 02: " << loc2->toString());
   }
 
@@ -827,11 +819,7 @@ void InterpreterObserver::binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int6
       DEBUG_STDERR("Unsupported binary operator: " << BINOP_ToString(op)); 
       safe_assert(false);
   }
-  iResult = new IValue(type, result);
-
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = iResult;
-
+  iResult->setTypeValue(type, result);  
   DEBUG_STDOUT(iResult->toString());
   return;
 }
