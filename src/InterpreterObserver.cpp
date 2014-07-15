@@ -1606,15 +1606,19 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
 
     getElementPtrIndexList.clear();
 
+    /*
     while (!arraySize.empty()) {
       arraySize.pop();
     }
+    */
+    arraySize.clear();
   } 
   else {
     IValue *ptrArray, *array;
     int *arraySizeVec, *indexVec;
-    int index, arrayDim, getIndexNo, i, j;
-    
+    int index, arrayDim/*, getIndexNo, i, j*/;
+    unsigned getIndexNo;
+
     if (baseScope == GLOBAL) {
       ptrArray = globalSymbolTable[baseInx];
     }
@@ -1653,6 +1657,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     // we do not need this to compute the index
     if (size02 != -1) {
       arraySizeVec[0] = size02;
+      /*
       i = 1;
       while (!arraySize.empty()) {
         if (i < getIndexNo) {
@@ -1662,12 +1667,19 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
         i++;
       }
       safe_assert(arraySize.empty());
+      */
+      for(unsigned i = 1; i < arraySize.size(); i++) {
+	if (i < getIndexNo) {
+	  arraySizeVec[i] = arraySize[i - 1];
+	}
+      }
+      arraySize.clear();
     }
 
     arraySizeVec[getIndexNo-1] = 1; 
 
-    for (i = 0; i < getIndexNo; i++) {
-      for (j = i+1; j < getIndexNo; j++) {
+    for (unsigned i = 0; i < getIndexNo; i++) {
+      for (unsigned j = i+1; j < getIndexNo; j++) {
         arraySizeVec[i] *= arraySizeVec[j]; 
       }
     }
@@ -1679,7 +1691,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
 
     if (scopeInx03 != SCOPE_INVALID) {
       indexVec[1] = actualValueToIntValue(scopeInx03, valOrInx03);
-      i = 2;
+      unsigned i = 2;
 
       for(unsigned int j = 0; j < getElementPtrIndexList.size(); j++) {
 	indexVec[i + j] = getElementPtrIndexList[j];
@@ -1688,7 +1700,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
     }
 
     index = 0;
-    for (i = 0; i < getIndexNo; i++) {
+    for (unsigned i = 0; i < getIndexNo; i++) {
       index += indexVec[i] * arraySizeVec[i];
     }
 
@@ -2781,21 +2793,21 @@ void InterpreterObserver::push_getelementptr_inx2(int int_value) {
 }
 
 void InterpreterObserver::push_array_size(uint64_t size) {
-  arraySize.push(size);
+  arraySize.push_back(size);
   return;
 }
 
 void InterpreterObserver::push_array_size5(int s1, int s2, int s3, int s4, int s5) {
   if (s1 != -1) {
-    arraySize.push(s1);
+    arraySize.push_back(s1);
     if (s2 != -1) {
-      arraySize.push(s2);
+      arraySize.push_back(s2);
       if (s3 != -1) {
-        arraySize.push(s3);
+        arraySize.push_back(s3);
         if (s4 != -1) {
-          arraySize.push(s4);
+          arraySize.push_back(s4);
           if (s5 != -1) {
-            arraySize.push(s5);
+            arraySize.push_back(s5);
           }
         }
       }
