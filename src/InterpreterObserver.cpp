@@ -881,9 +881,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
     v64_1 = lValue;
   } 
   else {
-    IValue* iOp1; 
-
-    iOp1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
+    IValue* iOp1 = (lScope == GLOBAL) ? globalSymbolTable[lValue] : executionStack.top()[lValue];
     v64_1 = iOp1->getIntValue();
   }
 
@@ -891,9 +889,7 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
     v64_2 = rValue;
   } 
   else {
-    IValue* iOp2; 
-
-    iOp2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
+    IValue* iOp2 = (rScope == GLOBAL) ? globalSymbolTable[rValue] : executionStack.top()[rValue];
     v64_2 = iOp2->getIntValue();
   }
 
@@ -1061,11 +1057,10 @@ void InterpreterObserver::bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, in
       safe_assert(false);
       return;
   }
-  iResult = new IValue(type, result);
 
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = iResult;
-
+  iResult = executionStack.top()[inx];
+  iResult->clear();
+  iResult->setTypeValue(type, result);
   DEBUG_STDOUT(iResult->toString());
   return;
 } 
@@ -1815,10 +1810,8 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
 
   // Obtain value and type of the operand.
   if (opScope == CONSTANT) {
-    double *ptr;
-
+    double *ptr = (double *)&op;
     iOp = NULL; // compiler warning without this
-    ptr = (double *)&op;
 
     opIntValue = op;
     opUIntValue = op;
@@ -2059,31 +2052,28 @@ void InterpreterObserver::castop(int64_t opVal, SCOPE opScope, KIND opType, KIND
     default:
       DEBUG_STDERR("Unsupported conversion operator: " << CASTOP_ToString(op));
       safe_assert(false);
-  } 
+  }
+
+  iResult = executionStack.top()[inx];
 
   if (op == BITCAST) {
     if (opScope == CONSTANT) {
       VALUE val;
-
-      iResult = new IValue();
       val.as_int = op;
-      iResult->setValue(val);
-      iResult->setSize(size/8);
-      iResult->setType(type);
+
+      iResult->clear();
+      iResult->setTypeValueSize(type, val, size/8);
     } 
     else {
-      iResult = new IValue();
       iOp->copy(iResult);
       iResult->setSize(size/8);
       iResult->setType(type);
     }
   } 
   else {
-    iResult = new IValue(type, result);
+    iResult->clear();
+    iResult->setTypeValue(type, result);
   }
-
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = iResult;
 
   DEBUG_STDOUT(iResult->toString());
   return;
@@ -2548,7 +2538,7 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
     KVALUE* constant = phinodeConstantValues[recentBlock.top()];
     phiNode = new IValue(constant->kind, constant->value);
     phiNode->setLength(0);
-  } 
+  }
   else {
     safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
     IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
@@ -2561,10 +2551,36 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
 
   release(executionStack.top()[inx]);
   executionStack.top()[inx] = phiNode;
+
   DEBUG_STDOUT(phiNode->toString());
   return;
 }
 
+/*
+void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
+
+  DEBUG_STDOUT("Recent block: " << recentBlock.top());
+
+  IValue* phiNode = executionStack.top()[inx];
+
+  if (phinodeConstantValues.find(recentBlock.top()) != phinodeConstantValues.end()) {
+    KVALUE* constant = phinodeConstantValues[recentBlock.top()];
+    phiNode->setTypeValue(constant->kind, constant->value);
+    phiNode->setLength(0);
+  } 
+  else {
+    safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
+    IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
+    inValue->copy(phiNode);
+  }
+
+  phinodeConstantValues.clear();
+  phinodeValues.clear();
+
+  DEBUG_STDOUT(phiNode->toString());
+  return;
+}
+*/
 void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
 
   int condition;
