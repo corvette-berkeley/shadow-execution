@@ -53,14 +53,6 @@
 /***************************** Helper Functions *****************************/
 
 
-
-/*
-void release(IValue* value UNUSED) {
-  return;
-}
-*/
-
-
 void release(IValue* value) {
   if (value->getScope() == REGISTER || value->getScope() == LOCAL) {
     if (!value->isStruct()) {
@@ -399,7 +391,7 @@ void InterpreterObserver::load_struct(IID iid UNUSED, KIND type UNUSED, KVALUE* 
   unsigned structSize;
   IValue* dest;
 
-  DEBUG_LOG("[LOAD STRUCT] Performing load "); 
+  //DEBUG_LOG("[LOAD STRUCT] Performing load "); 
 
   structSize = returnStruct.size();
   dest = new IValue[structSize];
@@ -481,7 +473,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
   IValue* srcPtrLocation;
   IValue* destLocation = executionStack.top()[inx];
 
-  DEBUG_LOG("[LOAD] Performing load");
+  //DEBUG_LOG("[LOAD] Performing load");
 
   // obtaining source pointer value
   if (opScope == CONSTANT) {
@@ -2232,11 +2224,12 @@ void InterpreterObserver::return_(IID iid UNUSED, int valInx, SCOPE scope UNUSED
   // free memory
   // should not be erasing above stuff twice
   
-  IValue::printCounters();
+
 
   for (unsigned int i = 0; i < iValues.size(); i++) {
     release(iValues[i]);
   }
+  IValue::printCounters();
 
   /*
   for(unsigned int i = collect_new.size() - 1; i <= collect_new.size(); i++) {
@@ -2269,13 +2262,14 @@ void InterpreterObserver::return2_(IID iid UNUSED, int inx UNUSED) {
     cout << "The execution stack is empty.\n";
   }
 
-  IValue::printCounters();
+
 
   // freeing memory
   for (unsigned int i = 0; i < iValues.size(); i++) {
     release(iValues[i]);
   }
 
+  IValue::printCounters();
   isReturn = true;
   return;
 }
@@ -2333,7 +2327,7 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
   safe_assert(!callerVarIndex.empty());
   callerVarIndex.pop();
 
-  IValue::printCounters();
+
  
  // freeing memory
   for (unsigned int i = 0; i < iValues.size(); i++) {
@@ -2342,6 +2336,7 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED, int val
     }
   }
 
+  IValue::printCounters();
   isReturn = true;
   return;
 }
