@@ -2556,31 +2556,6 @@ void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
   return;
 }
 
-/*
-void InterpreterObserver::phinode(IID iid UNUSED, int inx) {
-
-  DEBUG_STDOUT("Recent block: " << recentBlock.top());
-
-  IValue* phiNode = executionStack.top()[inx];
-
-  if (phinodeConstantValues.find(recentBlock.top()) != phinodeConstantValues.end()) {
-    KVALUE* constant = phinodeConstantValues[recentBlock.top()];
-    phiNode->setTypeValue(constant->kind, constant->value);
-    phiNode->setLength(0);
-  } 
-  else {
-    safe_assert(phinodeValues.find(recentBlock.top()) != phinodeValues.end());
-    IValue* inValue = executionStack.top()[phinodeValues[recentBlock.top()]];
-    inValue->copy(phiNode);
-  }
-
-  phinodeConstantValues.clear();
-  phinodeValues.clear();
-
-  DEBUG_STDOUT(phiNode->toString());
-  return;
-}
-*/
 void InterpreterObserver::select(IID iid UNUSED, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
 
   int condition;
@@ -2769,8 +2744,7 @@ void InterpreterObserver::after_call(int retInx UNUSED, SCOPE retScope UNUSED, K
     IValue* reg = executionStack.top()[callerVarIndex.top()];
 
     // setting return value
-    reg->setType(retType);
-    reg->setValue(retValue);
+    reg->setTypeValue(retType, retValue);
     reg->setValueOffset(0); // new
     reg->setShadow(0);
     callerVarIndex.pop();
@@ -3009,11 +2983,9 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
     callerVarIndex.push(inx); 
   }
 
-  IValue* callValue = new IValue(type);
-  callValue->setLength(0);
-
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = callValue;
+  IValue* callValue = executionStack.top()[inx];
+  callValue->clear();
+  callValue->setType(type);
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
 
