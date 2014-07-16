@@ -1523,12 +1523,9 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
         basePtrLocation->getLength()); 
   } 
 
-  ptrLocation = new IValue(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength());
+  ptrLocation = executionStack.top()[inx];
+  ptrLocation->setAll(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(),basePtrLocation->getValueOffset());
 
-  ptrLocation->setValueOffset(basePtrLocation->getValueOffset());
-
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = ptrLocation;
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
   return;
 }
