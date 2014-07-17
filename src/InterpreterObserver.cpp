@@ -2949,6 +2949,7 @@ void InterpreterObserver::create_global(KVALUE* kvalue, KVALUE* initializer) {
   ptrLocation->setValueOffset((int64_t)location - value.as_int);
 
   // store it in globalSymbolTable
+  release(globalSymbolTable[kvalue->inx]);
   globalSymbolTable[kvalue->inx] = ptrLocation;
   DEBUG_STDOUT("\tloc: " << location->toString());
   DEBUG_STDOUT("\tptr: " << ptrLocation->toString());
