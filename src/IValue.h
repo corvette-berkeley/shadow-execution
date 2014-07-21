@@ -210,7 +210,7 @@ class IValue {
       struct_ = flag;
     }
 
-    void setAll(KIND type, VALUE value, unsigned size, /*int offset, */int index, unsigned length, int64_t valueOffset);
+    void setAll(KIND type, VALUE value, unsigned size, int index, unsigned length, int64_t valueOffset);
 
     KIND getType() const { return this->type; };
 
