@@ -1172,27 +1172,16 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
 
   // alloca for non-argument variables
   location = new IValue(type); // should we count it as LOCAL?
-  location->setLength(0);
+  ptrLocation = executionStack.top()[inx];
 
   VALUE value;
   value.as_ptr = (void*)actualAddress;
  
-  ptrLocation = new IValue(PTR_KIND, value, LOCAL);
-  ptrLocation->setValueOffset((int64_t)location - (int64_t)value.as_ptr);
+  ptrLocation->setAll(PTR_KIND, value, KIND_GetSize(type), 0, 1, (int64_t)location - (int64_t)value.as_ptr);
+  ptrLocation->setScope(LOCAL);
+
   DEBUG_STDOUT("actual address: " << value.as_ptr);
   DEBUG_STDOUT("location" << location);
-
-  ptrLocation->setSize(KIND_GetSize(type)); // put in constructor
-  ptrLocation->setLength(1);
-
-  /*
-  if (executionStack.top()[inx] != NULL) {
-    release(executionStack.top()[inx]);
-    // pending: if pointer delete other pointed to objects?
-  }
-  */
-  executionStack.top()[inx] = ptrLocation;
-
   DEBUG_STDOUT("Location: " << location->toString());
   DEBUG_STDOUT(ptrLocation->toString());
 
