@@ -82,6 +82,7 @@ using namespace std;
 #define DEBUG_STDERR(x) while(0) {std::cerr << x << endl;}
 #define DEBUG_STDOUT(x) while(0) {std::cerr << x << endl;}
 #define DEBUG_LOG(x) while(0) {std::cerr << x << endl;}
+//#define DEBUG_LOG(x) LOG(INFO) << x << endl
 #endif
 
 //

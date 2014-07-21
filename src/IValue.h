@@ -161,6 +161,7 @@ class IValue {
 
         // copy elements from the right-hand side to the left-hand side
         create(iv);
+	//counterNew++;
       }
 
       return *this;
@@ -209,7 +210,7 @@ class IValue {
       struct_ = flag;
     }
 
-    void setAll(KIND type, VALUE value, unsigned size, int offset, int index, unsigned length, int64_t valueOffset);
+    void setAll(KIND type, VALUE value, unsigned size, /*int offset, */int index, unsigned length, int64_t valueOffset);
 
     KIND getType() const { return this->type; };
 
@@ -315,11 +316,9 @@ class IValue {
      */
     bool isIValue(KIND t);
 
-    
     static void printCounters() {
     }
-    
-    
+
     /*
     static void printCounters() {
       int diff = counterNew - counterDelete;

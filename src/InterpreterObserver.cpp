@@ -1519,7 +1519,8 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
   } 
 
   ptrLocation = executionStack.top()[inx];
-  ptrLocation->setAll(PTR_KIND, basePtrLocation->getValue(), size/8, newOffset, index, basePtrLocation->getLength(),basePtrLocation->getValueOffset());
+  ptrLocation->setAll(PTR_KIND, basePtrLocation->getValue(), size/8, /*newOffset, */index, basePtrLocation->getLength(),basePtrLocation->getValueOffset());
+  ptrLocation->setOffset(newOffset);
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
   return;

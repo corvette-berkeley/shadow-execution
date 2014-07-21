@@ -489,11 +489,12 @@ void IValue::setValue(int64_t v) {
   return;
 }
 
-void IValue::setAll(KIND type, VALUE value, unsigned size, int offset, int index, unsigned length, int64_t valueOffset) {
+void IValue::setAll(KIND type, VALUE value, unsigned size, /*int offset, */int index, unsigned length, int64_t valueOffset) {
   this->type = type;
   this->value = value;
   this->size = size;
-  this->offset = offset;
+  //this->offset = offset;
+  this->offset = 0;
   this->index = index;
   this->length = length;
   this->valueOffset = valueOffset;
