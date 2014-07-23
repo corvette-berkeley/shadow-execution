@@ -520,7 +520,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       srcLocation->copy(destLocation);
       destLocation->setTypeValue(type, value);
 
-      // sync load
+      // syncing load
       sync = syncLoad(destLocation, opAddr, type);
 
       // if sync happens, update srcPtrLocation if possible

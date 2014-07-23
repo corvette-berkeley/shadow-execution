@@ -50,26 +50,23 @@ class IValue {
 
   private:
     /**
-     * An IValue is value interpreted thorought our interpretation. Each IValue
+     * An IValue is value manipulated during interpretation. Each IValue
      * has a corresponding concrete value.
      *
-     * Fields of an IValue object includes:
-     *  type: type of this object, e.g. int32, float, ptr, ...
-     *  value: value of this object, e.g. 10, 5.5, 0x3, ...
-     *  valueOffset: the differences between the IValue address and the
-     *    correspoinding concrete value address [used for pointer value only]
-     *  size: size of the data this pointer point to [used for pointer value only] 
-     *  offset: distance from the value to the base pointer [used for pointer value only]
-     *  bitOffset: to represent data not fiting to a byte, values range from 0 to 7
-     *  index: the current index of this object [used for array (pointer) only] 
-     *  firstByte: if this object is an element in an array, this is the
-     *    distance from its address to the base pointer [used for elements in an array]
-     *  length: number of elements in the array object [used for array (pointer) only]
-     *  scope: either a GLOBAL, LOCAL or REGISTER object
-     *  fileNumber: file id for source location
-     *  lineNumber: source code line number
-     *  flag: machine flag (currently unused)
-     *  shadow: pointer to shadow object
+     * Fields of an IValue object include:
+     *  value: value of this object, e.g., 10, 5.5, 0x3, etc.
+     *  shadow: pointer to corresponding shadow object.
+     *  type: type of this object, e.g. int32, float, ptr, etc.
+     *  valueOffset: the difference between the IValue address and the
+     *    corresponding concrete value address (used for pointer value only).
+     *  size: size of the data this pointer points to (used for pointer value only). 
+     *  index: the current index of this object (used for array pointer only). 
+     *  firstByte: if this object is an element of an array, this is the
+     *    distance from the base pointer to this object (used for elements in an array).
+     *  length: number of elements in the array this pointer points to (used for array pointer only).
+     *  offset: distance from the base pointer to this value (used for pointer value only).
+     *  bitOffset: to represent data not fiting to a byte, values range from 0 to 7.
+     *  scope: either a GLOBAL, LOCAL or REGISTER.
      */
   
   VALUE value;
