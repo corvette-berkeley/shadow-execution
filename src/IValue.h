@@ -50,11 +50,12 @@ class IValue {
 
   private:
     /**
-     * An IValue is value manipulated during interpretation. Each IValue
+     * An IValue is a value manipulated during interpretation. Each IValue
      * has a corresponding concrete value.
      *
      * Fields of an IValue object include:
-     *  value: value of this object, e.g., 10, 5.5, 0x3, etc.
+     *  value: value of this object, e.g., 10, 5.5, 0x3, etc. For pointers the value is 
+     *  the corresponding concrete value.
      *  shadow: pointer to corresponding shadow object.
      *  type: type of this object, e.g. int32, float, ptr, etc.
      *  valueOffset: the difference between the IValue address and the

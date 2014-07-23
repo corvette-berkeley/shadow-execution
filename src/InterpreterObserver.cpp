@@ -504,6 +504,8 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       // calculating internal offset
       unsigned srcOffset = srcPtrLocation->getOffset();
       int internalOffset = srcOffset - currOffset;
+
+      // retrieving value given the internal offset
       VALUE value = srcPtrLocation->readValue(internalOffset, type);
 
       DEBUG_STDOUT("\t\tvalueIndex: " << valueIndex);
@@ -520,7 +522,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       srcLocation->copy(destLocation);
       destLocation->setTypeValue(type, value);
 
-      // syncing load
+      // syncing load value with concrete value
       sync = syncLoad(destLocation, opAddr, type);
 
       // if sync happens, update srcPtrLocation if possible
@@ -530,14 +532,14 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
         if (srcOffset + KIND_GetSize(type) <= lastElement->getFirstByte() + KIND_GetSize(lastElement->getType())) {
           srcPtrLocation->writeValue(internalOffset, KIND_GetSize(type), destLocation);
         }
-      }  
+      }
     }
     else {
       // source pointer is not initialized.
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
       VALUE zeroValue;
-      IValue* elem;
+      IValue* srcLocation;
       zeroValue.as_int = 0;
 
       destLocation->clear();
@@ -549,11 +551,11 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       // initialized source pointer
       DEBUG_STDOUT("\tInitializing source pointer.");
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
-      elem = new IValue();
-      destLocation->copy(elem);
-      srcPtrLocation->setLength(1);
+      srcLocation = new IValue();
+      destLocation->copy(srcLocation);
+      srcPtrLocation->setLength(1); // initialized
       srcPtrLocation->setSize(KIND_GetSize(type));
-      srcPtrLocation->setValueOffset((int64_t) elem - srcPtrLocation->getValue().as_int);
+      srcPtrLocation->setValueOffset((int64_t)srcLocation - srcPtrLocation->getValue().as_int);
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
 
       // updating load variable
