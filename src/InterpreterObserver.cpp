@@ -475,7 +475,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
   //DEBUG_LOG("[LOAD] Performing load");
 
-  // obtaining source pointer value
+  // retrieving source pointer value
   if (opScope == CONSTANT) {
     isPointerConstant = true;
   } 
@@ -491,18 +491,17 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
 
     DEBUG_STDOUT("\tsrcPtrLocation: " << srcPtrLocation->toString());
 
-    // creating new value
+    // CASE 1: srcPtrLocation and srcLocation exist
     if (srcPtrLocation->isInitialized()) {
-      IValue *srcLocation;
 
       // retrieving source
       IValue *values = (IValue*)srcPtrLocation->getIPtrValue();
       unsigned valueIndex = srcPtrLocation->getIndex();
-      unsigned currOffset = values[valueIndex].getFirstByte();
-      srcLocation = values + valueIndex;
+      IValue* srcLocation = values + valueIndex;
 
       // calculating internal offset
       unsigned srcOffset = srcPtrLocation->getOffset();
+      unsigned currOffset = values[valueIndex].getFirstByte();
       int internalOffset = srcOffset - currOffset;
 
       // retrieving value given the internal offset
@@ -535,7 +534,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       }
     }
     else {
-      // source pointer is not initialized.
+      // CASE 2: srcPtrLocation exists, but it is not initialized (no srcLocation)
       DEBUG_STDOUT("\tSource pointer is not initialized!");
 
       VALUE zeroValue;
@@ -545,10 +544,10 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       destLocation->clear();
       destLocation->setTypeValue(type, zeroValue);
 
-      // sync load
+      // syncing load
       sync = syncLoad(destLocation, opAddr, type);
 
-      // initialized source pointer
+      // initializing srcPtrLocation and srcLocation
       DEBUG_STDOUT("\tInitializing source pointer.");
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
       srcLocation = new IValue();
@@ -558,10 +557,10 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
       srcPtrLocation->setValueOffset((int64_t)srcLocation - srcPtrLocation->getValue().as_int);
       DEBUG_STDOUT("\tSource pointer location: " << srcPtrLocation->toString());
 
+      // TODO: revise this case
       // updating load variable
       if (loadInx != -1) {
         IValue *elem, *values, *loadInst;
-
         loadInst = loadGlobal ? globalSymbolTable[loadInx] : executionStack.top()[loadInx];
 
         // retrieving source
@@ -575,7 +574,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     DEBUG_STDOUT(destLocation->toString());
   }
   else {
-    // NEW case for pointer constants
+    // CASE 3: Neither srcPtrLocation nor srcLocation exist
     // TODO: revise again
     DEBUG_STDOUT("[Load] => pointer constant.");
 
@@ -585,7 +584,7 @@ void InterpreterObserver::load(IID iid UNUSED, KIND type, SCOPE opScope, int opI
     destLocation->clear();
     destLocation->setTypeValue(type, zeroValue);
 
-    // sync load
+    // syncing load
     sync = syncLoad(destLocation, opAddr, type);
     DEBUG_STDOUT(destLocation->toString());
   }
