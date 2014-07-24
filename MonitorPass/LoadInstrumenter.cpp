@@ -18,9 +18,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
     Constant* loadInx = INT32_CONSTANT(-1, SIGNED);
 
     if (LoadInst* parentLoadInst = dyn_cast<LoadInst>(loadInst->getPointerOperand())) {
-      Value *loadPtr; 
-
-      loadPtr = parentLoadInst->getPointerOperand(); 
+      Value *loadPtr = parentLoadInst->getPointerOperand(); 
       loadGlobal = BOOL_CONSTANT(isa<GlobalVariable>(loadPtr));
       loadInx = computeIndex(loadPtr);
     }
@@ -48,10 +46,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
 
     if (type->isStructTy()) {
 
-      /*
-       * Load for struct is treated separately.
-       */
-
+      // load for structs
       Value* op = KVALUE_VALUE(loadInst->getPointerOperand(), instrs, NOSIGN);
       if(op == NULL) return false;
 
@@ -70,46 +65,29 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
       instrs.push_back(call);
 
       InsertAllAfter(instrs, loadInst);
-
     } 
     else {
+      // load for non-struct
+      Instruction *call;
 
-      /*
-       * Load for non-struct. 
-       */
+      Value *ptrOp = loadInst->getPointerOperand();
+      Constant *cScope = INT32_CONSTANT(getScope(ptrOp), SIGNED);
+      Constant *cOpInx = computeIndex(ptrOp);
 
-      KIND kind;
-      Constant *kindC, *cScope, *cOpInx;
-      Value *ptrOp;
-      Instruction *ptrOpCast, *call;
-
-      ptrOp = loadInst->getPointerOperand();
-      cScope = INT32_CONSTANT(getScope(ptrOp), SIGNED);
-      cOpInx = computeIndex(ptrOp);
-
-      kind = TypeToKind(type);
+      KIND kind = TypeToKind(type);
       if (kind == INV_KIND) return false;
-      kindC = KIND_CONSTANT(kind);
+      Constant *kindC = KIND_CONSTANT(kind);
 
-      ptrOpCast = PTRTOINT_CAST_INSTR(ptrOp);
+      Instruction *ptrOpCast = PTRTOINT_CAST_INSTR(ptrOp);
       instrs.push_back(ptrOpCast);
-
-      call =
-        CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT("llvm_load", iid,
-            kindC, cScope, cOpInx, ptrOpCast, loadGlobal, loadInx, inx);
+      
+      call = CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT("llvm_load", iid, kindC, cScope, cOpInx, ptrOpCast, loadGlobal, loadInx, inx);
       instrs.push_back(call);
-
       InsertAllBefore(instrs, loadInst);
-
     }
-
     return true;
-
-  } else {
-
-    return false;
-
-  }
+  }    
+  return false;
 }
 
 uint64_t LoadInstrumenter::pushStructType(ArrayType* arrayType, InstrPtrVector& instrs) {
