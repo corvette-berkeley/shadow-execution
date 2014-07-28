@@ -168,7 +168,7 @@ struct DebugInfo {
  * @param file the current file
  * @param line the current line
  */
-inline void _safe_assert(bool cond, const char* func, std::string file, int line) {
+inline void _safe_assert(bool cond, const char* func, const char* file, int line) {
   if (!cond) {
     cout << "Counit: safe assert fail." << endl;
     cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line << endl;
