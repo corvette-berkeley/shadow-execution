@@ -87,6 +87,7 @@ SConscript(
 	'MonitorPass',
 	'src',
 	'papers/framework',
+	'papers/nans',
         ],
     exports='env',
     )
