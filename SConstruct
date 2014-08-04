@@ -86,7 +86,7 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
-	'papers/shadow-execution',
+	'papers/framework',
         ],
     exports='env',
     )
