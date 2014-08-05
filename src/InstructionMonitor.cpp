@@ -50,16 +50,16 @@
 // #include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
-
+/*
 #define DISPATCH_TO_OBSERVERS(func, ...) \
 	for(ObserverPtrList::iterator itr = observers_.begin(); itr < observers_.end(); ++itr) { \
 		(*itr)->func(__VA_ARGS__); \
 	}
+*/
 
-/*
 #define DISPATCH_TO_OBSERVERS(func, ...) \
   (*observers_.begin())->func(__VA_ARGS__);
-*/
+
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
