@@ -2083,27 +2083,27 @@ void InterpreterObserver::sext(int64_t opVal, SCOPE opScope, KIND opKind, KIND k
 }
 
 void InterpreterObserver::fptrunc(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  pre_fptrunc(opVal, opScope, opKind, kind, size, inx);
+  //pre_fptrunc(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTRUNC);
-  post_fptrunc(opVal, opScope, opKind, kind, size, inx);
+  //post_fptrunc(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fpext(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  pre_fpext(opVal, opScope, opKind, kind, size, inx);
+  //pre_fpext(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPEXT);
-  post_fpext(opVal, opScope, opKind, kind, size, inx);
+  //post_fpext(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fptoui(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  pre_fptoui(opVal, opScope, opKind, kind, size, inx);
+  //pre_fptoui(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTOUI);
-  post_fptoui(opVal, opScope, opKind, kind, size, inx);
+  //post_fptoui(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::fptosi(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  pre_fptosi(opVal, opScope, opKind, kind, size, inx);
+  //pre_fptosi(opVal, opScope, opKind, kind, size, inx);
   castop(opVal, opScope, opKind, kind, size, inx, FPTOSI);
-  post_fptosi(opVal, opScope, opKind, kind, size, inx);
+  //post_fptosi(opVal, opScope, opKind, kind, size, inx);
 }
 
 void InterpreterObserver::uitofp(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
@@ -2842,7 +2842,7 @@ void InterpreterObserver::create_stack_frame(int size) {
 
 void InterpreterObserver::create_global_symbol_table(int size) {
 
-  pre_create_global_symbol_table();
+  //pre_create_global_symbol_table();
 
   // instantiate copyShadow
   IValue::setCopyShadow(&copyShadow);
@@ -2870,9 +2870,9 @@ void InterpreterObserver::create_global_symbol_table(int size) {
     globalSymbolTable.push_back(value);
   }
 
-  pre_analysis();
+  //pre_analysis();
 
-  post_create_global_symbol_table();
+  //post_create_global_symbol_table();
 
   // free memory
   /*
@@ -2986,15 +2986,15 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type, 
   return;
 }
 
-void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3002,11 +3002,11 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3014,10 +3014,11 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3025,8 +3026,9 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = sin(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3035,19 +3037,19 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
-void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3055,11 +3057,11 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3067,10 +3069,11 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3078,8 +3081,9 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = acos(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3088,19 +3092,19 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
-void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3108,11 +3112,11 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3120,10 +3124,11 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3131,8 +3136,9 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = sqrt(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3141,19 +3147,19 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
-void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3161,11 +3167,11 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3173,10 +3179,11 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3184,8 +3191,9 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = fabs(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3194,19 +3202,19 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
-void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3214,11 +3222,11 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3226,10 +3234,11 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3237,8 +3246,9 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = cos(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3247,20 +3257,20 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
 
-void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3268,11 +3278,11 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3280,10 +3290,11 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3291,8 +3302,9 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = log(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3301,19 +3313,19 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
-void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type, int inx) {
+void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED, KIND type, int inx) {
 
   safe_assert(myStack.size() == 1);
   KVALUE *arg = myStack.top();
   myStack.pop();
   double argValue;
   VALUE value;
-  SCOPE argScope;
-  int64_t argValueOrIndex;
+  //SCOPE argScope;
+  //int64_t argValueOrIndex;
 
   // Get the operand value.
   if (arg->inx != -1) {
@@ -3321,11 +3333,11 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
 
     if (arg->isGlobal) {
       iArg = globalSymbolTable[arg->inx];
-      argScope = GLOBAL;
+      //argScope = GLOBAL;
     } 
     else {
       iArg = executionStack.top()[arg->inx];
-      argScope = LOCAL;
+      //argScope = LOCAL;
     }
 
     safe_assert(iArg);
@@ -3333,10 +3345,11 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
     argValue = iArg->getFlpValue();
   } 
   else {
-    argScope = CONSTANT;
+    //argScope = CONSTANT;
     argValue = arg->value.as_flp;
   }
 
+  /*
   if (argScope == CONSTANT) {
     int64_t *ptr = (int64_t*)&argValue;
     argValueOrIndex = *ptr;
@@ -3344,8 +3357,9 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   else {
     argValueOrIndex = arg->inx;
   }
+  */
 
-  pre_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //pre_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
 
   value.as_flp = floor(argValue); 
   IValue *returnValue = new IValue(type, value);
@@ -3354,7 +3368,7 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED, int p
   executionStack.top()[inx] = returnValue;
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-  post_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+  //post_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
   return;
 }
 
