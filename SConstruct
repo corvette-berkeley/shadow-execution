@@ -37,7 +37,7 @@ else:
 
 env = Environment(
     ENV = {'PATH' : os.environ['PATH']},
-    CCFLAGS = ['-Isrc/lib'],
+    CCFLAGS = ['-Isrc/lib', '-I'+os.environ['LIBUNWIND_PATH']+'/lib'],
     options=opts,
     Is64=Is64,
     )
