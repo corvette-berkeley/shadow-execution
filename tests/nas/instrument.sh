@@ -2,7 +2,7 @@
 
 LPATH=$GOLD_LLVM_BIN
 export CC=$LPATH"/clang -use-gold-plugin"
-export LDFLAGS="-lmonitor -L"$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib -L"$PROFILER_PATH"/lib"
+export LDFLAGS=$INSTRUMENTOR_PATH"/src -L"$GLOG_PATH"/lib -L"$PROFILER_PATH"/lib -L/scratch/rubio/libunwind-1.1.install/lib"
 
 # variables related to profiling
 #export PROFILER=""
@@ -26,7 +26,7 @@ $CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -
 #ld tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # create executable for uninstrumented bitcode
-$CC $1.bc -o $1.out2 -L$LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+$CC $1.bc -o $1.out2 -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # inspecting profile information
 # pprof --text executable.out cpu.prof
