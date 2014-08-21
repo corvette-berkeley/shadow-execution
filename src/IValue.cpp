@@ -186,7 +186,7 @@ VALUE IValue::readValue(int offset, KIND type) {
       IValue value; 
       
       value = valueArray[nextIndex];
-      totalByte += KIND_GetSize(value.getType());
+      totalByte += KIND_GetSize(value.getType()); // TODO: can the value's type change while iterating?
       nextIndex++;
     }
 
@@ -206,7 +206,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 
       value = valueArray[i];
       type = value.getType();
-      size = KIND_GetSize(type);
+      size = KIND_GetSize(type); // TODO: can the value's type change while iterating?
       valValue = value.getValue();
       valueContent = (uint8_t*) &valValue;
 
@@ -291,21 +291,16 @@ bool IValue::writeValue(int offset, int byte, IValue* src) {
 
   if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
 
-    //
     // trivial writing case
-    //
-    
     DEBUG_STDOUT("\t" << "Trivial writing."); 
     src->copy(&valueArray[index]);
 
     return true;
 
-  } else {
+  } 
+  else {
 
-    //
-    // write off the shelf
-    //
-
+    // writing off the shelf
     DEBUG_STDOUT("\t" << "Off the shelf writing."); 
 
     VALUE srcValue; 
@@ -314,18 +309,14 @@ bool IValue::writeValue(int offset, int byte, IValue* src) {
     
     srcValue = src->getValue();
 
-    //
-    // get content from source value
-    //
+    // retriving content from source value
     srcContent = (uint8_t*)(&srcValue);
     content = (uint8_t*) malloc(byte*sizeof(uint8_t*));
     for (int i = 0; i < byte; i++) {
       content[i] = srcContent[i];
     }
 
-    //
-    // write the content to this value array
-    //
+    // writing the content to this value array
     currentIndex = index;
     byteWrittens = 0;
     oldByteWrittens = 0;

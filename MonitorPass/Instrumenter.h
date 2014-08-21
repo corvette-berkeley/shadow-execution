@@ -218,7 +218,7 @@ int KIND_GetSize(int kind) {
     } else if (isa<Argument>(value)) {
       Argument* arg = (Argument*) value;
       inx = parent_->getIndex(arg);
-    } else if (isa<BasicBlock>(value)) { // no an instruction, but a basic block
+    } else if (isa<BasicBlock>(value)) { // not an instruction, but a basic block
       BasicBlock* block = (BasicBlock*) value;
       inx = parent_->getBlockIndex(block);
     }

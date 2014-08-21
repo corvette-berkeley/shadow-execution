@@ -1245,7 +1245,7 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
 
   VALUE value;
   value.as_ptr = (void*)actualAddress;
-  IValue* locArrPtr = new IValue(PTR_KIND, value, LOCAL); // HERE!
+  IValue* locArrPtr = new IValue(PTR_KIND, value, LOCAL);
   locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
@@ -1322,19 +1322,16 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
   }
 
   IValue *basePtrLocation, *ptrLocation, *array; 
-  int index;
-  int newOffset;
+  int length, index, actualOffset;
   bool reInit;
 
-  // get base pointer operand
-  if (baseInx == -1) {
-    // constant base pointer
+  // retrieving base pointer operand
+  if (baseInx == -1) { // constant base pointer
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     basePtrLocation = new IValue(PTR_KIND, value, 0, 0, 0, 0);
   } 
-  else {
-    
+  else {    
     if (baseScope == GLOBAL) {
       basePtrLocation = globalSymbolTable[baseInx];
     }
@@ -1342,135 +1339,109 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
       basePtrLocation = executionStack.top()[baseInx];
     }
   }
+  DEBUG_STDOUT("\tBase pointer operand " << basePtrLocation->toString());
+  // done retriving base pointer operand
 
-  DEBUG_STDOUT("\tPointer operand " << basePtrLocation->toString());
-
-  // get index operand
+  // retrieving index operand
   index = offsetInx == -1 ? offsetValue :
     executionStack.top()[offsetInx]->getValue().as_int; 
+  DEBUG_STDOUT("\tIndex value: " << index);
 
-  // compute new offset from base pointer in bytes 
-  newOffset = (index * (size/8)) + basePtrLocation->getOffset();
+  // computing actual offset from base pointer in bytes 
+  actualOffset = (index * (size/8)) + basePtrLocation->getOffset();
+  DEBUG_STDOUT("\tactualOffset: " << actualOffset);
 
   DEBUG_STDOUT("\tSize: " << size);
   DEBUG_STDOUT("\tBase Offset: " << basePtrLocation->getOffset());
-  DEBUG_STDOUT("\tIndex: " << index);
-  DEBUG_STDOUT("\tnewOffset: " << newOffset);
 
-  // check whether the pointer need to be (re)initialized.
-  reInit = false;
-  if (basePtrLocation->isInitialized()) {
-    IValue *array; 
-    int length;
+  // retriving first element pointed to and number of elements (> 1 for actual arrays)
+  array = (IValue*) basePtrLocation->getIPtrValue();
+  length = basePtrLocation->getLength();
+  //originalSize = KIND_GetSize(array[0].getType()); // NEW
 
-    array = (IValue*) basePtrLocation->getIPtrValue();
-    length = basePtrLocation->getLength();
-    // newOffset can be negative in case of negative index
-    if (newOffset < 0 || newOffset + size/8 > array[length-1].getFirstByte() +
-        KIND_GetSize(array[length-1].getType())) {
+  // checking whether the base pointer needs to be (re)initialized.
+  reInit = !basePtrLocation->isInitialized();
+
+  // additional check for out of bounds when initialized
+  if (!reInit ) {
+    //if (actualOffset < 0 || actualOffset + size/8 > array[length-1].getFirstByte() + KIND_GetSize(array[length-1].getType())) { 
+    if (actualOffset < 0 || actualOffset + size/8 > array[length-1].getFirstByte() + basePtrLocation->getSize()) { // same original size for all elements?
       reInit = true;
     }
-  } 
-  else {
-    reInit = true;
   }
 
-  // compute index, (re)initialized the pointer if neccessary
+  // (re)initializing the base pointer if neccessary
   if (reInit) {
     DEBUG_STDERR("\tPointer is re-initialized!");
     DEBUG_STDOUT("\tPointer is re-initialized!");
-    IValue *array, *newArray, *loadInst;
-    int length, newLength, i, extraBytes;
 
-    length = basePtrLocation->getLength();
-    array = (IValue*) basePtrLocation->getIPtrValue();
-    if (newOffset >= 0) { // newOffset is positive
+    IValue *newArray, *loadInst;
+    int newLength, extraBytes;
+
+    // determining new length of array
+    if (actualOffset >= 0) { // actualOffset is positive
       if (basePtrLocation->isInitialized()) {
-        extraBytes = newOffset + size/8 -
-          array[length-1].getFirstByte() - KIND_GetSize(array[length-1].getType()); 
+        //extraBytes = actualOffset + size/8 - array[length-1].getFirstByte() - KIND_GetSize(array[length-1].getType()); 
+        extraBytes = actualOffset + size/8 - array[length-1].getFirstByte() - basePtrLocation->getSize(); 
       } 
       else {
-        extraBytes = newOffset + size/8;
+        extraBytes = actualOffset + size/8;
       }
     } 
-    else { // newOffset is negative
-      DEBUG_STDOUT("New offset is negative.");
-      extraBytes = abs(newOffset);
+    else { // actualOffset is negative
+      DEBUG_STDOUT("Actual offset is negative.");
+      extraBytes = abs(actualOffset);
     }
-
     DEBUG_STDOUT("Extra bytes: " << extraBytes);
-
     newLength = length + ceil((double)extraBytes/(double)(size/8));
 
-    // optimization: allocate twice more space than required to reduce future
-    // allocation overhead
+    // optimization: allocate twice more space than required
     newLength = index >= 0 ? 2 * newLength : newLength;
 
     DEBUG_STDOUT("Old length: " << length);
     DEBUG_STDOUT("New length: " << newLength);
 
+    // allocating and popularing new array
     newArray = new IValue[newLength];
-    collect_new.push_back(newArray);
-    array = (IValue*) basePtrLocation->getIPtrValue();
 
-    for (i = 0; i < newLength; i++) {
+    unsigned firstByte = 0;
+    unsigned originalSize = basePtrLocation->getSize(); // new
+
+    for (int i = 0; i < newLength; i++) {
       IValue oldElement; 
       VALUE value;
-
       value.as_int = 0;
 
-      if (newOffset < 0) { // newOffset is negative, append at the beginning at the array new elements
+      if (actualOffset < 0) { // actualOffset is negative, append new elements at the beginning of the array
+
         if (i < newLength - length) {
-
-	  newArray[i].setType(type);
-	  newArray[i].setValue(value);
-
-          if (i == 0) {
-            newArray[i].setFirstByte(0);
-          } 
-	  else {
-            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
-                KIND_GetSize(newArray[i-1].getType()));
-          }
+	  newArray[i].setTypeValue(type, value);
         } 
 	else {
           oldElement = array[i + length - newLength];
           oldElement.copy(&newArray[i]);
-
-          if (i == 0) {
-	    newArray[i].setFirstByte(0);
-          } 
-	  else {
-            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
-                KIND_GetSize(newArray[i-1].getType()));
-          }
         }
+	newArray[i].setFirstByte(firstByte);
+	firstByte += originalSize;
       } 
-      else { // newOffset is positive, append at the end of the array new element
+      else { // actualOffset is positive, append at the end of the array new element
         if (i < length) {
           oldElement = array[i];
           oldElement.copy(&newArray[i]);
           newArray[i].setFirstByte(oldElement.getFirstByte());
         } 
 	else {
-	  newArray[i].setType(type);
-	  newArray[i].setValue(value);
-          if (i == 0) {
-            newArray[i].setFirstByte(0);
-          } 
-	  else {
-            newArray[i].setFirstByte(newArray[i-1].getFirstByte() +
-                KIND_GetSize(newArray[i-1].getType()));
-          }
+	  newArray[i].setTypeValue(type, value);
+	  newArray[i].setFirstByte(firstByte);
+	  firstByte += originalSize;
         }
       }
 
-      DEBUG_STDOUT("\tNew element at index " << i << " is: " <<
-          newArray[i].toString());
+      DEBUG_STDOUT("\tNew element at index " << i << " is: " << newArray[i].toString());
     }
 
     basePtrLocation->setLength(newLength);
-    basePtrLocation->setSize(size/8);
+    basePtrLocation->setSize(size/8); // REVISE: I thought this would be the original size instead
     basePtrLocation->setValueOffset((int64_t) newArray - basePtrLocation->getValue().as_int);
 
     // update load variable
@@ -1489,28 +1460,26 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
     }
 
     // delete here
-    for(i = length - 1; i >= 0; i--) {
+    for(int i = length - 1; i >= 0; i--) {
       array[i].IValue::~IValue();
     }
   }
+  // done (re)initializing the base pointer
 
-  //
-  // optimization for common case, array is original without casting
-  // check if array is cast (using firstByte and type size); if it is,
-  // use find index to get index
-  //
+  // common case: pointer to array is not cast (use firstByte and type size to verify this)
+  // otherwise, call findIndex to get the actual index
+
   array = (IValue*) basePtrLocation->getIPtrValue();
   index = index + basePtrLocation->getIndex();
 
   safe_assert(index < (int) basePtrLocation->getLength());
   if (index < 0 || (int) array[index].getFirstByte() != index*(int)size/8 || KIND_GetSize(array[index].getType()) != (int) size/8) {
-    index = findIndex((IValue*) basePtrLocation->getIPtrValue(), newOffset,
-        basePtrLocation->getLength()); 
+    index = findIndex(array, actualOffset, basePtrLocation->getLength()); 
   } 
 
   ptrLocation = executionStack.top()[inx];
-  ptrLocation->setAll(PTR_KIND, basePtrLocation->getValue(), size/8, /*newOffset, */index, basePtrLocation->getLength(),basePtrLocation->getValueOffset());
-  ptrLocation->setOffset(newOffset);
+  ptrLocation->setAll(PTR_KIND, basePtrLocation->getValue(), size/8, /*actualOffset, */index, basePtrLocation->getLength(), basePtrLocation->getValueOffset());
+  ptrLocation->setOffset(actualOffset);
 
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
   return;
