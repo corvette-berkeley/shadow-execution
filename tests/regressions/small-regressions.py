@@ -51,13 +51,26 @@ def main():
       # creating ll file for original program
       command = ['llvm-dis', bitcodefile, '-o', executable + '-orig.ll']
       call(command, stdin=None, stdout=None, stderr=None)
+
+      ##########################################
+      # breaking getelementptr constants
+      gbitcodefile = 'g_' + executable + '.bc' 
+      gbitcode = open(gbitcodefile, 'w')
+
+      command = [llvm + '/opt', '-load', monitorpass, '--break-constgeps', bitcodefile, '-f', '-o', gbitcodefile]
+      retval = call(command, stdin=None, stdout=None, stderr=None)
+
+      # return -1 if running LLVM passes fails
+      if retval <> 0:
+        log.write("[FAILED BREAKING GETELEMENTPTR CONSTANTS]: g_" + executable + ".bc\n")
+        continue
       
       ##########################################
       # instrumented bitcode file
       ibitcodefile = 'i_' + executable + '.bc' 
       ibitcode = open(ibitcodefile, 'w')
 
-      command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', '--file', glog_log_dir + '/' + executable + '-metadata.txt', '-o', ibitcodefile]
+      command = [llvm + '/opt', '-load', monitorpass, '--instrument', gbitcodefile, '--file', glog_log_dir + '/' + executable + '-metadata.txt', '-o', ibitcodefile]
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
