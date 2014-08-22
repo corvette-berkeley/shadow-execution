@@ -1486,8 +1486,8 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
 }
 
 void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, 
-					      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, 
-					      int size01 UNUSED, int size02,  int inx) {
+					      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, 
+					      int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
 
   IValue* arrayElemPtr;
   int newOffset;
@@ -2626,24 +2626,27 @@ int InterpreterObserver::actualValueToIntValue(int scope, int64_t vori) {
 void InterpreterObserver::push_getelementptr_inx5(int scope01, int scope02, int
     scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t
     vori03, int64_t vori04, int64_t vori05) {
-  int v1, v2, v3, v4, v5;
 
-  v1 = actualValueToIntValue(scope01, vori01);
-  v2 = actualValueToIntValue(scope02, vori02);
-  v3 = actualValueToIntValue(scope03, vori03);
-  v4 = actualValueToIntValue(scope04, vori04);
-  v5 = actualValueToIntValue(scope05, vori05);
-
+  int value;
   if (scope01 != SCOPE_INVALID) {
-    getElementPtrIndexList.push_back(v1);
+    value = actualValueToIntValue(scope01, vori01);
+    getElementPtrIndexList.push_back(value);
+
     if (scope02 != SCOPE_INVALID) {
-      getElementPtrIndexList.push_back(v2);
+      value = actualValueToIntValue(scope02, vori02);
+      getElementPtrIndexList.push_back(value);
+
       if (scope03 != SCOPE_INVALID) {
-        getElementPtrIndexList.push_back(v3);
+	value = actualValueToIntValue(scope03, vori03);
+        getElementPtrIndexList.push_back(value);
+
         if (scope04 != SCOPE_INVALID) {
-          getElementPtrIndexList.push_back(v4);
+	  value = actualValueToIntValue(scope04, vori04);
+          getElementPtrIndexList.push_back(value);
+
           if (scope05 != SCOPE_INVALID) {
-            getElementPtrIndexList.push_back(v5);
+	    value = actualValueToIntValue(scope05, vori05);
+            getElementPtrIndexList.push_back(value);
           }
         }
       }
