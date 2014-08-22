@@ -13,6 +13,7 @@ and
 array2
 array3
 array_call
+array_four_dim
 array_heap_double
 array_heap_int
 array_heap_long
