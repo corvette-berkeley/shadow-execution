@@ -1194,11 +1194,8 @@ void InterpreterObserver::allocax(IID iid UNUSED, KIND type, uint64_t size UNUSE
 
 void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size, int inx, uint64_t actualAddress) {
 
-  unsigned firstByte, bitOffset, length;
-
-  firstByte = 0;
-  bitOffset = 0;
-  length = 0; 
+  unsigned firstByte = 0, bitOffset = 0, length = 0;
+  unsigned typeSize = KIND_GetSize(type);
 
   // if array element is struct, get list of primitive types for each struct element
   uint64_t structSize = 1;
@@ -1234,7 +1231,7 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
       var->setFirstByte(firstByte + bitOffset/8);
       var->setBitOffset(bitOffset%8);
       var->setLength(0);
-      firstByte += KIND_GetSize(type);
+      firstByte += typeSize;
       bitOffset = (type == INT1_KIND) ? bitOffset + 1 : bitOffset;
       if (type == INT1_KIND) {
         bitOffset++;
