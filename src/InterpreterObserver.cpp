@@ -1488,21 +1488,18 @@ void InterpreterObserver::getelementptr(IID iid UNUSED, int baseInx, SCOPE baseS
 void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, 
 					      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, 
 					      int64_t valOrInx03, int size01 UNUSED, int size02,  int inx) {
-
   IValue* arrayElemPtr;
   int newOffset;
 
   if (baseInx == -1) {
-    // TODO: review this
-    // constant pointer
-    // return a dummy object
+    // TODO: review this constant pointer return a dummy object
     VALUE value;
     value.as_ptr = (void*)baseAddr;
     arrayElemPtr = new IValue(PTR_KIND, value, 0, 0, 0, 0);
 
     getElementPtrIndexList.clear();
     arraySize.clear();
-  } 
+  }
   else {
     IValue *ptrArray, *array;
     int *arraySizeVec, *indexVec;
@@ -1614,7 +1611,7 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
       arrayElemPtr = new IValue(PTR_KIND, arrayElemPtrValue, ptrArray->getSize(), 0, 0, 0);
       arrayElemPtr->setValueOffset((int64_t)arrayElemPtr - arrayElemPtr->getValue().as_int);
     }
-  }
+  } // baseInx != -1
 
   safe_assert(getElementPtrIndexList.empty());
 
