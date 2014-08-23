@@ -1245,16 +1245,15 @@ void InterpreterObserver::allocax_array(IID iid UNUSED, KIND type, uint64_t size
 
   VALUE value;
   value.as_ptr = (void*)actualAddress;
-  IValue* locArrPtr = new IValue(PTR_KIND, value, LOCAL);
+
+  IValue* locArrPtr = executionStack.top()[inx];
+  locArrPtr->setTypeValue(PTR_KIND, value);
+  locArrPtr->setScope(LOCAL);
   locArrPtr->setValueOffset((int64_t)locArr - (int64_t)locArrPtr->getPtrValue());
   locArrPtr->setSize(KIND_GetSize(locArr[0].getType()));
   locArrPtr->setLength(length);
 
-  release(executionStack.top()[inx]);
-  executionStack.top()[inx] = locArrPtr;
-
   DEBUG_STDOUT(executionStack.top()[inx]->toString());
-
   safe_assert(locArrPtr->getValueOffset() != -1);
   return;
 }
