@@ -21,6 +21,8 @@ array_local
 array_multi_local
 array_struct_local
 array_struct_mul_local
+array_three_dim
+array_two_dim
 ashr
 binop
 bit
