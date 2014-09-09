@@ -16,20 +16,20 @@ def main():
   executables = open(executables_name, 'r')
 
   # setting some variables
-  llvm = os.getenv("GOLD_LLVM_BIN")
-  instrumentorpath = os.getenv("INSTRUMENTOR_PATH")
-  
+  llvm = os.getenv("LLVM_BIN_PATH")
+  monitorpath = os.getenv("MONITOR_LIB_PATH")
+
   if platform.system() == 'Darwin':
-      monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.dylib"
+      monitorpass = monitorpath + "/MonitorPass.dylib"
   else:
-      monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
-      
-  sourcepath = instrumentorpath + "/src"
-  glogpath = os.getenv("GLOG_PATH") + "/lib"
+      monitorpass = monitorpath + "/MonitorPass.so"
+
+  sourcepath = os.getenv("INSTRUMENTOR_LIB_PATH");
+  glogpath = os.getenv("GLOG_LIB_PATH")
   glog_log_dir = os.getenv("GLOG_log_dir")
 
   logfile = "log.out"
-  log = open(logfile, "w") 
+  log = open(logfile, "w")
 
   for executable in executables:
       executable = executable.strip()
@@ -37,24 +37,24 @@ def main():
 
       ##########################################
       # compiling file
-      bitcodefile = executable + '.bc' 
+      bitcodefile = executable + '.bc'
       bitcode = open(bitcodefile, 'w')
 
-      command = ['clang', '-c', '-emit-llvm', executable + '.c', '-fpack-struct', '-o', bitcodefile]
+      command = [llvm + '/clang', '-c', '-emit-llvm', executable + '.c', '-fpack-struct', '-o', bitcodefile]
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED INSTRUMENTATION]: i_" + executable + ".bc\n")
-        continue 
+        continue
 
       # creating ll file for original program
-      command = ['llvm-dis', bitcodefile, '-o', executable + '-orig.ll']
+      command = [llvm +'/llvm-dis', bitcodefile, '-o', executable + '-orig.ll']
       call(command, stdin=None, stdout=None, stderr=None)
 
       ##########################################
       # breaking getelementptr constants
-      gbitcodefile = 'g_' + executable + '.bc' 
+      gbitcodefile = 'g_' + executable + '.bc'
       gbitcode = open(gbitcodefile, 'w')
 
       command = [llvm + '/opt', '-load', monitorpass, '--break-constgeps', bitcodefile, '-f', '-o', gbitcodefile]
@@ -64,10 +64,10 @@ def main():
       if retval <> 0:
         log.write("[FAILED BREAKING GETELEMENTPTR CONSTANTS]: g_" + executable + ".bc\n")
         continue
-      
+
       ##########################################
       # instrumented bitcode file
-      ibitcodefile = 'i_' + executable + '.bc' 
+      ibitcodefile = 'i_' + executable + '.bc'
       ibitcode = open(ibitcodefile, 'w')
 
       command = [llvm + '/opt', '-load', monitorpass, '--instrument', gbitcodefile, '--file', glog_log_dir + '/' + executable + '-metadata.txt', '-o', ibitcodefile]
@@ -79,13 +79,13 @@ def main():
         continue
 
       # creating ll file for instrumented code
-      command = ['llvm-dis', ibitcodefile, '-o', executable + '.ll']
+      command = [llvm + '/llvm-dis', ibitcodefile, '-o', executable + '.ll']
       call(command, stdin=None, stdout=None, stderr=None)
 
       ###########################################
       # instrumented executable file
       '''
-      iassemblyfile = 'i_' + executable + '.s' 
+      iassemblyfile = 'i_' + executable + '.s'
       iassembly = open(iassemblyfile, 'w')
 
       command = [llvm + '/llc', ibitcodefile]
@@ -94,12 +94,12 @@ def main():
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED ASSEMBLY]: " + executable + ".s\n")
-        continue 
-      '''  
-      
+        continue
+      '''
+
       ############################################
       # creating instrumented executable file
-      iexecutablefile = executable + '.out' 
+      iexecutablefile = executable + '.out'
       iexecutable = open(iexecutablefile, 'w')
 
       # add -lgmp for expr and other core utility
@@ -111,10 +111,10 @@ def main():
         log.write("[FAILED CREATING EXECUTABLE]: " + executable + ".out\n")
 
       iexecutable.close()
-         
+
 
       ############################################
-      # running executable file        
+      # running executable file
       command = ['./' + executable + '.out']
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
