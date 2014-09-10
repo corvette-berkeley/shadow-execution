@@ -1,0 +1,10 @@
+--style=attach
+--add-brackets
+--indent=force-tab
+--indent-switches
+--indent-labels
+--indent-col1-comments
+--align-pointer=type
+--close-templates
+--max-code-length=120
+--lineend=linux
