@@ -79,3 +79,9 @@ Session.vim
 
 # astyle backups
 *.orig
+
+# configuration file
+instr.sh
+
+# output folder
+Release+Asserts/*.*

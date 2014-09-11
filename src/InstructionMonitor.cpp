@@ -7,7 +7,7 @@
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -29,7 +29,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
  * EVENT SHALL UC BERKELEY BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR
  * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -45,95 +46,112 @@
 #include "PrintObserver.h"
 #include "InterpreterObserver.h"
 #include "NaNPropagationAnalysis.h"
-#include "BlameTree.h"
-#include "BlameTreeFloat.h"
 // #include "OutOfBoundAnalysis.h"
 
 /*******************************************************************************************/
 /*
 #define DISPATCH_TO_OBSERVERS(func, ...) \
-	for(ObserverPtrList::iterator itr = observers_.begin(); itr < observers_.end(); ++itr) { \
+	for(ObserverPtrList::iterator itr = observers_.begin(); itr < observers_.end();
+++itr) { \
 		(*itr)->func(__VA_ARGS__); \
 	}
 */
 
-#define DISPATCH_TO_OBSERVERS(func, ...) \
+#define DISPATCH_TO_OBSERVERS(func, ...)                                       \
   (*observers_.begin())->func(__VA_ARGS__);
 
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
-void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(add, lScope, rScope, lValue, rValue, type, inx)
+void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			  KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(add, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(fadd, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(fadd, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(sub, lScope, rScope, lValue, rValue, type, inx)
+void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			  KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(sub, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,int inx) {
-  DISPATCH_TO_OBSERVERS(fsub, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(fsub, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,int inx) {
-  DISPATCH_TO_OBSERVERS(mul, lScope, rScope, lValue, rValue, type,inx)
+void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			  KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(mul, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx){
-  DISPATCH_TO_OBSERVERS(fmul, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(fmul, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(udiv, lScope, rScope, lValue, rValue, type, inx)
+void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(udiv, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(sdiv, lScope, rScope, lValue, rValue, type, inx)
+void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(sdiv, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(fdiv, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(fdiv, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(urem, lScope, rScope, lValue, rValue, type, inx)
+void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(urem, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(srem, lScope, rScope, lValue, rValue, type, inx)
+void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(srem, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(frem, lScope, rScope, lValue, rValue, type, inx)
+void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(frem, lScope, rScope, lValue, rValue, type, inx)
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, inx)
+void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			  KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, inx)
+void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, inx)
+void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, inx)
+void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, inx)
+void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			  KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, inx)
+void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, int inx) {
+	DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, inx)
 }
 
 // ****** Vector Operations ****** //
@@ -158,31 +176,35 @@ void llvm_insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 	DISPATCH_TO_OBSERVERS(insertvalue, iid, op1, op2, inx)
 }
 
-
 // ***** Memory Access and Addressing Operations ***** //
 
 void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
-  DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, addr)
+	DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, addr)
 }
 
-void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
-  DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, addr)
+void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx,
+						uint64_t addr) {
+	DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, addr)
 }
 
 void llvm_allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr) {
-  DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, addr);
+	DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, addr);
 }
 
-void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int inx) {
-  DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, opAddr, loadGlobal, loadInx, inx);
+void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr,
+			   bool loadGlobal, int loadInx, int inx) {
+	DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, opAddr, loadGlobal,
+						  loadInx, inx);
 }
 
 void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int inx) {
-  DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, inx);
+	DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, inx);
 }
 
-void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
-  DISPATCH_TO_OBSERVERS(store, pInx, pScope, srcKind, srcScope, srcInx, srcValue)
+void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope,
+				int srcInx, int64_t srcValue) {
+	DISPATCH_TO_OBSERVERS(store, pInx, pScope, srcKind, srcScope, srcInx,
+						  srcValue)
 }
 
 void llvm_fence() {
@@ -190,82 +212,104 @@ void llvm_fence() {
 }
 
 void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int inx) {
-  DISPATCH_TO_OBSERVERS(cmpxchg, iid, addr, value1, value2, inx)
+	DISPATCH_TO_OBSERVERS(cmpxchg, iid, addr, value1, value2, inx)
 }
 
 void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue, 
-			KIND kind, uint64_t size, bool loadGlobal, int loadInx, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr, iid, baseInx, baseScope, baseAddr, offsetInx, offsetValue, kind, size, loadGlobal, loadInx, inx)
+void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope,
+						uint64_t baseAddr, int offsetInx, int64_t offsetValue,
+						KIND kind, uint64_t size, bool loadGlobal, int loadInx,
+						int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr, iid, baseInx, baseScope, baseAddr,
+						  offsetInx, offsetValue, kind, size, loadGlobal, loadInx,
+						  inx)
 }
 
-void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, 
-			      int scopeInx01, int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02, int64_t valOrInx03, int size01, int size02,  int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_array, baseInx, baseScope, baseAddr, elementSize, scopeInx01, scopeInx02, scopeInx03, valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
+void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr,
+							  int elementSize, int scopeInx01, int scopeInx02,
+							  int scopeInx03, int64_t valOrInx01,
+							  int64_t valOrInx02, int64_t valOrInx03,
+							  int size01, int size02, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr_array, baseInx, baseScope, baseAddr,
+						  elementSize, scopeInx01, scopeInx02, scopeInx03,
+						  valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
 }
 
-void llvm_getelementptr_struct(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int inx) {
-  DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, baseInx, baseScope, baseAddr, inx)
+void llvm_getelementptr_struct(IID iid, int baseInx, SCOPE baseScope,
+							   uint64_t baseAddr, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, baseInx, baseScope, baseAddr,
+						  inx)
 }
 
 // ***** Conversion Operations ***** //
-void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(trunc, op, opScope, opKind, kind, size, inx);
+void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				int inx) {
+	DISPATCH_TO_OBSERVERS(trunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(zext, op, opScope, opKind, kind, size, inx);
+void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(zext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(sext, op, opScope, opKind, kind, size, inx);
+void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(sext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptrunc, op, opScope, opKind, kind, size, inx);
+void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				  int inx) {
+	DISPATCH_TO_OBSERVERS(fptrunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(fpext, op, opScope, opKind, kind, size, inx);
+void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				int inx) {
+	DISPATCH_TO_OBSERVERS(fpext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptoui, op, opScope, opKind, kind, size, inx);
+void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				 int inx) {
+	DISPATCH_TO_OBSERVERS(fptoui, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(fptosi, op, opScope, opKind, kind, size, inx);
+void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				 int inx) {
+	DISPATCH_TO_OBSERVERS(fptosi, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(uitofp, op, opScope, opKind, kind, size, inx);
+void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				 int inx) {
+	DISPATCH_TO_OBSERVERS(uitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(sitofp, op, opScope, opKind, kind, size, inx);
+void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				 int inx) {
+	DISPATCH_TO_OBSERVERS(sitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(ptrtoint, op, opScope, opKind, kind, size, inx);
+void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				   int inx) {
+	DISPATCH_TO_OBSERVERS(ptrtoint, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(inttoptr, op, opScope, opKind, kind, size, inx);
+void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				   int inx) {
+	DISPATCH_TO_OBSERVERS(inttoptr, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
-  DISPATCH_TO_OBSERVERS(bitcast, op, opScope, opKind, kind, size, inx);
+void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
+				  int inx) {
+	DISPATCH_TO_OBSERVERS(bitcast, op, opScope, opKind, kind, size, inx);
 }
-
 
 // **** Terminator Instructions ***** //
-void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value) {
-  DISPATCH_TO_OBSERVERS(branch, iid, conditional, valInx, scope, type, value)
+void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type,
+				 uint64_t value) {
+	DISPATCH_TO_OBSERVERS(branch, iid, conditional, valInx, scope, type, value)
 }
-
 
 void llvm_branch2(IID iid, bool conditional) {
 	DISPATCH_TO_OBSERVERS(branch2, iid, conditional)
@@ -284,11 +328,11 @@ void llvm_resume(IID iid, KVALUE* op1, int inx) {
 }
 
 void llvm_return_(IID iid, int valInx, SCOPE scope, KIND type, int64_t value) {
-  DISPATCH_TO_OBSERVERS(return_, iid, valInx, scope, type, value)
+	DISPATCH_TO_OBSERVERS(return_, iid, valInx, scope, type, value)
 }
 
 void llvm_return_struct_(IID iid, int inx, int valInx) {
-  DISPATCH_TO_OBSERVERS(return_struct_, iid, inx, valInx);
+	DISPATCH_TO_OBSERVERS(return_struct_, iid, inx, valInx);
 }
 
 void llvm_return2_(IID iid, int inx) {
@@ -303,38 +347,40 @@ void llvm_unreachable() {
 	DISPATCH_TO_OBSERVERS(unreachable)
 }
 
-
 // ***** Other Operations ***** //
-void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
-  DISPATCH_TO_OBSERVERS(icmp, lScope, rScope, lValue, rValue, type, pred, inx);
+void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, PRED pred, int inx) {
+	DISPATCH_TO_OBSERVERS(icmp, lScope, rScope, lValue, rValue, type, pred, inx);
 }
 
-void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
-  DISPATCH_TO_OBSERVERS(fcmp, lScope, rScope, lValue, rValue, type, pred, inx);
+void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+			   KIND type, PRED pred, int inx) {
+	DISPATCH_TO_OBSERVERS(fcmp, lScope, rScope, lValue, rValue, type, pred, inx);
 }
 
 void llvm_phinode(IID iid, int inx) {
 	DISPATCH_TO_OBSERVERS(phinode, iid, inx)
 }
 
-void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
-  DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue, inx)
+void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue,
+				 int inx) {
+	DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue, inx)
 }
 
 void llvm_push_string(int c) {
-  DISPATCH_TO_OBSERVERS(push_string, c);
+	DISPATCH_TO_OBSERVERS(push_string, c);
 }
 
 void llvm_push_stack(int inx, SCOPE scope, KIND type, uint64_t addr) {
-  DISPATCH_TO_OBSERVERS(push_stack, inx, scope, type, addr)
+	DISPATCH_TO_OBSERVERS(push_stack, inx, scope, type, addr)
 }
 
 void llvm_push_phinode_constant_value(KVALUE* value, int blockId) {
-  DISPATCH_TO_OBSERVERS(push_phinode_constant_value, value, blockId);
+	DISPATCH_TO_OBSERVERS(push_phinode_constant_value, value, blockId);
 }
 
 void llvm_push_phinode_value(int valId, int blockId) {
-  DISPATCH_TO_OBSERVERS(push_phinode_value, valId, blockId);
+	DISPATCH_TO_OBSERVERS(push_phinode_value, valId, blockId);
 }
 
 void llvm_push_return_struct(KVALUE* value) {
@@ -342,95 +388,104 @@ void llvm_push_return_struct(KVALUE* value) {
 }
 
 void llvm_push_getelementptr_inx(uint64_t value) {
-  DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
+	DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
 }
 
-void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01, int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05) {
-  DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03, scope04, scope05, vori01, vori02, vori03, vori04, vori05);
+void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03,
+								  int scope04, int scope05, int64_t vori01,
+								  int64_t vori02, int64_t vori03,
+								  int64_t vori04, int64_t vori05) {
+	DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03,
+						  scope04, scope05, vori01, vori02, vori03, vori04,
+						  vori05);
 }
 
-void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05) { 
-  DISPATCH_TO_OBSERVERS(push_array_size5, scope01, scope02, scope03, scope04, scope05);
+void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04,
+						   int scope05) {
+	DISPATCH_TO_OBSERVERS(push_array_size5, scope01, scope02, scope03, scope04,
+						  scope05);
 }
 
 void llvm_push_getelementptr_inx2(int value) {
-  DISPATCH_TO_OBSERVERS(push_getelementptr_inx2, value)
+	DISPATCH_TO_OBSERVERS(push_getelementptr_inx2, value)
 }
 
 void llvm_push_array_size(uint64_t i) {
-  DISPATCH_TO_OBSERVERS(push_array_size, i);
+	DISPATCH_TO_OBSERVERS(push_array_size, i);
 }
 
 void llvm_push_struct_type(KIND kind) {
-  DISPATCH_TO_OBSERVERS(push_struct_type, kind);
-} 
+	DISPATCH_TO_OBSERVERS(push_struct_type, kind);
+}
 
 void llvm_push_struct_element_size(uint64_t s) {
-  DISPATCH_TO_OBSERVERS(push_struct_element_size, s);
+	DISPATCH_TO_OBSERVERS(push_struct_element_size, s);
 }
 
 void llvm_construct_array_type(uint64_t i) {
-  DISPATCH_TO_OBSERVERS(construct_array_type, i);
+	DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
-void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue) {
-  DISPATCH_TO_OBSERVERS(after_call, retInx, retScope, retType, retValue)
+void llvm_after_call(int retInx, SCOPE retScope, KIND retType,
+					 int64_t retValue) {
+	DISPATCH_TO_OBSERVERS(after_call, retInx, retScope, retType, retValue)
 }
 
 void llvm_after_void_call() {
-  DISPATCH_TO_OBSERVERS(after_void_call)
+	DISPATCH_TO_OBSERVERS(after_void_call)
 }
 
 void llvm_after_struct_call() {
-  DISPATCH_TO_OBSERVERS(after_struct_call)
+	DISPATCH_TO_OBSERVERS(after_struct_call)
 }
 
 void llvm_create_stack_frame(int size) {
-  DISPATCH_TO_OBSERVERS(create_stack_frame, size)
+	DISPATCH_TO_OBSERVERS(create_stack_frame, size)
 }
 
 void llvm_create_global_symbol_table(int size) {
-  DISPATCH_TO_OBSERVERS(create_global_symbol_table, size)
+	DISPATCH_TO_OBSERVERS(create_global_symbol_table, size)
 }
 
 void llvm_record_block_id(int id) {
-  DISPATCH_TO_OBSERVERS(record_block_id, id)
+	DISPATCH_TO_OBSERVERS(record_block_id, id)
 }
 
 void llvm_create_global(KVALUE* value, KVALUE* initializer) {
-  DISPATCH_TO_OBSERVERS(create_global, value, initializer)
+	DISPATCH_TO_OBSERVERS(create_global, value, initializer)
 }
 
-void llvm_create_global_array(int valInx, uint64_t addr, uint32_t size, KIND type) {
-  DISPATCH_TO_OBSERVERS(create_global_array, valInx, addr, size, type)
+void llvm_create_global_array(int valInx, uint64_t addr, uint32_t size,
+							  KIND type) {
+	DISPATCH_TO_OBSERVERS(create_global_array, valInx, addr, size, type)
 }
 
 void llvm_call(IID iid, bool nounwind, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, inx)
+	DISPATCH_TO_OBSERVERS(call, iid, nounwind, type, inx)
 }
 
 void llvm_call_sin(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_sin, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_sin, iid, nounwind, pc, type, inx)
 }
 
 void llvm_call_acos(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_acos, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_acos, iid, nounwind, pc, type, inx)
 }
 
 void llvm_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_sqrt, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_sqrt, iid, nounwind, pc, type, inx)
 }
 
 void llvm_call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_fabs, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_fabs, iid, nounwind, pc, type, inx)
 }
 
 void llvm_call_cos(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_cos, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_cos, iid, nounwind, pc, type, inx)
 }
 
 void llvm_call_log(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_log, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_log, iid, nounwind, pc, type, inx)
 }
 
 /*
@@ -440,21 +495,22 @@ void llvm_call_exp(IID iid, bool nounwind, int pc, KIND type, int inx) {
 */
 
 void llvm_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx) {
-  DISPATCH_TO_OBSERVERS(call_floor, iid, nounwind, pc, type, inx)
+	DISPATCH_TO_OBSERVERS(call_floor, iid, nounwind, pc, type, inx)
 }
 
-void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx, uint64_t mallocAddress) {
-  DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, size, inx, mallocAddress)
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx,
+					  uint64_t mallocAddress) {
+	DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, size, inx,
+						  mallocAddress)
 }
 
 void llvm_vaarg() {
-  DISPATCH_TO_OBSERVERS(vaarg)
+	DISPATCH_TO_OBSERVERS(vaarg)
 }
 
 void llvm_landingpad() {
-  DISPATCH_TO_OBSERVERS(landingpad)
+	DISPATCH_TO_OBSERVERS(landingpad)
 }
-
 
 /*******************************************************************************************/
 
@@ -462,10 +518,8 @@ ObserverPtrList observers_;
 
 /*******************************************************************************************/
 
-
 // macro for adding observers
-#define REGISTER_OBSERVER(T, N) \
-		static RegisterObserver<T> T##_INSTANCE(N);
+#define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
 
 // active observers
 //REGISTER_OBSERVER(EmptyObserver, "empty")
@@ -478,5 +532,3 @@ REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 //REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
 
 /*******************************************************************************************/
-
-
