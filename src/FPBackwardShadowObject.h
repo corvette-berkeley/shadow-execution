@@ -7,7 +7,7 @@
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -43,67 +43,21 @@
 #define FP_BACKWARD_SHADOW_OBJECT_H
 
 #include <iostream>
-#include <string>
 
-using namespace std;
+struct FPBackwardShadowObject {
 
-class FPBackwardShadowObject {
+private:
+	double val;  // Value in higher precision
+	long double abserr;  // Maximum absolute error
+	int line;  // source line information
 
-  private:
-    double val;    // Value in higher precision
-    long double abserr;    // Maximum absolute error
-    int line; // source line information
+public:
+	FPBackwardShadowObject(double v = 0, int l = -1) : val(v), abserr(0), line(l) {}
 
-  public:
-    FPBackwardShadowObject(): val(0), abserr(0) {}
-
- FPBackwardShadowObject(double v, int l): val(v), abserr(0), line(l) {}
-
-    FPBackwardShadowObject(const FPBackwardShadowObject& fpISO) {
-      create(fpISO);
-    }
-
-    ~FPBackwardShadowObject() {
-      uncreate();
-    }
-
-    FPBackwardShadowObject& operator=(const FPBackwardShadowObject& fpISO) {
-      if (&fpISO != this) {
-
-        // free the object in the left-hand side
-        uncreate();
-
-        // copy elements from the right-hand side to the left-hand side
-        create(fpISO);
-      }
-
-      return *this;
-    }
-
-    double getValue() const;
-
-    int getLine() const;
-
-    long double getMaxAbsErr() const;
-
-    void setValue(double val);
-
-    void setLine(int line);
-
-    void setMaxAbsErr(long double abserr);
-
-    void copyTo(FPBackwardShadowObject *fpISO);
-
-    void print();
-
-  private:
-    void create(const FPBackwardShadowObject& fpISO) {
-      val = fpISO.getValue();
-      line = fpISO.getLine();
-      abserr = fpISO.getMaxAbsErr();
-    };
-
-    void uncreate() {};
+	void print() {
+		std::cout << "line: " << line << ", val: " << val << ", abserr: " << abserr << endl;
+		return;
+	}
 };
 
 #endif /* FP_BACKWARD_SHADOW_OBJECT_H_ */

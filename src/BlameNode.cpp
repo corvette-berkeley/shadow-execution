@@ -1,13 +1,13 @@
 /**
  * @file BlameNode.cpp
- * @brief 
+ * @brief
  */
 
 /*
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -38,52 +38,50 @@
 #include "BlameNode.h"
 #include <sstream>
 
-std::string BlameNode::toDot() {
-  std::ostringstream dot;
+using std::string;
+using std::ostringstream;
+using std::map;
+using std::make_pair;
 
-  dot << "\"(" << dpc << ", " << pc << ", " <<
-    BlameTreeUtilities::precisionToString(precision) << ")\"";
+string BlameNode::toDot() {
+	ostringstream dot;
 
-  return dot.str();
+	dot << "\"(" << dpc << ", " << pc << ", " << BlameTreeUtilities::precisionToString(precision) << ")\"";
+
+	return dot.str();
 }
 
-std::string BlameNode::edgeToDot(map<BlameNodeID, BlameNode> nodes) {
-  int tempNodeCnt;
-  std::ostringstream tmpDot;
-  std::ostringstream dot;
+// TODO: why are BlacmeNodeID's in existance?
+string BlameNode::edgeToDot(map<BlameNodeID, BlameNode> nodes) {
+	ostringstream tmpDot;
+	ostringstream dot;
 
-  tempNodeCnt = 0;
-  tmpDot << "\"tmp" << dpc << "-" << BlameTreeUtilities::precisionToString(precision);
+	int tempNodeCnt = 0;
+	tmpDot << "\"tmp" << dpc << "-" << BlameTreeUtilities::precisionToString(precision);
 
-  safe_assert(edges.size() == edgeAttributes.size());
-  for(std::pair<vector< vector< BlameNodeID > >::iterator, vector< bool >::iterator> it(edges.begin(), edgeAttributes.begin()); it.first != edges.end(); ++it.first, ++it.second) {
-    vector< BlameNodeID > bnIDs;
-    bool edgeAttr;
-    std::ostringstream tmpNodeStr;
+	safe_assert(edges.size() == edgeAttributes.size());
+	for (auto it = make_pair(edges.begin(), edgeAttributes.begin()); it.first != edges.end(); ++it.first, ++it.second) {
+		vector<BlameNodeID> bnIDs = *it.first;
+		bool edgeAttr = *it.second;
 
-    bnIDs = *it.first;
-    edgeAttr = *it.second;
+		ostringstream tmpNodeStr;
+		tmpNodeStr << tmpDot.str() << "-" << tempNodeCnt << "\"";
+		if (edgeAttr) {
+			// edge perform in high precision
+			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]" << endl;
+		} else {
+			// edge perform in high precision
+			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond]" << endl;
+		}
+		dot << "\t" << toDot() << " -> " << tmpNodeStr.str() << endl;
 
-    tmpNodeStr << tmpDot.str() << "-" << tempNodeCnt << "\"";
-    if (edgeAttr) {
-      // edge perform in high precision
-      dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]" << endl;
-    } else {
-      // edge perform in high precision
-      dot << tmpNodeStr.str() << "[style=dotted, shape=diamond]" << endl;
-    }
-    dot << "\t" << toDot() << " -> " << tmpNodeStr.str() << endl;
+		for (auto blameNodeID : bnIDs) {
+			BlameNode blameNode = nodes[blameNodeID];
+			dot << "\t" << tmpNodeStr.str() << " -> " << blameNode.toDot() << endl;
+		}
 
-    for (vector< BlameNodeID >::iterator nodesIt = bnIDs.begin(); nodesIt !=
-        bnIDs.end(); ++nodesIt) {
-      BlameNodeID blameNodeID = *nodesIt;
-      BlameNode blameNode = nodes[blameNodeID];
+		tempNodeCnt++;
+	}
 
-      dot << "\t" << tmpNodeStr.str() << " -> " << blameNode.toDot() << endl;
-    }
-
-    tempNodeCnt++;
-  }
-
-  return dot.str();
+	return dot.str();
 }
