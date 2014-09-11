@@ -1169,9 +1169,10 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
   }
 
   /*******************************************************************************************/
-  Instruction* CALL_INT_INT_INT64_INT64_KIND_INT(const char* func, Value *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, 
+  Instruction* CALL_IID_INT_INT_INT64_INT64_KIND_INT(const char* func, Value *iid, Value *i32_1, Value *i32_2, Value *i64_1, Value *i64_2, 
 						 Value *kind, Value *inx) {
     TypePtrVector ArgTypes;
+    ArgTypes.push_back(IID_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT32_TYPE());
     ArgTypes.push_back(INT64_TYPE());
@@ -1180,6 +1181,7 @@ void KVALUE_STRUCTVALUE(Value* value, InstrPtrVector& instrs) {
     ArgTypes.push_back(INT32_TYPE());
 
     ValuePtrVector Args;
+    Args.push_back(iid);
     Args.push_back(i32_1);
     Args.push_back(i32_2);
     Args.push_back(i64_1);

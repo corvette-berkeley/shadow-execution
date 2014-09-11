@@ -51,18 +51,18 @@
 extern "C" {
 
   // ***** Binary Operations ***** //
-  void llvm_add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
-  void llvm_frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_add(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_sub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_mul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_udiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_sdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_urem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_srem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  void llvm_frem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
 
   // ***** Bitwise Binary Operations ***** //
   void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);

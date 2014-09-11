@@ -95,7 +95,7 @@ class InterpreterObserver : public InstructionObserver {
 
   std::string CASTOP_ToString(int castop);
 
-  void binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,int inx, BINOP op);
+  void binop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,int inx, BINOP op);
 
   void bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx, BITWISE op);
 
@@ -113,29 +113,29 @@ class InterpreterObserver : public InstructionObserver {
 
   // ***** Binary Operations ***** //
   
-  virtual void add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void add(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void sub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void mul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void udiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void sdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void urem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void srem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
-  virtual void frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+  virtual void frem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
   
   // ***** Bitwise Binary Operations ***** //
   virtual void shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);

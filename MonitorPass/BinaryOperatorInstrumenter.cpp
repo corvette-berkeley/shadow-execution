@@ -37,9 +37,9 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     debug->file = strdup(filename.c_str());
     debug->line = line;
     IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(binInst));  
+    Constant *iid = IID_CONSTANT(binInst);
     parent_->debugMap[address] = debug;
     // end of debugging info
-
 
     if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
       // element was inserted
@@ -122,8 +122,9 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
     }
 
     Instruction *call =
-      CALL_INT_INT_INT64_INT64_KIND_INT(callback.str().c_str(), cLScope,
-					    cRScope, cLValue, cRValue, cType, cInx);
+      CALL_IID_INT_INT_INT64_INT64_KIND_INT(callback.str().c_str(), iid,
+                                            cLScope, cRScope, cLValue, cRValue, 
+                                            cType, cInx);
 
     instrs.push_back(call);
 
