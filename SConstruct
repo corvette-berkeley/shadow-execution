@@ -86,6 +86,7 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
+  'BlameAnalysis',
 	'papers/framework',
 	'papers/nans',
         ],

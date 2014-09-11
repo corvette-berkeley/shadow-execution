@@ -29,7 +29,7 @@ private:
 	PRECISION precision; // The precision constraint of this blame tree node,
 	// determine up to how many digits the value of this
 	// node needs to be accurate.
-	vector<vector<BlameNodeID>> edges; // Set of nodes that this
+	vector<vector<BlameNodeID> > edges; // Set of nodes that this
 	// node blames, a node is identified
 	// by a pair of dpc and precision.
 	vector<bool> edgeAttributes;        // Set of edge attributes
@@ -44,7 +44,7 @@ public:
 	;
 
 	BlameNode(int dp, int p, int f, bool hl, PRECISION prec,
-			  vector<vector<BlameNodeID>> es, vector<bool> eas)
+			  vector<vector<BlameNodeID> > es, vector<bool> eas)
 		: dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es),
 		  edgeAttributes(eas) {}
 	;
@@ -123,12 +123,12 @@ public:
 	}
 	;
 
-	vector<vector<BlameNodeID>> getEdges() const {
+	vector<vector<BlameNodeID> > getEdges() const {
 		return edges;
 	}
 	;
 
-	void setEdges(vector<vector<BlameNode>>) {
+	void setEdges(vector<vector<BlameNode> >) {
 		this->edges = edges;
 	}
 	;

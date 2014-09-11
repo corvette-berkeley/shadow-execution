@@ -20,7 +20,7 @@ std::string BlameNode::edgeToDot(map<BlameNodeID, BlameNode> nodes) {
 		   << BlameTreeUtilities::precisionToString(precision);
 
 	safe_assert(edges.size() == edgeAttributes.size());
-	for (std::pair<vector<vector<BlameNodeID>>::iterator, vector<bool>::iterator>
+	for (std::pair<vector<vector<BlameNodeID> >::iterator, vector<bool>::iterator>
 			it(edges.begin(), edgeAttributes.begin());
 			it.first != edges.end(); ++it.first, ++it.second) {
 

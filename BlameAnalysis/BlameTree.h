@@ -1,118 +1,90 @@
 // Author: Cuong Nguyen
 
-#ifndef BLAME_TREE_H_
-#define BLAME_TREE_H_
+#ifndef BLAME_TREE_ANALYSIS_H
+#define BLAME_TREE_ANALYSIS_H
 
+#include "BlameNode.h"
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
-#include "BlameTreeAnalysis.h"
-#include "BlameNodeID.h"
-#include "../src/IValue.h"
-#include "../src/InterpreterObserver.h"
-#include <math.h>
-#include <fstream>
+#include <queue>
 
-using namespace llvm;
-using namespace std;
+class BlameTree {
+private:
+  map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to
+                                     // node set of nodes in the tree
+	BlameNodeID rootNode; // root node of the tree
 
-class BlameTree : public InterpreterObserver {
-  
-  public:
-    static int dynamicCounter; // unique counter for instructions executed
-    static map< int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace;
+	/**
+	 * Construct blame node given a binary operation expression. This function
+	 * connects the node of left to the node of right01 or right02 if it can
+	 * blame right01 or right02 given the precision constraint.
+	 *
+	 * @param left the left value of the binary operation
+	 * @param precision the precision constraint on left
+	 * @param right01 the first operand of the binary operation
+	 * @param right02 the second oeprand of the binary opeartion
+	 *
+	 * @return the blame node associated with left and precision constraint,
+	 * that connects to nodes it blames
+	 */
+	BlameNode constructBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+								 PRECISION precision,
+								 BlameTreeShadowObject<HIGHPRECISION> right01,
+								 BlameTreeShadowObject<HIGHPRECISION> right02);
 
-    BlameTree(std::string name) : InterpreterObserver(name) {}
+	BlameNode constructFuncBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+									 PRECISION precision,
+									 BlameTreeShadowObject<HIGHPRECISION> right);
 
-    virtual void post_call_sin(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	BlameNode constructTruncBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+									  PRECISION precision,
+									  BlameTreeShadowObject<HIGHPRECISION> right);
 
-    virtual void post_call_acos(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	BlameNode constructExtBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
+									PRECISION precision,
+									BlameTreeShadowObject<HIGHPRECISION> right);
 
-    virtual void post_call_cos(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	/**
+	 * Helper function for toDot function. This function visualize all edges of
+	 * the graph in GraphViz dot format.
+	 *
+	 * @return dot visualization of an edge
+	 */
+	std::string edgeToDot(BlameNode graph);
 
-    virtual void post_call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+public:
 
-    virtual void post_call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	BlameTree(BlameNodeID bnID) : rootNode(bnID) {}
+	;
 
-    virtual void post_call_log(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	map<BlameNodeID, BlameNode> getNodes() {
+		return nodes;
+	}
+	;
 
-    virtual void post_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex);
+	/**
+	 * Output the results for each lines of code, including whether the result
+	 * needs higher precision or the operator needs higher precision.
+	 */
+	void printResult();
 
+	/**
+	 * Visualize blame graph in GraphViz dot format.
+	 *
+	 * @return dot program of the visualized blame graph
+	 */
+	std::string toDot();
 
-    virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int file, int line, int col, int inx);
-
-    virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int file, int line, int col, int inx);
-
-    virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int file, int line, int col, int inx);
-
-    virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int file, int line, int col, int inx);
-
-    virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND
-        kind, int size, int inx);
-
-    virtual void post_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND
-        kind, int size, int inx);
-
-    virtual void pre_analysis();
-
-    virtual void post_analysis();
-
-  private:
-    /**
-     * Define how to copy BlameTreeShadowObject from the source IValue to
-     * the destination IValue.
-     */
-    static void copyShadow(IValue *src, IValue *dest);
-
-    /**
-     * Return BlameTreeShadowObject associated with the given value.
-     *
-     * @note a value is denoted by a pair of scope and const/index.
-     * @param scope scope of the value.
-     * @param constOrIndex constant/index of the value.
-     * @return BlameTreeShadowObject associated with the given value.
-     */
-    HIGHPRECISION getShadowValue(SCOPE scope, int64_t constOrIndex, PRECISION precision);
-
-
-    /**
-     * Set BlameTreeShadowObject in corresponding IValue.
-     *
-     * @note a value is denoted by a pair of scope and const/index.
-     * @param scope scope of the value.
-     * @param constOrIndex constant/index of the value.
-     * @param shadowObject associated with the given value.
-     */
-    void setShadowObject(SCOPE scope, int64_t inx, BlameTreeShadowObject<HIGHPRECISION>* shadowObject);
-
-    /**
-     * Return BlameTreeShadowObject associated with the given value.
-     *
-     * @note a value is denoted by a pair of scope and const/index.
-     * @param scope scope of the value.
-     * @return BlameTreeShadowObject associated with the given value.
-     */
-    BlameTreeShadowObject<HIGHPRECISION>* getShadowObject(SCOPE scope, int64_t constOrIndex);
-
-    /**
-     * Return the actual value in its lower precision.
-     *
-     * @note a value is denoted by a pair of scope and const/index.
-     * @param scope scope of the value.
-     * @param constOrIndex constant/index of the value.
-     * @return the actual value in its lower precision.
-     */
-    LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
-
-    void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t
-		     rValue, KIND type, int file, int line, int col,  int inx, BINOP op);
-
-    void post_lib_call(IID iid, bool nounwind, int pc, KIND type, int inx,
-        SCOPE argScope, int64_t argValueOrIndex, string func);
-
+	/**
+	 * Construct the blame graph given the execution trace and a node to start
+	 * with. The constructed graph contains all the nodes that the start node
+	 * can blame given its precision constraint.
+	 *
+	 * @param trace the program execution trace
+	 * @return the blame graph
+	 */
+	BlameNode constructBlameGraph(
+		vector<vector<BlameTreeShadowObject<HIGHPRECISION> > > trace);
 };
 
 #endif
