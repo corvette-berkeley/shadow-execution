@@ -7,7 +7,7 @@
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -40,6 +40,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+/*
 #include <dlfcn.h>
 #include <stdarg.h>
 #include <sys/types.h>
@@ -49,11 +50,12 @@
 #include <errno.h>
 #include <unistd.h>
 #include <signal.h>
-#include <string>
 #include <string.h>
 #include <pthread.h>
 #include <time.h>
 #include <sys/time.h>
+*/
+#include <string>
 #include <exception>
 #include <iostream>
 #include <sstream>
@@ -65,7 +67,8 @@
 
 #include "Constants.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 //
 // Macros for debugging mode
@@ -78,31 +81,43 @@ using namespace std;
 #define DEBUG_STDOUT(x) std::cout << x << endl
 #define DEBUG_LOG(x) LOG(INFO) << x << endl
 #else
-#define DEBUG(x) while(0) {x}
-#define DEBUG_STDERR(x) while(0) {std::cerr << x << endl;}
-#define DEBUG_STDOUT(x) while(0) {std::cerr << x << endl;}
-#define DEBUG_LOG(x) while(0) {std::cerr << x << endl;}
+#define DEBUG(x)                                                                                                       \
+  while (0) {                                                                                                          \
+    x                                                                                                                  \
+  }
+#define DEBUG_STDERR(x)                                                                                                \
+  while (0) {                                                                                                          \
+    std::cerr << x << endl;                                                                                            \
+  }
+#define DEBUG_STDOUT(x)                                                                                                \
+  while (0) {                                                                                                          \
+    std::cerr << x << endl;                                                                                            \
+  }
+#define DEBUG_LOG(x)                                                                                                   \
+  while (0) {                                                                                                          \
+    std::cerr << x << endl;                                                                                            \
+  }
 //#define DEBUG_LOG(x) LOG(INFO) << x << endl
 #endif
 
 //
 // Give meaningful names to types
 //
-typedef uintptr_t	ADDRINT;
+typedef uintptr_t ADDRINT;
 typedef uint64_t IID;
-typedef int64_t	INT;
-typedef int32_t INT32; 
+typedef int64_t INT;
+typedef int32_t INT32;
 typedef double FLP;
-typedef void*	PTR;
+typedef void* PTR;
 typedef bool BOOL;
 
 //
 // Data structures used in the observer
 //
 union value_t {
-  INT as_int;
-  FLP as_flp;
-  PTR as_ptr;
+	INT as_int;
+	FLP as_flp;
+	PTR as_ptr;
 };
 #define VALUE value_t
 
@@ -112,40 +127,25 @@ typedef uint32_t pred_t;
 typedef uint32_t kind_t;
 #define KIND kind_t
 
-const KIND	
-      INV_KIND	= 0U,
-      PTR_KIND 	= 1U,
-      INT1_KIND 	= 2U,
-      INT8_KIND 	= 3U,
-      INT16_KIND 	= 4U,
-      INT24_KIND = 5U,
-      INT32_KIND 	= 6U,
-      INT64_KIND 	= 7U,
-      INT80_KIND = 8U,
-      FLP32_KIND	= 9U,
-      FLP64_KIND	= 10U,
-      FLP128_KIND	= 11U,
-      FLP80X86_KIND  = 12U,
-      FLP128PPC_KIND = 13U,
-      ARRAY_KIND = 14U,
-      STRUCT_KIND = 15U,
-      VOID_KIND = 16U;
+const KIND INV_KIND = 0U, PTR_KIND = 1U, INT1_KIND = 2U, INT8_KIND = 3U, INT16_KIND = 4U, INT24_KIND = 5U,
+		   INT32_KIND = 6U, INT64_KIND = 7U, INT80_KIND = 8U, FLP32_KIND = 9U, FLP64_KIND = 10U, FLP128_KIND = 11U,
+		   FLP80X86_KIND = 12U, FLP128PPC_KIND = 13U, ARRAY_KIND = 14U, STRUCT_KIND = 15U, VOID_KIND = 16U;
 
 const IID INV_IID = 0U;
 
-#define KVALUE_ALIGNMENT	4
+#define KVALUE_ALIGNMENT 4
 
 struct kvalue_t {
-  INT32 inx;
-  BOOL  isGlobal;
-  KIND	kind;
-  VALUE	value;
-} __attribute__ ((__aligned__(KVALUE_ALIGNMENT)));
+	INT32 inx;
+	BOOL isGlobal;
+	KIND kind;
+	VALUE value;
+} __attribute__((__aligned__(KVALUE_ALIGNMENT)));
 #define KVALUE kvalue_t
 
 struct DebugInfo {
-  const char* file;
-  int line;
+	const char* file;
+	int line;
 };
 
 
@@ -154,37 +154,37 @@ struct DebugInfo {
 //
 #define UNRECOVERABLE_ERROR 5
 
-#define safe_assert(cond) _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)  
+#define safe_assert(cond) _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 //
-// Definitions of commonly used functions 
+// Definitions of commonly used functions
 //
 
 /**
  * Assert a condition and terminate the program in case of fail assertion.
  *
  * @param cond the condition to be checked
- * @param func the current function 
+ * @param func the current function
  * @param file the current file
  * @param line the current line
  */
 inline void _safe_assert(bool cond, const char* func, const char* file, int line) {
-  if (!cond) {
-    cout << "Counit: safe assert fail." << endl;
-    cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line << endl;
-    fflush(stdout); 
-    _Exit(UNRECOVERABLE_ERROR); 
-  }
+	if (!cond) {
+		cout << "Counit: safe assert fail." << endl;
+		cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line << endl;
+		fflush(stdout);
+		_Exit(UNRECOVERABLE_ERROR);
+	}
 }
 
 /**
  * Printing error messages on unimplemented code and terminate the program.
  */
 inline void unimplemented() {
-  cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << endl;
-  cout << "\tfile: " << __FILE__ << endl;
-  cout << "\tline: " << __LINE__ << endl;
-  _Exit(UNRECOVERABLE_ERROR); 
+	cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << endl;
+	cout << "\tfile: " << __FILE__ << endl;
+	cout << "\tline: " << __LINE__ << endl;
+	_Exit(UNRECOVERABLE_ERROR);
 }
 
 /**

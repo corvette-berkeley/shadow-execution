@@ -46,12 +46,6 @@ do
 		mv "$file"".tmp" "$file"
 	fi
 
-	# adjust to tabs if indented with spaces
-	if [ "$(grep '^ ' "$file")" != "" ] ; then
-		echo "Were unable to correctly format"
-		exit 1
-	fi
-
 	git add "$file"
 done
 
