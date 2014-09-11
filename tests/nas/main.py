@@ -5,7 +5,7 @@
 import jobmonitor
 import sys
 
-args=['valgrind', './' + sys.argv[1]]
+args=['./' + sys.argv[1]]
 
 print jobmonitor.RunJob(args,shell = False)
 
