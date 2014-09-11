@@ -22,6 +22,7 @@ tramp
 # AUCTeX auto folder
 /auto/
 *.os
+tests/regressions/*.bc
 i_*.bc
 
 # never read in
