@@ -9,7 +9,7 @@
 #include "llvm/IR/User.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/ADT/StringExtras.h"
-#include "llvm/ADT/ValueMap.h"
+#include "llvm/IR/ValueMap.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IR/TypeBuilder.h"
@@ -21,7 +21,7 @@
 #include "llvm/IR/Type.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include "llvm/IR/IntrinsicInst.h"
-#include "llvm/DebugInfo.h"
+#include "llvm/IR/DebugInfo.h"
 
 
 using namespace llvm;

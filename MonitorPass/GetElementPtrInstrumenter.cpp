@@ -6,469 +6,454 @@
 #include "GetElementPtrInstrumenter.h"
 
 bool GetElementPtrInstrumenter::CheckAndInstrument(Instruction* inst) {
-  GetElementPtrInst* gepInst; 
-  InstrPtrVector instrs;
-  Constant *iidC, *inxC, *loadInxC, *loadGlobal;
-  PointerType *T;
-  Type *elemT;
+	GetElementPtrInst* gepInst;
+	InstrPtrVector instrs;
+	Constant* iidC, *inxC, *loadInxC, *loadGlobal;
+	PointerType* T;
+	Type* elemT;
 
-  gepInst = dyn_cast<GetElementPtrInst>(inst);
-  if (gepInst == NULL) {
-    return false;
-  }
+	gepInst = dyn_cast<GetElementPtrInst>(inst);
+	if (gepInst == NULL) {
+		return false;
+	}
 
-  safe_assert(parent_ != NULL);
+	safe_assert(parent_ != NULL);
 
-  count_++;
+	count_++;
 
-  iidC = IID_CONSTANT(gepInst);
-  inxC = computeIndex(gepInst);
-  loadInxC = INT32_CONSTANT(-1, SIGNED);
-  loadGlobal = BOOL_CONSTANT(false);
+	iidC = IID_CONSTANT(gepInst);
+	inxC = computeIndex(gepInst);
+	loadInxC = INT32_CONSTANT(-1, SIGNED);
+	loadGlobal = BOOL_CONSTANT(false);
 
-  // base pointer (now here)
-  Value *basePtr = gepInst->getPointerOperand();
-  Constant *baseInx = computeIndex(basePtr);
-  Constant *baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
-  Instruction *baseAddr = CAST_VALUE(basePtr, instrs, NOSIGN);
-  
-  if (!baseAddr) return false;
-  instrs.push_back(baseAddr);
+	// base pointer (now here)
+	Value* basePtr = gepInst->getPointerOperand();
+	Constant* baseInx = computeIndex(basePtr);
+	Constant* baseScope = INT32_CONSTANT(getScope(basePtr), NOSIGN);
+	Instruction* baseAddr = CAST_VALUE(basePtr, instrs, NOSIGN);
 
-  if (LoadInst* loadInst = dyn_cast<LoadInst>(gepInst->getPointerOperand())) {
-    Value *loadPtr; 
+	if (!baseAddr) {
+		return false;
+	}
+	instrs.push_back(baseAddr);
 
-    loadPtr = loadInst->getPointerOperand(); 
-    loadGlobal = BOOL_CONSTANT(isa<GlobalVariable>(loadPtr));
-    loadInxC = computeIndex(loadPtr);
-  }
+	if (LoadInst* loadInst = dyn_cast<LoadInst>(gepInst->getPointerOperand())) {
+		Value* loadPtr;
 
-  T = (PointerType*) gepInst->getPointerOperandType();
-  elemT = T->getElementType();
+		loadPtr = loadInst->getPointerOperand();
+		loadGlobal = BOOL_CONSTANT(isa<GlobalVariable>(loadPtr));
+		loadInxC = computeIndex(loadPtr);
+	}
 
-  if (elemT->isArrayTy()) {
-    // this branch is the case for local array
+	T = (PointerType*)gepInst->getPointerOperandType();
+	elemT = T->getElementType();
 
-    Type *gepInstType;
-    KIND kind;
-    Constant *elementSizeC, *scopeInx[3], *valOrInxInx[3], *sizeC[2];
-    Instruction *call;
-    int elementSize, i;
-    queue < Value* > arrIndices;
-    queue < int64_t > arrSize;
-    
-    // collecting all array indices
-    for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
-      arrIndices.push((Value*) idx->get());
-    } 
+	if (elemT->isArrayTy()) {
+		// this branch is the case for local array
 
-    // Create constants for array indices. Because array is usually up to size
-    // 2, getelementptr usually has indices up to size 3. We cover this usual case,
-    // and put array indices as arguments to the callback for
-    // getelementptr_array. If the array is of dimension greater than two,
-    // push_getelementptr_in and push_array_size will be used to push the remaining indices
-    // and sizes
-    for (i = 0; i < 3; i++) {
-      if (!arrIndices.empty()) {
-        Value *value;
-        ActualValue av;
+		Type* gepInstType;
+		KIND kind;
+		Constant* elementSizeC, *scopeInx[3], *valOrInxInx[3], *sizeC[2];
+		Instruction* call;
+		int elementSize, i;
+		queue<Value*> arrIndices;
+		queue<int64_t> arrSize;
 
-        value = arrIndices.front();
-        av = getActualValue(value);
-        scopeInx[i] = INT32_CONSTANT(av.scope, SIGNED);
-        valOrInxInx[i] = av.valOrInx;
-        arrIndices.pop();
-      } 
-      else {
-        scopeInx[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
-        valOrInxInx[i] = INT64_CONSTANT(-1, SIGNED);
-      }
-    }
+		// collecting all array indices
+		for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
+			arrIndices.push((Value*)idx->get());
+		}
 
-    // adding callbacks for pushing array indices
-    while (!arrIndices.empty()){
-      Constant *scope[5], *valOrInx[5];
-      Instruction *call;
-      int i; 
+		// Create constants for array indices. Because array is usually up to size
+		// 2, getelementptr usually has indices up to size 3. We cover this usual case,
+		// and put array indices as arguments to the callback for
+		// getelementptr_array. If the array is of dimension greater than two,
+		// push_getelementptr_in and push_array_size will be used to push the remaining indices
+		// and sizes
+		for (i = 0; i < 3; i++) {
+			if (!arrIndices.empty()) {
+				Value* value;
+				ActualValue av;
 
-      for (i = 0; i < 5; i++) {
-        if (!arrIndices.empty()) {
-          Value *value;
-          ActualValue av;
+				value = arrIndices.front();
+				av = getActualValue(value);
+				scopeInx[i] = INT32_CONSTANT(av.scope, SIGNED);
+				valOrInxInx[i] = av.valOrInx;
+				arrIndices.pop();
+			} else {
+				scopeInx[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
+				valOrInxInx[i] = INT64_CONSTANT(-1, SIGNED);
+			}
+		}
 
-          value = arrIndices.front();
-          av = getActualValue(value);
-          scope[i] = INT32_CONSTANT(av.scope, SIGNED);
-          valOrInx[i] = av.valOrInx;
-          arrIndices.pop();
-        } 
-	else {
-          scope[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
-          valOrInx[i] = INT64_CONSTANT(-1, SIGNED);
-        }
-      }
+		// adding callbacks for pushing array indices
+		while (!arrIndices.empty()) {
+			Constant* scope[5], *valOrInx[5];
+			Instruction* call;
+			int i;
 
-      call =
-        CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64("llvm_push_getelementptr_inx5",
-            scope[0], scope[1], scope[2], scope[3], scope[4], valOrInx[0],
-            valOrInx[1], valOrInx[2], valOrInx[3], valOrInx[4]);
-      instrs.push_back(call);
-    } 
+			for (i = 0; i < 5; i++) {
+				if (!arrIndices.empty()) {
+					Value* value;
+					ActualValue av;
 
-    // collecting all array sizes
-    while (dyn_cast<ArrayType>(elemT)) {
-      arrSize.push(((ArrayType *)elemT)->getNumElements());
-      elemT = ((ArrayType *)elemT)->getElementType();
-    }
+					value = arrIndices.front();
+					av = getActualValue(value);
+					scope[i] = INT32_CONSTANT(av.scope, SIGNED);
+					valOrInx[i] = av.valOrInx;
+					arrIndices.pop();
+				} else {
+					scope[i] = INT32_CONSTANT(SCOPE_INVALID, SIGNED);
+					valOrInx[i] = INT64_CONSTANT(-1, SIGNED);
+				}
+			}
 
-    // Create constants for array sizes. Array is usually up to two dimensions. We cover this usual case,
-    // and put array sizes as arguments to the callback for
-    // getelementptr_array. If the array is of dimension greater than two,
-    // push_getelementptr_in and push_array_size will be used to push the
-    // remain indices and sizes
-    for (i = 0; i < 2; i++) {
-      if (!arrSize.empty()) {
-        sizeC[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
-        arrSize.pop();
-      } 
-      else {
-        sizeC[i] = INT32_CONSTANT(-1, SIGNED);
-      }
-    }
+			call = CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64("llvm_push_getelementptr_inx5", scope[0], scope[1],
+					scope[2], scope[3], scope[4], valOrInx[0],
+					valOrInx[1], valOrInx[2], valOrInx[3], valOrInx[4]);
+			instrs.push_back(call);
+		}
 
-    // adding callbacks for pushing array sizes
-    while (!arrSize.empty()) {
-      Constant *size[5];
-      Instruction *call;
-      int i; 
+		// collecting all array sizes
+		while (dyn_cast<ArrayType>(elemT)) {
+			arrSize.push(((ArrayType*)elemT)->getNumElements());
+			elemT = ((ArrayType*)elemT)->getElementType();
+		}
 
-      for (i = 0; i < 5; i++) {
-        if (!arrSize.empty()) {
-          size[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
-          arrSize.pop();
-        } 
-	else {
-          size[i] = INT32_CONSTANT(-1, SIGNED);
-        }
-      } 
+		// Create constants for array sizes. Array is usually up to two dimensions. We cover this usual case,
+		// and put array sizes as arguments to the callback for
+		// getelementptr_array. If the array is of dimension greater than two,
+		// push_getelementptr_in and push_array_size will be used to push the
+		// remain indices and sizes
+		for (i = 0; i < 2; i++) {
+			if (!arrSize.empty()) {
+				sizeC[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
+				arrSize.pop();
+			} else {
+				sizeC[i] = INT32_CONSTANT(-1, SIGNED);
+			}
+		}
 
-      call = CALL_INT_INT_INT_INT_INT("llvm_push_array_size5", size[0],
-          size[1], size[2], size[3], size[4]);
-      instrs.push_back(call);
-    }
+		// adding callbacks for pushing array sizes
+		while (!arrSize.empty()) {
+			Constant* size[5];
+			Instruction* call;
+			int i;
 
-    
-    gepInstType = ((PointerType*) gepInst->getType())->getElementType();
-    kind = TypeToKind(gepInstType);
+			for (i = 0; i < 5; i++) {
+				if (!arrSize.empty()) {
+					size[i] = INT32_CONSTANT(arrSize.front(), SIGNED);
+					arrSize.pop();
+				} else {
+					size[i] = INT32_CONSTANT(-1, SIGNED);
+				}
+			}
 
-    if (kind == ARRAY_KIND) {
-      elementSize = getFlatSize((ArrayType*) gepInstType);
-    } 
-    else if (kind == STRUCT_KIND) {
-      elementSize = getFlatSize((StructType*) gepInstType);
-    } 
-    else {
-      elementSize = KIND_GetSize(kind);
-    }
+			call = CALL_INT_INT_INT_INT_INT("llvm_push_array_size5", size[0], size[1], size[2], size[3], size[4]);
+			instrs.push_back(call);
+		}
 
-    elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
-     
-    call = CALL_INT_INT_INT64_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT("llvm_getelementptr_array", baseInx, baseScope, baseAddr, elementSizeC, scopeInx[0], 
-    									  scopeInx[1], scopeInx[2], valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
-    instrs.push_back(call);
 
-  } 
-  else if (elemT->isStructTy()) {
-    // this branch is the case for local struct
+		gepInstType = ((PointerType*)gepInst->getType())->getElementType();
+		kind = TypeToKind(gepInstType);
 
-    StructType* structType = (StructType*) elemT;
+		if (kind == ARRAY_KIND) {
+			elementSize = getFlatSize((ArrayType*)gepInstType);
+		} else if (kind == STRUCT_KIND) {
+			elementSize = getFlatSize((StructType*)gepInstType);
+		} else {
+			elementSize = KIND_GetSize(kind);
+		}
 
-    // checking struct packing
-    //////////////////////////
-    /*
-    if (structType->isPacked()) {
-      structType->dump();
-      cout << "The struct is packed" << endl;
-    }
-    else {
-      structType->dump();
-      cout << "The struct is NOT packed" << endl;
-      if (structType->hasName()) {
-	cout << "Name: " << structType->getName().str() << endl;
-	//abort();
-      }
-      else {
-	cout << "The struct does not have a name" << endl;
-	gepInst->dump();
-	// do not abort if the struct does not have a name?
-	//abort();
-      }
-    }
-    */
-    //////////////////////////
+		elementSizeC = INT32_CONSTANT(elementSize, SIGNED);
 
-    pushStructType(structType, instrs);
-    
-    for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
+		call = CALL_INT_INT_INT64_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT(
+				   "llvm_getelementptr_array", baseInx, baseScope, baseAddr, elementSizeC, scopeInx[0], scopeInx[1], scopeInx[2],
+				   valOrInxInx[0], valOrInxInx[1], valOrInxInx[2], sizeC[0], sizeC[1], inxC);
+		instrs.push_back(call);
 
-      Instruction* idxOp = CAST_VALUE(idx->get(), instrs, NOSIGN);
+	} else if (elemT->isStructTy()) {
+		// this branch is the case for local struct
 
-      if (!idxOp) return NULL;
-      instrs.push_back(idxOp);
+		StructType* structType = (StructType*)elemT;
 
-      Instruction* call = CALL_INT64("llvm_push_getelementptr_inx", idxOp);
-      instrs.push_back(call);
-    } 
+		// checking struct packing
+		//////////////////////////
+		/*
+		if (structType->isPacked()) {
+		  structType->dump();
+		  cout << "The struct is packed" << endl;
+		}
+		else {
+		  structType->dump();
+		  cout << "The struct is NOT packed" << endl;
+		  if (structType->hasName()) {
+		    cout << "Name: " << structType->getName().str() << endl;
+		    //abort();
+		  }
+		  else {
+		    cout << "The struct does not have a name" << endl;
+		    gepInst->dump();
+		    // do not abort if the struct does not have a name?
+		    //abort();
+		  }
+		}
+		*/
+		//////////////////////////
 
-    // size of struct elements
-    pushStructElementSize((StructType*) elemT, instrs);
+		pushStructType(structType, instrs);
 
-    Instruction* call = CALL_IID_INT_INT_INT64_INT("llvm_getelementptr_struct", iidC, baseInx, baseScope, baseAddr, inxC);
-    instrs.push_back(call);
+		for (User::op_iterator idx = gepInst->idx_begin(); idx != gepInst->idx_end(); idx++) {
 
-  } 
-  else {
-    // this branch is the case for pointers
+			Instruction* idxOp = CAST_VALUE(idx->get(), instrs, NOSIGN);
 
-    if (gepInst->getNumIndices() != 1) {
-      cout << "[GetElementPtr] => Multiple indices" << endl;
-      abort();
-    }
+			if (!idxOp) {
+				return false;
+			}
+			instrs.push_back(idxOp);
 
-    // offset data
-    Value *offset = gepInst->idx_begin()->get();
-    Constant *offsetInx = computeIndex(offset);
-    Instruction *offsetValue = CAST_VALUE(offset, instrs, SIGNED);
+			Instruction* call = CALL_INT64("llvm_push_getelementptr_inx", idxOp);
+			instrs.push_back(call);
+		}
 
-    if (!offsetValue) return false;
-    instrs.push_back(offsetValue);
+		// size of struct elements
+		pushStructElementSize((StructType*)elemT, instrs);
 
-    KIND kind = TypeToKind(elemT);
+		Instruction* call =
+			CALL_IID_INT_INT_INT64_INT("llvm_getelementptr_struct", iidC, baseInx, baseScope, baseAddr, inxC);
+		instrs.push_back(call);
 
-    Constant* kindC = KIND_CONSTANT(kind);
+	} else {
+		// this branch is the case for pointers
 
-    Constant* size;
-    int isize = 0;
+		if (gepInst->getNumIndices() != 1) {
+			cout << "[GetElementPtr] => Multiple indices" << endl;
+			abort();
+		}
 
-    if (elemT->isPointerTy()) {
-      isize = 64;
-      size = INT64_CONSTANT(isize, false);
-    }
-    else {
-      isize = elemT->getPrimitiveSizeInBits();
-      size = INT64_CONSTANT(isize, false);
-    }
-    assert(isize != 0);
+		// offset data
+		Value* offset = gepInst->idx_begin()->get();
+		Constant* offsetInx = computeIndex(offset);
+		Instruction* offsetValue = CAST_VALUE(offset, instrs, SIGNED);
 
-    Instruction* call = CALL_IID_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT("llvm_getelementptr", iidC, 
-											  baseInx, baseScope, baseAddr, 
-											  offsetInx, offsetValue, 
-											  kindC, size, loadGlobal, loadInxC, inxC);
-    instrs.push_back(call);
-  }
+		if (!offsetValue) {
+			return false;
+		}
+		instrs.push_back(offsetValue);
 
-  // instrument
-  InsertAllBefore(instrs, gepInst);
-  return true;
+		KIND kind = TypeToKind(elemT);
+
+		Constant* kindC = KIND_CONSTANT(kind);
+
+		Constant* size;
+		int isize = 0;
+
+		if (elemT->isPointerTy()) {
+			isize = 64;
+			size = INT64_CONSTANT(isize, false);
+		} else {
+			isize = elemT->getPrimitiveSizeInBits();
+			size = INT64_CONSTANT(isize, false);
+		}
+		assert(isize != 0);
+
+		Instruction* call = CALL_IID_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT(
+								"llvm_getelementptr", iidC, baseInx, baseScope, baseAddr, offsetInx, offsetValue, kindC, size, loadGlobal,
+								loadInxC, inxC);
+		instrs.push_back(call);
+	}
+
+	// instrument
+	InsertAllBefore(instrs, gepInst);
+	return true;
 }
 
 void GetElementPtrInstrumenter::pushStructElementSize(StructType* structType, InstrPtrVector& instrs) {
-  uint64_t size, i, allocation;
+	uint64_t size, i, allocation;
 
-  size = structType->getNumElements();
-  for (i = 0; i < size; i++) {
-    Type* elemType = structType->getElementType(i);
-    KIND elemKind = TypeToKind(elemType);
-    safe_assert(elemKind != INV_KIND);
-    if (elemKind == ARRAY_KIND) {
-      allocation = getFlatLength((ArrayType*) elemType);
-    } 
-    else if (elemKind == STRUCT_KIND) {
-      allocation = getFlatLength((StructType*) elemType);
-    } 
-    else {
-      allocation = 1;
-    }
-    Constant* allocC = INT64_CONSTANT(allocation, NOSIGN);
-    Instruction* call = CALL_INT64("llvm_push_struct_element_size", allocC);
-    instrs.push_back(call);
-  }
+	size = structType->getNumElements();
+	for (i = 0; i < size; i++) {
+		Type* elemType = structType->getElementType(i);
+		KIND elemKind = TypeToKind(elemType);
+		safe_assert(elemKind != INV_KIND);
+		if (elemKind == ARRAY_KIND) {
+			allocation = getFlatLength((ArrayType*)elemType);
+		} else if (elemKind == STRUCT_KIND) {
+			allocation = getFlatLength((StructType*)elemType);
+		} else {
+			allocation = 1;
+		}
+		Constant* allocC = INT64_CONSTANT(allocation, NOSIGN);
+		Instruction* call = CALL_INT64("llvm_push_struct_element_size", allocC);
+		instrs.push_back(call);
+	}
 }
 
 uint64_t GetElementPtrInstrumenter::getFlatSize(ArrayType* arrayType) {
-  Type* elemTy; 
-  int size; 
-  uint64_t allocation;
-  KIND elemKind;
+	Type* elemTy;
+	int size;
+	uint64_t allocation;
+	KIND elemKind;
 
-  // for multi-dimensional array get flatten size
-  size = 1;
-  elemTy = arrayType;
-  while (dyn_cast<ArrayType>(elemTy)) {
-    size = size*((ArrayType*)elemTy)->getNumElements();
-    elemTy = ((ArrayType*)elemTy)->getElementType();
-  }
+	// for multi-dimensional array get flatten size
+	size = 1;
+	elemTy = arrayType;
+	while (dyn_cast<ArrayType>(elemTy)) {
+		size = size * ((ArrayType*)elemTy)->getNumElements();
+		elemTy = ((ArrayType*)elemTy)->getElementType();
+	}
 
-  // retrieving the element's type
-  elemKind = TypeToKind(elemTy);
-  safe_assert(elemKind != INV_KIND);
+	// retrieving the element's type
+	elemKind = TypeToKind(elemTy);
+	safe_assert(elemKind != INV_KIND);
 
-  // element kind can be struct or primitive type
-  if (elemKind == STRUCT_KIND) {
-    allocation = size * getFlatSize( (StructType*) elemTy );
-  } 
-  else {
-    allocation = size * KIND_GetSize(elemKind); 
-  }
-  return allocation;
+	// element kind can be struct or primitive type
+	if (elemKind == STRUCT_KIND) {
+		allocation = size * getFlatSize((StructType*)elemTy);
+	} else {
+		allocation = size * KIND_GetSize(elemKind);
+	}
+	return allocation;
 }
 
 uint64_t GetElementPtrInstrumenter::getFlatSize(StructType* structType) {
-  uint64_t size, allocation, i;
+	uint64_t size, allocation, i;
 
-  allocation = 0;
-  size = structType->getNumElements();
+	allocation = 0;
+	size = structType->getNumElements();
 
-  // iterating through all struct element types accumulate allocation size
-  for (i = 0; i < size; i++) {
-    Type* elemType = structType->getElementType(i);
-    KIND elemKind = TypeToKind(elemType);
-    safe_assert(elemKind != INV_KIND);
+	// iterating through all struct element types accumulate allocation size
+	for (i = 0; i < size; i++) {
+		Type* elemType = structType->getElementType(i);
+		KIND elemKind = TypeToKind(elemType);
+		safe_assert(elemKind != INV_KIND);
 
-    if (elemKind == ARRAY_KIND) {
-      allocation += getFlatSize((ArrayType*) elemType);
-    } 
-    else if (elemKind == STRUCT_KIND) {
-      allocation += getFlatSize((StructType*) elemType);
-    } 
-    else {
-      allocation += KIND_GetSize(elemKind);
-    }
-  }
+		if (elemKind == ARRAY_KIND) {
+			allocation += getFlatSize((ArrayType*)elemType);
+		} else if (elemKind == STRUCT_KIND) {
+			allocation += getFlatSize((StructType*)elemType);
+		} else {
+			allocation += KIND_GetSize(elemKind);
+		}
+	}
 
-  return allocation;
+	return allocation;
 }
 
 uint64_t GetElementPtrInstrumenter::getFlatLength(ArrayType* arrayType) {
-  Type* elemTy; 
-  int size; 
-  uint64_t allocation;
-  KIND elemKind;
+	Type* elemTy;
+	int size;
+	uint64_t allocation;
+	KIND elemKind;
 
-  // for multi-dimensional array get flatten size
-  size = 1;
-  elemTy = arrayType;
-  while (dyn_cast<ArrayType>(elemTy)) {
-    size = size*((ArrayType*)elemTy)->getNumElements();
-    elemTy = ((ArrayType*)elemTy)->getElementType();
-  }
+	// for multi-dimensional array get flatten size
+	size = 1;
+	elemTy = arrayType;
+	while (dyn_cast<ArrayType>(elemTy)) {
+		size = size * ((ArrayType*)elemTy)->getNumElements();
+		elemTy = ((ArrayType*)elemTy)->getElementType();
+	}
 
-  // retrieving element's type
-  elemKind = TypeToKind(elemTy);
-  safe_assert(elemKind != INV_KIND);
+	// retrieving element's type
+	elemKind = TypeToKind(elemTy);
+	safe_assert(elemKind != INV_KIND);
 
-  // element kind can be struct or primitive type
-  if (elemKind == STRUCT_KIND) {
-    allocation = size* getFlatLength( (StructType*) elemTy );
-  } 
-  else {
-    allocation = size; 
-  }
+	// element kind can be struct or primitive type
+	if (elemKind == STRUCT_KIND) {
+		allocation = size * getFlatLength((StructType*)elemTy);
+	} else {
+		allocation = size;
+	}
 
-  return allocation;
+	return allocation;
 }
 
 uint64_t GetElementPtrInstrumenter::getFlatLength(StructType* structType) {
-  uint64_t size, allocation, i;
+	uint64_t size, allocation, i;
 
-  allocation = 0;
-  size = structType->getNumElements();
+	allocation = 0;
+	size = structType->getNumElements();
 
-  // iterating through all struct element types accumulate allocation size
-  for (i = 0; i < size; i++) {
-    Type* elemType = structType->getElementType(i);
-    KIND elemKind = TypeToKind(elemType);
-    safe_assert(elemKind != INV_KIND);
+	// iterating through all struct element types accumulate allocation size
+	for (i = 0; i < size; i++) {
+		Type* elemType = structType->getElementType(i);
+		KIND elemKind = TypeToKind(elemType);
+		safe_assert(elemKind != INV_KIND);
 
-    if (elemKind == ARRAY_KIND) {
-      allocation += getFlatLength((ArrayType*) elemType);
-    } 
-    else if (elemKind == STRUCT_KIND) {
-      allocation += getFlatLength((StructType*) elemType);
-    } 
-    else {
-      allocation += 1;
-    }
-  }
+		if (elemKind == ARRAY_KIND) {
+			allocation += getFlatLength((ArrayType*)elemType);
+		} else if (elemKind == STRUCT_KIND) {
+			allocation += getFlatLength((StructType*)elemType);
+		} else {
+			allocation += 1;
+		}
+	}
 
-  return allocation;
+	return allocation;
 }
 
 uint64_t GetElementPtrInstrumenter::pushStructType(ArrayType* arrayType, InstrPtrVector& instrs) {
-  Type* elemTy = arrayType;
-  int size = 1;
-  uint64_t allocation = 0;
+	Type* elemTy = arrayType;
+	int size = 1;
+	uint64_t allocation = 0;
 
-  while (dyn_cast<ArrayType>(elemTy)) {
-    size = size*((ArrayType*)elemTy)->getNumElements();
-    elemTy = ((ArrayType*)elemTy)->getElementType();
-  }
+	while (dyn_cast<ArrayType>(elemTy)) {
+		size = size * ((ArrayType*)elemTy)->getNumElements();
+		elemTy = ((ArrayType*)elemTy)->getElementType();
+	}
 
-  KIND elemKind = TypeToKind(elemTy);
-  safe_assert(elemKind != INV_KIND);
+	KIND elemKind = TypeToKind(elemTy);
+	safe_assert(elemKind != INV_KIND);
 
-  if (elemKind == STRUCT_KIND) {
-    for (int i = 0; i < size; i++) {
-      allocation += pushStructType((StructType*)elemTy, instrs);
-    }
-  } 
-  else {
-    Constant* elemKindC = KIND_CONSTANT(elemKind);
+	if (elemKind == STRUCT_KIND) {
+		for (int i = 0; i < size; i++) {
+			allocation += pushStructType((StructType*)elemTy, instrs);
+		}
+	} else {
+		Constant* elemKindC = KIND_CONSTANT(elemKind);
 
-    for (int i = 0; i < size; i++) {
-      Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
-      instrs.push_back(call);
-      allocation++;
-    }
-  }
+		for (int i = 0; i < size; i++) {
+			Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+			instrs.push_back(call);
+			allocation++;
+		}
+	}
 
-  return allocation;
+	return allocation;
 }
 
 uint64_t GetElementPtrInstrumenter::pushStructType(StructType* structType, InstrPtrVector& instrs) {
-  uint64_t size = structType->getNumElements();
-  uint64_t allocation = 0;
-  for (uint64_t i = 0; i < size; i++) {
-    Type* elemType = structType->getElementType(i);
-    KIND elemKind = TypeToKind(elemType);
-    safe_assert(elemKind != INV_KIND);
-    if (elemKind == ARRAY_KIND) {
-      allocation += pushStructType((ArrayType*)elemType, instrs);
-    } 
-    else if (elemKind == STRUCT_KIND) {
-      allocation += pushStructType((StructType*)elemType, instrs);
-    } 
-    else {
-      Constant* elemKindC = KIND_CONSTANT(elemKind);
-      Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
-      instrs.push_back(call);
-      allocation++;
-    }
-  }
+	uint64_t size = structType->getNumElements();
+	uint64_t allocation = 0;
+	for (uint64_t i = 0; i < size; i++) {
+		Type* elemType = structType->getElementType(i);
+		KIND elemKind = TypeToKind(elemType);
+		safe_assert(elemKind != INV_KIND);
+		if (elemKind == ARRAY_KIND) {
+			allocation += pushStructType((ArrayType*)elemType, instrs);
+		} else if (elemKind == STRUCT_KIND) {
+			allocation += pushStructType((StructType*)elemType, instrs);
+		} else {
+			Constant* elemKindC = KIND_CONSTANT(elemKind);
+			Instruction* call = CALL_KIND("llvm_push_struct_type", elemKindC);
+			instrs.push_back(call);
+			allocation++;
+		}
+	}
 
-  return allocation;
+	return allocation;
 }
 
-GetElementPtrInstrumenter::ActualValue GetElementPtrInstrumenter::getActualValue(Value *value) {
-  SCOPE scope;
-  Constant* valOrInx;
-  ActualValue av;
+GetElementPtrInstrumenter::ActualValue GetElementPtrInstrumenter::getActualValue(Value* value) {
+	SCOPE scope;
+	Constant* valOrInx;
+	ActualValue av;
 
-  scope = getScope(value);
-  valOrInx = getValueOrIndex(value);
+	scope = getScope(value);
+	valOrInx = getValueOrIndex(value);
 
-  av.scope = scope;
-  av.valOrInx = valOrInx;
+	av.scope = scope;
+	av.valOrInx = valOrInx;
 
-  return av;
+	return av;
 }
