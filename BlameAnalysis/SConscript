@@ -58,8 +58,12 @@ env.AppendUnique(
 env.MergeFlags('!llvm-config --cxxflags --ldflags')
 
 plugin = env.SharedLibrary(
-    '../Release+Asserts/lib/blameanalysis',
+    '../Release+Asserts/lib/libba',
     [
+      '../src/Common.cpp',
+      '../src/InstructionMonitor.cpp',
+      '../src/InterpreterObserver.cpp',
+      '../src/IValue.cpp',
       'BlameNode.cpp',
       'BlameTree.cpp',
       'BlameTreeAnalysis.cpp',
