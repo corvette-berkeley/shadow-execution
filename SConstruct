@@ -65,6 +65,7 @@ flags = [
     '-Wall',
     '-Wformat=2',
     '-Wextra',
+    '-std=c++11',
     '-Werror',
     '${("", "-g")[DEBUG]}',
     '${("", "-O")[OPTIMIZE]}',
@@ -86,8 +87,6 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
-	'papers/framework',
-	'papers/nans',
         ],
     exports='env',
     )
