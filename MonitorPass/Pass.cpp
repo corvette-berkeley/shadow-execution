@@ -1,6 +1,6 @@
 #define DEBUG_TYPE "hello"
 
-#include <llvm/IR/Verifier.h>
+#include <llvm/Analysis/Verifier.h>
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
 
@@ -115,11 +115,11 @@ struct MonitorPass : public FunctionPass {
 					ValuePtrVector args;
 					args.push_back(frameSize);
 
-					FunctionType* funType =
-						FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()), ArrayRef<Type*>(argTypes), false);
-					Instruction* call =
-						CallInst::Create(instrumentation->M_->getOrInsertFunction(StringRef("llvm_create_stack_frame"), funType),
-										 ArrayRef<Value*>(args));
+					FunctionType* funType = FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+											ArrayRef<Type*>(argTypes), false);
+					Instruction* call = CallInst::Create(
+											instrumentation->M_->getOrInsertFunction(StringRef("llvm_create_stack_frame"), funType),
+											ArrayRef<Value*>(args));
 					call->insertBefore(itr);
 					isFirstInstruction = false;
 				}
@@ -134,11 +134,11 @@ struct MonitorPass : public FunctionPass {
 					ValuePtrVector args;
 					args.push_back(blockId);
 
-					FunctionType* funType =
-						FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()), ArrayRef<Type*>(argTypes), false);
-					Instruction* call =
-						CallInst::Create(instrumentation->M_->getOrInsertFunction(StringRef("llvm_record_block_id"), funType),
-										 ArrayRef<Value*>(args));
+					FunctionType* funType = FunctionType::get(Type::getVoidTy(instrumentation->M_->getContext()),
+											ArrayRef<Type*>(argTypes), false);
+					Instruction* call = CallInst::Create(
+											instrumentation->M_->getOrInsertFunction(StringRef("llvm_record_block_id"), funType),
+											ArrayRef<Value*>(args));
 
 					if (dyn_cast<PHINode>(itr)) {
 						// find the last phiNode in the block
@@ -279,7 +279,7 @@ struct MonitorPass : public FunctionPass {
 						args.push_back(global);
 
 						aryOfPrim = true;
-						Constant* sizeC = instrumenter->INT32_CONSTANT(size, false);  // no sign
+						Constant* sizeC = instrumenter->INT32_CONSTANT(size, false);	// no sign
 						Constant* kindC = instrumenter->KIND_CONSTANT(kind);
 						args.push_back(sizeC);
 						args.push_back(kindC);
@@ -290,8 +290,8 @@ struct MonitorPass : public FunctionPass {
 						argTypes.push_back(instrumenter->INT32_TYPE());
 						argTypes.push_back(instrumenter->KIND_TYPE());
 
-						Instruction* call =
-							instrumenter->CALL_INSTR("llvm_create_global_array", instrumenter->VOID_FUNC_TYPE(argTypes), args);
+						Instruction* call = instrumenter->CALL_INSTR("llvm_create_global_array",
+											instrumenter->VOID_FUNC_TYPE(argTypes), args);
 						instrs.push_back(call);
 					}
 				}
@@ -328,7 +328,7 @@ struct MonitorPass : public FunctionPass {
 
 			instrumenter->InsertAllBefore(instrs, firstBlock->getTerminator());
 			//} // isPrivateLinkage
-		}  // global iterator
+		}	// global iterator
 
 		return Instrumentation::GetInstance()->Initialize(M);
 	}
@@ -349,7 +349,7 @@ struct MonitorPass : public FunctionPass {
 
 /*******************************************************************************************/
 
-}  // end namespace
+}	// end namespace
 
 /*******************************************************************************************/
 
@@ -434,26 +434,26 @@ public:
 // active instrumenters (see http://llvm.org/docs/LangRef.html)
 
 // ***** Binary Operations ****** //
-REGISTER_INSTRUMENTER(AddInstrumenter, "add")  // done
-REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")  // done
-REGISTER_INSTRUMENTER(SubInstrumenter, "sub")  // done
-REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")  // done
-REGISTER_INSTRUMENTER(MulInstrumenter, "mul")  // done
-REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")  // done
-REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")  // done
-REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")  // done
-REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")  // done
-REGISTER_INSTRUMENTER(URemInstrumenter, "urem")  // done
-REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")  // done
-REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")  // done
+REGISTER_INSTRUMENTER(AddInstrumenter, "add")	// done
+REGISTER_INSTRUMENTER(FAddInstrumenter, "fadd")	// done
+REGISTER_INSTRUMENTER(SubInstrumenter, "sub")	// done
+REGISTER_INSTRUMENTER(FSubInstrumenter, "fsub")	// done
+REGISTER_INSTRUMENTER(MulInstrumenter, "mul")	// done
+REGISTER_INSTRUMENTER(FMulInstrumenter, "fmul")	// done
+REGISTER_INSTRUMENTER(UDivInstrumenter, "udiv")	// done
+REGISTER_INSTRUMENTER(SDivInstrumenter, "sdiv")	// done
+REGISTER_INSTRUMENTER(FDivInstrumenter, "fdiv")	// done
+REGISTER_INSTRUMENTER(URemInstrumenter, "urem")	// done
+REGISTER_INSTRUMENTER(SRemInstrumenter, "srem")	// done
+REGISTER_INSTRUMENTER(FRemInstrumenter, "frem")	// done
 
 // ***** Bitwise Binary Operations ***** //
-REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")  // done
-REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")  // done
-REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")  // done
-REGISTER_INSTRUMENTER(AndInstrumenter, "and_")  // done
-REGISTER_INSTRUMENTER(OrInstrumenter, "or_")  // done
-REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")  // done
+REGISTER_INSTRUMENTER(ShlInstrumenter, "shl")	// done
+REGISTER_INSTRUMENTER(LShrInstrumenter, "lshr")	// done
+REGISTER_INSTRUMENTER(AShrInstrumenter, "ashr")	// done
+REGISTER_INSTRUMENTER(AndInstrumenter, "and_")	// done
+REGISTER_INSTRUMENTER(OrInstrumenter, "or_")	// done
+REGISTER_INSTRUMENTER(XorInstrumenter, "xor_")	// done
 
 // ***** Vector Operations ***** //
 REGISTER_INSTRUMENTER(ExtractElementInstrumenter, "extractelement")
@@ -465,39 +465,39 @@ REGISTER_INSTRUMENTER(ExtractValueInstrumenter, "extractvalue")
 REGISTER_INSTRUMENTER(InsertValueInstrumenter, "insertvalue")
 
 // ***** Memory Access and Addressing Operations ***** //
-REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")  // done
-REGISTER_INSTRUMENTER(LoadInstrumenter, "load")  // done
-REGISTER_INSTRUMENTER(StoreInstrumenter, "store")  // done
+REGISTER_INSTRUMENTER(AllocaInstrumenter, "allocax")	// done
+REGISTER_INSTRUMENTER(LoadInstrumenter, "load")	// done
+REGISTER_INSTRUMENTER(StoreInstrumenter, "store")	// done
 REGISTER_INSTRUMENTER(FenceInstrumenter, "fence")
 REGISTER_INSTRUMENTER(AtomicCmpXchgInstrumenter, "cmpxchg")
 REGISTER_INSTRUMENTER(AtomicRMWInstrumenter, "atomicrmw")
 REGISTER_INSTRUMENTER(GetElementPtrInstrumenter, "getelementptr")
 
 // ***** Terminator Instructions ***** //
-REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")  // done
-REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")  // done
+REGISTER_INSTRUMENTER(BranchInstrumenter, "branch")	// done
+REGISTER_INSTRUMENTER(IndirectBrInstrumenter, "indirectbr")	// done
 REGISTER_INSTRUMENTER(InvokeInstrumenter, "invoke")
 REGISTER_INSTRUMENTER(ResumeInstrumenter, "resume")
-REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")  // done
+REGISTER_INSTRUMENTER(ReturnInstrumenter, "return_")	// done
 // REGISTER_INSTRUMENTER(SwitchInstrumenter, "switch_") // done
-REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")  // done
+REGISTER_INSTRUMENTER(UnreachableInstrumenter, "unreachable")	// done
 
 // ***** Conversion Operations ***** //
 REGISTER_INSTRUMENTER(TruncInstrumenter, "trunc")
 REGISTER_INSTRUMENTER(ZExtInstrumenter, "zext")
 REGISTER_INSTRUMENTER(SExtInstrumenter, "sext")
-REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")  // done
-REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")  // done
-REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")  // done
-REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")  // done
-REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")  // done
-REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")  // done
+REGISTER_INSTRUMENTER(FPTruncInstrumenter, "fptrunc")	// done
+REGISTER_INSTRUMENTER(FPExtInstrumenter, "fpext")	// done
+REGISTER_INSTRUMENTER(FPToUIInstrumenter, "fptoui")	// done
+REGISTER_INSTRUMENTER(FPToSIInstrumenter, "fptosi")	// done
+REGISTER_INSTRUMENTER(UIToFPInstrumenter, "uitofp")	// done
+REGISTER_INSTRUMENTER(SIToFPInstrumenter, "sitofp")	// done
 REGISTER_INSTRUMENTER(PtrToIntInstrumenter, "ptrtoint")
 REGISTER_INSTRUMENTER(IntToPtrInstrumenter, "inttoptr")
 REGISTER_INSTRUMENTER(BitCastInstrumenter, "bitcast")
 
 // ***** Other Operations ***** //
-REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")  // done
+REGISTER_INSTRUMENTER(ICmpInstrumenter, "icmp")	// done
 REGISTER_INSTRUMENTER(FCmpInstrumenter, "fcmp")
 REGISTER_INSTRUMENTER(PHINodeInstrumenter, "phinode")
 REGISTER_INSTRUMENTER(SelectInstrumenter, "select")

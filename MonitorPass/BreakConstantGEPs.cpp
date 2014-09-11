@@ -19,7 +19,7 @@
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"
-#include "llvm/IR/InstIterator.h"
+#include "llvm/Support/InstIterator.h"
 
 #include <iostream>
 #include <map>
