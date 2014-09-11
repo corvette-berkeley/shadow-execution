@@ -13,7 +13,7 @@ $LPATH/clang -emit-llvm -g -pg -c $name.c -o $name.bc
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --break-constgeps -f -o $name-ngep.bc $name.bc 
 
 # Instrument the bitcode
-$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/$name-metadata.txt -f -o tmppass.bc $name-ngep.bc
+$LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --instrument --file $GLOG_log_dir/debug.bin -f -o tmppass.bc $name-ngep.bc
 
 # Move alloca instructions to top of each function
 $LPATH/opt -load $INSTRUMENTOR_PATH/MonitorPass/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc

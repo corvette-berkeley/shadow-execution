@@ -517,14 +517,6 @@ ObserverPtrList observers_;
 // macro for adding observers
 #define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
 
-// active observers
-//REGISTER_OBSERVER(EmptyObserver, "empty")
-//REGISTER_OBSERVER(PrintObserver, "print")
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
-//REGISTER_OBSERVER(FPInstabilityAnalysis, "fpinstability")
-//REGISTER_OBSERVER(NaNPropagationAnalysis, "nan")
-//REGISTER_OBSERVER(OutOfBoundAnalysis, "outofboundanalysis")
-//REGISTER_OBSERVER(BlameTree, "blametree")
-//REGISTER_OBSERVER(BlameTreeFloat, "blametreefloat")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 
 /*******************************************************************************************/

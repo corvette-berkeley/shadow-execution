@@ -19,6 +19,7 @@ class BlameAnalysis : public InterpreterObserver {
   
   public:
     static int dpc;         // Unique counter for instructions executed.
+    static map<uint64_t, DebugInfo> debugInfoMap;
     static vector<vector<BlameTreeShadowObject<HIGHPRECISION> > > trace; 
 
     BlameAnalysis(std::string name) : InterpreterObserver(name) {}
