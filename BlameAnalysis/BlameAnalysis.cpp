@@ -125,14 +125,17 @@ void BlameAnalysis::pre_analysis() {
   // Read debug information from $GLOG_log_dir/debug.bin.
   std::string debugFileName(getenv("GLOG_log_dir"));
   debugFileName += "/debug.bin";
+
   FILE *debugFile = fopen(debugFileName.c_str(), "rb");
   struct DebugInfo debugInfo;
   uint64_t iid;
 
   while (fread(&iid, sizeof(uint64_t), 1, debugFile) &&
          fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
+    std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << std::endl;  
     debugInfoMap[iid] = debugInfo;
   }  
+  fclose(debugFile);
   
   // Set copy shadow function for blame analysis.
   IValue::setCopyShadow(&copyShadow);

@@ -144,7 +144,7 @@ struct kvalue_t {
 #define KVALUE kvalue_t
 
 struct DebugInfo {
-  const char* file;
+  char file[100];
   int line;
 };
 

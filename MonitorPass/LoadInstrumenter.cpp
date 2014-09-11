@@ -28,7 +28,7 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction *inst) {
     int line = getLineNumber(loadInst);
 
     DebugInfo *debug = new DebugInfo;
-    debug->file = strdup(filename.c_str());
+    sprintf(debug->file, "%.99s", filename.c_str());
     debug->line = line;
     IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(loadInst));  
     parent_->debugMap[address] = debug;

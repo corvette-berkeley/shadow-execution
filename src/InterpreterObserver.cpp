@@ -2834,7 +2834,7 @@ void InterpreterObserver::create_global_symbol_table(int size) {
     globalSymbolTable.push_back(value);
   }
 
-  //pre_analysis();
+  pre_analysis();
 
   //post_create_global_symbol_table();
 
