@@ -16,15 +16,14 @@ def main():
   executables = open(executables_name, 'r')
 
   # setting some variables
-  llvm = os.getenv("GOLD_LLVM_BIN")
-  instrumentorpath = os.getenv("INSTRUMENTOR_PATH")
-  monitorpass = instrumentorpath + "/MonitorPass/MonitorPass.so"
-  sourcepath = instrumentorpath + "/src"
-  glogpath = os.getenv("GLOG_PATH") + "/lib"
+  llvm = os.getenv("LLVM_BIN_PATH")
+  monitorpass = os.getenv("MONITORPASS_LIB_PATH") + "/MonitorPass." + os.getenv("SHARED_LIB_EXTENSION")
+  sourcepath = os.getenv("INSTRUMENTOR_LIB_PATH")
+  glogpath = os.getenv("GLOG_LIB_PATH")
   glog_log_dir = os.getenv("GLOG_log_dir")
 
   logfile = "log.out"
-  log = open(logfile, "w") 
+  log = open(logfile, "w")
 
   for executable in executables:
       executable = executable.strip()
@@ -40,11 +39,11 @@ def main():
        # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED REMOVING CONSTANT GEPS]: " + executable + "-ngep.bc\n")
-        continue 
+        continue
 
       ##########################################
       # instrumented bitcode file
-      ibitcodefile = 'i_' + executable + '.bc' 
+      ibitcodefile = 'i_' + executable + '.bc'
       ibitcode = open(ibitcodefile, 'w')
 
       command = [llvm + '/opt', '-load', monitorpass, '--instrument', executable + '.bc', '--file', glog_log_dir + '/' + executable + '-metadata.txt', '--includedFunctions', executable + '-include.txt', '--logfile', executable, '-o', ibitcodefile]
@@ -53,12 +52,12 @@ def main():
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED INSTRUMENTATION]: i_" + executable + ".bc\n")
-        continue 
+        continue
 
       ###########################################
       # instrumented executable file
       '''
-      iassemblyfile = 'i_' + executable + '.s' 
+      iassemblyfile = 'i_' + executable + '.s'
       iassembly = open(iassemblyfile, 'w')
 
       command = [llvm + '/llc', ibitcodefile]
@@ -67,12 +66,12 @@ def main():
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED ASSEMBLY]: " + executable + ".s\n")
-        continue 
+        continue
       '''
-      
+
       ############################################
       # instrumented executable file
-      iexecutablefile = executable + '.out' 
+      iexecutablefile = executable + '.out'
       iexecutable = open(iexecutablefile, 'w')
 
       # added -lgmp for expr and other core utility
@@ -82,7 +81,7 @@ def main():
       # return -1 if running LLVM passes fails
       if retval <> 0:
         log.write("[FAILED EXECUTABLE]: " + executable + ".out\n")
-         
+
 
 
 

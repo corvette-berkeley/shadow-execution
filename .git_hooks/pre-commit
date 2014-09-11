@@ -1,0 +1,57 @@
+#!/bin/bash
+# based on phpcheck-git by
+# Author: Remigijus Jarmalavičius <remigijus@jarmalavicius.lt>
+# Author: Vytautas Povilaitis <php-checker@vytux.lt>
+# available at https://github.com/ReekenX/phpcheck-git
+
+function match_extension() {
+	echo "$1" | grep "\.$2$"
+}
+
+function binary_exists() {
+	which "$1"
+}
+
+ROOT_DIR="$(pwd)"
+LIST=$(git diff-index --cached --name-only --diff-filter=ACMR HEAD)
+for file in $LIST
+do
+	echo "Formating $file..."
+
+	if [ "$(match_extension "$file" "cpp")" == "" ] && [ "$(match_extension "$file" "h")" == "" ] ; then
+		continue
+ 	fi
+	if [ "$(binary_exists "clang-format")" != "" ] ; then
+		clang-format -i "$file"
+	else
+		echo "clang-format not found on path!"
+	fi
+
+	if [ "$(binary_exists "astyle")" != "" ] ; then
+		export ARTISTIC_STYLE_OPTIONS="$ROOT_DIR/.astylerc"
+		astyle "$file"
+		if diff "$file" "$file"".orig" >/dev/null ; then
+			rm "$file"".orig"
+		fi
+	else
+		echo "astyle not found on path!"
+	fi
+
+	sed -e's/[[:space:]]*$//' "$file" > "$file"".tmp"
+
+	if diff "$file" "$file"".tmp" >/dev/null ; then
+		rm "$file"".tmp"
+	else
+		mv "$file" "$file"".sed.orig"
+		mv "$file"".tmp" "$file"
+	fi
+
+	# adjust to tabs if indented with spaces
+	if [ "$(grep '^ ' "$file")" != "" ] ; then
+		echo "Were unable to correctly format"
+		exit 1
+	fi
+
+	git add "$file"
+done
+
