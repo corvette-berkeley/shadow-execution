@@ -38,17 +38,14 @@
 #ifndef BLAME_TREE_FLOAT_H_
 #define BLAME_TREE_FLOAT_H_
 
+#include <cmath>
+#include <fstream>
 #include "InterpreterObserver.h"
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
 #include "BlameTreeAnalysis.h"
 #include "BlameNodeID.h"
 #include "IValue.h"
-#include <cmath>
-#include <fstream>
-
-using namespace llvm;
-using namespace std;
 
 class BlameTreeFloat : public InterpreterObserver {
 
