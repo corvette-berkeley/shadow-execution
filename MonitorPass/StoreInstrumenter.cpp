@@ -6,106 +6,108 @@
 #include "StoreInstrumenter.h"
 
 bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
-  StoreInst* storeInst; 
-  
-  storeInst = dyn_cast<StoreInst>(inst);
-  if (storeInst != NULL) {
-    safe_assert(parent_ != NULL);
+	StoreInst* storeInst;
 
-    InstrPtrVector instrs;
-    Value *valueOp, *pointerOp;
-    Type *valueOpType;
-    Constant *cPointerInx, *cScope, *cSrcType, *cSrcScope, *cSrcInx; 
-    Instruction* cSrcValue;
-    Instruction *call;
+	storeInst = dyn_cast<StoreInst>(inst);
+	if (storeInst != NULL) {
+		safe_assert(parent_ != NULL);
 
-    count_++;
+		InstrPtrVector instrs;
+		Value* valueOp, *pointerOp;
+		Type* valueOpType;
+		Constant* cPointerInx, *cScope, *cSrcType, *cSrcScope, *cSrcInx;
+		Instruction* cSrcValue;
+		Instruction* call;
 
-    // skipping stores in main if operands are arguments
-    if (BasicBlock *basicBlock = storeInst->getParent()) {
-      if (Function *function = basicBlock->getParent()) {
-        if (function->getName() == "main") {
-          if (dyn_cast<Argument>(storeInst->getValueOperand())) {
-            return false;
-          }
-        }
-      }
-    }
+		count_++;
 
-    parent_->AS_ = storeInst->getPointerAddressSpace();
+		// skipping stores in main if operands are arguments
+		if (BasicBlock* basicBlock = storeInst->getParent()) {
+			if (Function* function = basicBlock->getParent()) {
+				if (function->getName() == "main") {
+					if (dyn_cast<Argument>(storeInst->getValueOperand())) {
+						return false;
+					}
+				}
+			}
+		}
 
-    valueOp = storeInst->getValueOperand();
-    pointerOp = storeInst->getPointerOperand();
-    valueOpType = valueOp->getType();
+		parent_->AS_ = storeInst->getPointerAddressSpace();
 
-    cSrcType = KIND_CONSTANT(TypeToKind(valueOpType));
-    cSrcScope = INT32_CONSTANT(getScope(valueOp), SIGNED);
-    cSrcInx = computeIndex(valueOp);
-    cPointerInx = computeIndex(pointerOp);
-    cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
+		valueOp = storeInst->getValueOperand();
+		pointerOp = storeInst->getPointerOperand();
+		valueOpType = valueOp->getType();
 
-    // retrieving source value
-    cSrcValue = NULL;
-    if (valueOpType->isIntegerTy()) {
+		cSrcType = KIND_CONSTANT(TypeToKind(valueOpType));
+		cSrcScope = INT32_CONSTANT(getScope(valueOp), SIGNED);
+		cSrcInx = computeIndex(valueOp);
+		cPointerInx = computeIndex(pointerOp);
+		cScope = INT32_CONSTANT(getScope(pointerOp), SIGNED);
 
-      cSrcValue = INTMAX_CAST_INSTR(valueOp, true);
-      instrs.push_back(cSrcValue);
+		// retrieving source value
+		cSrcValue = NULL;
+		if (valueOpType->isIntegerTy()) {
 
-    } else if (valueOpType->isFloatingPointTy()) {
+			cSrcValue = INTMAX_CAST_INSTR(valueOp, true);
+			instrs.push_back(cSrcValue);
 
-      Instruction *flpCast;
+		} else if (valueOpType->isFloatingPointTy()) {
 
-      flpCast = FLPMAX_CAST_INSTR(valueOp);
-      cSrcValue = VALUE_CAST_INSTR(flpCast);
+			Instruction* flpCast;
 
-      instrs.push_back(flpCast);
-      instrs.push_back(cSrcValue);
-      
-    } else if (valueOpType->isPointerTy()) {
-      cSrcValue = PTRTOINT_CAST_INSTR(valueOp);
+			flpCast = FLPMAX_CAST_INSTR(valueOp);
+			cSrcValue = VALUE_CAST_INSTR(flpCast);
 
-      instrs.push_back(cSrcValue);
-    }
+			instrs.push_back(flpCast);
+			instrs.push_back(cSrcValue);
 
+		} else if (valueOpType->isPointerTy()) {
+			cSrcValue = PTRTOINT_CAST_INSTR(valueOp);
 
-    // debugging info
-    string filename = getFileName(storeInst);
-    int line = getLineNumber(storeInst);
+			instrs.push_back(cSrcValue);
+		}
 
-    DebugInfo *debug = new DebugInfo;
-    debug->file = strdup(filename.c_str());
-    debug->line = line;
-    IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(storeInst));  
-    parent_->debugMap[address] = debug;
-    // end of debugging info
+		// debugging info
+		string filename = getFileName(storeInst);
+		int line = getLineNumber(storeInst);
 
-    if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
-      // element was inserted
-      parent_->fileCount++;
-    }
+		DebugInfo* debug = new DebugInfo;
+		sprintf(debug->file, "%.99s", filename.c_str());
+		debug->line = line;
+		IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(storeInst));
+		parent_->debugMap[address] = debug;
+		// end of debugging info
 
-    call = CALL_INT_INT_KIND_INT_INT_INT64("llvm_store", cPointerInx, cScope, cSrcType, cSrcScope, cSrcInx, cSrcValue);
-    instrs.push_back(call);
+		if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount))
+				.second) {
+			// element was inserted
+			parent_->fileCount++;
+		}
 
-    // instrument
-    InsertAllBefore(instrs, storeInst);
+		call = CALL_INT_INT_KIND_INT_INT_INT64("llvm_store", cPointerInx, cScope,
+											   cSrcType, cSrcScope, cSrcInx,
+											   cSrcValue);
+		instrs.push_back(call);
 
-    return true;
+		// instrument
+		InsertAllBefore(instrs, storeInst);
 
-  } else {
+		return true;
 
-    return false;
+	} else {
 
-  }
+		return false;
+
+	}
 }
 
-SCOPE StoreInstrumenter::getScope(Value *value) {
-  if (isa<GlobalVariable>(value)) {
-    return GLOBAL;
-  } else if (isa<Constant>(value)) {
-    return CONSTANT;
-  } else {
-    safe_assert(isa<Instruction>(value) || isa<Argument>(value));
-    return LOCAL;
-  }
+SCOPE StoreInstrumenter::getScope(Value* value) {
+	if (isa<GlobalVariable>(value)) {
+		return GLOBAL;
+	} else if (isa<Constant>(value)) {
+		return CONSTANT;
+	} else {
+		safe_assert(isa<Instruction>(value) || isa<Argument>(value));
+		return LOCAL;
+	}
 }

@@ -37,7 +37,7 @@ else:
 
 env = Environment(
     ENV = {'PATH' : os.environ['PATH']},
-    CCFLAGS = ['-Isrc/lib', '-I'+os.environ['UNWIND_INCLUDE_PATH']],
+    CCFLAGS = ['-Isrc/lib', '-I'+os.environ['UNWIND_INCLUDE_PATH'], '-I'+os.environ['GLOG_INCLUDE_PATH']],
     options=opts,
     Is64=Is64,
     )
@@ -87,6 +87,12 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
+<<<<<<< HEAD
+=======
+  'BlameAnalysis',
+#	'papers/framework',
+#	'papers/nans',
+>>>>>>> blame-analysis
         ],
     exports='env',
     )

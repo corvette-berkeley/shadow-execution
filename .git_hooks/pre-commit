@@ -48,4 +48,3 @@ do
 
 	git add "$file"
 done
-

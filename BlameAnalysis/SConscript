@@ -1,5 +1,3 @@
-import os
-import platform
 import SCons.Warnings
 from distutils.version import StrictVersion
 
@@ -52,27 +50,24 @@ env = conf.Finish()
 #  LLVM plugin building
 #
 
-LibInstallDir=os.getcwd()
-
-if platform.system() == 'Darwin':
-   env.Append(SHLINKFLAGS='-Wl,-install_name,%s/${TARGET.file}'%LibInstallDir)
-
 env.AppendUnique(
     #SHLINKFLAGS='-Wl,--no-undefined',
     #SHLINKFLAGS='-Wl',
-    LIBS=['LLVM-$llvm_version','glog'],
-    LIBPATH=os.environ['GLOG_LIB_PATH'],
-    CPPPATH=os.environ['GLOG_INCLUDE_PATH'],
+    LIBS='LLVM-$llvm_version',
     )
 env.MergeFlags('!llvm-config --cxxflags --ldflags')
 
 plugin = env.SharedLibrary(
-    'libmonitor',
+    '../Release+Asserts/lib/libba',
     [
-    'Common.cpp',
-    'InstructionMonitor.cpp',
-    'InterpreterObserver.cpp',
-    'IValue.cpp',
+      '../src/Common.cpp',
+      '../src/InstructionMonitor.cpp',
+      '../src/InterpreterObserver.cpp',
+      '../src/IValue.cpp',
+      'BlameNode.cpp',
+      'BlameTree.cpp',
+      'BlameAnalysis.cpp',
+      'BlameTreeUtilities.cpp'
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,
