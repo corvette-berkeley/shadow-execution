@@ -6,9 +6,14 @@ export INSTRUMENTOR_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export INSTRUMENTOR_LIB_PATH="$INSTRUMENTOR_PATH""/src"
 export MONITOR_LIB_PATH="$INSTRUMENTOR_PATH""/MonitorPass"
 
-# makes symlink for git hooks path
-rm -R "$INSTRUMENTOR_PATH"/".git/hooks"
-ln -s "$INSTRUMENTOR_PATH"/".git_hooks" "$INSTRUMENTOR_PATH"/".git/hooks"
+if [ "$(readlink "$INSTRUMENTOR_PATH""/.git/hooks")" == "" ]
+then
+	echo "WARNING: Your git hooks are not connected - please do not commit"
+	echo "Run:"
+	# makes symlink for git hooks path
+	echo "rm -R "$INSTRUMENTOR_PATH"/".git/hooks""
+	echo "ln -s "$INSTRUMENTOR_PATH"/".git_hooks" "$INSTRUMENTOR_PATH"/".git/hooks""
+fi
 
 shared_lib="so"
 if [ "$platform" == "Darwin" ]
