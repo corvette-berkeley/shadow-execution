@@ -43,7 +43,7 @@ using std::ostringstream;
 using std::map;
 using std::make_pair;
 
-string BlameNode::toDot() {
+string BlameNode::toDot() const {
 	ostringstream dot;
 
 	dot << "\"(" << dpc << ", " << pc << ", " << BlameTreeUtilities::precisionToString(precision) << ")\"";
@@ -52,7 +52,7 @@ string BlameNode::toDot() {
 }
 
 // TODO: why are BlacmeNodeID's in existance?
-string BlameNode::edgeToDot(map<BlameNodeID, BlameNode> nodes) {
+string BlameNode::edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const {
 	ostringstream tmpDot;
 	ostringstream dot;
 
@@ -76,8 +76,14 @@ string BlameNode::edgeToDot(map<BlameNodeID, BlameNode> nodes) {
 		dot << "\t" << toDot() << " -> " << tmpNodeStr.str() << endl;
 
 		for (auto blameNodeID : bnIDs) {
-			BlameNode blameNode = nodes[blameNodeID];
-			dot << "\t" << tmpNodeStr.str() << " -> " << blameNode.toDot() << endl;
+			auto it = nodes.find(blameNodeID);
+			if (it != nodes.end()) {
+				const BlameNode& blameNode = it->second;
+				dot << "\t" << tmpNodeStr.str() << " -> " << blameNode.toDot() << endl;
+			} else {
+				const BlameNode blameNode;
+				dot << "\t" << tmpNodeStr.str() << " -> " << blameNode.toDot() << endl;
+			}
 		}
 
 		tempNodeCnt++;

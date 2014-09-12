@@ -72,12 +72,12 @@ struct BlameNode {
 	/**
 	 * Visualize this node in GraphViz dot format.
 	 */
-	std::string toDot();
+	std::string toDot() const;
 
 	/**
 	 * Visualize edges associate with this ndoe in GraphViz dot format.
 	 */
-	std::string edgeToDot(map<BlameNodeID, BlameNode> nodes);
+	std::string edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const;
 };
 
 #endif /* BLAME_NODE_H */

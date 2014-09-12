@@ -37,242 +37,219 @@
 
 #include "BlameTreeAnalysis.h"
 
-BlameNode BlameTreeAnalysis::constructFuncBlameNode(BlameTreeShadowObject<HIGHPRECISION> left, PRECISION precision,
-		BlameTreeShadowObject<HIGHPRECISION> right) {
-	int dpc;
-	std::map<BlameNodeID, BlameNode>::iterator it;
+#include <queue>
+#include <vector>
+#include <map>
 
-	dpc = left.getDPC();
+using std::queue;
+using std::map;
+using std::vector;
+
+// TODO: document what "52" is
+const BlameNode& BlameTreeAnalysis::constructFuncBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left,
+		PRECISION precision,
+		const BlameTreeShadowObject<HIGHPRECISION>& right) {
+	int dpc = left.getDPC();
 	BlameNodeID bnID(dpc, precision);
-	it = nodes.find(bnID);
+	auto it = nodes.find(bnID);
 
 	//
 	// nodes remember all nodes that are processed before
 	// process again only if this is not processed before
 	//
-	if (it == nodes.end()) {
-		//
-		// variables declaration
-		//
-		int pc, fid, dpc01;
-		HIGHPRECISION value;
-		string func;
-		PRECISION i;
-		vector<vector<BlameNodeID>> blameNodeIds;
-		vector<bool> edgeAttributes;
-
-		//
-		// variables definition
-		//
-		pc = left.getPC();
-		fid = left.getFileID();
-		value = left.getValue(precision);
-		func = left.getFunc();
-
-		//
-		// construct a node associate with the function result
-		//
-		BlameNode node(dpc, pc, fid, false, precision, blameNodeIds, edgeAttributes);
-
-		dpc01 = right.getDPC();
-
-		//
-		// try different combination of precision of argument
-		//
-		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
-			HIGHPRECISION value01 = right.getValue(i);
-			HIGHPRECISION lowvalue01 = right.getValue(BITS_FLOAT);
-
-			safe_assert(value == BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)));
-			if (BlameTreeUtilities::equalWithPrecision(value, BlameTreeUtilities::evalFunc(value01, func), precision)) {
-				/*
-				if (BlameTreeUtilities::clearBits(value, 52 -
-				    BlameTreeUtilities::exactBits(precision)) ==
-				  BlameTreeUtilities::clearBits(BlameTreeUtilities::evalFunc(value01,
-				      func), 52 - BlameTreeUtilities::exactBits(precision))) {
-				      */
-				//
-				// Construct edges for each blame
-				//
-				BlameNodeID bnID01(dpc01, i);
-				vector<BlameNodeID> blamedNodes;
-
-				//
-				// Blame only if the operand cannot be in the lowest precision (right
-				// now BITS_23)
-				//
-				if (i != BITS_FLOAT &&
-						BlameTreeUtilities::clearBits(lowvalue01, 52 - BlameTreeUtilities::exactBits(i)) != value01) {
-					blamedNodes.push_back(bnID01);
-				}
-
-				node.edges.push_back(blamedNodes);
-
-				node.edgeAttributes.push_back(false);
-
-				//
-				// Do not try larger i because it subsumes what have been tried
-				//
-				break;
-			}
-		}
-
-		//
-		// Determined whether node is highlighted
-		//
-		if (value != (LOWPRECISION)value) {
-			node.highlight = true;
-		}
-
-		nodes[bnID] = node;
-
-		return node;
+	if (it != nodes.end()) {
+		return it->second;
 	}
 
-	return it->second;
+	//
+	// variables definition
+	//
+	int pc = left.getPC();
+	int fid = left.getFileID();
+	HIGHPRECISION value = left.getValue(precision);
+	string func = left.getFunc();
+
+	//
+	// construct a node associate with the function result
+	//
+	BlameNode node(dpc, pc, fid, false, precision, {}, {});
+
+	int dpc01 = right.getDPC();
+
+	//
+	// try different combination of precision of argument
+	//
+	for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
+		HIGHPRECISION value01 = right.getValue(i);
+		HIGHPRECISION lowvalue01 = right.getValue(BITS_FLOAT);
+
+		safe_assert(value == BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)));
+		if (!BlameTreeUtilities::equalWithPrecision(value, BlameTreeUtilities::evalFunc(value01, func), precision)) {
+			continue;
+		}
+		/*
+		if (BlameTreeUtilities::clearBits(value, 52 -
+		BlameTreeUtilities::exactBits(precision)) ==
+		BlameTreeUtilities::clearBits(BlameTreeUtilities::evalFunc(value01,
+		func), 52 - BlameTreeUtilities::exactBits(precision)))
+		*/
+		//
+		// Construct edges for each blame
+		//
+		BlameNodeID bnID01(dpc01, i);
+		vector<BlameNodeID> blamedNodes;
+
+		//
+		// Blame only if the operand cannot be in the lowest precision (right
+		// now BITS_23)
+		//
+		if (i != BITS_FLOAT &&
+				BlameTreeUtilities::clearBits(lowvalue01, 52 - BlameTreeUtilities::exactBits(i)) != value01) {
+			blamedNodes.push_back(bnID01);
+		}
+
+		node.edges.push_back(blamedNodes);
+		node.edgeAttributes.push_back(false);
+
+		//
+		// Do not try larger i because it subsumes what have been tried
+		//
+		break;
+	}
+
+	//
+	// Determined whether node is highlighted
+	//
+	if (value != (LOWPRECISION)value) {
+		node.highlight = true;
+	}
+
+	nodes[bnID] = node;
+	return nodes[bnID];
 }
 
-BlameNode BlameTreeAnalysis::constructBlameNode(BlameTreeShadowObject<HIGHPRECISION> left, PRECISION precision,
-		BlameTreeShadowObject<HIGHPRECISION> right01,
-		BlameTreeShadowObject<HIGHPRECISION> right02) {
 
-	int dpc;
-	std::map<BlameNodeID, BlameNode>::iterator it;
+const BlameNode& BlameTreeAnalysis::constructBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left,
+		PRECISION precision,
+		const BlameTreeShadowObject<HIGHPRECISION>& right01,
+		const BlameTreeShadowObject<HIGHPRECISION>& right02) {
 
-	dpc = left.getDPC();
+	int dpc = left.getDPC();
 	BlameNodeID bnID(dpc, precision);
-	it = nodes.find(bnID);
+	auto it = nodes.find(bnID);
 
 	//
 	// nodes remember all nodes that are processed before
 	// process again only if this is not processed before
 	//
-	if (it == nodes.end()) {
-		//
-		// variables declaration
-		//
-		int pc, fid, dpc01, dpc02;
-		HIGHPRECISION value;
-		BINOP bop;
-		PRECISION i, j, max_j;
-		vector<vector<BlameNodeID>> blameNodeIds;
-		vector<bool> edgeAttributes;
+	if (it != nodes.end()) {
+		return it->second;
+	}
 
-		//
-		// variables definition
-		//
-		pc = left.getPC();
-		fid = left.getFileID();
-		value = left.getValue(precision);
-		bop = left.getBinOp();
+	//
+	// variables definition
+	//
+	int pc = left.getPC();
+	int fid = left.getFileID();
+	HIGHPRECISION value = left.getValue(precision);
+	BINOP bop = left.getBinOp();
 
-		//
-		// construct a node associate with the binary operation result
-		//
-		BlameNode node(dpc, pc, fid, false, precision, blameNodeIds, edgeAttributes);
+	//
+	// construct a node associate with the binary operation result
+	//
+	BlameNode node(dpc, pc, fid, false, precision, {}, {});
 
-		dpc01 = right01.getDPC();
-		dpc02 = right02.getDPC();
+	int dpc01 = right01.getDPC();
+	int dpc02 = right02.getDPC();
 
-		//
-		// try different combination of precision of the two operands
-		//
-		max_j = PRECISION_NO;
-		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
-			HIGHPRECISION value01 = right01.getValue(i);
-			HIGHPRECISION lowvalue01 = right01.getValue(BITS_FLOAT);
+	//
+	// try different combination of precision of the two operands
+	//
+	PRECISION max_j = PRECISION_NO;
+	for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
+		HIGHPRECISION value01 = right01.getValue(i);
+		HIGHPRECISION lowvalue01 = right01.getValue(BITS_FLOAT);
 
-			for (j = BITS_FLOAT; j < max_j; j = PRECISION(j + 1)) {
-				HIGHPRECISION value02 = right02.getValue(j);
-				HIGHPRECISION lowvalue02 = right02.getValue(BITS_FLOAT);
+		PRECISION j = BITS_FLOAT;
+		for (; j < max_j; j = PRECISION(j + 1)) {
+			HIGHPRECISION value02 = right02.getValue(j);
+			HIGHPRECISION lowvalue02 = right02.getValue(BITS_FLOAT);
 
-				safe_assert(value == BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)));
-				if (BlameTreeUtilities::equalWithPrecision(value, BlameTreeUtilities::eval(value01, value02, bop), precision)) {
-					/*
-					if (value ==
-					BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
-					    value02, bop), 52 - BlameTreeUtilities::exactBits(precision)))
-					{*/
-					//
-					// Construct edges for each blame
-					//
-					BlameNodeID bnID01(dpc01, i);
-					BlameNodeID bnID02(dpc02, j);
-					vector<BlameNodeID> blamedNodes;
-
-					//
-					// Blame only if the operand cannot be in the lowest precision (right
-					// now BITS_23)
-					//
-					if (i != BITS_FLOAT &&
-							BlameTreeUtilities::clearBits(lowvalue01, 52 - BlameTreeUtilities::exactBits(i)) != value01) {
-						blamedNodes.push_back(bnID01);
-					}
-
-					if (j != BITS_FLOAT &&
-							BlameTreeUtilities::clearBits(lowvalue02, 52 - BlameTreeUtilities::exactBits(j)) != value02) {
-						blamedNodes.push_back(bnID02);
-					}
-
-					node.edges.push_back(blamedNodes);
-
-					//
-					// Determine the edge attribute
-					//
-					node.edgeAttributes.push_back(!BlameTreeUtilities::equalWithPrecision(
-													  value, BlameTreeUtilities::feval(value01, value02, bop), precision));
-					/*
-					node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
-					      BlameTreeUtilities::exactBits(precision)) !=
-					    BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
-					        value02, bop), 52 -
-					      BlameTreeUtilities::exactBits(precision)));
-					      */
-
-					//
-					// Do not try larger j because it subsumes what have been tried
-					//
-					break;
-				}
+			safe_assert(value == BlameTreeUtilities::clearBits(value, 52 - BlameTreeUtilities::exactBits(precision)));
+			if (!BlameTreeUtilities::equalWithPrecision(value, BlameTreeUtilities::eval(value01, value02, bop), precision)) {
+				continue;
 			}
+			/*
+			if (value ==
+			BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
+			    value02, bop), 52 - BlameTreeUtilities::exactBits(precision)))
+			{*/
+			//
+			// Construct edges for each blame
+			//
+			BlameNodeID bnID01(dpc01, i);
+			BlameNodeID bnID02(dpc02, j);
+
+
+			//
+			// Blame only if the operand cannot be in the lowest precision (right
+			// now BITS_23)
+			//
+			vector<BlameNodeID> blamedNodes;
+			if (i != BITS_FLOAT &&
+					BlameTreeUtilities::clearBits(lowvalue01, 52 - BlameTreeUtilities::exactBits(i)) != value01) {
+				blamedNodes.push_back(bnID01);
+			}
+
+			if (j != BITS_FLOAT &&
+					BlameTreeUtilities::clearBits(lowvalue02, 52 - BlameTreeUtilities::exactBits(j)) != value02) {
+				blamedNodes.push_back(bnID02);
+			}
+
+			node.edges.push_back(blamedNodes);
+
+			//
+			// Determine the edge attribute
+			//
+			node.edgeAttributes.push_back(
+				!BlameTreeUtilities::equalWithPrecision(value, BlameTreeUtilities::feval(value01, value02, bop), precision));
+			/*
+			node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
+			      BlameTreeUtilities::exactBits(precision)) !=
+			    BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
+			        value02, bop), 52 -
+			      BlameTreeUtilities::exactBits(precision)));
+			      */
+
 			//
 			// Do not try larger j because it subsumes what have been tried
 			//
-			max_j = j;
+			break;
 		}
-
 		//
-		// Determined whether node is highlighted
+		// Do not try larger j because it subsumes what have been tried
 		//
-		if (value != (LOWPRECISION)value) {
-			node.highlight = true;
-		}
-
-		nodes[bnID] = node;
-
-		return node;
+		max_j = j;
 	}
 
-	return it->second;
+	//
+	// Determined whether node is highlighted
+	//
+	if (value != (LOWPRECISION)value) {
+		node.highlight = true;
+	}
+
+	nodes[bnID] = node;
+	return nodes[bnID];
 }
 
-BlameNode BlameTreeAnalysis::constructBlameGraph(map<int, vector<BlameTreeShadowObject<HIGHPRECISION>>> trace) {
+// TODO: FIXME: we implicitedly assume trace[dpc] is a non-empty vector, which is bad...
+const BlameNode&
+BlameTreeAnalysis::constructBlameGraph(const map<int, vector<BlameTreeShadowObject<HIGHPRECISION>>>& trace) {
 
-	queue<BlameNodeID> workList;
-
-	workList.push(rootNode);
+	queue<BlameNodeID> workList = queue<BlameNodeID>({rootNode});
 
 	while (!workList.empty()) {
-
-		//
-		// Variable declarations.
-		//
-		int dpc;
-		PRECISION precision;
-		vector<BlameTreeShadowObject<HIGHPRECISION>> startNode;
-		set<BlameNodeID> nodeIds;
-		BlameNode blameGraph;
-
 		//
 		// Variable definitions.
 		//
@@ -282,15 +259,20 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int, vector<BlameTreeShadow
 			continue;
 		}
 
-		dpc = bnID.dpc;
-		precision = bnID.precision;
-		startNode = trace[dpc];
+		int dpc = bnID.dpc;
+		PRECISION precision = bnID.precision;
+		auto it = trace.find(dpc);
+		if (it == trace.end()) {
+			safe_assert(false);
+		}
+		const auto& startNode = it->second;
 
 		//
 		// We are assuming that each element of the trace has three elements.
 		// Construct blameGraph given the start node. Recursively construct
 		// blameGraph for all operands that are blamed by the start node.
 		//
+		BlameNode blameGraph;
 		switch (startNode[0].getIntrType()) {
 			case BIN_INTR:
 				safe_assert(startNode.size() == 3);
@@ -307,15 +289,10 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int, vector<BlameTreeShadow
 
 		const vector<vector<BlameNodeID>>& blameEdges = blameGraph.edges;
 
-
-		for (auto edgesIt = blameEdges.begin(); edgesIt != blameEdges.end(); ++edgesIt) {
-			vector<BlameNodeID> blameNodes;
-
-			blameNodes = *edgesIt;
-
-			for (vector<BlameNodeID>::iterator nodesIt = blameNodes.begin(); nodesIt != blameNodes.end(); ++nodesIt) {
-				BlameNodeID blameNode = *nodesIt;
-
+		// TODO: consider unordered_set here
+		set<BlameNodeID> nodeIds;
+		for (const auto& blameNodes : blameEdges) {
+			for (const auto& blameNode : blameNodes) {
 				//
 				// Construct graph for this node if it is never constructed before
 				//
@@ -323,8 +300,7 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int, vector<BlameTreeShadow
 			}
 		}
 
-		for (set<BlameNodeID>::iterator nodesIt = nodeIds.begin(); nodesIt != nodeIds.end(); ++nodesIt) {
-			BlameNodeID blameNode = *nodesIt;
+		for (const auto& blameNode : nodeIds) {
 			if (nodes.find(blameNode) == nodes.end()) {
 				workList.push(blameNode);
 			}
@@ -334,40 +310,24 @@ BlameNode BlameTreeAnalysis::constructBlameGraph(map<int, vector<BlameTreeShadow
 	return nodes[rootNode];
 }
 
-std::string BlameTreeAnalysis::edgeToDot(BlameNode graph) {
+std::string BlameTreeAnalysis::edgeToDot(const BlameNode& graph) const {
 	std::ostringstream dot;
-	std::set<BlameNodeID> bnIDs;
-
 	dot << "\t" << graph.edgeToDot(nodes) << endl;
-
 	return dot.str();
 }
 
-std::string BlameTreeAnalysis::toDot() {
+std::string BlameTreeAnalysis::toDot() const {
 	std::ostringstream dot;
-	std::set<BlameNodeID> bnIDs;
-	vector<vector<BlameNodeID>> edges;
-	map<BlameNodeID, BlameNode>::reverse_iterator it;
-
-	// int nodeCnt = 0;
-
 	dot << "digraph G { " << endl;
 
-	for (it = nodes.rbegin(); it != nodes.rend(); ++it) {
-		BlameNode bn = it->second;
+	for (auto it = nodes.rbegin(); it != nodes.rend(); ++it) {
+		const BlameNode& bn = it->second;
 
 		if (bn.highlight) {
 			dot << "\t" << bn.toDot() << "[color=red]" << endl;
 		}
 
 		dot << edgeToDot(bn);
-
-		/*
-		cout << nodeCnt << endl;
-
-		nodeCnt++;
-		if (nodeCnt > 500) break;
-		*/
 	}
 
 	dot << "}" << endl;
@@ -375,63 +335,79 @@ std::string BlameTreeAnalysis::toDot() {
 	return dot.str();
 }
 
-void BlameTreeAnalysis::printResult() {
-	queue<BlameNodeID> workList;
-	set<BlameNodeID> cacheNodes;  // set of already considered blame nodes
-	map<pair<int, int>, vector<bool>> result;  // map from pc to a pair of boolean, the first
+struct location {
+	int file;
+	int pc;
+	location(int f, int p) : file(f), pc(p) {}
+	bool operator<(const location& rhs) const {
+		if (file == rhs.file) {
+			return pc < rhs.pc;
+		}
+		return file < rhs.file;
+	}
+};
+
+struct highlighting {
+	bool highlight;
+	bool edgeHighlight;
+	highlighting(bool h = false, bool eh = false) : highlight(h), edgeHighlight(eh) {}
+};
+
+highlighting operator||(const highlighting& lhs, const highlighting& rhs) {
+	return highlighting(lhs.highlight || rhs.highlight, lhs.edgeHighlight || rhs.edgeHighlight);
+}
+
+void BlameTreeAnalysis::printResult() const {
+
+	// set of already considered blame nodes
+	map<location, highlighting> result;  // map from pc to a pair of boolean, the first
 	// boolean indicates whether the result
 	// requires higherprecision, the second
 	// boolean indicates whether the operator
 	// requires higher precision
-	workList.push(rootNode);
-	cacheNodes.insert(rootNode);
+
+
+	// TODO: consider whether this should be an unordered_set
+	set<BlameNodeID> cacheNodes = {rootNode};
+	queue<BlameNodeID> workList = queue<BlameNodeID>({rootNode});
 
 	while (!workList.empty()) {
-		int pc;
-		int file;
-
-		bool highlight;
-		bool edgeHighlight;
-
 		BlameNodeID bnID = workList.front();
-		BlameNode bn = nodes[bnID];
 		workList.pop();
-		pc = bn.dpc;
-		file = bn.fid;
 
-		highlight = bn.highlight;
+		auto it = nodes.find(bnID);
+		if (it == nodes.end()) {
+			continue;
+		}
+		BlameNode bn = it->second;
+
+		int pc = bn.dpc;
+		int file = bn.fid;
+		bool highlight = bn.highlight;
 		const vector<vector<BlameNodeID>>& edges = bn.edges;
+
+		if (edges.empty()) {
+			continue;
+		}
+
 		const vector<bool>& edgeAttributes = bn.edgeAttributes;
+		bool edgeHighlight = edgeAttributes[0];
 
-		if (!edges.empty()) {
-			vector<BlameNodeID> bnIDs;
+		//
+		// save the result for the current node
+		//
+		if (result.find(location(file, pc)) == result.end()) {
+			result[location(file, pc)] = highlighting(highlight, edgeHighlight);
+		} else {
+			location loc = location(file, pc);
+			result[loc] = result[loc] || highlighting(highlight, edgeHighlight);
+		}
 
-			edgeHighlight = edgeAttributes[0];
-			//
-			// save the result for the current node
-			//
-			if (result.find(make_pair(file, pc)) == result.end()) {
-				vector<bool> nodeResult;
-
-				nodeResult.push_back(highlight);
-				nodeResult.push_back(edgeHighlight);
-				result[make_pair(file, pc)] = nodeResult;
-			} else {
-				vector<bool> nodeResult;
-
-				nodeResult = result[make_pair(file, pc)];
-				nodeResult[0] = nodeResult[0] || highlight;
-				nodeResult[1] = nodeResult[1] || edgeHighlight;
-				result[make_pair(file, pc)] = nodeResult;
-			}
-
-			bnIDs = edges[0];
-			for (vector<BlameNodeID>::iterator it = bnIDs.begin(); it != bnIDs.end(); ++it) {
-				BlameNodeID bnID = *it;
-				if (cacheNodes.find(bnID) == cacheNodes.end()) {
-					cacheNodes.insert(bnID);
-					workList.push(bnID);
-				}
+		const vector<BlameNodeID>& bnIDs = edges[0];
+		for (const auto bnID : bnIDs) {
+			if (cacheNodes.find(bnID) == cacheNodes.end()) {
+				cacheNodes.insert(bnID);
+				workList.push(bnID);
 			}
 		}
 	}
@@ -439,14 +415,11 @@ void BlameTreeAnalysis::printResult() {
 	//
 	// print result
 	//
-	for (map<pair<int, int>, vector<bool>>::iterator it = result.begin(); it != result.end(); it++) {
-		int pc, file;
-		bool highlight, edgeHighlight;
-
-		file = it->first.first;
-		pc = it->first.second;
-		highlight = it->second[0];
-		edgeHighlight = it->second[1];
+	for (const auto& result_p : result) {
+		int file = result_p.first.file;
+		bool pc = result_p.first.pc;
+		bool highlight = result_p.second.highlight;
+		bool edgeHighlight = result_p.second.edgeHighlight;
 
 		if (highlight || edgeHighlight) {
 			cout << "\t File: " << file << ", Line " << pc << ":" << endl;

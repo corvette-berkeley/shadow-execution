@@ -7,7 +7,7 @@
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -39,80 +39,81 @@
 #define BLAME_TREE_ANALYSIS_H
 
 #include "BlameNode.h"
+#include <map>
+#include <vector>
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
-#include <queue>
+
 
 class BlameTreeAnalysis {
-  private:
-    map<BlameNodeID, BlameNode> nodes; // map from a pair (node id, precision) to node 
-                                       // set of nodes in the tree
-    BlameNodeID rootNode;              // root node of the tree                                      
+private:
+	std::map<BlameNodeID, BlameNode> nodes;  // map from a pair (node id, precision) to node
+	// set of nodes in the tree
+	const BlameNodeID rootNode;  // root node of the tree
 
-    /**
-     * Construct blame node given a binary operation expression. This function
-     * connects the node of left to the node of right01 or right02 if it can
-     * blame right01 or right02 given the precision constraint.
-     *
-     * @param left the left value of the binary operation
-     * @param precision the precision constraint on left
-     * @param right01 the first operand of the binary operation
-     * @param right02 the second oeprand of the binary opeartion
-     *
-     * @return the blame node associated with left and precision constraint,
-     * that connects to nodes it blames
-     */
-    BlameNode constructBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
-        PRECISION precision,
-        BlameTreeShadowObject<HIGHPRECISION> right01,
-        BlameTreeShadowObject<HIGHPRECISION> right02);
+	/**
+	 * Construct blame node given a binary operation expression. This function
+	 * connects the node of left to the node of right01 or right02 if it can
+	 * blame right01 or right02 given the precision constraint.
+	 *
+	 * @param left the left value of the binary operation
+	 * @param precision the precision constraint on left
+	 * @param right01 the first operand of the binary operation
+	 * @param right02 the second oeprand of the binary opeartion
+	 *
+	 * @return the blame node associated with left and precision constraint,
+	 * that connects to nodes it blames
+	 */
+	const BlameNode& constructBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+										const BlameTreeShadowObject<HIGHPRECISION>& right01,
+										const BlameTreeShadowObject<HIGHPRECISION>& right02);
 
-    BlameNode constructFuncBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
-        PRECISION precision,
-        BlameTreeShadowObject<HIGHPRECISION> right);
+	const BlameNode& constructFuncBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+											const BlameTreeShadowObject<HIGHPRECISION>& right);
 
-    BlameNode constructTruncBlameNode(BlameTreeShadowObject<HIGHPRECISION>
-        left, PRECISION precision, BlameTreeShadowObject<HIGHPRECISION> right);
+	const BlameNode& constructTruncBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+			const BlameTreeShadowObject<HIGHPRECISION>& right);
 
-    BlameNode constructExtBlameNode(BlameTreeShadowObject<HIGHPRECISION> left,
-        PRECISION precision, BlameTreeShadowObject<HIGHPRECISION> right);
+	const BlameNode& constructExtBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+										   const BlameTreeShadowObject<HIGHPRECISION>& right);
 
-    /**
-     * Helper function for toDot function. This function visualize all edges of
-     * the graph in GraphViz dot format.
-     *
-     * @return dot visualization of an edge
-     */
-    std::string edgeToDot(BlameNode graph);
+	/**
+	 * Helper function for toDot function. This function visualize all edges of
+	 * the graph in GraphViz dot format.
+	 *
+	 * @return dot visualization of an edge
+	 */
+	std::string edgeToDot(const BlameNode& graph) const;
 
-  public:
+public:
+	BlameTreeAnalysis(BlameNodeID bnID) : rootNode(bnID) {};
 
-    BlameTreeAnalysis(BlameNodeID bnID): rootNode(bnID) {};
+	const std::map<BlameNodeID, BlameNode>& getNodes() const {
+		return nodes;
+	};
 
-    map<BlameNodeID, BlameNode> getNodes() { return nodes; };
+	/**
+	 * Output the results for each lines of code, including whether the result
+	 * needs higher precision or the operator needs higher precision.
+	 */
+	void printResult() const;
 
-    /**
-     * Output the results for each lines of code, including whether the result
-     * needs higher precision or the operator needs higher precision.
-     */
-    void printResult(); 
+	/**
+	 * Visualize blame graph in GraphViz dot format.
+	 *
+	 * @return dot program of the visualized blame graph
+	 */
+	std::string toDot() const;
 
-    /**
-     * Visualize blame graph in GraphViz dot format.
-     *
-     * @return dot program of the visualized blame graph
-     */
-    std::string toDot();
-
-    /**
-     * Construct the blame graph given the execution trace and a node to start
-     * with. The constructed graph contains all the nodes that the start node
-     * can blame given its precision constraint.
-     *
-     * @param trace the program execution trace
-     * @return the blame graph
-     */
-    BlameNode constructBlameGraph(map<int, vector<BlameTreeShadowObject<HIGHPRECISION> > > trace);
+	/**
+	 * Construct the blame graph given the execution trace and a node to start
+	 * with. The constructed graph contains all the nodes that the start node
+	 * can blame given its precision constraint.
+	 *
+	 * @param trace the program execution trace
+	 * @return the blame graph
+	 */
+	const BlameNode& constructBlameGraph(const std::map<int, std::vector<BlameTreeShadowObject<HIGHPRECISION>>>& trace);
 };
 
 #endif
