@@ -60,8 +60,7 @@ class CmpInst;
 
 class InterpreterObserver : public InstructionObserver {
 
-	typedef uint64_t IID;
-
+protected:
 	stack<vector<IValue*>> executionStack;
 	vector<IValue*> globalSymbolTable;
 
