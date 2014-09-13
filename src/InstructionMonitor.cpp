@@ -43,6 +43,7 @@
 #include "InstructionMonitor.h"
 #include "InstructionObserver.h"
 #include "InterpreterObserver.h"
+#include "EmptyObserver.h"
 
 /*******************************************************************************************/
 /*
@@ -518,5 +519,6 @@ ObserverPtrList observers_;
 #define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
 
 // REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(EmptyObserver, "emptyobserver")
 
 /*******************************************************************************************/

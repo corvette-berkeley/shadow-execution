@@ -52,260 +52,15 @@
 
 class IValue;
 
+using namespace std;
+
 namespace llvm {
 class CmpInst;
 }
 
 class InterpreterObserver : public InstructionObserver {
 
-		<< << << < HEAD protected :
-			typedef uint64_t IID;
-
-	std::stack<std::vector<IValue*>> executionStack;
-	std::vector<IValue*> globalSymbolTable;
-
-	std::stack<char> logName;
-
-	std::stack<KVALUE*> myStack;     // store arguments of call instruction
-	std::vector<uint64_t>
-	getElementPtrIndexList;      // store indices of getelementptr instruction
-	std::vector<uint64_t> arraySize; // store size of array
-	std::vector<KIND> structType;    // store struct type
-	std::queue<uint64_t>
-	structElementSize;           // store struct (non-flatten) element size
-	std::vector<KVALUE*> returnStruct;  // store values of returned struct
-
-	std::stack<int> callerVarIndex; // index of callee register; to be assigned to
-	// the value of call return
-	std::stack<IValue*> callArgs;  // copy value from callers to callee arguments
-	std::map<int, KVALUE*>
-	phinodeConstantValues;     // store phinode value pairs for constants
-	std::map<int, int> phinodeValues; // store phinode value pairs for values
-
-	std::stack<int> recentBlock; // record the most recent block visited
-	std::vector<IValue*> collect_new;
-	std::vector<void*> collect_malloc;
-
-	bool isReturn; // whether return instruction is just executed
-
-	double getValueFromConstant(KVALUE* op);
-
-	double getValueFromIValue(IValue* loc);
-
-	std::string BINOP_ToString(int binop);
-
-	std::string BITWISE_ToString(int bitwise);
-
-	std::string CASTOP_ToString(int castop);
-
-	void binop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, int inx, BINOP op);
-
-	void bitwise(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-				 KIND type, int inx, BITWISE op);
-
-	void castop(int64_t opVal, SCOPE opScope, KIND opKind, KIND kind, int size,
-				int inx, CASTOP op);
-
-public:
-	InterpreterObserver(std::string name) : InstructionObserver(name) {
-		isReturn = false;
-	}
-
-	virtual void load(IID iid, KIND kind, SCOPE opScope, int opInx,
-					  uint64_t opAddr, bool loadGlobal, int loadInx, int inx);
-
-	virtual void load_struct(IID iid, KIND kind, KVALUE* op, int inx);
-
-	// ***** Binary Operations ***** //
-
-	virtual void add(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int inx);
-
-	virtual void fadd(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void sub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int inx);
-
-	virtual void fsub(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void mul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int inx);
-
-	virtual void fmul(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void udiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void sdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void urem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void srem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void frem(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	// ***** Bitwise Binary Operations ***** //
-	virtual void shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int inx);
-
-	virtual void lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	virtual void or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int inx);
-
-	virtual void xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					  KIND type, int inx);
-
-	// ***** Vector Operations ***** //
-	virtual void extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx);
-
-	virtual void insertelement();
-
-	virtual void shufflevector();
-
-	// ***** AGGREGATE OPERATIONS ***** //
-	virtual void extractvalue(IID iid, int inx, int opinx);
-
-	virtual void insertvalue(IID iid, KVALUE* op1, KVALUE* op2, int inx);
-
-	// ***** Memory Access and Addressing Operations ***** //
-	virtual void allocax(IID iid, KIND kind, uint64_t size, int inx,
-						 uint64_t addr);
-
-	virtual void allocax_array(IID iid, KIND kind, uint64_t size, int inx,
-							   uint64_t addr);
-
-	virtual void allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr);
-
-	virtual void store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope,
-					   int srcInx, int64_t srcValue);
-
-	virtual void fence();
-
-	virtual void cmpxchg(IID iid, PTR addr, KVALUE* kv1, KVALUE* kv2, int inx);
-
-	virtual void atomicrmw();
-
-	virtual void getelementptr(IID iid, int baseInx, SCOPE baseScope,
-							   uint64_t baseAddr, int offsetInx,
-							   int64_t offsetValue, KIND kind, uint64_t size,
-							   bool loadGlobal, int loadInx, int inx);
-
-	virtual void getelementptr_array(int baseInx, SCOPE baseScope,
-									 uint64_t baseAddr, int elementSize,
-									 int scopeInx01, int scopeInx02,
-									 int scopeInx03, int64_t valOrInx01,
-									 int64_t valOrInx02, int64_t valOrInx03,
-									 int size01, int size02, int inx);
-
-	virtual void getelementptr_struct(IID iid, int baseInx, SCOPE baseScope,
-									  uint64_t baseAddr, int inx);
-
-	// ***** Conversion Operations ***** //
-	virtual void trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-					   int size, int inx);
-
-	virtual void zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-					  int inx);
-
-	virtual void sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-					  int inx);
-
-	virtual void fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						 int size, int inx);
-
-	virtual void fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-					   int size, int inx);
-
-	virtual void fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						int size, int inx);
-
-	virtual void fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						int size, int inx);
-
-	virtual void uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						int size, int inx);
-
-	virtual void sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						int size, int inx);
-
-	virtual void ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						  int size, int inx);
-
-	virtual void inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						  int size, int inx);
-
-	virtual void bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
-						 int size, int inx);
-
-	// ***** TerminatorInst ***** //
-	virtual void branch(IID iid, bool conditional, int valInx, SCOPE scope,
-						KIND type, uint64_t value);
-
-	virtual void branch2(IID iid, bool conditional);
-
-	virtual void indirectbr(IID iid, KVALUE* op1, int inx);
-
-	virtual void invoke(IID iid, KVALUE* call_value, int inx);
-
-	virtual void resume(IID iid, KVALUE* op1, int inx);
-
-	virtual void return_(IID iid, int valInx, SCOPE scope, KIND type,
-						 int64_t value);
-
-	virtual void return2_(IID iid, int inx);
-
-	virtual void return_struct_(IID iid, int inx, int valInx);
-
-	virtual void switch_(IID iid, KVALUE* op, int inx);
-
-	virtual void unreachable();
-
-	// ***** Other Operations ***** //
-	virtual void icmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue,
-					  int64_t rValue, KIND type, PRED pred, int inx);
-
-	virtual void fcmp(SCOPE lScope UNUSED, SCOPE rScope UNUSED, int64_t lValue,
-					  int64_t rValue, KIND type, PRED pred, int inx);
-
-	virtual void phinode(IID iid, int inx);
-
-	virtual void select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue,
-						int inx);
-
-	virtual void call(IID iid, bool nounwind, KIND type, int inx);
-
-	virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-	virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-	virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-	virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-	virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
-
-	virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
-== == == = protected :
-			   typedef uint64_t IID;
+	typedef uint64_t IID;
 
 	stack<vector<IValue*>> executionStack;
 	vector<IValue*> globalSymbolTable;
@@ -322,9 +77,9 @@ public:
 
 	stack<int> callerVarIndex; // index of callee register; to be assigned to the
 	// value of call return
-	stack<IValue*> callArgs;     // copy value from callers to callee arguments
+	stack<IValue*> callArgs;   // copy value from callers to callee arguments
 	map<int, KVALUE*>
-	phinodeConstantValues;   // store phinode value pairs for constants
+	phinodeConstantValues; // store phinode value pairs for constants
 	map<int, int> phinodeValues; // store phinode value pairs for values
 
 	stack<int> recentBlock; // record the most recent block visited
@@ -538,8 +293,13 @@ public:
 						int inx);
 
 	virtual void call(IID iid, bool nounwind, KIND type, int inx);
-	>>>>>>> blame - analysis virtual void call_floor(IID iid, bool nounwind,
-			int pc, KIND type, int inx);
+	virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
 
 	virtual void call_malloc(IID iid, bool nounwind, KIND type, int size, int inx,
 							 uint64_t mallocAddress);

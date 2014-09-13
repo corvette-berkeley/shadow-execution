@@ -147,11 +147,8 @@ struct kvalue_t {
 #define KVALUE kvalue_t
 
 struct DebugInfo {
-			<< << << < HEAD const char* file;
 	int line;
-	== == == = char file[100];
-	int line;
-	>>>>>>> blame - analysis
+	char file[100];
 };
 
 //

@@ -25,7 +25,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
  * EVENT SHALL UC BERKELEY BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR
  * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -46,21 +47,24 @@ using std::make_pair;
 string BlameNode::toDot() const {
 	ostringstream dot;
 
-	dot << "\"(" << dpc << ", " << pc << ", " << BlameTreeUtilities::precisionToString(precision) << ")\"";
+	dot << "\"(" << dpc << ", " << pc << ", "
+		<< BlameTreeUtilities::precisionToString(precision) << ")\"";
 
 	return dot.str();
 }
 
-// TODO: why are BlacmeNodeID's in existance?
+// TODO: why are BlameNodeID's in existance?
 string BlameNode::edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const {
 	ostringstream tmpDot;
 	ostringstream dot;
 
 	int tempNodeCnt = 0;
-	tmpDot << "\"tmp" << dpc << "-" << BlameTreeUtilities::precisionToString(precision);
+	tmpDot << "\"tmp" << dpc << "-"
+		   << BlameTreeUtilities::precisionToString(precision);
 
 	safe_assert(edges.size() == edgeAttributes.size());
-	for (auto it = make_pair(edges.begin(), edgeAttributes.begin()); it.first != edges.end(); ++it.first, ++it.second) {
+	for (auto it = make_pair(edges.begin(), edgeAttributes.begin());
+			it.first != edges.end(); ++it.first, ++it.second) {
 		vector<BlameNodeID> bnIDs = *it.first;
 		bool edgeAttr = *it.second;
 
@@ -68,7 +72,8 @@ string BlameNode::edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const {
 		tmpNodeStr << tmpDot.str() << "-" << tempNodeCnt << "\"";
 		if (edgeAttr) {
 			// edge perform in high precision
-			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]" << endl;
+			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]"
+				<< endl;
 		} else {
 			// edge perform in high precision
 			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond]" << endl;
