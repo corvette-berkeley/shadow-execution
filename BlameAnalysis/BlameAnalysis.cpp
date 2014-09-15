@@ -251,9 +251,9 @@ void BlameAnalysis::post_call_floor(IID iid UNUSED, bool nounwind UNUSED,
 				  "floor");
 }
 
-void BlameAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
-								int64_t rValue, KIND type, int file, int line,
-								int col, int inx UNUSED, BINOP op) {
+void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
+								int64_t lValue, int64_t rValue, KIND type,
+								int inx UNUSED, BINOP op) {
 
 	BlameTreeShadowObject<HIGHPRECISION>* s1, *s2;
 	HIGHPRECISION sv1, sv2, sresult = 0.0;
@@ -356,10 +356,10 @@ void BlameAnalysis::post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue,
 	return;
 }
 
-void BlameAnalysis::post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-							  int64_t rValue, KIND type, int file, int line,
-							  int col, int inx) {
-	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FADD);
+void BlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope,
+							  int64_t lValue, int64_t rValue, KIND type,
+							  int inx) {
+	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FADD);
 }
 
 void BlameAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,

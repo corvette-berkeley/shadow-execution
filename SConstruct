@@ -87,7 +87,7 @@ SConscript(
         # our stuff
 	'MonitorPass',
 	'src',
-  'BlameAnalysis',
+#  'BlameAnalysis',
         ],
     exports='env',
     )

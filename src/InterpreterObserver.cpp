@@ -2354,10 +2354,11 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED,
 
 		executionStack.top()[callerVarIndex.top()] = structValue;
 		/*
-						for (i = 0; i < size; i++) {
-						  DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-						}
-						*/
+							for (i = 0; i < size; i++) {
+
+		DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+							}
+							*/
 	} else {
 		cout << "The execution stack is empty.\n";
 	}
@@ -3843,17 +3844,15 @@ void InterpreterObserver::post_store(IID iid UNUSED, int destInx UNUSED,
 									 int srcInx UNUSED, int64_t srcValue UNUSED,
 									 int inx UNUSED) {}
 
-void InterpreterObserver::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-								   int64_t lValue UNUSED, int64_t rValue UNUSED,
-								   KIND type UNUSED, int file UNUSED,
-								   int line UNUSED, int col UNUSED,
+void InterpreterObserver::pre_fadd(IID iid UNUSED, SCOPE lScope UNUSED,
+								   SCOPE rScope UNUSED, int64_t lValue UNUSED,
+								   int64_t rValue UNUSED, KIND type UNUSED,
 								   int inx UNUSED) {}
 
-void InterpreterObserver::post_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-									int64_t lValue UNUSED,
+void InterpreterObserver::post_fadd(IID iid UNUSED, SCOPE lScope UNUSED,
+									SCOPE rScope UNUSED, int64_t lValue UNUSED,
 									int64_t rValue UNUSED, KIND type UNUSED,
-									int file UNUSED, int line UNUSED,
-									int col UNUSED, int inx UNUSED) {}
+									int inx UNUSED) {}
 
 void InterpreterObserver::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
 								   int64_t lValue UNUSED, int64_t rValue UNUSED,

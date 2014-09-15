@@ -419,13 +419,11 @@ public:
 								 int64_t argValueOrIndex UNUSED) {}
 	;
 
-	virtual void pre_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						  int64_t rValue, KIND type, int file, int line, int col,
-						  int inx);
+	virtual void pre_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						  int64_t rValue, KIND type, int inx);
 
-	virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						   int64_t rValue, KIND type, int file, int line, int col,
-						   int inx);
+	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						   int64_t rValue, KIND type, int inx);
 
 	virtual void pre_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
 						  int64_t rValue, KIND type, int file, int line, int col,

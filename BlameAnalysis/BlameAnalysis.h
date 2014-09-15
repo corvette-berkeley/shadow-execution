@@ -45,9 +45,8 @@ public:
 	virtual void post_call_floor(IID iid, bool nounwind, int pc, KIND type,
 								 int inx, SCOPE argScope,
 								 int64_t argValueOrIndex);
-	virtual void post_fadd(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						   int64_t rValue, KIND type, int file, int line, int col,
-						   int inx);
+	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						   int64_t rValue, KIND type, int inx);
 
 	virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
 						   int64_t rValue, KIND type, int file, int line, int col,
