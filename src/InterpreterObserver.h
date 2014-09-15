@@ -316,12 +316,11 @@ public:
 							  int line, bool arg, KVALUE* result);
 
 	virtual void pre_load(IID iid, KIND kind, SCOPE opScope, int opInx,
-						  uint64_t opAddr, bool loadGlobal, int loadInx, int file,
-						  int line, int in);
+						  uint64_t opAddr, bool loadGlobal, int loadInx, int inx);
 
 	virtual void post_load(IID iid, KIND kind, SCOPE opScope, int opInx,
 						   uint64_t opAddr, bool loadGlobal, int loadInx,
-						   int file, int line, int in);
+						   int inx);
 
 	virtual void pre_load_struct(IID iid, KIND kind, KVALUE* op, int file,
 								 int line, int inx);

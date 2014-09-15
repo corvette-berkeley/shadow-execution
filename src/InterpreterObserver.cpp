@@ -2354,10 +2354,10 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED,
 
 		executionStack.top()[callerVarIndex.top()] = structValue;
 		/*
-					for (i = 0; i < size; i++) {
-					  DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-					}
-					*/
+						for (i = 0; i < size; i++) {
+						  DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+						}
+						*/
 	} else {
 		cout << "The execution stack is empty.\n";
 	}
@@ -3816,14 +3816,12 @@ void InterpreterObserver::pre_load(IID iid UNUSED, KIND type UNUSED,
 								   SCOPE opScope UNUSED, int opInx UNUSED,
 								   uint64_t opAddr UNUSED,
 								   bool loadGlobal UNUSED, int loadInx UNUSED,
-								   int file UNUSED, int line UNUSED,
 								   int inx UNUSED) {}
 
 void InterpreterObserver::post_load(IID iid UNUSED, KIND type UNUSED,
 									SCOPE opScope UNUSED, int opInx UNUSED,
 									uint64_t opAddr UNUSED,
 									bool loadGlobal UNUSED, int loadInx UNUSED,
-									int file UNUSED, int line UNUSED,
 									int inx UNUSED) {}
 
 void InterpreterObserver::pre_load_struct(IID iid UNUSED, KIND kind UNUSED,
