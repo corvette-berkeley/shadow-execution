@@ -86,3 +86,4 @@ instr.sh
 
 # output folder
 Release+Asserts/*.*
+*.swp
