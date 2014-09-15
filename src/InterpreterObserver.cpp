@@ -831,9 +831,9 @@ void InterpreterObserver::add(IID iid, SCOPE lScope, SCOPE rScope,
 void InterpreterObserver::fadd(IID iid, SCOPE lScope, SCOPE rScope,
 							   int64_t lValue, int64_t rValue, KIND type,
 							   int inx) {
-	//pre_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	pre_fadd(iid, lScope, rScope, lValue, rValue, type, inx);
 	binop(iid, lScope, rScope, lValue, rValue, type, inx, FADD);
-	//post_fadd(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	post_fadd(iid, lScope, rScope, lValue, rValue, type, inx);
 }
 
 void InterpreterObserver::sub(IID iid, SCOPE lScope, SCOPE rScope,
@@ -845,9 +845,9 @@ void InterpreterObserver::sub(IID iid, SCOPE lScope, SCOPE rScope,
 void InterpreterObserver::fsub(IID iid, SCOPE lScope, SCOPE rScope,
 							   int64_t lValue, int64_t rValue, KIND type,
 							   int inx) {
-	//pre_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	pre_fsub(iid, lScope, rScope, lValue, rValue, type, inx);
 	binop(iid, lScope, rScope, lValue, rValue, type, inx, FSUB);
-	//post_fsub(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	post_fsub(iid, lScope, rScope, lValue, rValue, type, inx);
 }
 
 void InterpreterObserver::mul(IID iid, SCOPE lScope, SCOPE rScope,
@@ -859,9 +859,9 @@ void InterpreterObserver::mul(IID iid, SCOPE lScope, SCOPE rScope,
 void InterpreterObserver::fmul(IID iid, SCOPE lScope, SCOPE rScope,
 							   int64_t lValue, int64_t rValue, KIND type,
 							   int inx) {
-	//pre_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	pre_fmul(iid, lScope, rScope, lValue, rValue, type, inx);
 	binop(iid, lScope, rScope, lValue, rValue, type, inx, FMUL);
-	//post_fmul(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	post_fmul(iid, lScope, rScope, lValue, rValue, type, inx);
 }
 
 void InterpreterObserver::udiv(IID iid, SCOPE lScope, SCOPE rScope,
@@ -879,9 +879,9 @@ void InterpreterObserver::sdiv(IID iid, SCOPE lScope, SCOPE rScope,
 void InterpreterObserver::fdiv(IID iid, SCOPE lScope, SCOPE rScope,
 							   int64_t lValue, int64_t rValue, KIND type,
 							   int inx) {
-	//pre_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	pre_fdiv(iid, lScope, rScope, lValue, rValue, type, inx);
 	binop(iid, lScope, rScope, lValue, rValue, type, inx, FDIV);
-	//post_fdiv(lScope, rScope, lValue, rValue, type, file, line, col, inx);
+	post_fdiv(iid, lScope, rScope, lValue, rValue, type, inx);
 }
 
 void InterpreterObserver::urem(IID iid, SCOPE lScope, SCOPE rScope,
@@ -2354,11 +2354,11 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED,
 
 		executionStack.top()[callerVarIndex.top()] = structValue;
 		/*
-							for (i = 0; i < size; i++) {
+										for (i = 0; i < size; i++) {
 
-		DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-							}
-							*/
+					DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+										}
+										*/
 	} else {
 		cout << "The execution stack is empty.\n";
 	}
@@ -3854,41 +3854,35 @@ void InterpreterObserver::post_fadd(IID iid UNUSED, SCOPE lScope UNUSED,
 									int64_t rValue UNUSED, KIND type UNUSED,
 									int inx UNUSED) {}
 
-void InterpreterObserver::pre_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-								   int64_t lValue UNUSED, int64_t rValue UNUSED,
-								   KIND type UNUSED, int file UNUSED,
-								   int line UNUSED, int col UNUSED,
+void InterpreterObserver::pre_fsub(IID iid UNUSED, SCOPE lScope UNUSED,
+								   SCOPE rScope UNUSED, int64_t lValue UNUSED,
+								   int64_t rValue UNUSED, KIND type UNUSED,
 								   int inx UNUSED) {}
 
-void InterpreterObserver::post_fsub(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-									int64_t lValue UNUSED,
+void InterpreterObserver::post_fsub(IID iid UNUSED, SCOPE lScope UNUSED,
+									SCOPE rScope UNUSED, int64_t lValue UNUSED,
 									int64_t rValue UNUSED, KIND type UNUSED,
-									int file UNUSED, int line UNUSED,
-									int col UNUSED, int inx UNUSED) {}
+									int inx UNUSED) {}
 
-void InterpreterObserver::pre_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-								   int64_t lValue UNUSED, int64_t rValue UNUSED,
-								   KIND type UNUSED, int file UNUSED,
-								   int line UNUSED, int col UNUSED,
+void InterpreterObserver::pre_fmul(IID iid UNUSED, SCOPE lScope UNUSED,
+								   SCOPE rScope UNUSED, int64_t lValue UNUSED,
+								   int64_t rValue UNUSED, KIND type UNUSED,
 								   int inx UNUSED) {}
 
-void InterpreterObserver::post_fmul(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-									int64_t lValue UNUSED,
+void InterpreterObserver::post_fmul(IID iid UNUSED, SCOPE lScope UNUSED,
+									SCOPE rScope UNUSED, int64_t lValue UNUSED,
 									int64_t rValue UNUSED, KIND type UNUSED,
-									int file UNUSED, int line UNUSED,
-									int col UNUSED, int inx UNUSED) {}
+									int inx UNUSED) {}
 
-void InterpreterObserver::pre_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-								   int64_t lValue UNUSED, int64_t rValue UNUSED,
-								   KIND type UNUSED, int file UNUSED,
-								   int line UNUSED, int col UNUSED,
+void InterpreterObserver::pre_fdiv(IID iid UNUSED, SCOPE lScope UNUSED,
+								   SCOPE rScope UNUSED, int64_t lValue UNUSED,
+								   int64_t rValue UNUSED, KIND type UNUSED,
 								   int inx UNUSED) {}
 
-void InterpreterObserver::post_fdiv(SCOPE lScope UNUSED, SCOPE rScope UNUSED,
-									int64_t lValue UNUSED,
+void InterpreterObserver::post_fdiv(IID iid UNUSED, SCOPE lScope UNUSED,
+									SCOPE rScope UNUSED, int64_t lValue UNUSED,
 									int64_t rValue UNUSED, KIND type UNUSED,
-									int file UNUSED, int line UNUSED,
-									int col UNUSED, int inx UNUSED) {}
+									int inx UNUSED) {}
 
 void InterpreterObserver::pre_create_global_symbol_table() {}
 

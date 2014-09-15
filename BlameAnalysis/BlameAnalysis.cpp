@@ -255,6 +255,10 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 								int64_t lValue, int64_t rValue, KIND type,
 								int inx UNUSED, BINOP op) {
 
+	DebugInfo debugInfo = debugInfoMap[iid];
+	int line = debugInfo.line;
+	string file(debugInfo.file);
+
 	BlameTreeShadowObject<HIGHPRECISION>* s1, *s2;
 	HIGHPRECISION sv1, sv2, sresult = 0.0;
 	LOWPRECISION v1, v2;
@@ -362,21 +366,21 @@ void BlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope,
 	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FADD);
 }
 
-void BlameAnalysis::post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
-							  int64_t rValue, KIND type, int file, int line,
-							  int col, int inx) {
+void BlameAnalysis::post_fsub(IID iid, SCOPE lScope, SCOPE rScope,
+							  int64_t lValue, int64_t rValue, KIND type,
+							  int inx) {
 	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FSUB);
 }
 
-void BlameAnalysis::post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue,
-							  int64_t rValue, KIND type, int file, int line,
-							  int col, int inx) {
+void BlameAnalysis::post_fmul(IID iid, SCOPE lScope, SCOPE rScope,
+							  int64_t lValue, int64_t rValue, KIND type,
+							  int inx) {
 	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FMUL);
 }
 
-void BlameAnalysis::post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
-							  int64_t rValue, KIND type, int file, int line,
-							  int col, int inx) {
+void BlameAnalysis::post_fdiv(IID iid, SCOPE lScope, SCOPE rScope,
+							  int64_t lValue, int64_t rValue, KIND type,
+							  int inx) {
 	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FDIV);
 }
 

@@ -48,17 +48,14 @@ public:
 	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
 						   int64_t rValue, KIND type, int inx);
 
-	virtual void post_fsub(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						   int64_t rValue, KIND type, int file, int line, int col,
-						   int inx);
+	virtual void post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						   int64_t rValue, KIND type, int inx);
 
-	virtual void post_fmul(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						   int64_t rValue, KIND type, int file, int line, int col,
-						   int inx);
+	virtual void post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						   int64_t rValue, KIND type, int inx);
 
-	virtual void post_fdiv(SCOPE lScope, SCOPE rScope, int64_t lValue,
-						   int64_t rValue, KIND type, int file, int line, int col,
-						   int inx);
+	virtual void post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+						   int64_t rValue, KIND type, int inx);
 
 	virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind,
 							  int size, int inx);

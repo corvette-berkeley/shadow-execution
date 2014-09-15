@@ -26,7 +26,7 @@
 template <class T> class BlameTreeShadowObject {
 
 private:
-	int fid;               // Id of the file containing this instruction.
+	string file;           // Id of the file containing this instruction.
 	int pc;                // Program counter of the instruction associate
 	// with this object.
 	int col;               // Column offset of the instruction associate with
@@ -40,7 +40,7 @@ private:
 
 public:
 	BlameTreeShadowObject()
-		: fid(0), pc(0), col(0), dpc(0), intrType(INTRTYPE_INVALID),
+		: file(""), pc(0), col(0), dpc(0), intrType(INTRTYPE_INVALID),
 		  binOp(BINOP_INVALID), func("NONE") {
 		PRECISION i;
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
@@ -49,9 +49,9 @@ public:
 	}
 	;
 
-	BlameTreeShadowObject(int file, int p, int c, int dp, INTRTYPE it, BINOP bo,
+	BlameTreeShadowObject(string f, int p, int c, int dp, INTRTYPE it, BINOP bo,
 						  string f, T* val)
-		: fid(file), pc(p), col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
+		: file(f), pc(p), col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
 		PRECISION i;
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
 			value[i] = val[i];
@@ -111,13 +111,13 @@ public:
 	}
 	;
 
-	int getFileID() const {
-		return fid;
+	string getFile() const {
+		return file;
 	}
 	;
 
-	void setFileID(int fileID) {
-		this->fid = fileID;
+	void setFile(string file) {
+		this->file = file;
 	}
 	;
 
