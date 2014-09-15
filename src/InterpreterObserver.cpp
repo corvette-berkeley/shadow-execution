@@ -3832,16 +3832,15 @@ void InterpreterObserver::post_load_struct(IID iid UNUSED, KIND kind UNUSED,
 		KVALUE* op UNUSED, int file UNUSED,
 		int line UNUSED, int inx UNUSED) {}
 
-void InterpreterObserver::pre_store(int destInx UNUSED, SCOPE destScope UNUSED,
-									KIND srcKind UNUSED, SCOPE srcScope UNUSED,
-									int srcInx UNUSED, int64_t srcValue UNUSED,
-									int file UNUSED, int line UNUSED,
-									int inx UNUSED) {}
+void InterpreterObserver::pre_store(IID iid UNUSED, int destInx UNUSED,
+									SCOPE destScope UNUSED, KIND srcKind UNUSED,
+									SCOPE srcScope UNUSED, int srcInx UNUSED,
+									int64_t srcValue UNUSED, int inx UNUSED) {}
 
-void InterpreterObserver::post_store(int destInx UNUSED, SCOPE destScope UNUSED,
+void InterpreterObserver::post_store(IID iid UNUSED, int destInx UNUSED,
+									 SCOPE destScope UNUSED,
 									 KIND srcKind UNUSED, SCOPE srcScope UNUSED,
 									 int srcInx UNUSED, int64_t srcValue UNUSED,
-									 int file UNUSED, int line UNUSED,
 									 int inx UNUSED) {}
 
 void InterpreterObserver::pre_fadd(SCOPE lScope UNUSED, SCOPE rScope UNUSED,

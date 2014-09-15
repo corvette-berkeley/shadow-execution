@@ -328,12 +328,11 @@ public:
 	virtual void post_load_struct(IID iid, KIND kind, KVALUE* op, int file,
 								  int line, int inx);
 
-	virtual void pre_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope,
-						   int srcInx, int64_t srcValue, int file, int line,
-						   int inx);
+	virtual void pre_store(IID iid, int pInx, SCOPE pScope, KIND srcKind,
+						   SCOPE srcScope, int srcInx, int64_t srcValue, int inx);
 
-	virtual void post_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope,
-							int srcInx, int64_t srcValue, int file, int line,
+	virtual void post_store(IID iid, int pInx, SCOPE pScope, KIND srcKind,
+							SCOPE srcScope, int srcInx, int64_t srcValue,
 							int inx);
 
 	virtual void pre_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED,
