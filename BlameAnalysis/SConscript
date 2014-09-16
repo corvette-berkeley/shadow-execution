@@ -60,17 +60,11 @@ env.MergeFlags('!llvm-config --cxxflags --ldflags')
 plugin = env.SharedLibrary(
     '../Release+Asserts/lib/libba',
     [
-      '../src/Common.cpp',
-      '../src/InstructionMonitor.cpp',
-      '../src/InterpreterObserver.cpp',
-      '../src/IValue.cpp',
       'BlameNode.cpp',
       'BlameTree.cpp',
       'BlameAnalysis.cpp',
       'BlameTreeUtilities.cpp'
         ],
-    INCPREFIX='-isystem ',
-    SHLIBPREFIX=None,
     )
 
 Default(plugin)
