@@ -116,8 +116,8 @@ private:
 		 */
 	LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
 
-	void post_fbinop(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-					 KIND type, int file, int line, int col, int inx, BINOP op);
+	void post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+					 int64_t rValue, KIND type, int inx, BINOP op);
 
 	void post_lib_call(IID iid, bool nounwind, int pc, KIND type, int inx,
 					   SCOPE argScope, int64_t argValueOrIndex, string func);

@@ -29,14 +29,14 @@ const BlameNode& BlameTree::constructFuncBlameNode(
 	// variables definition
 	//
 	int pc = left.getPC();
-	int fid = left.getFileID();
+	string file = left.getFile();
 	HIGHPRECISION value = left.getValue(precision);
 	string func = left.getFunc();
 
 	//
 	// construct a node associate with the function result
 	//
-	BlameNode node(dpc, pc, fid, false, precision, {
+	BlameNode node(dpc, pc, file, false, precision, {
 	}, {
 	});
 
@@ -57,11 +57,11 @@ const BlameNode& BlameTree::constructFuncBlameNode(
 			continue;
 		}
 		/*
-				if (BlameTreeUtilities::clearBits(value, 52 -
-				BlameTreeUtilities::exactBits(precision)) ==
-				BlameTreeUtilities::clearBits(BlameTreeUtilities::evalFunc(value01,
-				func), 52 - BlameTreeUtilities::exactBits(precision)))
-				*/
+					if (BlameTreeUtilities::clearBits(value, 52 -
+					BlameTreeUtilities::exactBits(precision)) ==
+					BlameTreeUtilities::clearBits(BlameTreeUtilities::evalFunc(value01,
+					func), 52 - BlameTreeUtilities::exactBits(precision)))
+					*/
 		//
 		// Construct edges for each blame
 		//
@@ -119,14 +119,14 @@ const BlameNode& BlameTree::constructBlameNode(
 	// variables definition
 	//
 	int pc = left.getPC();
-	int fid = left.getFileID();
+	string file = left.getFile();
 	HIGHPRECISION value = left.getValue(precision);
 	BINOP bop = left.getBinOp();
 
 	//
 	// construct a node associate with the binary operation result
 	//
-	BlameNode node(dpc, pc, fid, false, precision, {
+	BlameNode node(dpc, pc, file, false, precision, {
 	}, {
 	});
 
@@ -155,10 +155,10 @@ const BlameNode& BlameTree::constructBlameNode(
 				continue;
 			}
 			/*
-					if (value ==
-					BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
-					    value02, bop), 52 - BlameTreeUtilities::exactBits(precision)))
-					{*/
+						if (value ==
+						BlameTreeUtilities::clearBits(BlameTreeUtilities::eval(value01,
+						    value02, bop), 52 - BlameTreeUtilities::exactBits(precision)))
+						{*/
 			//
 			// Construct edges for each blame
 			//
@@ -190,12 +190,12 @@ const BlameNode& BlameTree::constructBlameNode(
 			node.edgeAttributes.push_back(!BlameTreeUtilities::equalWithPrecision(
 											  value, BlameTreeUtilities::feval(value01, value02, bop), precision));
 			/*
-					node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
-					      BlameTreeUtilities::exactBits(precision)) !=
-					    BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
-					        value02, bop), 52 -
-					      BlameTreeUtilities::exactBits(precision)));
-					      */
+						node.addEdgeAttribute(BlameTreeUtilities::clearBits(value, 52 -
+						      BlameTreeUtilities::exactBits(precision)) !=
+						    BlameTreeUtilities::clearBits(BlameTreeUtilities::feval(value01,
+						        value02, bop), 52 -
+						      BlameTreeUtilities::exactBits(precision)));
+						      */
 
 			//
 			// Do not try larger j because it subsumes what have been tried
@@ -314,14 +314,14 @@ std::string BlameTree::toDot() const {
 }
 
 struct location {
-	int file;
+	string file;
 	int pc;
-	location(int f, int p) : file(f), pc(p) {}
+	location(string f, int p) : file(f), pc(p) {}
 	bool operator<(const location& rhs) const {
-		if (file == rhs.file) {
+		if (file.compare(rhs.file) == 0) {
 			return pc < rhs.pc;
 		}
-		return file < rhs.file;
+		return file.compare(rhs.file) < 0;
 	}
 };
 
@@ -364,7 +364,7 @@ void BlameTree::printResult() const {
 		BlameNode bn = it->second;
 
 		int pc = bn.dpc;
-		int file = bn.fid;
+		string file = bn.file;
 		bool highlight = bn.highlight;
 		const vector<vector<BlameNodeID>>& edges = bn.edges;
 
@@ -398,7 +398,7 @@ void BlameTree::printResult() const {
 	// print result
 	//
 	for (const auto& result_p : result) {
-		int file = result_p.first.file;
+		string file = result_p.first.file;
 		bool pc = result_p.first.pc;
 		bool highlight = result_p.second.highlight;
 		bool edgeHighlight = result_p.second.edgeHighlight;

@@ -49,9 +49,9 @@ public:
 	}
 	;
 
-	BlameTreeShadowObject(string f, int p, int c, int dp, INTRTYPE it, BINOP bo,
+	BlameTreeShadowObject(string fl, int p, int c, int dp, INTRTYPE it, BINOP bo,
 						  string f, T* val)
-		: file(f), pc(p), col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
+		: file(fl), pc(p), col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
 		PRECISION i;
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
 			value[i] = val[i];
@@ -218,7 +218,7 @@ public:
 				 << value[i];
 		}
 		cout << ", op: " << BINOP_ToString(binOp).c_str()
-			 << ", func:" << func.c_str() << ", file: " << fid << endl;
+			 << ", func:" << func.c_str() << ", file: " << file << endl;
 	}
 
 private:
@@ -228,7 +228,7 @@ private:
 		pc = btmSO.getPC();
 		col = btmSO.getCol();
 		dpc = btmSO.getDPC();
-		fid = btmSO.getFileID();
+		file = btmSO.getFile();
 		intrType = btmSO.getIntrType();
 		binOp = btmSO.getBinOp();
 		func = btmSO.getFunc();

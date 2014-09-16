@@ -56,9 +56,9 @@
 struct BlameNode {
 	int dpc; // dynamic program counter of instruction associated with this blame
 	// tree node
-	int pc; // source program counter of instruction associated with this blame
+	int pc;  // source program counter of instruction associated with this blame
 	// tree noe
-	int fid; // id of source file containing instruction associated with this
+	string file; // id of source file containing instruction associated with this
 	// blame tree node
 	bool highlight; // highlighted node indicates higher precision requirement
 	PRECISION precision; // the precision constraint of this blame tree node
@@ -70,12 +70,12 @@ struct BlameNode {
 	// the edge (the computation)
 	// requires high precision
 
-	BlameNode(int dp = 0, int p = 0, int f = 0, bool hl = false,
+	BlameNode(int dp = 0, int p = 0, string f = "", bool hl = false,
 	PRECISION prec = BITS_FLOAT, vector<vector<BlameNodeID>> es = {
 	},
 	vector<bool> eas = {
 	})
-		: dpc(dp), pc(p), fid(f), highlight(hl), precision(prec), edges(es),
+		: dpc(dp), pc(p), file(f), highlight(hl), precision(prec), edges(es),
 		  edgeAttributes(eas) {}
 	;
 

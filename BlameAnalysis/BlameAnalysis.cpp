@@ -257,6 +257,7 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 
 	DebugInfo debugInfo = debugInfoMap[iid];
 	int line = debugInfo.line;
+	int col = 0; // TODO: record col in debug info.
 	string file(debugInfo.file);
 
 	BlameTreeShadowObject<HIGHPRECISION>* s1, *s2;
@@ -369,19 +370,19 @@ void BlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope,
 void BlameAnalysis::post_fsub(IID iid, SCOPE lScope, SCOPE rScope,
 							  int64_t lValue, int64_t rValue, KIND type,
 							  int inx) {
-	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FSUB);
+	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FSUB);
 }
 
 void BlameAnalysis::post_fmul(IID iid, SCOPE lScope, SCOPE rScope,
 							  int64_t lValue, int64_t rValue, KIND type,
 							  int inx) {
-	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FMUL);
+	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FMUL);
 }
 
 void BlameAnalysis::post_fdiv(IID iid, SCOPE lScope, SCOPE rScope,
 							  int64_t lValue, int64_t rValue, KIND type,
 							  int inx) {
-	post_fbinop(lScope, rScope, lValue, rValue, type, file, line, col, inx, FDIV);
+	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FDIV);
 }
 
 void BlameAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED,
