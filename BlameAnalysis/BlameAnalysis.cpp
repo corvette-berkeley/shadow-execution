@@ -135,8 +135,8 @@ void BlameAnalysis::pre_analysis() {
 
 	while (fread(&iid, sizeof(uint64_t), 1, debugFile) &&
 			fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-		std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line
-				  << std::endl;
+		std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", "
+				  << debugInfo.column << std::endl;
 		debugInfoMap[iid] = debugInfo;
 	}
 	fclose(debugFile);

@@ -8,7 +8,7 @@ echo $LDFLAGS
 name=$(basename $1 .c)
 
 # Compile into bitcode
-$LPATH/clang -emit-llvm -g -pg -c $name.c -o $name.bc
+$LPATH/clang -emit-llvm -g -Xclang -dwarf-column-info -pg -c $name.c -o $name.bc
 
 # Memove constant geps
 $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --break-constgeps -f -o $name-ngep.bc $name.bc 
@@ -23,7 +23,7 @@ $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --move-allocas -f -o tmppass-a
 $CC tmppass-allocas.bc -o $name.out $LDFLAGS -lba -lmonitor -lpthread -lm -lrt -lgmp -lglog
 
 # Clean temporary files
-rm $name.bc
-rm $name-ngep.bc
-rm tmppass.bc
-rm tmppass-allocas.bc
+#rm $name.bc
+#rm $name-ngep.bc
+#rm tmppass.bc
+#rm tmppass-allocas.bc

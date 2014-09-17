@@ -148,6 +148,7 @@ struct kvalue_t {
 
 struct DebugInfo {
 	int line;
+	int column;
 	char file[100];
 };
 

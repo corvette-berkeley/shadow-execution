@@ -27,10 +27,12 @@ bool LoadInstrumenter::CheckAndInstrument(Instruction* inst) {
 		// debugging info
 		string filename = getFileName(loadInst);
 		int line = getLineNumber(loadInst);
+		int column = getColumnNumber(loadInst);
 
 		DebugInfo* debug = new DebugInfo;
 		sprintf(debug->file, "%.99s", filename.c_str());
 		debug->line = line;
+		debug->column = column;
 		IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(loadInst));
 		parent_->debugMap[address] = debug;
 		// end of debugging info

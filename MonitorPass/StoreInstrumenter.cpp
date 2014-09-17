@@ -70,10 +70,12 @@ bool StoreInstrumenter::CheckAndInstrument(Instruction* inst) {
 		// debugging info
 		string filename = getFileName(storeInst);
 		int line = getLineNumber(storeInst);
+		int column = getColumnNumber(storeInst);
 
 		DebugInfo* debug = new DebugInfo;
 		sprintf(debug->file, "%.99s", filename.c_str());
 		debug->line = line;
+		debug->column = column;
 		IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(storeInst));
 		parent_->debugMap[address] = debug;
 		// end of debugging info

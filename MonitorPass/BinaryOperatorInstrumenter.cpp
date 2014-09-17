@@ -33,10 +33,12 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 		// debugging info
 		string filename = getFileName(binInst);
 		int line = getLineNumber(binInst);
+		int column = getColumnNumber(binInst);
 
 		DebugInfo* debug = new DebugInfo;
 		sprintf(debug->file, "%.99s", filename.c_str());
 		debug->line = line;
+		debug->column = column;
 		IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(binInst));
 		Constant* iid = IID_CONSTANT(binInst);
 		parent_->debugMap[address] = debug;
