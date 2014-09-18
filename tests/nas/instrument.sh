@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export CC=$LLVM_BIN_PATH"/clang -use-gold-plugin"
-export LDFLAGS="$INSTRUMENTOR_LIB_PATH -L"$GLOG_LIB_PATH" -L"$GPERFTOOLS_LIB_PATH" -L/scratch/rubio/libunwind-1.1.install/lib"
+export LDFLAGS="$INSTRUMENTOR_LIB_PATH -L"$GLOG_LIB_PATH" -L"$GPERFTOOLS_LIB_PATH" -L"$UNWIND_LIB_PATH
 
 # variables related to profiling
 #export PROFILER=""
