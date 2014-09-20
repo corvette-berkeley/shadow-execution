@@ -21,6 +21,9 @@ install:
 # We want to compile with g++ 4.8 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4" CC="clang-3.4"; fi
+  - llvm-config --version
+  - opt --version
+  - clang++ --version
 compiler:
   - gcc
   - clang
