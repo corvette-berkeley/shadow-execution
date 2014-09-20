@@ -4,7 +4,7 @@ cd "$THIS_DIR"
 
 echo $THIS_DIR
 
-python2 small-regressions.py tests.txt | grep -v 'writing debug map' > small_regressions_tests.test.out
+python2 small-regressions.py tests.txt 2>/dev/null | grep -v 'writing debug map' > small_regressions_tests.test.out
 
 if diff small_regressions_tests.ref small_regressions_tests.test.out
 then
