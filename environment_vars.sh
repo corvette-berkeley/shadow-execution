@@ -53,7 +53,7 @@ export UNWIND_INCLUDE_PATH="$(get_include_var 'libunwind' "$LIBUNWIND_PATH" "$LI
 if [ -z "$GOLD_LLVM_BIN" ]
 then
 	export LLVM_LIB_PATH="$(llvm-config --libdir)"
-	export LLVM_BIN_PATH="$(dirname `which clang`)" # a decent heuristic
+	export LLVM_BIN_PATH="$(dirname `which clang++`)" # a decent heuristic
 else
 	export LLVM_LIB_PATH=$GOLD_LLVM_BIN
 	export LLVM_BIN_PATH=$GOLD_LLVM_BIN

@@ -41,7 +41,7 @@ def main():
       bitcode = open(bitcodefile, 'w')
 
       command = [llvm + '/clang', '-c', '-emit-llvm', executable + '.c', '-fpack-struct', '-o', bitcodefile]
-		print(command)
+      print(command)
       print(command, stdin=None, stdout=None, stderr=None)
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
