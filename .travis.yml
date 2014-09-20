@@ -13,9 +13,9 @@ install:
   - wget https://google-glog.googlecode.com/files/glog-0.3.3.tar.gz -O /tmp/glog-0.3.3.tar.gz && tar -C /tmp -xzvf /tmp/glog-0.3.3.tar.gz && rm /tmp/glog-0.3.3.tar.gz
   - cd /tmp/glog-0.3.3 && ./configure && make && sudo make install && cd -
 # add libunwind
-  - sudo apt-get install -y libunwind7-dev
+  - sudo apt-get install -qq libunwind7-dev
 # add google perf tools
-  - sudo apt-get install -y libgoogle-perftools-dev
+  - sudo apt-get install -qq libgoogle-perftools-dev
 # add semi-modern gcc
   - sudo apt-get install -qq gcc-4.8 g++-4.8
 # grab llvm (and clang) 3.4
@@ -23,11 +23,7 @@ install:
   - sudo apt-get install -qq clang-3.4 libclang-common-3.4-dev libclang-3.4-dev libclang1-3.4 libclang1-3.4-dbg libllvm-3.4-ocaml-dev libllvm3.4 libllvm3.4-dbg llvm-3.4 llvm-3.4-dev llvm-3.4-runtime clang-modernize-3.4 clang-format-3.4 python-clang-3.4
 # We want to compile with g++ 4.8 when rather than the default g++
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
-  - if [ "$CXX" == "clang++" ]; then export CXX="/usr/bin/clang++-3.4" CC="/usr/bin/clang-3.4"; fi
-  - which -a clang++
-  - /usr/bin/llvm-config-3.4 --version
-  - /usr/bin/clang++ --version
-  - clang++ --version
+  - sudo rm -Rf /usr/local/clang*
 compiler:
   - gcc
   - clang
