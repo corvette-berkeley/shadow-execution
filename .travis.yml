@@ -22,6 +22,8 @@ install:
 #- sudo apt-get install -qq libclang1 llvm-3.4-dev libclang-common-3.4-dev libclang-3.4-dev clang-3.4-dev
   - sudo apt-get install -qq clang-3.4 libclang-common-3.4-dev libclang-3.4-dev libclang1-3.4 libclang1-3.4-dbg libllvm-3.4-ocaml-dev libllvm3.4 libllvm3.4-dbg llvm-3.4 llvm-3.4-dev llvm-3.4-runtime clang-modernize-3.4 clang-format-3.4 python-clang-3.4
 # We want to compile with g++ 4.8 when rather than the default g++
+  - sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-3.4 90
+  - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.4 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
   - which -a clang++
   - which -a llvm-config
