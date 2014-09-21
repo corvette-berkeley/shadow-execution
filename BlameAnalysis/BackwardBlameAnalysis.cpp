@@ -1,30 +1,27 @@
 // Author: Cuong Nguyen
 
-#include "BlameAnalysis.h"
+#include "BackwardBlameAnalysis.h"
 #include "../src/InstructionMonitor.h"
 
 /******* ANALYSIS PARAMETERS *******/
-vector<vector<BlameTreeShadowObject<HIGHPRECISION>>> BlameAnalysis::trace;
-map<uint64_t, DebugInfo> BlameAnalysis::debugInfoMap;
-int BlameAnalysis::dpc = 0;
+vector<vector<BlameTreeShadowObject<HIGHPRECISION>>> BackwardBlameAnalysis::trace;
+map<uint64_t, DebugInfo> BackwardBlameAnalysis::debugInfoMap;
+int BackwardBlameAnalysis::dpc = 0;
 
 /******* HELPER FUNCTIONS *******/
 
-void BlameAnalysis::copyShadow(IValue* src, IValue* dest) {
+void BackwardBlameAnalysis::copyShadow(IValue* src, IValue* dest) {
 	if (src->getShadow() != NULL) {
-		BlameTreeShadowObject<HIGHPRECISION>* btmSOSrc =
-			(BlameTreeShadowObject<HIGHPRECISION>*)src->getShadow();
-		BlameTreeShadowObject<HIGHPRECISION>* btmSODest =
-			new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
+		BlameTreeShadowObject<HIGHPRECISION>* btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*)src->getShadow();
+		BlameTreeShadowObject<HIGHPRECISION>* btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
 		dest->setShadow(btmSODest);
 	} else {
 		dest->setShadow(NULL);
 	}
 }
 
-void BlameAnalysis::setShadowObject(
-	SCOPE scope, int64_t inx,
-	BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
+void BackwardBlameAnalysis::setShadowObject(SCOPE scope, int64_t inx,
+		BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
 	IValue* iv = NULL;
 
 	switch (scope) {
@@ -44,8 +41,7 @@ void BlameAnalysis::setShadowObject(
 	iv->setShadow(shadowObject);
 }
 
-BlameTreeShadowObject<HIGHPRECISION>*
-BlameAnalysis::getShadowObject(SCOPE scope, int64_t inx) {
+BlameTreeShadowObject<HIGHPRECISION>* BackwardBlameAnalysis::getShadowObject(SCOPE scope, int64_t inx) {
 	IValue* iv = NULL;
 
 	switch (scope) {
@@ -65,8 +61,7 @@ BlameAnalysis::getShadowObject(SCOPE scope, int64_t inx) {
 	return (BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow();
 }
 
-HIGHPRECISION BlameAnalysis::getShadowValue(SCOPE scope, int64_t inx,
-		PRECISION precision) {
+HIGHPRECISION BackwardBlameAnalysis::getShadowValue(SCOPE scope, int64_t inx, PRECISION precision) {
 	HIGHPRECISION result;
 	IValue* iv = NULL;
 	double* ptr;
@@ -90,14 +85,13 @@ HIGHPRECISION BlameAnalysis::getShadowValue(SCOPE scope, int64_t inx,
 	if (iv->getShadow() == NULL) {
 		result = iv->getFlpValue();
 	} else {
-		result = ((BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow())
-				 ->getValue(precision);
+		result = ((BlameTreeShadowObject<HIGHPRECISION>*)iv->getShadow())->getValue(precision);
 	}
 
 	return result;
 }
 
-LOWPRECISION BlameAnalysis::getActualValue(SCOPE scope, int64_t value) {
+LOWPRECISION BackwardBlameAnalysis::getActualValue(SCOPE scope, int64_t value) {
 	LOWPRECISION actualValue;
 	IValue* iv = NULL;
 	double* ptr;
@@ -124,7 +118,7 @@ LOWPRECISION BlameAnalysis::getActualValue(SCOPE scope, int64_t value) {
 
 /******* ANALYSIS FUNCTIONS *******/
 
-void BlameAnalysis::pre_analysis() {
+void BackwardBlameAnalysis::pre_analysis() {
 	// Read debug information from $GLOG_log_dir/debug.bin.
 	std::string debugFileName(getenv("GLOG_log_dir"));
 	debugFileName += "/debug.bin";
@@ -133,10 +127,8 @@ void BlameAnalysis::pre_analysis() {
 	struct DebugInfo debugInfo;
 	uint64_t iid;
 
-	while (fread(&iid, sizeof(uint64_t), 1, debugFile) &&
-			fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-		std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", "
-				  << debugInfo.column << std::endl;
+	while (fread(&iid, sizeof(uint64_t), 1, debugFile) && fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
+		std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", " << debugInfo.column << std::endl;
 		debugInfoMap[iid] = debugInfo;
 	}
 	fclose(debugFile);
@@ -145,17 +137,15 @@ void BlameAnalysis::pre_analysis() {
 	IValue::setCopyShadow(&copyShadow);
 }
 
-void BlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								  KIND type UNUSED, int inx, SCOPE argScope,
-								  int64_t argValueOrIndex, string func) {
+void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex, string func) {
 	PRECISION p;
 
 	// Obtain actual values and shadow values.
 	LOWPRECISION arg = getActualValue(argScope, argValueOrIndex);
 	LOWPRECISION result = executionStack.top()[inx]->getFlpValue();
 
-	BlameTreeShadowObject<HIGHPRECISION>* shadow =
-		getShadowObject(argScope, argValueOrIndex);
+	BlameTreeShadowObject<HIGHPRECISION>* shadow = getShadowObject(argScope, argValueOrIndex);
 
 	// Perform library function on shadow values.
 	HIGHPRECISION values[PRECISION_NO];
@@ -166,14 +156,12 @@ void BlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc,
 		HIGHPRECISION values[PRECISION_NO];
 		PRECISION p;
 		values[BITS_FLOAT] = arg;
-		values[BITS_DOUBLE] = (HIGHPRECISION) arg;
+		values[BITS_DOUBLE] = (HIGHPRECISION)arg;
 		for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p + 1)) {
-			values[p] = BlameTreeUtilities::clearBits(
-							(HIGHPRECISION) arg, 52 - BlameTreeUtilities::exactBits(p));
+			values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION)arg, 52 - BlameTreeUtilities::exactBits(p));
 		}
 
-		shadow = new BlameTreeShadowObject<HIGHPRECISION>(
-			0, pc, 0, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
+		shadow = new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
 		setShadowObject(argScope, argValueOrIndex, shadow);
 	}
 
@@ -184,14 +172,12 @@ void BlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc,
 	values[BITS_FLOAT] = result;
 	values[BITS_DOUBLE] = sresult;
 	for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p + 1)) {
-		values[p] = BlameTreeUtilities::clearBits(
-						sresult, 52 - BlameTreeUtilities::exactBits(p));
+		values[p] = BlameTreeUtilities::clearBits(sresult, 52 - BlameTreeUtilities::exactBits(p));
 	}
 
 	// creating shadow object for the result
 	BlameTreeShadowObject<HIGHPRECISION>* resultShadow =
-		new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dpc, CALL_INTR,
-				BINOP_INVALID, func, values);
+		new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dpc, CALL_INTR, BINOP_INVALID, func, values);
 	executionStack.top()[inx]->setShadow(resultShadow);
 
 	// adding to the trace
@@ -202,62 +188,49 @@ void BlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc,
 
 	dpc++;
 	return;
-
 }
 
-void BlameAnalysis::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								  KIND type UNUSED, int inx, SCOPE argScope,
-								  int64_t argValueOrIndex) {
+void BackwardBlameAnalysis::post_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
 	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sin");
 }
 
-void BlameAnalysis::post_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								  KIND type UNUSED, int inx, SCOPE argScope,
-								  int64_t argValueOrIndex) {
+void BackwardBlameAnalysis::post_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
 	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "cos");
 }
 
-void BlameAnalysis::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								   KIND type UNUSED, int inx, SCOPE argScope,
-								   int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "acos");
+void BackwardBlameAnalysis::post_call_acos(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
+	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "acos");
 }
 
-void BlameAnalysis::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								   KIND type UNUSED, int inx, SCOPE argScope,
-								   int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "sqrt");
+void BackwardBlameAnalysis::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
+	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sqrt");
 }
 
-void BlameAnalysis::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								   KIND type UNUSED, int inx, SCOPE argScope,
-								   int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "fabs");
+void BackwardBlameAnalysis::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
+	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "fabs");
 }
 
-void BlameAnalysis::post_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc,
-								  KIND type UNUSED, int inx, SCOPE argScope,
-								  int64_t argValueOrIndex) {
+void BackwardBlameAnalysis::post_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
 	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "log");
 }
 
-void BlameAnalysis::post_call_floor(IID iid UNUSED, bool nounwind UNUSED,
-									int pc, KIND type UNUSED, int inx,
-									SCOPE argScope, int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "floor");
+void BackwardBlameAnalysis::post_call_floor(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
+		SCOPE argScope, int64_t argValueOrIndex) {
+	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "floor");
 }
 
-void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
-								int64_t lValue, int64_t rValue, KIND type,
-								int inx UNUSED, BINOP op) {
+void BackwardBlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+										int inx UNUSED, BINOP op) {
 
 	DebugInfo debugInfo = debugInfoMap[iid];
 	int line = debugInfo.line;
-	int col = 0; // TODO: record col in debug info.
+	int col = debugInfo.column;  // TODO: record col in debug info.
 	string file(debugInfo.file);
 
 	BlameTreeShadowObject<HIGHPRECISION>* s1, *s2;
@@ -266,8 +239,7 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 	PRECISION i;
 
 	// Assert: type is a floating-point type.
-	safe_assert(type == FLP32_KIND || type == FLP64_KIND ||
-				type == FLP80X86_KIND || type == FLP128_KIND ||
+	safe_assert(type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND || type == FLP128_KIND ||
 				type == FLP128PPC_KIND);
 
 	// Obtain actual values, and shadow values.
@@ -286,14 +258,12 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 		HIGHPRECISION values[PRECISION_NO];
 		PRECISION p;
 		values[BITS_FLOAT] = v1;
-		values[BITS_DOUBLE] = (HIGHPRECISION) v1;
+		values[BITS_DOUBLE] = (HIGHPRECISION)v1;
 		for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p + 1)) {
-			values[p] = BlameTreeUtilities::clearBits(
-							(HIGHPRECISION) v1, 52 - BlameTreeUtilities::exactBits(p));
+			values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION)v1, 52 - BlameTreeUtilities::exactBits(p));
 		}
 
-		s1 = new BlameTreeShadowObject<HIGHPRECISION>(
-			file, line, col, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
+		s1 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
 		setShadowObject(lScope, lValue, s1);
 	}
 
@@ -302,14 +272,12 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 		HIGHPRECISION values[PRECISION_NO];
 		PRECISION p;
 		values[BITS_FLOAT] = v2;
-		values[BITS_DOUBLE] = (HIGHPRECISION) v2;
+		values[BITS_DOUBLE] = (HIGHPRECISION)v2;
 		for (p = PRECISION(BITS_FLOAT + 1); p < BITS_DOUBLE; p = PRECISION(p + 1)) {
-			values[p] = BlameTreeUtilities::clearBits(
-							(HIGHPRECISION) v2, 52 - BlameTreeUtilities::exactBits(p));
+			values[p] = BlameTreeUtilities::clearBits((HIGHPRECISION)v2, 52 - BlameTreeUtilities::exactBits(p));
 		}
 
-		s2 = new BlameTreeShadowObject<HIGHPRECISION>(
-			file, line, col, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
+		s2 = new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
 		setShadowObject(rScope, rValue, s2);
 	}
 
@@ -331,8 +299,7 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 			sresult = sv1 / sv2;
 			break;
 		default:
-			DEBUG_STDERR(
-				"Unsupported floating-point binary operator: " << BINOP_ToString(op));
+			DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op));
 			safe_assert(false);
 	}
 
@@ -340,14 +307,12 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 	values[BITS_FLOAT] = executionStack.top()[inx]->getFlpValue();
 	values[BITS_DOUBLE] = sresult;
 	for (i = PRECISION(BITS_FLOAT + 1); i < BITS_DOUBLE; i = PRECISION(i + 1)) {
-		values[i] = BlameTreeUtilities::clearBits(
-						sresult, 52 - BlameTreeUtilities::exactBits(i));
+		values[i] = BlameTreeUtilities::clearBits(sresult, 52 - BlameTreeUtilities::exactBits(i));
 	}
 
 	// creating shadow object for target
 	BlameTreeShadowObject<HIGHPRECISION>* resultShadow =
-		new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dpc, BIN_INTR,
-				op, "NONE", values);
+		new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dpc, BIN_INTR, op, "NONE", values);
 	executionStack.top()[inx]->setShadow(resultShadow);
 
 	// adding to the trace
@@ -361,53 +326,47 @@ void BlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope,
 	return;
 }
 
-void BlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope,
-							  int64_t lValue, int64_t rValue, KIND type,
-							  int inx) {
+void BackwardBlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+									  int inx) {
 	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FADD);
 }
 
-void BlameAnalysis::post_fsub(IID iid, SCOPE lScope, SCOPE rScope,
-							  int64_t lValue, int64_t rValue, KIND type,
-							  int inx) {
+void BackwardBlameAnalysis::post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+									  int inx) {
 	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FSUB);
 }
 
-void BlameAnalysis::post_fmul(IID iid, SCOPE lScope, SCOPE rScope,
-							  int64_t lValue, int64_t rValue, KIND type,
-							  int inx) {
+void BackwardBlameAnalysis::post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+									  int inx) {
 	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FMUL);
 }
 
-void BlameAnalysis::post_fdiv(IID iid, SCOPE lScope, SCOPE rScope,
-							  int64_t lValue, int64_t rValue, KIND type,
-							  int inx) {
+void BackwardBlameAnalysis::post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+									  int inx) {
 	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FDIV);
 }
 
-void BlameAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED,
-								 KIND kind UNUSED, int size UNUSED, int inx) {
+void BackwardBlameAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED,
+		int size UNUSED, int inx) {
 	BlameTreeShadowObject<HIGHPRECISION>* opbtSO = getShadowObject(opScope, op);
 
 	if (opbtSO) {
-		BlameTreeShadowObject<HIGHPRECISION>* btSO =
-			new BlameTreeShadowObject<HIGHPRECISION>(*opbtSO);
+		BlameTreeShadowObject<HIGHPRECISION>* btSO = new BlameTreeShadowObject<HIGHPRECISION>(*opbtSO);
 		executionStack.top()[inx]->setShadow(btSO);
 	}
 }
 
-void BlameAnalysis::post_fpext(int64_t op, SCOPE opScope, KIND opKind UNUSED,
-							   KIND kind UNUSED, int size UNUSED, int inx) {
+void BackwardBlameAnalysis::post_fpext(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED, int size UNUSED,
+									   int inx) {
 	BlameTreeShadowObject<HIGHPRECISION>* opbtSO = getShadowObject(opScope, op);
 
 	if (opbtSO) {
-		BlameTreeShadowObject<HIGHPRECISION>* btSO =
-			new BlameTreeShadowObject<HIGHPRECISION>(*opbtSO);
+		BlameTreeShadowObject<HIGHPRECISION>* btSO = new BlameTreeShadowObject<HIGHPRECISION>(*opbtSO);
 		executionStack.top()[inx]->setShadow(btSO);
 	}
 }
 
-void BlameAnalysis::post_analysis() {
+void BackwardBlameAnalysis::post_analysis() {
 	cout << "Printing trace after analysis: " << dpc << endl;
 	cout << "Trace length: " << dpc << endl;
 	std::string line;
@@ -437,14 +396,12 @@ void BlameAnalysis::post_analysis() {
 		 << "points with values with different precision." << endl;
 	cout << "Tell me:" << endl;
 	cout << "\t Which computation point you are interested in?" << endl;
-	cout << "\t What is your desired precision for that computation point?"
-		 << endl;
+	cout << "\t What is your desired precision for that computation point?" << endl;
 
 	cout << endl;
 	cout << "I suggest the following parameter" << endl;
 	cout << "\t Computation point: " << (dpc - 1) << endl;
-	cout << "\t Desired precision: exact to "
-		 << BlameTreeUtilities::precisionToString(PRECISION(PRECISION_NO / 2))
+	cout << "\t Desired precision: exact to " << BlameTreeUtilities::precisionToString(PRECISION(PRECISION_NO / 2))
 		 << endl;
 
 	BlameNodeID rootNode(0, BITS_FLOAT);
@@ -471,8 +428,7 @@ void BlameAnalysis::post_analysis() {
 	cout << endl;
 	cout << "Constructing blame tree from root at:" << endl;
 	cout << "\tComputation point: " << rootNode.dpc << endl;
-	cout << "\tDesired precision: " << BlameTreeUtilities::precisionToString(
-			 rootNode.precision) << endl;
+	cout << "\tDesired precision: " << BlameTreeUtilities::precisionToString(rootNode.precision) << endl;
 
 	BlameTree bta(rootNode);
 	clock_t startTime, endTime;
@@ -485,9 +441,7 @@ void BlameAnalysis::post_analysis() {
 
 	cout << endl;
 	cout << "Done!" << endl;
-	cout << "Construction time: " << double(endTime - startTime) /
-		 double(CLOCKS_PER_SEC) << " seconds."
-		 << endl;
+	cout << "Construction time: " << double(endTime - startTime) / double(CLOCKS_PER_SEC) << " seconds." << endl;
 	cout << "Analysis result:" << endl;
 
 	bta.printResult();
@@ -510,4 +464,4 @@ void BlameAnalysis::post_analysis() {
 	return;
 }
 
-static RegisterObserver<BlameAnalysis> BlameAnalysisInstance("blameanalysis");
+static RegisterObserver<BackwardBlameAnalysis> BackwardBlameAnalysisInstance("backwardblameanalysis");

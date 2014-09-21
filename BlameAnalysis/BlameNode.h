@@ -54,30 +54,26 @@
  * that decides its precision constraint.
  */
 struct BlameNode {
-	int dpc; // dynamic program counter of instruction associated with this blame
+	int dpc;  // dynamic program counter of instruction associated with this blame
 	// tree node
 	int pc;  // source program counter of instruction associated with this blame
 	// tree noe
-	string file; // id of source file containing instruction associated with this
+	int col;  // source column number
+	string file;  // id of source file containing instruction associated with this
 	// blame tree node
-	bool highlight; // highlighted node indicates higher precision requirement
-	PRECISION precision; // the precision constraint of this blame tree node
-	vector<vector<BlameNodeID>> edges; // set of nodes that this
+	bool highlight;  // highlighted node indicates higher precision requirement
+	PRECISION precision;  // the precision constraint of this blame tree node
+	vector<vector<BlameNodeID>> edges;  // set of nodes that this
 	// node blames, a node is identified
 	// by a pair of dpc and precision
-	vector<bool> edgeAttributes;        // set of edge attributes
+	vector<bool> edgeAttributes;  // set of edge attributes
 	// right now it indicates whether
 	// the edge (the computation)
 	// requires high precision
 
-	BlameNode(int dp = 0, int p = 0, string f = "", bool hl = false,
-	PRECISION prec = BITS_FLOAT, vector<vector<BlameNodeID>> es = {
-	},
-	vector<bool> eas = {
-	})
-		: dpc(dp), pc(p), file(f), highlight(hl), precision(prec), edges(es),
-		  edgeAttributes(eas) {}
-	;
+	BlameNode(int dp = 0, int p = 0, int c = 0, string f = "", bool hl = false, PRECISION prec = BITS_FLOAT,
+			  vector<vector<BlameNodeID>> es = {}, vector<bool> eas = {})
+		: dpc(dp), pc(p), col(c), file(f), highlight(hl), precision(prec), edges(es), edgeAttributes(eas) {};
 
 	/**
 	 * Visualize this node in GraphViz dot format.

@@ -62,7 +62,7 @@ plugin = env.SharedLibrary(
     [
       'BlameNode.cpp',
       'BlameTree.cpp',
-      'BlameAnalysis.cpp',
+      'BackwardBlameAnalysis.cpp',
       'BlameTreeUtilities.cpp'
         ],
     )
