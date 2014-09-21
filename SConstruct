@@ -8,6 +8,7 @@ SetOption('implicit_cache', True)
 SourceCode('.', None)
 
 
+
 ########################################################################
 #
 #  various command-line options
@@ -42,6 +43,15 @@ env = Environment(
     Is64=Is64,
     )
 
+def builder_unit_test(target, source, env):
+    app = str(source[0].abspath)
+    if os.spawnl(os.P_WAIT, app, app)==0:
+        open(str(target[0]),'w').write("PASSED\n")
+    else:
+        return 1
+# Create a builder for tests
+bld = Builder(action = builder_unit_test)
+env.Append(BUILDERS = {'Test' :  bld})
 
 ########################################################################
 #
@@ -88,6 +98,7 @@ SConscript(
 	'MonitorPass',
 	'src',
   'BlameAnalysis',
+  'tests',
         ],
     exports='env',
     )
