@@ -1,15 +1,15 @@
 // Author: Cuong Nguyen
 
-#ifndef BLAME_ANALYSIS_H_
-#define BLAME_ANALYSIS_H_
+#ifndef BACKWARD_BLAME_ANALYSIS_H_
+#define BACKWARD_BLAME_ANALYSIS_H_
 
 #include "BlameTreeShadowObject.h"
 #include "BlameTreeUtilities.h"
 #include "BlameTree.h"
 #include "BlameNodeID.h"
-#include "../src/Common.h"
-#include "../src/IValue.h"
-#include "../src/InterpreterObserver.h"
+#include "../../src/Common.h"
+#include "../../src/IValue.h"
+#include "../../src/InterpreterObserver.h"
 #include <math.h>
 #include <fstream>
 using namespace llvm;

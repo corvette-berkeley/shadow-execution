@@ -4,7 +4,7 @@
 #define BLAME_TREE_SHADOW_OBJECT_H
 
 #include "BlameTreeUtilities.h"
-#include "../src/Constants.h"
+#include "../../src/Constants.h"
 #include <limits>
 #include <sstream>
 
@@ -26,31 +26,28 @@
 template <class T> class BlameTreeShadowObject {
 
 private:
-	string file;           // Id of the file containing this instruction.
-	int pc;                // Program counter of the instruction associate
+	string file;  // Id of the file containing this instruction.
+	int pc;  // Program counter of the instruction associate
 	// with this object.
-	int col;               // Column offset of the instruction associate with
+	int col;  // Column offset of the instruction associate with
 	// this object.
-	int dpc;               // Program counter of the instruction as appeared
+	int dpc;  // Program counter of the instruction as appeared
 	// in the execution trace.
-	INTRTYPE intrType;     // Type of the instruction.
-	BINOP binOp;           // Binary operator (if instruction is BINOP).
-	string func;           // Name of the function call (if instruction is CALL).
-	T value[PRECISION_NO]; // Value in different precisions.
+	INTRTYPE intrType;  // Type of the instruction.
+	BINOP binOp;  // Binary operator (if instruction is BINOP).
+	string func;  // Name of the function call (if instruction is CALL).
+	T value[PRECISION_NO];  // Value in different precisions.
 
 public:
 	BlameTreeShadowObject()
-		: file(""), pc(0), col(0), dpc(0), intrType(INTRTYPE_INVALID),
-		  binOp(BINOP_INVALID), func("NONE") {
+		: file(""), pc(0), col(0), dpc(0), intrType(INTRTYPE_INVALID), binOp(BINOP_INVALID), func("NONE") {
 		PRECISION i;
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
 			value[i] = 0;
 		}
-	}
-	;
+	};
 
-	BlameTreeShadowObject(string fl, int p, int c, int dp, INTRTYPE it, BINOP bo,
-						  string f, T* val)
+	BlameTreeShadowObject(string fl, int p, int c, int dp, INTRTYPE it, BINOP bo, string f, T* val)
 		: file(fl), pc(p), col(c), dpc(dp), intrType(it), binOp(bo), func(f) {
 		PRECISION i;
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
@@ -60,8 +57,7 @@ public:
 
 	BlameTreeShadowObject(const BlameTreeShadowObject& btmSO) {
 		create(btmSO);
-	}
-	;
+	};
 
 	~BlameTreeShadowObject() {
 		uncreate();
@@ -78,88 +74,71 @@ public:
 		}
 
 		return *this;
-	}
-	;
+	};
 
 	int getPC() const {
 		return pc;
-	}
-	;
+	};
 
 	void setPC(int pc) {
 		this->pc = pc;
-	}
-	;
+	};
 
 	int getCol() const {
 		return col;
-	}
-	;
+	};
 
 	void setCol(int col) {
 		this->col = col;
-	}
-	;
+	};
 
 	int getDPC() const {
 		return dpc;
-	}
-	;
+	};
 
 	void setDPC(int dpc) {
 		this->dpc = dpc;
-	}
-	;
+	};
 
 	string getFile() const {
 		return file;
-	}
-	;
+	};
 
 	void setFile(string file) {
 		this->file = file;
-	}
-	;
+	};
 
 	INTRTYPE getIntrType() const {
 		return intrType;
-	}
-	;
+	};
 
 	void setIntrType(INTRTYPE intrType) {
 		this->intrType = intrType;
-	}
-	;
+	};
 
 	BINOP getBinOp() const {
 		return binOp;
-	}
-	;
+	};
 
 	void setBinOp(BINOP binOp) {
 		this->binOp = binOp;
-	}
-	;
+	};
 
 	string getFunc() const {
 		return func;
-	}
-	;
+	};
 
 	void setFunc(string func) {
 		this->func = func;
-	}
-	;
+	};
 
 	T getValue(int i) const {
 		return value[i];
-	}
-	;
+	};
 
 	void setValue(int i, T v) {
 		value[i] = v;
-	}
-	;
+	};
 
 	std::string BINOP_ToString(int binop) {
 		std::stringstream s;
@@ -205,8 +184,7 @@ public:
 				break;
 		}
 		return s.str();
-	}
-	;
+	};
 
 	void print() {
 		PRECISION i;
@@ -214,11 +192,9 @@ public:
 		cout << "[SHADOW]<pc: " << pc << ", col: " << col << ", dpc: " << dpc;
 		cout.precision(10);
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
-			cout << ", " << BlameTreeUtilities::precisionToString(i) << ":"
-				 << value[i];
+			cout << ", " << BlameTreeUtilities::precisionToString(i) << ":" << value[i];
 		}
-		cout << ", op: " << BINOP_ToString(binOp).c_str()
-			 << ", func:" << func.c_str() << ", file: " << file << endl;
+		cout << ", op: " << BINOP_ToString(binOp).c_str() << ", func:" << func.c_str() << ", file: " << file << endl;
 	}
 
 private:
@@ -235,11 +211,9 @@ private:
 		for (i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
 			value[i] = btmSO.getValue(i);
 		}
-	}
-	;
+	};
 
-	void uncreate() {}
-	;
+	void uncreate() {};
 };
 
 #endif

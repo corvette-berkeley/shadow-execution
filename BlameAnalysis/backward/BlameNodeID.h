@@ -45,8 +45,7 @@ struct BlameNodeID {
 	int dpc;
 	PRECISION precision;
 
-	BlameNodeID(int dp, PRECISION prec) : dpc(dp), precision(prec) {}
-	;
+	BlameNodeID(int dp, PRECISION prec) : dpc(dp), precision(prec) {};
 
 	bool operator<(const BlameNodeID& bnID) const {
 		if (dpc == bnID.dpc) {
@@ -54,7 +53,6 @@ struct BlameNodeID {
 		}
 
 		return dpc < bnID.dpc;
-	}
-	;
+	};
 };
 #endif

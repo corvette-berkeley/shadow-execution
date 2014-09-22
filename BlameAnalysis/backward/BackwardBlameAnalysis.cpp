@@ -1,7 +1,7 @@
 // Author: Cuong Nguyen
 
 #include "BackwardBlameAnalysis.h"
-#include "../src/InstructionMonitor.h"
+#include "../../src/InstructionMonitor.h"
 
 /******* ANALYSIS PARAMETERS *******/
 vector<vector<BlameTreeShadowObject<HIGHPRECISION>>> BackwardBlameAnalysis::trace;

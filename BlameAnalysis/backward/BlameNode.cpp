@@ -47,8 +47,7 @@ using std::make_pair;
 string BlameNode::toDot() const {
 	ostringstream dot;
 
-	dot << "\"(" << dpc << ", " << pc << ", "
-		<< BlameTreeUtilities::precisionToString(precision) << ")\"";
+	dot << "\"(" << dpc << ", " << pc << ", " << BlameTreeUtilities::precisionToString(precision) << ")\"";
 
 	return dot.str();
 }
@@ -59,12 +58,10 @@ string BlameNode::edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const {
 	ostringstream dot;
 
 	int tempNodeCnt = 0;
-	tmpDot << "\"tmp" << dpc << "-"
-		   << BlameTreeUtilities::precisionToString(precision);
+	tmpDot << "\"tmp" << dpc << "-" << BlameTreeUtilities::precisionToString(precision);
 
 	safe_assert(edges.size() == edgeAttributes.size());
-	for (auto it = make_pair(edges.begin(), edgeAttributes.begin());
-			it.first != edges.end(); ++it.first, ++it.second) {
+	for (auto it = make_pair(edges.begin(), edgeAttributes.begin()); it.first != edges.end(); ++it.first, ++it.second) {
 		vector<BlameNodeID> bnIDs = *it.first;
 		bool edgeAttr = *it.second;
 
@@ -72,8 +69,7 @@ string BlameNode::edgeToDot(const map<BlameNodeID, BlameNode>& nodes) const {
 		tmpNodeStr << tmpDot.str() << "-" << tempNodeCnt << "\"";
 		if (edgeAttr) {
 			// edge perform in high precision
-			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]"
-				<< endl;
+			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond, color=red]" << endl;
 		} else {
 			// edge perform in high precision
 			dot << tmpNodeStr.str() << "[style=dotted, shape=diamond]" << endl;

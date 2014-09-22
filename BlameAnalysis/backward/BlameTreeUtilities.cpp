@@ -2,8 +2,7 @@
 
 #include "BlameTreeUtilities.h"
 
-bool BlameTreeUtilities::equalWithPrecision(double v1, double v2,
-		PRECISION prec) {
+bool BlameTreeUtilities::equalWithPrecision(double v1, double v2, PRECISION prec) {
 	int64_t* ptr1, *ptr2;
 
 	if (prec == BITS_DOUBLE) {
@@ -32,8 +31,7 @@ double BlameTreeUtilities::clearBits(double v, int shift) {
 	return *dm;
 }
 
-LOWPRECISION BlameTreeUtilities::feval(LOWPRECISION value01,
-									   LOWPRECISION value02, BINOP bop) {
+LOWPRECISION BlameTreeUtilities::feval(LOWPRECISION value01, LOWPRECISION value02, BINOP bop) {
 	switch (bop) {
 		case ADD:
 		case FADD:
@@ -58,8 +56,7 @@ LOWPRECISION BlameTreeUtilities::feval(LOWPRECISION value01,
 	}
 }
 
-HIGHPRECISION BlameTreeUtilities::eval(HIGHPRECISION value01,
-									   HIGHPRECISION value02, BINOP bop) {
+HIGHPRECISION BlameTreeUtilities::eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop) {
 	switch (bop) {
 		case ADD:
 		case FADD:

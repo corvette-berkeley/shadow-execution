@@ -17,36 +17,30 @@
  */
 class BlameTreeNode {
 private:
-	int dpc; // Dynamic program counter of instruction associated with
+	int dpc;  // Dynamic program counter of instruction associated with
 	// this blame tree node.
 	int pc;  // Source program counter of instruction associated with
 	// this blame tree node.
-	int fid; // Id of source file containing instruction associated with
+	int fid;  // Id of source file containing instruction associated with
 	// this blame tree node
-	BlameTree::PRECISION precision;       // The precision constraint of this
+	BlameTree::PRECISION precision;  // The precision constraint of this
 	// blame tree node.
-	vector<vector<BlameTreeNode>> edges; // Set of nodes that this node
+	vector<vector<BlameTreeNode>> edges;  // Set of nodes that this node
 	// blames.
 
 public:
+	BlameTreeNode() : dpc(0), pc(0), fid(0), precision(BlameTree::BITS_23) {};
 
-	BlameTreeNode() : dpc(0), pc(0), fid(0), precision(BlameTree::BITS_23) {}
-	;
-
-	BlameTreeNode(int dp, int p, int f, BlameTree::PRECISION prec,
-				  vector<vector<BlameTreeNode>> es)
-		: dpc(dp), pc(p), fid(f), precision(prec), edges(es) {}
-	;
+	BlameTreeNode(int dp, int p, int f, BlameTree::PRECISION prec, vector<vector<BlameTreeNode>> es)
+		: dpc(dp), pc(p), fid(f), precision(prec), edges(es) {};
 
 	BlameTreeNode(const BlameTreeNode& btNode) {
 		create(btNode);
-	}
-	;
+	};
 
 	~BlameTreeNode() {
 		uncreate();
-	}
-	;
+	};
 
 	BlameTreeNode& operator=(const BlameTreeNode& btNode) {
 		if (&btNode != this) {
@@ -59,58 +53,47 @@ public:
 		}
 
 		return *this;
-	}
-	;
+	};
 
 	int getDPC() const {
 		return dpc;
-	}
-	;
+	};
 
 	void setDPC(int dpc) {
 		this->dpc = dpc;
-	}
-	;
+	};
 
 	int getPC() const {
 		return pc;
-	}
-	;
+	};
 
 	void setPC(int pc) {
 		this->pc = pc;
-	}
-	;
+	};
 
 	int getFileID() const {
 		return fid;
-	}
-	;
+	};
 
 	void setFileID(int fid) {
 		this->fid = fid;
-	}
-	;
+	};
 
 	BlameTree::PRECISION getPrecision() const {
 		return precision;
-	}
-	;
+	};
 
 	void setPrecision(BlameTree::PRECISION precision) {
 		this->precision = precision;
-	}
-	;
+	};
 
 	vector<vector<BlameTreeNode>> getEdges() const {
 		return edges;
-	}
-	;
+	};
 
 	void setEdges(vector<vector<BlameTreeNode>>) {
 		this->edges = edges;
-	}
-	;
+	};
 
 	void addNodes(vector<BlameTreeNode> nodes) {
 		edges.push_back(nodes);
@@ -123,10 +106,8 @@ private:
 		fid = btNode.getFileID();
 		precision = btNode.getPrecision();
 		edges = btNode.getEdges();
-	}
-	;
+	};
 
-	void uncreate() {}
-	;
+	void uncreate() {};
 };
 #endif

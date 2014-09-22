@@ -10,10 +10,9 @@
 
 class BlameTree {
 private:
-	map<BlameNodeID, BlameNode>
-	nodes;            // map from a pair (node id, precision) to node
+	map<BlameNodeID, BlameNode> nodes;  // map from a pair (node id, precision) to node
 	// set of nodes in the tree
-	BlameNodeID rootNode; // root node of the tree
+	BlameNodeID rootNode;  // root node of the tree
 
 	/**
 	 * Construct blame node given a binary operation expression. This function
@@ -28,26 +27,18 @@ private:
 	 * @return the blame node associated with left and precision constraint,
 	 * that connects to nodes it blames
 	 */
-	const BlameNode&
-	constructBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left,
-					   PRECISION precision,
-					   const BlameTreeShadowObject<HIGHPRECISION>& right01,
-					   const BlameTreeShadowObject<HIGHPRECISION>& right02);
+	const BlameNode& constructBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+										const BlameTreeShadowObject<HIGHPRECISION>& right01,
+										const BlameTreeShadowObject<HIGHPRECISION>& right02);
 
-	const BlameNode&
-	constructFuncBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left,
-						   PRECISION precision,
-						   const BlameTreeShadowObject<HIGHPRECISION>& right);
+	const BlameNode& constructFuncBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+											const BlameTreeShadowObject<HIGHPRECISION>& right);
 
-	const BlameNode
-	constructTruncBlameNode(BlameTreeShadowObject<HIGHPRECISION>& left,
-							PRECISION precision,
-							BlameTreeShadowObject<HIGHPRECISION>& right);
+	const BlameNode constructTruncBlameNode(BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+											BlameTreeShadowObject<HIGHPRECISION>& right);
 
-	const BlameNode
-	constructExtBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left,
-						  PRECISION precision,
-						  const BlameTreeShadowObject<HIGHPRECISION>& right);
+	const BlameNode constructExtBlameNode(const BlameTreeShadowObject<HIGHPRECISION>& left, PRECISION precision,
+										  const BlameTreeShadowObject<HIGHPRECISION>& right);
 
 	/**
 	 * Helper function for toDot function. This function visualize all edges of
@@ -58,14 +49,11 @@ private:
 	std::string edgeToDot(const BlameNode& graph) const;
 
 public:
-
-	BlameTree(BlameNodeID bnID) : rootNode(bnID) {}
-	;
+	BlameTree(BlameNodeID bnID) : rootNode(bnID) {};
 
 	map<BlameNodeID, BlameNode> getNodes() {
 		return nodes;
-	}
-	;
+	};
 
 	/**
 	 * Output the results for each lines of code, including whether the result
@@ -88,8 +76,7 @@ public:
 	 * @param trace the program execution trace
 	 * @return the blame graph
 	 */
-	const BlameNode& constructBlameGraph(
-		const vector<vector<BlameTreeShadowObject<HIGHPRECISION>>>& trace);
+	const BlameNode& constructBlameGraph(const vector<vector<BlameTreeShadowObject<HIGHPRECISION>>>& trace);
 };
 
 #endif
