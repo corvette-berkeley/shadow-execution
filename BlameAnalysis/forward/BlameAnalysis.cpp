@@ -6,7 +6,7 @@
 void BlameAnalysis::copyShadow(IValue* src, IValue* dest) {
 	if (src->getShadow() != NULL) {
 		BlameShadowObject* bsoSrc = (BlameShadowObject*)src->getShadow();
-		BlameShadowObject* bsoDest = new BlameShadowObject(bsoSrc->highValue, bsoSrc->lowValue);
+		BlameShadowObject* bsoDest = new BlameShadowObject(bsoSrc->id, bsoSrc->highValue, bsoSrc->lowValue);
 		dest->setShadow(bsoDest);
 	} else {
 		dest->setShadow(NULL);
@@ -18,7 +18,7 @@ const BlameShadowObject BlameAnalysis::getShadowObject(SCOPE scope, int64_t valu
 	switch (scope) {
 		case CONSTANT: {
 			double* ptr = (double*)&value;
-			return BlameShadowObject((HIGHPRECISION) * ptr, (LOWPRECISION) * ptr);
+			return BlameShadowObject(0, (HIGHPRECISION) * ptr, (LOWPRECISION) * ptr);
 		}
 		case GLOBAL:
 			iv = globalSymbolTable[value];
@@ -33,7 +33,8 @@ const BlameShadowObject BlameAnalysis::getShadowObject(SCOPE scope, int64_t valu
 
 	if (iv->getShadow() == NULL) {
 		double flpValue = iv->getFlpValue();
-		return BlameShadowObject((HIGHPRECISION)flpValue, (LOWPRECISION)flpValue);
+		// TODO: field IID should be obtained from ivalue.
+		return BlameShadowObject(0, (HIGHPRECISION)flpValue, (LOWPRECISION)flpValue);
 	} else {
 		return *((BlameShadowObject*)iv->getShadow());
 	}

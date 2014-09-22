@@ -6,10 +6,11 @@
 #include "BlameUtilities.h"
 
 struct BlameShadowObject {
+	IID id;  // LLVM instruction id.
 	HIGHPRECISION highValue;
 	LOWPRECISION lowValue;
 
-	BlameShadowObject(HIGHPRECISION h, LOWPRECISION l) : highValue(h), lowValue(l) {};
+	BlameShadowObject(IID i, HIGHPRECISION h, LOWPRECISION l) : id(i), highValue(h), lowValue(l) {};
 };
 
 #endif

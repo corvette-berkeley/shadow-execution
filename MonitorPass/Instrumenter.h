@@ -17,17 +17,17 @@ typedef std::vector<Type*> TypePtrVector;
 typedef std::vector<Value*> ValuePtrVector;
 typedef std::vector<Instruction*> InstrPtrVector;
 
-#define CAST_OR_RETURN(T, II, I)                                               \
-  T *II = dyn_cast<T>(I);                                                      \
-  if (II == NULL) {                                                            \
-    return false;                                                              \
-  }
+#define CAST_OR_RETURN(T, II, I)                                                                                       \
+	T* II = dyn_cast<T>(I);                                                                                              \
+	if (II == NULL) {                                                                                                    \
+		return false;                                                                                                      \
+	}
 
-#define CAST_BINARY_OR_RETURN(T, BI, I, OPC)                                   \
-  CAST_OR_RETURN(T, BI, I);                                                    \
-  if (BI->getOpcode() != Instruction::BinaryOps(Instruction::OPC)) {           \
-    return false;                                                              \
-  }
+#define CAST_BINARY_OR_RETURN(T, BI, I, OPC)                                                                           \
+	CAST_OR_RETURN(T, BI, I);                                                                                            \
+	if (BI->getOpcode() != Instruction::BinaryOps(Instruction::OPC)) {                                                   \
+		return false;                                                                                                      \
+	}
 
 const bool SIGNED = true;
 const bool UNSIGNED = false;
@@ -35,8 +35,7 @@ const bool NOSIGN = false;
 
 class Instrumenter : public InstrumenterBase {
 public:
-	Instrumenter(std::string name, Instrumentation* instrumentation)
-		: InstrumenterBase(name, instrumentation) {}
+	Instrumenter(std::string name, Instrumentation* instrumentation) : InstrumenterBase(name, instrumentation) {}
 	virtual ~Instrumenter() {}
 
 	inline Type* VOID_TYPE() {
@@ -92,13 +91,12 @@ public:
 
 	inline StructType* KVALUE_TYPE() {
 		TypePtrVector typeList;
-		typeList.push_back(INT32_TYPE()); // index type
+		typeList.push_back(INT32_TYPE());  // index type
 		typeList.push_back(BOOL_TYPE());  // isGlobal
 		typeList.push_back(KIND_TYPE());
 		typeList.push_back(VALUE_TYPE());
 
-		return StructType::get(parent_->M_->getContext(),
-							   ArrayRef<Type*>(typeList), false /*isPacked*/);
+		return StructType::get(parent_->M_->getContext(), ArrayRef<Type*>(typeList), false /*isPacked*/);
 	}
 	inline Type* KVALUEPTR_TYPE() {
 		return PointerType::get(KVALUE_TYPE(), parent_->AS_);
@@ -141,9 +139,7 @@ public:
 	// inst is a pointer to an instruction, we cast it to first uintptr_t and then
 	// to IID
 	inline Constant* IID_CONSTANT(Value* value) {
-		return ConstantInt::get(IID_TYPE(),
-								static_cast<IID>(reinterpret_cast<ADDRINT>(value)),
-								UNSIGNED);
+		return ConstantInt::get(IID_TYPE(), static_cast<IID>(reinterpret_cast<ADDRINT>(value)), UNSIGNED);
 	}
 	inline Constant* INV_IID_CONSTANT() {
 		return ConstantInt::get(IID_TYPE(), INV_IID);
@@ -169,8 +165,7 @@ public:
 	}
 
 	inline Instruction* BITCAST_INSTR(Value* v, Type* T) {
-		safe_assert(CastInst::castIsValid(
-						Instruction::CastOps(Instruction::BitCast), v, T));
+		safe_assert(CastInst::castIsValid(Instruction::CastOps(Instruction::BitCast), v, T));
 		return CastInst::CreateTruncOrBitCast(v, T);
 	}
 
@@ -178,8 +173,7 @@ public:
 
 	// allocate (in stack) one instance of given struct type (T), and fill in
 	// allocated memory with given elements (vlist)
-	Value* AllocateStruct(StructType* T, ValuePtrVector& vlist,
-						  InstrPtrVector& Instrs, unsigned align) {
+	Value* AllocateStruct(StructType* T, ValuePtrVector& vlist, InstrPtrVector& Instrs, unsigned align) {
 		// allocate memory
 		Instruction* I_alloca = new AllocaInst(T, COUNT_CONSTANT(1U), align);
 		Instrs.push_back(I_alloca);
@@ -189,17 +183,15 @@ public:
 		// the first index is always 0, the other points to the index of the element
 		// in the structure
 		std::vector<Value*> idxList;
-		idxList.push_back(INDEX_CONSTANT(0U)); // this is fixed
-		idxList.push_back(NULL);               // this will change below
+		idxList.push_back(INDEX_CONSTANT(0U));  // this is fixed
+		idxList.push_back(NULL);  // this will change below
 
 		// insert values
 		for (unsigned idx = 0; idx < vlist.size(); ++idx) {
 			Value* value = vlist[idx];
 			idxList[1] = INDEX_CONSTANT(idx);
-			Instruction* I_get_addr = GetElementPtrInst::CreateInBounds(
-										  I_alloca, ArrayRef<Value*>(idxList));
-			Instruction* I_store =
-				new StoreInst(value, I_get_addr, false /*isVolatile*/, align);
+			Instruction* I_get_addr = GetElementPtrInst::CreateInBounds(I_alloca, ArrayRef<Value*>(idxList));
+			Instruction* I_store = new StoreInst(value, I_get_addr, false /*isVolatile*/, align);
 
 			Instrs.push_back(I_get_addr);
 			Instrs.push_back(I_store);
@@ -298,14 +290,13 @@ public:
 			inx = parent_->getGlobalIndex(dyn_cast<GlobalVariable>(value));
 		} else if (isa<Constant>(value)) {
 			inx = -1;
-		} else if (isa<Instruction>(value)) { // not constant, but an instruction
+		} else if (isa<Instruction>(value)) {  // not constant, but an instruction
 			Instruction* inst = (Instruction*)value;
 			inx = parent_->getIndex(inst);
 		} else if (isa<Argument>(value)) {
 			Argument* arg = (Argument*)value;
 			inx = parent_->getIndex(arg);
-		} else if (isa<BasicBlock>(
-					   value)) { // not an instruction, but a basic block
+		} else if (isa<BasicBlock>(value)) {  // not an instruction, but a basic block
 			BasicBlock* block = (BasicBlock*)value;
 			inx = parent_->getBlockIndex(block);
 		}
@@ -519,8 +510,7 @@ public:
 			// TODO: use extract value
 			std::vector<unsigned> idxList;
 			idxList.push_back(i);
-			ExtractValueInst* extValInst =
-				ExtractValueInst::Create(value, ArrayRef<unsigned>(idxList));
+			ExtractValueInst* extValInst = ExtractValueInst::Create(value, ArrayRef<unsigned>(idxList));
 			instrs.push_back(extValInst);
 			Type* elemType = structType->getElementType(i);
 			if (elemType->isStructTy()) {
@@ -539,16 +529,14 @@ public:
 	/*******************************************************************************************/
 
 	void InsertAllBefore(InstrPtrVector& Instrs, Instruction* I) {
-		for (InstrPtrVector::iterator itr = Instrs.begin(); itr < Instrs.end();
-				++itr) {
+		for (InstrPtrVector::iterator itr = Instrs.begin(); itr < Instrs.end(); ++itr) {
 			(*itr)->insertBefore(I);
 		}
 	}
 
 	void InsertAllAfter(InstrPtrVector& Instrs, Instruction* I) {
 		Instruction* I_tmp = I;
-		for (InstrPtrVector::iterator itr = Instrs.begin(); itr < Instrs.end();
-				++itr) {
+		for (InstrPtrVector::iterator itr = Instrs.begin(); itr < Instrs.end(); ++itr) {
 			(*itr)->insertAfter(I_tmp);
 			I_tmp = (*itr);
 		}
@@ -557,23 +545,18 @@ public:
 	/*******************************************************************************************/
 
 	inline FunctionType* FUNC_TYPE(Type* rtype, TypePtrVector& ptypes) {
-		return FunctionType::get(rtype, ArrayRef<Type*>(ptypes),
-								 false /*isVarArgs*/);
+		return FunctionType::get(rtype, ArrayRef<Type*>(ptypes), false /*isVarArgs*/);
 	}
 	inline FunctionType* VOID_FUNC_TYPE(TypePtrVector& ptypes) {
 		return FUNC_TYPE(VOID_TYPE(), ptypes);
 	}
 
-	inline Instruction* CALL_INSTR(const char* fname, FunctionType* ftype,
-								   ValuePtrVector& fargs) {
-		return CallInst::Create(
-				   parent_->M_->getOrInsertFunction(StringRef(fname), ftype),
-				   ArrayRef<Value*>(fargs));
+	inline Instruction* CALL_INSTR(const char* fname, FunctionType* ftype, ValuePtrVector& fargs) {
+		return CallInst::Create(parent_->M_->getOrInsertFunction(StringRef(fname), ftype), ArrayRef<Value*>(fargs));
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_PTR_KVALUE_INT(const char* func, Value* iid, Value* ptr,
-										 Value* kvalue, Value* inx) {
+	Instruction* CALL_IID_PTR_KVALUE_INT(const char* func, Value* iid, Value* ptr, Value* kvalue, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(PTR_TYPE());
@@ -590,9 +573,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_PTR_IID_KVALUE_INT(const char* func, Value* iid,
-			Value* ptr, Value* dest_iid,
-			Value* kvalue, Value* inx) {
+	Instruction* CALL_IID_PTR_IID_KVALUE_INT(const char* func, Value* iid, Value* ptr, Value* dest_iid, Value* kvalue,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(PTR_TYPE());
@@ -611,9 +593,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_PTR_KVALUE_KVALUE_INT(const char* func, Value* iid,
-			Value* ptr, Value* kvalue1,
-			Value* kvalue2, Value* inx) {
+	Instruction* CALL_IID_PTR_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* ptr, Value* kvalue1, Value* kvalue2,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(PTR_TYPE());
@@ -633,9 +614,8 @@ public:
 
 	/*******************************************************************************************/
 	Instruction* CALL_INT_INT_INT64_INT_INT_INT_INT_INT64_INT64_INT64_INT_INT_INT(
-		const char* func, Value* baseInx, Value* baseScope, Value* baseAddr,
-		Value* i0, Value* i1, Value* i2, Value* i3, Value* i64_0, Value* i64_1,
-		Value* i64_2, Value* i4, Value* i5, Value* inx) {
+		const char* func, Value* baseInx, Value* baseScope, Value* baseAddr, Value* i0, Value* i1, Value* i2, Value* i3,
+		Value* i64_0, Value* i64_1, Value* i64_2, Value* i4, Value* i5, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -670,8 +650,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KVALUE_INT(const char* func, Value* iid, Value* b1,
-										  Value* kvalue, Value* inx) {
+	Instruction* CALL_IID_BOOL_KVALUE_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -688,10 +667,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_INT_INT_KIND_INT64(const char* func, Value* iid,
-			Value* b1, Value* opInx,
-			Value* opScope, Value* opType,
-			Value* opValue) {
+	Instruction* CALL_IID_BOOL_INT_INT_KIND_INT64(const char* func, Value* iid, Value* b1, Value* opInx, Value* opScope,
+			Value* opType, Value* opValue) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -712,10 +689,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KVALUE_KIND_INT_INT(const char* func, Value* iid,
-			Value* b1, Value* kvalue,
-			Value* kind, Value* inx,
-			Value* inx2) {
+	Instruction* CALL_IID_BOOL_KVALUE_KIND_INT_INT(const char* func, Value* iid, Value* b1, Value* kvalue, Value* kind,
+			Value* inx, Value* inx2) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -736,8 +711,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KIND_INT(const char* func, Value* iid, Value* b1,
-										Value* kind, Value* inx) {
+	Instruction* CALL_IID_BOOL_KIND_INT(const char* func, Value* iid, Value* b1, Value* kind, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -754,8 +728,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_INT_KIND_INT(const char* func, Value* iid,
-											Value* b1, Value* line, Value* kind,
+	Instruction* CALL_IID_BOOL_INT_KIND_INT(const char* func, Value* iid, Value* b1, Value* line, Value* kind,
 											Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -775,8 +748,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT_INT_INT64_INT(const char* func, Value* iid,
-											Value* baseInx, Value* baseScope,
+	Instruction* CALL_IID_INT_INT_INT64_INT(const char* func, Value* iid, Value* baseInx, Value* baseScope,
 											Value* baseAddr, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -796,9 +768,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT(
-		const char* func, Value* iid, Value* b1, Value* kvalue, Value* index,
-		Value* kind, Value* size, Value* inx) {
+	Instruction* CALL_IID_BOOL_KVALUE_KVALUE_KIND_INT64_INT(const char* func, Value* iid, Value* b1, Value* kvalue,
+			Value* index, Value* kind, Value* size, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -821,10 +792,11 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT(
-		const char* func, Value* iid, Value* baseInx, Value* baseScope,
-		Value* baseAddr, Value* offsetInx, Value* offsetValue, Value* kind,
-		Value* size, Value* loadGlobal, Value* loadInx, Value* inx) {
+	Instruction* CALL_IID_INT_INT_INT64_INT_INT64_KIND_INT64_BOOL_INT_INT(const char* func, Value* iid, Value* baseInx,
+			Value* baseScope, Value* baseAddr,
+			Value* offsetInx, Value* offsetValue,
+			Value* kind, Value* size, Value* loadGlobal,
+			Value* loadInx, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -855,8 +827,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KVALUE_INT(const char* func, Value* iid, Value* kvalue,
-									 Value* inx) {
+	Instruction* CALL_IID_KVALUE_INT(const char* func, Value* iid, Value* kvalue, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KVALUEPTR_TYPE());
@@ -872,9 +843,8 @@ public:
 
 	/*******************************************************************************************/
 	// here now
-	Instruction* CALL_IID_INT_INT_KIND_INT64(const char* func, Value* iid,
-			Value* opInx, Value* opScope,
-			Value* opType, Value* opValue) {
+	Instruction* CALL_IID_INT_INT_KIND_INT64(const char* func, Value* iid, Value* opInx, Value* opScope, Value* opType,
+			Value* opValue) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -913,9 +883,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_KIND_INT64(const char* func, Value* inx,
-										 Value* scope, Value* type,
-										 Value* value) {
+	Instruction* CALL_INT_INT_KIND_INT64(const char* func, Value* inx, Value* scope, Value* type, Value* value) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -932,8 +900,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_INT_INT_INT(const char* func, Value* i1, Value* i2,
-										  Value* i3, Value* i4, Value* i5) {
+	Instruction* CALL_INT_INT_INT_INT_INT(const char* func, Value* i1, Value* i2, Value* i3, Value* i4, Value* i5) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -952,9 +919,9 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64(
-		const char* func, Value* i1, Value* i2, Value* i3, Value* i4, Value* i5,
-		Value* i64_1, Value* i64_2, Value* i64_3, Value* i64_4, Value* i64_5) {
+	Instruction* CALL_INT_INT_INT_INT_INT_INT64_INT64_INT64_INT64_INT64(const char* func, Value* i1, Value* i2, Value* i3,
+			Value* i4, Value* i5, Value* i64_1, Value* i64_2,
+			Value* i64_3, Value* i64_4, Value* i64_5) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -994,10 +961,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT64_INT_KIND_KIND_INT_INT(const char* func, Value* i64_0,
-			Value* i32_0, Value* kind_0,
-			Value* kind_1, Value* i32_1,
-			Value* i32_2) {
+	Instruction* CALL_INT64_INT_KIND_KIND_INT_INT(const char* func, Value* i64_0, Value* i32_0, Value* kind_0,
+			Value* kind_1, Value* i32_1, Value* i32_2) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT64_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1029,8 +994,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT64_INT(const char* func, Value* iid, Value* size,
-									Value* inx) {
+	Instruction* CALL_IID_INT64_INT(const char* func, Value* iid, Value* size, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT64_TYPE());
@@ -1045,8 +1009,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT64_INT_INT64(const char* func, Value* iid,
-										  Value* size, Value* inx, Value* addr) {
+	Instruction* CALL_IID_INT64_INT_INT64(const char* func, Value* iid, Value* size, Value* inx, Value* addr) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT64_TYPE());
@@ -1076,9 +1039,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KVALUE_KVALUE_INT(const char* func, Value* iid,
-											Value* kvalue1, Value* kvalue2,
-											Value* inx) {
+	Instruction* CALL_IID_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* kvalue1, Value* kvalue2, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KVALUEPTR_TYPE());
@@ -1095,9 +1056,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KVALUE_KVALUE_INT_INT(const char* func, Value* iid,
-			Value* kvalue1, Value* kvalue2,
-			Value* line, Value* inx) {
+	Instruction* CALL_IID_KVALUE_KVALUE_INT_INT(const char* func, Value* iid, Value* kvalue1, Value* kvalue2, Value* line,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KVALUEPTR_TYPE());
@@ -1116,10 +1076,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KVALUE_KVALUE_INT_INT_INT(const char* func, Value* iid,
-			Value* kvalue1,
-			Value* kvalue2, Value* file,
-			Value* line, Value* inx) {
+	Instruction* CALL_IID_KVALUE_KVALUE_INT_INT_INT(const char* func, Value* iid, Value* kvalue1, Value* kvalue2,
+			Value* file, Value* line, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KVALUEPTR_TYPE());
@@ -1140,9 +1098,9 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KIND_KVALUE_BOOL_INT_INT_INT_INT(
-		const char* func, Value* iid, Value* kind, Value* kvalue1,
-		Value* loadGlobal, Value* loadInx, Value* file, Value* line, Value* inx) {
+	Instruction* CALL_IID_KIND_KVALUE_BOOL_INT_INT_INT_INT(const char* func, Value* iid, Value* kind, Value* kvalue1,
+			Value* loadGlobal, Value* loadInx, Value* file, Value* line,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1167,9 +1125,9 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT(
-		const char* func, Value* iid, Value* kind, Value* scope, Value* opInx,
-		Value* opAddr, Value* loadGlobal, Value* loadInx, Value* inx) {
+	Instruction* CALL_IID_KIND_INT_INT_INT64_BOOL_INT_INT(const char* func, Value* iid, Value* kind, Value* scope,
+			Value* opInx, Value* opAddr, Value* loadGlobal, Value* loadInx,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1219,10 +1177,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_KIND_INT_INT_INT64(const char* func, Value* i32_0,
-			Value* i32_1, Value* kind,
-			Value* scope, Value* srcInx,
-			Value* srcValue) {
+	Instruction* CALL_INT_INT_KIND_INT_INT_INT64(const char* func, Value* i32_0, Value* i32_1, Value* kind, Value* scope,
+			Value* srcInx, Value* srcValue) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1243,10 +1199,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_KVALUE_INT_INT_INT(const char* func, Value* i32_0,
-			Value* i32_1, Value* kv,
-			Value* i32_2, Value* i32_3,
-			Value* i32_4) {
+	Instruction* CALL_INT_INT_KVALUE_INT_INT_INT(const char* func, Value* i32_0, Value* i32_1, Value* kv, Value* i32_2,
+			Value* i32_3, Value* i32_4) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1267,9 +1221,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_INT_INT_INT64_INT64_KIND_PRED_INT(
-		const char* func, Value* i32_1, Value* i32_2, Value* i64_1, Value* i64_2,
-		Value* kind, Value* pred, Value* inx) {
+	Instruction* CALL_INT_INT_INT64_INT64_KIND_PRED_INT(const char* func, Value* i32_1, Value* i32_2, Value* i64_1,
+			Value* i64_2, Value* kind, Value* pred, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(INT32_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1292,11 +1245,37 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT_INT_INT64_INT64_KIND_INT(const char* func,
-			Value* iid, Value* i32_1,
-			Value* i32_2, Value* i64_1,
-			Value* i64_2, Value* kind,
-			Value* inx) {
+	Instruction* CALL_IID_IID_IID_INT_INT_INT64_INT64_KIND_INT(const char* func, Value* iid, Value* lIID, Value* rIID,
+			Value* i32_1, Value* i32_2, Value* i64_1, Value* i64_2,
+			Value* kind, Value* inx) {
+		TypePtrVector ArgTypes;
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(IID_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+		ArgTypes.push_back(INT64_TYPE());
+		ArgTypes.push_back(INT64_TYPE());
+		ArgTypes.push_back(KIND_TYPE());
+		ArgTypes.push_back(INT32_TYPE());
+
+		ValuePtrVector Args;
+		Args.push_back(iid);
+		Args.push_back(lIID);
+		Args.push_back(rIID);
+		Args.push_back(i32_1);
+		Args.push_back(i32_2);
+		Args.push_back(i64_1);
+		Args.push_back(i64_2);
+		Args.push_back(kind);
+		Args.push_back(inx);
+
+		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
+	}
+
+	/*******************************************************************************************/
+	Instruction* CALL_IID_INT_INT_INT64_INT64_KIND_INT(const char* func, Value* iid, Value* i32_1, Value* i32_2,
+			Value* i64_1, Value* i64_2, Value* kind, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1343,8 +1322,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_INT_INT(const char* func, Value* iid, Value* inx,
-								  Value* inx2) {
+	Instruction* CALL_IID_INT_INT(const char* func, Value* iid, Value* inx, Value* inx2) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(INT32_TYPE());
@@ -1359,9 +1337,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT_INT(
-		const char* func, Value* iid, Value* b1, Value* b2, Value* kvalue1,
-		Value* kvalue2, Value* line, Value* inx) {
+	Instruction* CALL_IID_BOOL_BOOL_KVALUE_KVALUE_INT_INT(const char* func, Value* iid, Value* b1, Value* b2,
+			Value* kvalue1, Value* kvalue2, Value* line, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -1385,8 +1362,7 @@ public:
 
 	/*******************************************************************************************/
 	// cindy
-	Instruction* CALL_IID_KVALUE_KVALUE_PRED_INT(const char* func, Value* iid,
-			Value* k1, Value* k2, Value* p,
+	Instruction* CALL_IID_KVALUE_KVALUE_PRED_INT(const char* func, Value* iid, Value* k1, Value* k2, Value* p,
 			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -1407,8 +1383,7 @@ public:
 
 	/*******************************************************************************************/
 	// cindy
-	Instruction* CALL_IID_KVALUE_KVALUE_KVALUE_INT(const char* func, Value* iid,
-			Value* cond, Value* tvalue,
+	Instruction* CALL_IID_KVALUE_KVALUE_KVALUE_INT(const char* func, Value* iid, Value* cond, Value* tvalue,
 			Value* fvalue, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -1429,8 +1404,7 @@ public:
 
 	/*******************************************************************************************/
 	// cindy
-	Instruction* CALL_IID_KIND_INT(const char* func, Value* iid, Value* k1,
-								   Value* inx) {
+	Instruction* CALL_IID_KIND_INT(const char* func, Value* iid, Value* k1, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1445,8 +1419,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KIND_INT64_INT(const char* func, Value* iid, Value* k1,
-										 Value* size, Value* inx) {
+	Instruction* CALL_IID_KIND_INT64_INT(const char* func, Value* iid, Value* k1, Value* size, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1463,8 +1436,7 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KIND_INT64_INT_INT64(const char* func, Value* iid,
-			Value* k1, Value* size, Value* inx,
+	Instruction* CALL_IID_KIND_INT64_INT_INT64(const char* func, Value* iid, Value* k1, Value* size, Value* inx,
 			Value* opValue) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
@@ -1484,10 +1456,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL(const char* func, Value* iid,
-			Value* k1, Value* size,
-			Value* inx, Value* line,
-			Value* arg) {
+	Instruction* CALL_IID_KIND_INT64_INT_INT_BOOL(const char* func, Value* iid, Value* k1, Value* size, Value* inx,
+			Value* line, Value* arg) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1509,9 +1479,7 @@ public:
 
 	/*******************************************************************************************/
 
-	Instruction* CALL_IID_KIND_KVALUE_INT_INT(const char* func, Value* iid,
-			Value* kind, Value* k, Value* c,
-			Value* inx) {
+	Instruction* CALL_IID_KIND_KVALUE_INT_INT(const char* func, Value* iid, Value* kind, Value* k, Value* c, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1531,8 +1499,7 @@ public:
 
 	/*******************************************************************************************/
 
-	Instruction* CALL_IID_KIND_KVALUE_INT(const char* func, Value* iid,
-										  Value* kind, Value* k, Value* inx) {
+	Instruction* CALL_IID_KIND_KVALUE_INT(const char* func, Value* iid, Value* kind, Value* k, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(KIND_TYPE());
@@ -1549,9 +1516,8 @@ public:
 	}
 
 	/*******************************************************************************************/
-	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT(const char* func, Value* iid,
-			Value* nounwind, Value* kind,
-			Value* k, Value* inx) {
+	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT(const char* func, Value* iid, Value* nounwind, Value* kind, Value* k,
+			Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -1571,10 +1537,8 @@ public:
 
 	/*******************************************************************************************/
 
-	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT_INT(const char* func, Value* iid,
-			Value* nounwind, Value* kind,
-			Value* k, Value* size,
-			Value* inx) {
+	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT_INT(const char* func, Value* iid, Value* nounwind, Value* kind, Value* k,
+			Value* size, Value* inx) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -1594,11 +1558,10 @@ public:
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
 
-	/*******************************************************************************************/ // DELETE!
+	/*******************************************************************************************/  // DELETE!
 
-	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE(
-		const char* func, Value* iid, Value* nounwind, Value* kind, Value* k,
-		Value* size, Value* inx, Value* mallocAddress) {
+	Instruction* CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE(const char* func, Value* iid, Value* nounwind, Value* kind,
+			Value* k, Value* size, Value* inx, Value* mallocAddress) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -1622,10 +1585,8 @@ public:
 
 	/*******************************************************************************************/
 
-	Instruction* CALL_IID_BOOL_KIND_INT_INT_INT64(const char* func, Value* iid,
-			Value* nounwind, Value* kind,
-			Value* size, Value* inx,
-			Value* mallocAddress) {
+	Instruction* CALL_IID_BOOL_KIND_INT_INT_INT64(const char* func, Value* iid, Value* nounwind, Value* kind, Value* size,
+			Value* inx, Value* mallocAddress) {
 		TypePtrVector ArgTypes;
 		ArgTypes.push_back(IID_TYPE());
 		ArgTypes.push_back(BOOL_TYPE());
@@ -1644,7 +1605,7 @@ public:
 
 		return CALL_INSTR(func, VOID_FUNC_TYPE(ArgTypes), Args);
 	}
-}; // end Instrumenter
+};  // end Instrumenter
 
 /*******************************************************************************************/
 

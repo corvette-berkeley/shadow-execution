@@ -62,18 +62,23 @@ public:
 	/*** API FUNCTIONS ***/
 	virtual void pre_analysis();
 
-	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
 	virtual void post_analysis();
 
 private:
-	void post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx, BINOP op);
+	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+					 int inx, BINOP op);
 
 	void copyShadow(IValue* src, IValue* dest);
 

@@ -44,13 +44,17 @@ public:
 
 	virtual void post_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope,
 								 int64_t argValueOrIndex);
-	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
-	virtual void post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
 
 	virtual void post_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx);
 
@@ -106,7 +110,8 @@ private:
 	   */
 	LOWPRECISION getActualValue(SCOPE scope, int64_t constOrIndex);
 
-	void post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx, BINOP op);
+	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+					 int inx, BINOP op);
 
 	void post_lib_call(IID iid, bool nounwind, int pc, KIND type, int inx, SCOPE argScope, int64_t argValueOrIndex,
 					   string func);

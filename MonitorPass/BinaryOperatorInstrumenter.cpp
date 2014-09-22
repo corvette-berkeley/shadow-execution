@@ -14,8 +14,7 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 	binop = getBinOp(binInst);
 	bitwise = getBitWise(binInst);
 
-	if (binInst != NULL &&
-			(binop != BINOP_INVALID || bitwise != BITWISE_INVALID)) {
+	if (binInst != NULL && (binop != BINOP_INVALID || bitwise != BITWISE_INVALID)) {
 		safe_assert(parent_ != NULL);
 
 		count_++;
@@ -44,8 +43,7 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 		parent_->debugMap[address] = debug;
 		// end of debugging info
 
-		if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount))
-				.second) {
+		if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount)).second) {
 			// element was inserted
 			parent_->fileCount++;
 		}
@@ -55,6 +53,9 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 
 		cLValue = getValueOrIndex(lValue);
 		cRValue = getValueOrIndex(rValue);
+
+		Constant* cLIID = IID_CONSTANT(lValue);
+		Constant* cRIID = IID_CONSTANT(rValue);
 
 		std::stringstream callback;
 
@@ -117,17 +118,16 @@ bool BinaryOperatorInstrumenter::CheckAndInstrument(Instruction* inst) {
 						break;
 					default:
 						safe_assert(false);
-						return false; // this cannot happen
+						return false;  // this cannot happen
 				}
 				break;
 			default:
 				safe_assert(false);
-				return false; // this cannot happen
+				return false;  // this cannot happen
 		}
 
-		Instruction* call = CALL_IID_INT_INT_INT64_INT64_KIND_INT(
-								callback.str().c_str(), iid, cLScope, cRScope, cLValue, cRValue, cType,
-								cInx);
+		Instruction* call = CALL_IID_IID_IID_INT_INT_INT64_INT64_KIND_INT(callback.str().c_str(), iid, cLIID, cRIID,
+							cLScope, cRScope, cLValue, cRValue, cType, cInx);
 
 		instrs.push_back(call);
 

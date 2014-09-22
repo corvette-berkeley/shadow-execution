@@ -20,10 +20,10 @@ $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --instrument --file $GLOG_log_
 $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
 
 # Create executable 
-$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lba -lmonitor -lpthread -lm -lrt -lgmp -lglog
+$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lbba -lmonitor -lpthread -lm -lrt -lgmp -lglog -ltcmalloc
 
 # Clean temporary files
-#rm $name.bc
+rm $name.bc
 #rm $name-ngep.bc
 #rm tmppass.bc
 #rm tmppass-allocas.bc

@@ -225,8 +225,8 @@ void BackwardBlameAnalysis::post_call_floor(IID iid UNUSED, bool nounwind UNUSED
 	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "floor");
 }
 
-void BackwardBlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-										int inx UNUSED, BINOP op) {
+void BackwardBlameAnalysis::post_fbinop(IID iid, IID liid UNUSED, IID riid UNUSED, SCOPE lScope, SCOPE rScope,
+										int64_t lValue, int64_t rValue, KIND type, int inx UNUSED, BINOP op) {
 
 	DebugInfo debugInfo = debugInfoMap[iid];
 	int line = debugInfo.line;
@@ -326,24 +326,24 @@ void BackwardBlameAnalysis::post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int
 	return;
 }
 
-void BackwardBlameAnalysis::post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-									  int inx) {
-	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FADD);
+void BackwardBlameAnalysis::post_fadd(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+									  int64_t rValue, KIND type, int inx) {
+	post_fbinop(iid, liid, riid, lScope, rScope, lValue, rValue, type, inx, FADD);
 }
 
-void BackwardBlameAnalysis::post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-									  int inx) {
-	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FSUB);
+void BackwardBlameAnalysis::post_fsub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+									  int64_t rValue, KIND type, int inx) {
+	post_fbinop(iid, liid, riid, lScope, rScope, lValue, rValue, type, inx, FSUB);
 }
 
-void BackwardBlameAnalysis::post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-									  int inx) {
-	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FMUL);
+void BackwardBlameAnalysis::post_fmul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+									  int64_t rValue, KIND type, int inx) {
+	post_fbinop(iid, liid, riid, lScope, rScope, lValue, rValue, type, inx, FMUL);
 }
 
-void BackwardBlameAnalysis::post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-									  int inx) {
-	post_fbinop(iid, lScope, rScope, lValue, rValue, type, inx, FDIV);
+void BackwardBlameAnalysis::post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue,
+									  int64_t rValue, KIND type, int inx) {
+	post_fbinop(iid, liid, riid, lScope, rScope, lValue, rValue, type, inx, FDIV);
 }
 
 void BackwardBlameAnalysis::post_fptrunc(int64_t op, SCOPE opScope, KIND opKind UNUSED, KIND kind UNUSED,
