@@ -4,7 +4,10 @@
 #define BLAME_ANALYSIS_H_
 
 #include <unordered_map>
-#include "../../src/Common.h"
+
+#include "BlameNode.h"
+#include "BlameShadowObject.h"
+#include "../../src/IValue.h"
 #include "../../src/InterpreterObserver.h"
 
 class BlameAnalysis : public InterpreterObserver {
@@ -44,10 +47,36 @@ private:
 
 	// A map from instruction IID to debug information. IID is computed during
 	// instrumentation phase and is the unique id for each LLVM instruction.
+	// Debug information includes the LoC, column and file of the instruction.
 	const unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
 
-public:
-	BlameAnalysis(std::string name) : InterpreterObserver(name) {};
-};
+	// A map from instruction IID to blame summary. IID is computed during
+	// instrumentation phase and is the unique id for each LLVM instruction.
+	// Blame summary is a tree-like data structure which represents the precision
+	// dependency of values used and defined in this instruction.
+	map<IID, BlameNode[PRECISION_NO]> blameSummary;
 
+public:
+	BlameAnalysis(std::string name) : InterpreterObserver(name) {}
+
+	/*** API FUNCTIONS ***/
+	virtual void pre_analysis();
+
+	virtual void post_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+
+	virtual void post_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+
+	virtual void post_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+
+	virtual void post_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx);
+
+	virtual void post_analysis();
+
+private:
+	void post_fbinop(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx, BINOP op);
+
+	void copyShadow(IValue* src, IValue* dest);
+
+	const BlameShadowObject getShadowObject(SCOPE scope, int64_t value);
+};
 #endif
