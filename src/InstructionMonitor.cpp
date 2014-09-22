@@ -44,18 +44,26 @@
 #include "InstructionObserver.h"
 #include "InterpreterObserver.h"
 #include "EmptyObserver.h"
+#include <vector>
+
+using std::vector;
 
 /*******************************************************************************************/
-/*
-#define DISPATCH_TO_OBSERVERS(func, ...) \
-	for(ObserverPtrList::iterator itr = observers_.begin(); itr < observers_.end();
-++itr) { \
-		(*itr)->func(__VA_ARGS__); \
-	}
-*/
+vector<InstructionObserver> observers_ = {};
 
-#define DISPATCH_TO_OBSERVERS(func, ...)                                       \
-  (*observers_.begin())->func(__VA_ARGS__);
+#define DISPATCH_TO_OBSERVERS(func, ...) \
+   for(InstructionObserver& it : observers_){ \
+		it.func(__VA_ARGS__); \
+	}
+
+/*******************************************************************************************/
+
+// macro for adding observers
+#define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
+
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(EmptyObserver, "emptyobserver")
+
 
 /*******************************************************************************************/
 
@@ -509,16 +517,3 @@ void llvm_landingpad() {
 	DISPATCH_TO_OBSERVERS(landingpad)
 }
 
-/*******************************************************************************************/
-
-ObserverPtrList observers_;
-
-/*******************************************************************************************/
-
-// macro for adding observers
-#define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
-
-// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
-// REGISTER_OBSERVER(EmptyObserver, "emptyobserver")
-
-/*******************************************************************************************/

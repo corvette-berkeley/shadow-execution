@@ -603,6 +603,9 @@ Total select Instrumented: 0
 Total call Instrumented: 6
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+0
+0
+8
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -1593,6 +1596,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+result: 12884901890
+result2: 8589934595
 Total add Instrumented: 4
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -1758,6 +1763,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+0 0.000000
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -1813,7 +1819,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-After allocation: 3
+E = 5
+e: 1, f: 0After allocation: 3
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -1925,6 +1932,8 @@ Total select Instrumented: 0
 Total call Instrumented: 5
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+size of X 12
+size of Y 4
 Total add Instrumented: 2
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -2145,6 +2154,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+Value of a is -1
 Total add Instrumented: 2
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -2200,6 +2210,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+Value of a is 182.250000
 Total add Instrumented: 2
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3245,6 +3256,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+e: 1407374883815424
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3300,6 +3312,14 @@ Total select Instrumented: 0
 Total call Instrumented: 9
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+c: nan
+c < 0.0: 0
+c <= 0.0: 0
+c > 0.0: 0
+c >= 0.0: 0
+c != 0.0: 1
+c == 0.0: 0
+Compute assuming x is zero
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3575,6 +3595,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+0
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3630,6 +3651,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+4197419
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3850,6 +3872,8 @@ Total select Instrumented: 0
 Total call Instrumented: 4
 Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
+ARG is ./pointer_uninitialized.out
+ARG is ./pointer_uninitialized.out
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -4070,6 +4094,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+abc97
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -4290,6 +4315,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+0
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -4677,6 +4703,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
+1
 After allocation: 2
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4733,6 +4760,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+size of union 16
+size of long double 16
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
