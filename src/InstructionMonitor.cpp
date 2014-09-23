@@ -45,15 +45,17 @@
 #include "InterpreterObserver.h"
 #include "EmptyObserver.h"
 #include <vector>
+#include <memory>
 
 using std::vector;
+using std::unique_ptr;
 
 /*******************************************************************************************/
-vector<InstructionObserver> observers_ = {};
+vector<unique_ptr<InstructionObserver>> observers_ = {};
 
 #define DISPATCH_TO_OBSERVERS(func, ...) \
-   for(InstructionObserver& it : observers_){ \
-		it.func(__VA_ARGS__); \
+   for(auto& ob_ptr : observers_){ \
+		ob_ptr->func(__VA_ARGS__); \
 	}
 
 /*******************************************************************************************/

@@ -46,6 +46,7 @@
 #include "Common.h"
 #include "InstructionObserver.h"
 #include <vector>
+#include <memory>
 
 /*******************************************************************************************/
 
@@ -218,13 +219,13 @@ extern "C" {
 }
 
 /*******************************************************************************************/
-extern std::vector<InstructionObserver> observers_;
+extern std::vector<std::unique_ptr<InstructionObserver>> observers_;
 template <class T> class RegisterObserver {
 public:
 	RegisterObserver(std::string name) {
 		DEBUG_STDERR(">>> Registering observer: " << name);
 
-		observers_.push_back(T(name));
+		observers_.push_back(std::unique_ptr<T>(new T(name)));
 	}
 };
 
