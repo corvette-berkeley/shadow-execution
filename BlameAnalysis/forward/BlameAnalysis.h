@@ -4,11 +4,13 @@
 #define BLAME_ANALYSIS_H_
 
 #include <unordered_map>
+#include <cmath>
+
+#include "../../src/IValue.h"
+#include "../../src/InterpreterObserver.h"
 
 #include "BlameNode.h"
 #include "BlameShadowObject.h"
-#include "../../src/IValue.h"
-#include "../../src/InterpreterObserver.h"
 
 class BlameAnalysis : public InterpreterObserver {
 
@@ -29,21 +31,7 @@ private:
 	//
 	// TODO: find a way to make the name debug.bin to be provided as input and
 	// sounds more personal to the application under analysis.
-	unordered_map<IID, DebugInfo> readDebugInfo() {
-		std::stringstream debugFileName;
-		debugFileName << getenv("GLOG_log_dir") << separator() << "debug.bin";
-		FILE* debugFile = fopen(debugFileName.str().c_str(), "rb");
-		IID iid;
-		struct DebugInfo debugInfo;
-		unordered_map<IID, DebugInfo> debugInfoMap;
-
-		while (fread(&iid, sizeof(uint64_t), 1, debugFile) && fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-			debugInfoMap[iid] = debugInfo;
-		}
-		fclose(debugFile);
-
-		return debugInfoMap;
-	}
+	unordered_map<IID, DebugInfo> readDebugInfo();
 
 	// A map from instruction IID to debug information. IID is computed during
 	// instrumentation phase and is the unique id for each LLVM instruction.
@@ -77,11 +65,26 @@ public:
 	virtual void post_analysis();
 
 private:
-	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-					 int inx, BINOP op);
+	// Replace the last "shift" bits of the double value with 0 bits.
+	double clearBits(double v, int shift);
+
+	// Verify whether the two double values v1 and v2 equal within the precision
+	// given.
+	//
+	// This function first clears the last few bits of v1 and v2 to match
+	// with the precision and then compares the resulting values. When comparing
+	// the resulting values, inequality due to rounding is torelated.
+	bool equalWithinPrecision(double v1, double v2, PRECISION prec);
+
+	template <typename T> T feval(T val01, T val02, BINOP bop);
+
+	// Get the shadow object of an LLVM instruction. An LLVM instruction is
+	// identified by its iid, scope and value or index.
+	const BlameShadowObject getShadowObject(IID iid, SCOPE scope, int64_t value);
 
 	void copyShadow(IValue* src, IValue* dest);
 
-	const BlameShadowObject getShadowObject(SCOPE scope, int64_t value);
+	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+					 int inx, BINOP op);
 };
 #endif
