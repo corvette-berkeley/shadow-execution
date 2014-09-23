@@ -473,7 +473,7 @@ ObserverPtrList observers_;
 // macro for adding observers
 #define REGISTER_OBSERVER(T, N) static RegisterObserver<T> T##_INSTANCE(N);
 
-REGISTER_OBSERVER(InterpreterObserver, "interpreter")
+// REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(EmptyObserver, "emptyobserver")
 
 /*******************************************************************************************/
