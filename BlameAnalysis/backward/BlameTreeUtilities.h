@@ -39,8 +39,8 @@
 #ifndef BLAME_TREE_UTILITIES_H
 #define BLAME_TREE_UTILITIES_H
 
-#include "../src/Common.h"
-#include "../src/Constants.h"
+#include "../../src/Common.h"
+#include "../../src/Constants.h"
 #include <cinttypes>
 #include <cmath>
 #include <map>
@@ -110,8 +110,7 @@ public:
 	 *
 	 * @return the result of the binary operation in HIGHPRECISION
 	 */
-	static HIGHPRECISION eval(HIGHPRECISION value01, HIGHPRECISION value02,
-							  BINOP bop);
+	static HIGHPRECISION eval(HIGHPRECISION value01, HIGHPRECISION value02, BINOP bop);
 
 	/**
 	 * Evaluate the binary operation given the operator and two operands.
@@ -122,8 +121,7 @@ public:
 	 *
 	 * @return the result of the binary operation in LOWPRECISION
 	 */
-	static LOWPRECISION feval(LOWPRECISION value01, LOWPRECISION value02,
-							  BINOP bop);
+	static LOWPRECISION feval(LOWPRECISION value01, LOWPRECISION value02, BINOP bop);
 
 	/**
 	 * Evaluate the function operation given the function name and arguments.

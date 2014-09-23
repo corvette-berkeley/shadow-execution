@@ -53,9 +53,9 @@ using std::unique_ptr;
 /*******************************************************************************************/
 vector<unique_ptr<InstructionObserver>> observers_ = {};
 
-#define DISPATCH_TO_OBSERVERS(func, ...) \
-   for(auto& ob_ptr : observers_){ \
-		ob_ptr->func(__VA_ARGS__); \
+#define DISPATCH_TO_OBSERVERS(func, ...)                                                                               \
+	for (auto& ob_ptr : observers_) {                                                                         \
+		ob_ptr->func(__VA_ARGS__);                                                                                              \
 	}
 
 /*******************************************************************************************/
@@ -66,98 +66,91 @@ vector<unique_ptr<InstructionObserver>> observers_ = {};
 // REGISTER_OBSERVER(InterpreterObserver, "interpreter")
 // REGISTER_OBSERVER(EmptyObserver, "emptyobserver")
 
-
 /*******************************************************************************************/
 
 // ***** Binary Operations ***** //
-void llvm_add(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			  int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(add, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_add(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			  int inx) {
+	DISPATCH_TO_OBSERVERS(add, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(fadd, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fadd(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(fadd, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_sub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			  int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(sub, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_sub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			  int inx) {
+	DISPATCH_TO_OBSERVERS(sub, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fsub(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(fsub, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fsub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(fsub, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_mul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			  int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(mul, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_mul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			  int inx) {
+	DISPATCH_TO_OBSERVERS(mul, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fmul(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(fmul, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fmul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(fmul, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_udiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(udiv, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_udiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(udiv, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_sdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(sdiv, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_sdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(sdiv, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_fdiv(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(fdiv, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_fdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(fdiv, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_urem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(urem, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_urem(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(urem, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_srem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(srem, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_srem(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(srem, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_frem(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
-			   int64_t rValue, KIND type, int inx) {
-	DISPATCH_TO_OBSERVERS(frem, iid, lScope, rScope, lValue, rValue, type, inx)
+void llvm_frem(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
+			   int inx) {
+	DISPATCH_TO_OBSERVERS(frem, iid, liid, riid, lScope, rScope, lValue, rValue, type, inx)
 }
 
 // ***** Bitwise Binary Operations ***** //
-void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			  KIND type, int inx) {
+void llvm_shl(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(shl, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, int inx) {
+void llvm_lshr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(lshr, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, int inx) {
+void llvm_ashr(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(ashr, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, int inx) {
+void llvm_and_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(and_, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			  KIND type, int inx) {
+void llvm_or_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(or_, lScope, rScope, lValue, rValue, type, inx)
 }
 
-void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, int inx) {
+void llvm_xor_(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(xor_, lScope, rScope, lValue, rValue, type, inx)
 }
 
@@ -189,8 +182,7 @@ void llvm_allocax(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
 	DISPATCH_TO_OBSERVERS(allocax, iid, kind, size, inx, addr)
 }
 
-void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx,
-						uint64_t addr) {
+void llvm_allocax_array(IID iid, KIND kind, uint64_t size, int inx, uint64_t addr) {
 	DISPATCH_TO_OBSERVERS(allocax_array, iid, kind, size, inx, addr)
 }
 
@@ -198,20 +190,16 @@ void llvm_allocax_struct(IID iid, uint64_t size, int inx, uint64_t addr) {
 	DISPATCH_TO_OBSERVERS(allocax_struct, iid, size, inx, addr);
 }
 
-void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr,
-			   bool loadGlobal, int loadInx, int inx) {
-	DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, opAddr, loadGlobal,
-						  loadInx, inx);
+void llvm_load(IID iid, KIND kind, SCOPE opScope, int opInx, uint64_t opAddr, bool loadGlobal, int loadInx, int inx) {
+	DISPATCH_TO_OBSERVERS(load, iid, kind, opScope, opInx, opAddr, loadGlobal, loadInx, inx);
 }
 
 void llvm_load_struct(IID iid, KIND kind, KVALUE* op, int inx) {
 	DISPATCH_TO_OBSERVERS(load_struct, iid, kind, op, inx);
 }
 
-void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope,
-				int srcInx, int64_t srcValue) {
-	DISPATCH_TO_OBSERVERS(store, pInx, pScope, srcKind, srcScope, srcInx,
-						  srcValue)
+void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx, int64_t srcValue) {
+	DISPATCH_TO_OBSERVERS(store, pInx, pScope, srcKind, srcScope, srcInx, srcValue)
 }
 
 void llvm_fence() {
@@ -226,95 +214,74 @@ void llvm_atomicrmw() {
 	DISPATCH_TO_OBSERVERS(atomicrmw)
 }
 
-void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope,
-						uint64_t baseAddr, int offsetInx, int64_t offsetValue,
-						KIND kind, uint64_t size, bool loadGlobal, int loadInx,
-						int inx) {
-	DISPATCH_TO_OBSERVERS(getelementptr, iid, baseInx, baseScope, baseAddr,
-						  offsetInx, offsetValue, kind, size, loadGlobal, loadInx,
-						  inx)
+void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue,
+						KIND kind, uint64_t size, bool loadGlobal, int loadInx, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr, iid, baseInx, baseScope, baseAddr, offsetInx, offsetValue, kind, size,
+						  loadGlobal, loadInx, inx)
 }
 
-void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr,
-							  int elementSize, int scopeInx01, int scopeInx02,
-							  int scopeInx03, int64_t valOrInx01,
-							  int64_t valOrInx02, int64_t valOrInx03,
-							  int size01, int size02, int inx) {
-	DISPATCH_TO_OBSERVERS(getelementptr_array, baseInx, baseScope, baseAddr,
-						  elementSize, scopeInx01, scopeInx02, scopeInx03,
-						  valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
+void llvm_getelementptr_array(int baseInx, SCOPE baseScope, uint64_t baseAddr, int elementSize, int scopeInx01,
+							  int scopeInx02, int scopeInx03, int64_t valOrInx01, int64_t valOrInx02,
+							  int64_t valOrInx03, int size01, int size02, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr_array, baseInx, baseScope, baseAddr, elementSize, scopeInx01, scopeInx02,
+						  scopeInx03, valOrInx01, valOrInx02, valOrInx03, size01, size02, inx)
 }
 
-void llvm_getelementptr_struct(IID iid, int baseInx, SCOPE baseScope,
-							   uint64_t baseAddr, int inx) {
-	DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, baseInx, baseScope, baseAddr,
-						  inx)
+void llvm_getelementptr_struct(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int inx) {
+	DISPATCH_TO_OBSERVERS(getelementptr_struct, iid, baseInx, baseScope, baseAddr, inx)
 }
 
 // ***** Conversion Operations ***** //
-void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				int inx) {
+void llvm_trunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(trunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-			   int inx) {
+void llvm_zext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(zext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-			   int inx) {
+void llvm_sext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(sext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				  int inx) {
+void llvm_fptrunc(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(fptrunc, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				int inx) {
+void llvm_fpext(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(fpext, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				 int inx) {
+void llvm_fptoui(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(fptoui, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				 int inx) {
+void llvm_fptosi(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(fptosi, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				 int inx) {
+void llvm_uitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(uitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				 int inx) {
+void llvm_sitofp(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(sitofp, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				   int inx) {
+void llvm_ptrtoint(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(ptrtoint, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				   int inx) {
+void llvm_inttoptr(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(inttoptr, op, opScope, opKind, kind, size, inx);
 }
 
-void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size,
-				  int inx) {
+void llvm_bitcast(int64_t op, SCOPE opScope, KIND opKind, KIND kind, int size, int inx) {
 	DISPATCH_TO_OBSERVERS(bitcast, op, opScope, opKind, kind, size, inx);
 }
 
 // **** Terminator Instructions ***** //
-void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type,
-				 uint64_t value) {
+void llvm_branch(IID iid, bool conditional, int valInx, SCOPE scope, KIND type, uint64_t value) {
 	DISPATCH_TO_OBSERVERS(branch, iid, conditional, valInx, scope, type, value)
 }
 
@@ -355,13 +322,11 @@ void llvm_unreachable() {
 }
 
 // ***** Other Operations ***** //
-void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, PRED pred, int inx) {
+void llvm_icmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
 	DISPATCH_TO_OBSERVERS(icmp, lScope, rScope, lValue, rValue, type, pred, inx);
 }
 
-void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
-			   KIND type, PRED pred, int inx) {
+void llvm_fcmp(SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type, PRED pred, int inx) {
 	DISPATCH_TO_OBSERVERS(fcmp, lScope, rScope, lValue, rValue, type, pred, inx);
 }
 
@@ -369,8 +334,7 @@ void llvm_phinode(IID iid, int inx) {
 	DISPATCH_TO_OBSERVERS(phinode, iid, inx)
 }
 
-void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue,
-				 int inx) {
+void llvm_select(IID iid, KVALUE* cond, KVALUE* tvalue, KVALUE* fvalue, int inx) {
 	DISPATCH_TO_OBSERVERS(select, iid, cond, tvalue, fvalue, inx)
 }
 
@@ -398,19 +362,14 @@ void llvm_push_getelementptr_inx(uint64_t value) {
 	DISPATCH_TO_OBSERVERS(push_getelementptr_inx, value)
 }
 
-void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03,
-								  int scope04, int scope05, int64_t vori01,
-								  int64_t vori02, int64_t vori03,
-								  int64_t vori04, int64_t vori05) {
-	DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03,
-						  scope04, scope05, vori01, vori02, vori03, vori04,
-						  vori05);
+void llvm_push_getelementptr_inx5(int scope01, int scope02, int scope03, int scope04, int scope05, int64_t vori01,
+								  int64_t vori02, int64_t vori03, int64_t vori04, int64_t vori05) {
+	DISPATCH_TO_OBSERVERS(push_getelementptr_inx5, scope01, scope02, scope03, scope04, scope05, vori01, vori02, vori03,
+						  vori04, vori05);
 }
 
-void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04,
-						   int scope05) {
-	DISPATCH_TO_OBSERVERS(push_array_size5, scope01, scope02, scope03, scope04,
-						  scope05);
+void llvm_push_array_size5(int scope01, int scope02, int scope03, int scope04, int scope05) {
+	DISPATCH_TO_OBSERVERS(push_array_size5, scope01, scope02, scope03, scope04, scope05);
 }
 
 void llvm_push_getelementptr_inx2(int value) {
@@ -433,8 +392,7 @@ void llvm_construct_array_type(uint64_t i) {
 	DISPATCH_TO_OBSERVERS(construct_array_type, i);
 }
 
-void llvm_after_call(int retInx, SCOPE retScope, KIND retType,
-					 int64_t retValue) {
+void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue) {
 	DISPATCH_TO_OBSERVERS(after_call, retInx, retScope, retType, retValue)
 }
 
@@ -462,8 +420,7 @@ void llvm_create_global(KVALUE* value, KVALUE* initializer) {
 	DISPATCH_TO_OBSERVERS(create_global, value, initializer)
 }
 
-void llvm_create_global_array(int valInx, uint64_t addr, uint32_t size,
-							  KIND type) {
+void llvm_create_global_array(int valInx, uint64_t addr, uint32_t size, KIND type) {
 	DISPATCH_TO_OBSERVERS(create_global_array, valInx, addr, size, type)
 }
 
@@ -505,10 +462,8 @@ void llvm_call_floor(IID iid, bool nounwind, int pc, KIND type, int inx) {
 	DISPATCH_TO_OBSERVERS(call_floor, iid, nounwind, pc, type, inx)
 }
 
-void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx,
-					  uint64_t mallocAddress) {
-	DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, size, inx,
-						  mallocAddress)
+void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx, uint64_t mallocAddress) {
+	DISPATCH_TO_OBSERVERS(call_malloc, iid, nounwind, type, size, inx, mallocAddress)
 }
 
 void llvm_vaarg() {
@@ -518,4 +473,3 @@ void llvm_vaarg() {
 void llvm_landingpad() {
 	DISPATCH_TO_OBSERVERS(landingpad)
 }
-
