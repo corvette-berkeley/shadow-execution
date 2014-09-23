@@ -8,5 +8,5 @@ int main()
   p = p + 1;
   long long z = *p;
 
-  printf("%d\n", z);
+  printf("undefined value %d\n", z);
 }

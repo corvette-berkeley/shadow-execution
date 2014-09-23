@@ -3651,7 +3651,6 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-4197419
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
