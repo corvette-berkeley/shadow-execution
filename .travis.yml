@@ -38,3 +38,8 @@ compiler:
   - gcc
   - clang
 script: source environment_vars.sh && scons
+notifications:
+  email:
+    - bmehne@berkeley.edu
+    - nacuong@berkeley.edu
+    - rubio@eecs.berkeley.edu
