@@ -1,0 +1,4 @@
+[FAILED RUNNING EXECUTABLE]: funarc_hp.out with error code -11
+[FAILED INSTRUMENTATION]: i_global.bc
+[FAILED RUNNING EXECUTABLE]: logf.out with error code 4
+[FAILED RUNNING EXECUTABLE]: pointer4.out with error code -11

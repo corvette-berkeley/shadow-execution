@@ -54,6 +54,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_int_3ops-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -110,6 +111,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_int_constants-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -166,6 +168,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_int_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -222,6 +225,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_int_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -278,6 +282,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_longdouble-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -334,6 +339,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_long_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -390,6 +396,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_long_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -446,6 +453,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_short_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -502,6 +510,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing add_short_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -558,6 +567,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing alloca-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -617,6 +627,7 @@ Total landingpad Instrumented: 0
 0
 0
 8
+The execution stack is empty.
 writing and-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -729,6 +740,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array3-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -785,6 +797,7 @@ Total select Instrumented: 0
 Total call Instrumented: 4
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_call-metadata.txt
 Total add Instrumented: 3
 Total fadd Instrumented: 0
@@ -841,6 +854,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_four_dim-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -897,6 +911,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_heap_double-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -953,6 +968,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_heap_int-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -1009,6 +1025,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_heap_long-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -1065,6 +1082,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_local-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -1121,6 +1139,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_multi_local-metadata.txt
 Total add Instrumented: 3
 Total fadd Instrumented: 0
@@ -1177,6 +1196,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_struct_local-metadata.txt
 Total add Instrumented: 3
 Total fadd Instrumented: 0
@@ -1233,6 +1253,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_struct_mul_local-metadata.txt
 Total add Instrumented: 6
 Total fadd Instrumented: 0
@@ -1289,6 +1310,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_three_dim-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1345,6 +1367,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing array_two_dim-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1401,6 +1424,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing ashr-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -1513,6 +1537,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing bit-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1569,6 +1594,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing calculating_long-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1627,6 +1653,7 @@ Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 result: 12884901890
 result2: 8589934595
+The execution stack is empty.
 writing call1-metadata.txt
 Total add Instrumented: 4
 Total fadd Instrumented: 0
@@ -1683,6 +1710,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing call2-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -1739,6 +1767,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing example10-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1796,6 +1825,7 @@ Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 0 0.000000
+The execution stack is empty.
 writing example1-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -1853,7 +1883,8 @@ Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 E = 5
-e: 1, f: 0After allocation: 3
+e: 1, f: 0The execution stack is empty.
+After allocation: 3
 Sum is: 96writing example2-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -1910,6 +1941,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 After allocation: 2
 Sum is: 96writing example3-metadata.txt
 Total add Instrumented: 0
@@ -1969,6 +2001,7 @@ Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 size of X 12
 size of Y 4
+The execution stack is empty.
 writing example4-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -2025,7 +2058,8 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-c: 0.000000, e: 0.000000, f: 1.916250writing example5-metadata.txt
+c: 0.000000, e: 0.000000, f: 1.916250The execution stack is empty.
+writing example5-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -2081,6 +2115,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing example6-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -2137,7 +2172,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-Result: 45writing example7-metadata.txt
+Result: 45The execution stack is empty.
+writing example7-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -2194,6 +2230,7 @@ Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 Value of a is -1
+The execution stack is empty.
 writing example8-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -2251,6 +2288,7 @@ Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 Value of a is 182.250000
+The execution stack is empty.
 writing example9-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -2307,6 +2345,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_double_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2363,6 +2402,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_double_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2419,6 +2459,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_float_3ops-metadata.txt
 Total add Instrumented: 2
 Total fadd Instrumented: 0
@@ -2475,6 +2516,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_float_constants-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -2531,6 +2573,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_float_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2587,6 +2630,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_float_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2643,6 +2687,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_longdouble_global-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2699,6 +2744,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing fadd_longdouble_local-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -2755,6 +2801,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing float_arith-metadata.txt
 Total add Instrumented: 4
 Total fadd Instrumented: 0
@@ -2811,6 +2858,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing funarc_hp-metadata.txt
 Total add Instrumented: 14
 Total fadd Instrumented: 0
@@ -2923,6 +2971,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing global_ptr-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -2979,6 +3028,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing int_arith-metadata.txt
 Total add Instrumented: 5
 Total fadd Instrumented: 0
@@ -3035,6 +3085,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing lagrange-metadata.txt
 Total add Instrumented: 29
 Total fadd Instrumented: 0
@@ -3091,6 +3142,7 @@ Total select Instrumented: 0
 Total call Instrumented: 5
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing logf-metadata.txt
 Total add Instrumented: 12
 Total fadd Instrumented: 0
@@ -3147,6 +3199,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
+Counit: safe assert fail.
+	function: virtual void InterpreterObserver::after_call(int, SCOPE, kind_t, int64_t)	file: src/InterpreterObserver.cpp	line: 2620
 writing mainargs-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3203,7 +3257,8 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
-value of a is 46writing memcpy-metadata.txt
+value of a is 46The execution stack is empty.
+writing memcpy-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -3259,6 +3314,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
+The execution stack is empty.
 writing middle_offset-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -3316,6 +3372,7 @@ Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 e: 1407374883815424
+The execution stack is empty.
 writing nan_conditional-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3380,6 +3437,7 @@ c >= 0.0: 0
 c != 0.0: 1
 c == 0.0: 0
 Compute assuming x is zero
+The execution stack is empty.
 writing nan_propagation-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3436,6 +3494,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing or-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -3548,6 +3607,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing pointer1-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3604,6 +3664,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing pointer2-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3661,6 +3722,7 @@ Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 0
+The execution stack is empty.
 writing pointer3-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3717,6 +3779,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing pointer4-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3829,6 +3892,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing pointer_arithmetic-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3885,6 +3949,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing pointer_uninitialized-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -3943,6 +4008,7 @@ Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
 ARG is ./pointer_uninitialized.out
 ARG is ./pointer_uninitialized.out
+The execution stack is empty.
 writing shl-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4055,6 +4121,7 @@ Total select Instrumented: 0
 Total call Instrumented: 6
 Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
+The execution stack is empty.
 writing size-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4111,7 +4178,8 @@ Total select Instrumented: 0
 Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-size of void* 8size of int* 8size of char* 8writing string-metadata.txt
+size of void* 8size of int* 8size of char* 8The execution stack is empty.
+writing string-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
 Total sub Instrumented: 0
@@ -4168,6 +4236,7 @@ Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 abc97
+The execution stack is empty.
 writing struct1-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4224,6 +4293,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing struct2-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4280,6 +4350,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
+The execution stack is empty.
 writing struct3-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4336,6 +4407,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 2
 Total landingpad Instrumented: 2
+The execution stack is empty.
 writing struct_argument1-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4392,6 +4464,7 @@ Total select Instrumented: 0
 Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing struct_argument2-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4448,6 +4521,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing struct_cast-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4504,6 +4578,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 After allocation: 8
 Sum is: 328writing struct_flattening1-metadata.txt
 Total add Instrumented: 0
@@ -4561,6 +4636,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing struct_flattening2-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4617,6 +4693,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing struct_flattening3-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4673,6 +4750,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 After allocation: 2
 Sum is: 128writing struct_i64-metadata.txt
 Total add Instrumented: 1
@@ -4730,6 +4808,7 @@ Total select Instrumented: 0
 Total call Instrumented: 5
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
+The execution stack is empty.
 writing struct_return-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4787,6 +4866,7 @@ Total call Instrumented: 2
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
 1
+The execution stack is empty.
 After allocation: 2
 Sum is: 160writing struct_union-metadata.txt
 Total add Instrumented: 0
@@ -4846,6 +4926,7 @@ Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 size of union 16
 size of long double 16
+The execution stack is empty.
 writing sub-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
@@ -4902,6 +4983,7 @@ Total select Instrumented: 0
 Total call Instrumented: 0
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing var_args-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -4958,6 +5040,7 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
+The execution stack is empty.
 writing xor-metadata.txt
 Total add Instrumented: 1
 Total fadd Instrumented: 0
