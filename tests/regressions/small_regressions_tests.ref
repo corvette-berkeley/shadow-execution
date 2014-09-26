@@ -3200,7 +3200,7 @@ Total call Instrumented: 3
 Total va_arg Instrumented: 1
 Total landingpad Instrumented: 1
 Counit: safe assert fail.
-	function: virtual void InterpreterObserver::after_call(int, SCOPE, kind_t, int64_t)	file: src/InterpreterObserver.cpp	line: 2620
+	function: virtual void InterpreterObserver::after_call(int, SCOPE, kind_t, int64_t)	file: src/InterpreterObserver.cpp	line: *
 writing mainargs-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
