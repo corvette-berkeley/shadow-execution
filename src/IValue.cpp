@@ -46,9 +46,9 @@ using namespace std;
 // long IValue::counterNew = 0;
 // long IValue::counterDelete = 0;
 
-void (*IValue::copyShadow)(IValue*, IValue*) = NULL;
+void (*IValue::copyShadow)(const IValue*, IValue*) = NULL;
 
-string IValue::toString() {
+string IValue::toString() const {
 	std::stringstream s;
 
 	switch (scope) {
@@ -125,7 +125,7 @@ string IValue::toString() {
 	return s.str();
 }
 
-void IValue::copy(IValue* dest) {
+void IValue::copy(IValue* dest) const {
 	// note: we do never overwrite the field firstByte
 	dest->setType(type);
 	dest->setValue(value);
@@ -275,7 +275,7 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
 	return byte;
 }
 
-bool IValue::writeValue(int offset, int byte, IValue* src) {
+bool IValue::writeValue(int offset, int byte, const IValue* src) {
 	int64_t valueOffset, length, bitOffset, newOffset;
 	IValue* valueArray;
 
@@ -331,7 +331,7 @@ bool IValue::writeValue(int offset, int byte, IValue* src) {
 			DEBUG_STDOUT("\t"
 						 << "=== Ivalue: " << currentValue->toString());
 			DEBUG_STDOUT("\t"
-						 << "=== current content: " << (int64_t)*content);
+						 << "=== current content: " << (int64_t) * content);
 			DEBUG_STDOUT("\t"
 						 << "=== current value: " << currentValue->getValue().as_int);
 
