@@ -4,7 +4,7 @@ cd "$THIS_DIR"
 
 echo $THIS_DIR
 
-bash instrument-all.sh travis-tests.txt 2>/dev/null
+bash instrument-all.sh travis-tests.txt
 
 while read program
 do
