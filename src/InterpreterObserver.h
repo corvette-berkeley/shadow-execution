@@ -49,6 +49,7 @@
 #include <queue>
 #include <vector>
 #include <map>
+#include <memory>
 #include "IValue.h"
 
 using namespace std;
@@ -60,8 +61,8 @@ class CmpInst;
 class InterpreterObserver : public InstructionObserver {
 
 protected:
-	stack<vector<IValue*>> executionStack;
-	vector<IValue*> globalSymbolTable;
+	stack<vector<unique_ptr<IValue, IValue::deleter>>> executionStack;
+	vector<unique_ptr<IValue, IValue::deleter>> globalSymbolTable;
 
 	std::string logName;
 
@@ -440,8 +441,14 @@ public:
 
 	void printCurrentFrame();
 
+	bool syncLoad(std::unique_ptr<IValue, IValue::deleter>& iValue, KVALUE* concrete, KIND type) {
+		return syncLoad(iValue.get(), concrete, type);
+	}
 	bool syncLoad(IValue* iValue, KVALUE* concrete, KIND type);
 
+	bool syncLoad(std::unique_ptr<IValue, IValue::deleter>& iValue, uint64_t opAddr, KIND type) {
+		return syncLoad(iValue.get(), opAddr, type);
+	}
 	bool syncLoad(IValue* iValue, uint64_t opAddr, KIND type);
 
 	bool checkStore(IValue* dest, KVALUE* kv);

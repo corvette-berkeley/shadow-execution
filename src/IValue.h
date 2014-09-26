@@ -43,6 +43,7 @@
 #define IVALUE_H_
 
 #include "Common.h"
+#include <memory>
 
 class IValue {
 
@@ -106,42 +107,42 @@ private:
 public:
 	IValue(KIND t, VALUE v, SCOPE s)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(s) {
+		  bitOffset(0), scope(s), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned fb)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t)
 		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-		  scope(REGISTER) {
+		  scope(REGISTER), struct_(false) {
 		value.as_int = 0;
 		// counterNew++;
 	}
 
 	IValue()
 		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
-	IValue(const IValue& iv) {
+	IValue(const IValue& iv) : struct_(false) {
 		create(iv);
 		// counterNew++;
 	};
@@ -150,6 +151,16 @@ public:
 		uncreate();
 		// counterDelete++;
 	};
+
+	static struct deleter {
+		void operator()(IValue* iv) {
+			if (iv->isStruct()) {
+				delete[] iv;
+				return;
+			}
+			delete iv;
+		}
+	} del;
 
 	IValue& operator=(const IValue& iv) {
 		if (&iv != this) {
@@ -301,8 +312,8 @@ public:
 
 	double getFlpValue();
 
-	void* getIPtrValue() {
-		return (void*)((int64_t)value.as_ptr + valueOffset);
+	IValue* getIPtrValue() {
+		return (IValue*)((int64_t)value.as_ptr + valueOffset);
 	};
 
 	bool isInitialized() const {
@@ -333,6 +344,9 @@ public:
 	 * @param dest the destination of the copy.
 	 */
 	void copy(IValue* dest) const;
+	void copy(std::unique_ptr<IValue, IValue::deleter>& dest) const {
+		copy(dest.get());
+	}
 
 	/**
 	 * Copy the content of kValue to this IValue.
@@ -369,6 +383,9 @@ public:
 	 * @return true if this is a trivial write; false otherwise
 	 */
 	bool writeValue(int offset, int byte, const IValue* src);
+	bool writeValue(int offset, int byte, const std::unique_ptr<IValue, IValue::deleter>& src) {
+		return writeValue(offset, byte, src.get());
+	}
 
 	/**
 	 * Check whether this is an IValue by comparing its type with its expected

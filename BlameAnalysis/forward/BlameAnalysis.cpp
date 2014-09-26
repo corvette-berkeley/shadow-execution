@@ -84,10 +84,10 @@ const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, SCOPE scope, int
 			return BlameShadowObject(0, (HIGHPRECISION) * ptr, (LOWPRECISION) * ptr);
 		}
 		case GLOBAL:
-			iv = globalSymbolTable[value];
+			iv = globalSymbolTable[value].get();
 			break;
 		case LOCAL:
-			iv = executionStack.top()[value];
+			iv = executionStack.top()[value].get();
 			break;
 		default:
 			DEBUG_STDERR("Unknown scope " << scope);

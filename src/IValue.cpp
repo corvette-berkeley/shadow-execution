@@ -125,6 +125,8 @@ string IValue::toString() const {
 	return s.str();
 }
 
+// TODO: remove this function and replace it with a more
+// idiomatic copy function
 void IValue::copy(IValue* dest) const {
 	// note: we do never overwrite the field firstByte
 	dest->setType(type);

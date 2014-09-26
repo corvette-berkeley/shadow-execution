@@ -22,23 +22,20 @@ void BackwardBlameAnalysis::copyShadow(const IValue* src, IValue* dest) {
 
 void BackwardBlameAnalysis::setShadowObject(SCOPE scope, int64_t inx,
 		BlameTreeShadowObject<HIGHPRECISION>* shadowObject) {
-	IValue* iv = NULL;
 
 	switch (scope) {
 		case CONSTANT:
 			return;
 		case GLOBAL:
-			iv = globalSymbolTable[inx];
-			break;
+			globalSymbolTable[inx]->setShadow(shadowObject);
+			return;
 		case LOCAL:
-			iv = executionStack.top()[inx];
-			break;
+			executionStack.top()[inx]->setShadow(shadowObject);
+			return;
 		default:
 			DEBUG_STDERR("Unknown scope " << scope);
 			safe_assert(false);
 	}
-
-	iv->setShadow(shadowObject);
 }
 
 BlameTreeShadowObject<HIGHPRECISION>* BackwardBlameAnalysis::getShadowObject(SCOPE scope, int64_t inx) {
@@ -48,10 +45,10 @@ BlameTreeShadowObject<HIGHPRECISION>* BackwardBlameAnalysis::getShadowObject(SCO
 		case CONSTANT:
 			return NULL;
 		case GLOBAL:
-			iv = globalSymbolTable[inx];
+			iv = globalSymbolTable[inx].get();
 			break;
 		case LOCAL:
-			iv = executionStack.top()[inx];
+			iv = executionStack.top()[inx].get();
 			break;
 		default:
 			DEBUG_STDERR("Unknown scope " << scope);
@@ -72,10 +69,10 @@ HIGHPRECISION BackwardBlameAnalysis::getShadowValue(SCOPE scope, int64_t inx, PR
 			result = *ptr;
 			return result;
 		case GLOBAL:
-			iv = globalSymbolTable[inx];
+			iv = globalSymbolTable[inx].get();
 			break;
 		case LOCAL:
-			iv = executionStack.top()[inx];
+			iv = executionStack.top()[inx].get();
 			break;
 		default:
 			DEBUG_STDERR("Unknown scope " << scope);
@@ -102,10 +99,10 @@ LOWPRECISION BackwardBlameAnalysis::getActualValue(SCOPE scope, int64_t value) {
 			actualValue = *ptr;
 			return actualValue;
 		case GLOBAL:
-			iv = globalSymbolTable[value];
+			iv = globalSymbolTable[value].get();
 			break;
 		case LOCAL:
-			iv = executionStack.top()[value];
+			iv = executionStack.top()[value].get();
 			break;
 		default:
 			DEBUG_STDERR("Unknown scope " << scope);
