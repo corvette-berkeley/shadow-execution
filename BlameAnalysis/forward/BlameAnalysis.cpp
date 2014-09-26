@@ -3,52 +3,6 @@
 #include "BlameAnalysis.h"
 
 /*** HELPER FUNCTIONS ***/
-double BlameAnalysis::clearBits(double v, int shift) {
-	int64_t mask = 0xffffffffffffffff << shift;
-	int64_t* ptr = (int64_t*)&v;
-	*ptr = *ptr * mask;
-	double* dm = (double*)ptr;
-
-	return *dm;
-}
-
-bool BlameAnalysis::equalWithinPrecision(double v1, double v2, PRECISION p) {
-	safe_assert(p != BITS_FLOAT);
-
-	if (p == BITS_DOUBLE) {
-		return v1 == v2;
-	}
-
-	int64_t* ptr1 = (int64_t*)&v1;
-	int64_t* ptr2 = (int64_t*)&v2;
-
-	// Get the mantissa bits and bit-cast them to integer.
-	*ptr1 = *ptr1 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
-			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
-	*ptr2 = *ptr2 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
-			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
-
-	// Return true if the two mantissa offset less than or equal to 1.
-	return abs(*ptr1 - *ptr2) <= 1;
-}
-
-template <typename T> T BlameAnalysis::feval(T val01, T val02, BINOP bop) {
-	switch (bop) {
-		case FADD:
-			return val01 + val02;
-		case FSUB:
-			return val01 - val02;
-		case FMUL:
-			return val01 * val02;
-		case FDIV:
-			return val01 / val02;
-		default:
-			safe_assert(false);
-			DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(bop));
-	}
-
-	return 0;
-}
 
 unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
 	std::stringstream debugFileName;
@@ -112,35 +66,46 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE
 	const BlameShadowObject lBSO = getShadowObject(liid, lScope, lValue);
 	const BlameShadowObject rBSO = getShadowObject(riid, rScope, rValue);
 
-	HIGHPRECISION hResult;
-	LOWPRECISION lResult;
-
-	switch (op) {
-		case FADD:
-			hResult = lBSO.highValue + rBSO.highValue;
-			lResult = lBSO.lowValue + rBSO.lowValue;
-			break;
-		case FSUB:
-			hResult = lBSO.highValue - rBSO.highValue;
-			lResult = lBSO.lowValue - rBSO.lowValue;
-			break;
-		case FMUL:
-			hResult = lBSO.highValue * rBSO.highValue;
-			lResult = lBSO.lowValue * rBSO.lowValue;
-			break;
-		case FDIV:
-			hResult = lBSO.highValue / rBSO.highValue;
-			lResult = lBSO.lowValue / rBSO.lowValue;
-			break;
-		default:
-			DEBUG_STDERR("Unsupported floating-point binary operator: " << BINOP_ToString(op));
-			safe_assert(false);
-	}
+	HIGHPRECISION hResult = feval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op);
+	LOWPRECISION lResult = feval<LOWPRECISION>(lBSO.lowValue, rBSO.lowValue, op);
 
 	BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
 	executionStack.top()[inx]->setShadow(BSO);
 
 	// Compute blame summary for the resulting shadow object.
+	computeBlameSummary(*BSO, lBSO, rBSO, op);
+}
+
+/*
+const BlameNode& computeBlameInformation(const BlameShadowObject& bso, const BlameShadowObject& lbso, const
+BlameShadowObject& rbso, BINOP op, PRECISION p) {
+  HIGHPRECISION val = clearBits(bso.highValue, DOUBLE_MANTISSA_LENGTH -PRECISION_BITS.at(PRECISION));
+
+  PRECISION max_r = PRECISION_NO;
+  for (PRECISION l = BITS_FLOAT; l < PRECISION_NO; l = PRECISION(l+1)) {
+    HIGHPRECISION
+    for (PRECISION r = BITS_FLOAT; r < max_j; j = PRECISION(r+1)) {
+
+    }
+  }
+}
+*/
+
+void BlameAnalysis::computeBlameSummary(const BlameShadowObject& bso, const BlameShadowObject& lbso,
+										const BlameShadowObject& rbso, BINOP op) {
+	IID id = bso.id;
+
+	std::vector<BlameNode> roots;
+	roots.reserve(PRECISION_NO * sizeof(BlameNode));
+
+	// Push the first blame node with precision BITS_FLOAT to roots.
+	// Node with precision BITS_FLOAT does not blame anyone.
+	roots.push_back(BlameNode(id, BITS_FLOAT, std::vector<BlameNode>()));
+
+	// Compute blame information for all remained precisions.
+	for (PRECISION p = PRECISION(BITS_FLOAT + 1); p < PRECISION_NO; p = PRECISION(p + 1)) {
+		roots.push_back(computeBlameInformation(bso, lbso, rbso, op, p));
+	}
 }
 
 /*** API FUNCTIONS ***/
