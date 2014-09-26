@@ -1,0 +1,9 @@
+import SCons.Warnings
+
+Import('env')
+
+env = env.Clone()
+
+# Test the library
+env.Test("test.out", ["travis-test.sh", '../../src/libmonitor.so', '../../MonitorPass/MonitorPass.so'])
+Default("test.out")
