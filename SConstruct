@@ -42,6 +42,8 @@ env = Environment(
     options=opts,
     Is64=Is64,
     )
+env["CC"] = os.getenv("CC") or env["CC"]
+env["CXX"] = os.getenv("CXX") or env["CXX"]
 
 def builder_unit_test(target, source, env):
     app = str(source[0].abspath)
