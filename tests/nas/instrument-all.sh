@@ -5,8 +5,8 @@
 # ######################################
 
 
-while read program           
-do           
-    echo $program
-    ./instrument.sh $program .
-done < $1           
+while read program
+do
+    echo "Instrumenting $program ..."
+    ./instrument.sh $program . >/dev/null
+done < $1
