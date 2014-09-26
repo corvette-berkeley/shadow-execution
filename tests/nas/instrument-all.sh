@@ -8,5 +8,5 @@
 while read program
 do
     echo "Instrumenting $program ..."
-    ./instrument.sh $program .
+    ./instrument.sh $program . > /dev/null
 done < $1
