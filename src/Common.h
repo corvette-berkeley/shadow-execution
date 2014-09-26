@@ -82,22 +82,22 @@ using std::endl;
 #define DEBUG_STDOUT(x) std::cout << x << endl
 #define DEBUG_LOG(x) LOG(INFO) << x << endl
 #else
-#define DEBUG(x)                                                               \
-  while (0) {                                                                  \
-    x                                                                          \
-  }
-#define DEBUG_STDERR(x)                                                        \
-  while (0) {                                                                  \
-    std::cerr << x << endl;                                                    \
-  }
-#define DEBUG_STDOUT(x)                                                        \
-  while (0) {                                                                  \
-    std::cerr << x << endl;                                                    \
-  }
-#define DEBUG_LOG(x)                                                           \
-  while (0) {                                                                  \
-    std::cerr << x << endl;                                                    \
-  }
+#define DEBUG(x)                                                                                                       \
+	while (0) {                                                                                                          \
+		x                                                                                                                  \
+	}
+#define DEBUG_STDERR(x)                                                                                                \
+	while (0) {                                                                                                          \
+		std::cerr << x << endl;                                                                                            \
+	}
+#define DEBUG_STDOUT(x)                                                                                                \
+	while (0) {                                                                                                          \
+		std::cerr << x << endl;                                                                                            \
+	}
+#define DEBUG_LOG(x)                                                                                                   \
+	while (0) {                                                                                                          \
+		std::cerr << x << endl;                                                                                            \
+	}
 //#define DEBUG_LOG(x) LOG(INFO) << x << endl
 #endif
 
@@ -128,11 +128,9 @@ typedef uint32_t pred_t;
 typedef uint32_t kind_t;
 #define KIND kind_t
 
-const KIND INV_KIND = 0U, PTR_KIND = 1U, INT1_KIND = 2U, INT8_KIND = 3U,
-		   INT16_KIND = 4U, INT24_KIND = 5U, INT32_KIND = 6U, INT64_KIND = 7U,
-		   INT80_KIND = 8U, FLP32_KIND = 9U, FLP64_KIND = 10U,
-		   FLP128_KIND = 11U, FLP80X86_KIND = 12U, FLP128PPC_KIND = 13U,
-		   ARRAY_KIND = 14U, STRUCT_KIND = 15U, VOID_KIND = 16U;
+const KIND INV_KIND = 0U, PTR_KIND = 1U, INT1_KIND = 2U, INT8_KIND = 3U, INT16_KIND = 4U, INT24_KIND = 5U,
+		   INT32_KIND = 6U, INT64_KIND = 7U, INT80_KIND = 8U, FLP32_KIND = 9U, FLP64_KIND = 10U, FLP128_KIND = 11U,
+		   FLP80X86_KIND = 12U, FLP128PPC_KIND = 13U, ARRAY_KIND = 14U, STRUCT_KIND = 15U, VOID_KIND = 16U;
 
 const IID INV_IID = 0U;
 
@@ -157,8 +155,7 @@ struct DebugInfo {
 //
 #define UNRECOVERABLE_ERROR 5
 
-#define safe_assert(cond)                                                      \
-  _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)
+#define safe_assert(cond) _safe_assert(cond, __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 //
 // Definitions of commonly used functions
@@ -172,14 +169,15 @@ struct DebugInfo {
  * @param file the current file
  * @param line the current line
  */
-inline void _safe_assert(bool cond, const char* func, const char* file,
-						 int line) {
+inline void _safe_assert(bool cond, const char* func, const char* file, int line) {
 	if (!cond) {
 		cout << "Counit: safe assert fail." << endl;
-		cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line
-			 << endl;
+		cout << "\tfunction: " << func << "\tfile: " << file << "\tline: " << line << endl;
 		fflush(stdout);
+		// TODO: Why are we using _Exit?  is it really that important
+		// that we abandon all state and exit instead of exit safely?
 		_Exit(UNRECOVERABLE_ERROR);
+		__builtin_unreachable();
 	}
 }
 
@@ -187,11 +185,13 @@ inline void _safe_assert(bool cond, const char* func, const char* file,
  * Printing error messages on unimplemented code and terminate the program.
  */
 inline void unimplemented() {
-	cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__
-		 << endl;
+	cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << endl;
 	cout << "\tfile: " << __FILE__ << endl;
 	cout << "\tline: " << __LINE__ << endl;
+	// TODO: Why are we using _Exit?  is it really that important
+	// that we abandon all state and exit instead of exit safely?
 	_Exit(UNRECOVERABLE_ERROR);
+	__builtin_unreachable();
 }
 
 /**

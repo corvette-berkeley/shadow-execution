@@ -31,7 +31,7 @@ void BlameAnalysis::copyShadow(IValue* src, IValue* dest) {
 }
 
 const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, SCOPE scope, int64_t value) {
-	IValue* iv;
+	IValue* iv = nullptr;
 	switch (scope) {
 		case CONSTANT: {
 			double* ptr = (double*)&value;

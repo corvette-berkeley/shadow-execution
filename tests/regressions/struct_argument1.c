@@ -1,6 +1,6 @@
 
 #include <stdlib.h>
-#include <stdio.h> 
+#include <stdio.h>
 
 
 struct X {
@@ -21,7 +21,7 @@ int main() {
   struct X y;
   foo(y, 1, 2.5);
 
-  printf("%d\n", y.a);
+  printf("undefined value: %d\n", y.a);
 
   return 0;
 }

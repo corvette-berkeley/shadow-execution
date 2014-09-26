@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export CC=$LLVM_BIN_PATH"/clang -use-gold-plugin"
-export LDFLAGS="$INSTRUMENTOR_LIB_PATH -L"$GLOG_LIB_PATH" -L"$GPERFTOOLS_LIB_PATH" -L"$UNWIND_LIB_PATH
+export LDFLAGS="-L"$INSTRUMENTOR_LIB_PATH" -L"$GLOG_LIB_PATH" -L"$GPERFTOOLS_LIB_PATH" -L"$UNWIND_LIB_PATH" -L"$MONITOR_LIB_PATH
 
 # variables related to profiling
 #export PROFILER=""
@@ -21,11 +21,11 @@ $LLVM_BIN_PATH/opt -load $MONITOR_LIB_PATH/MonitorPass.$SHARED_LIB_EXTENSION --m
 $LLVM_BIN_PATH/llvm-dis tmppass-allocas.bc -o $1.ll
 
 # create executable
-$CC tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
-#ld tmppass-allocas.bc -o $1.out -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+$CC tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+#ld tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # create executable for uninstrumented bitcode
-$CC $1.bc -o $1.out2 -L$LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+$CC $1.bc -o $1.out2 $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # inspecting profile information
 # pprof --text executable.out cpu.prof

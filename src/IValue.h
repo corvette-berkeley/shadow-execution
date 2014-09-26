@@ -84,7 +84,7 @@ private:
 	 * @param IValue the source IValue to get shadow value from.
 	 * @param IValue the destination IValue to copy shadow value to.
 	 */
-	static void (*copyShadow)(IValue*, IValue*);
+	static void (*copyShadow)(const IValue*, IValue*);
 
 	/**
 	 * Write a chunk of byte to value. This functions returns the actual number
@@ -227,7 +227,7 @@ public:
 		this->shadow = shadow;
 	};
 
-	static void setCopyShadow(void (*copyShadow)(IValue*, IValue*)) {
+	static void setCopyShadow(void (*copyShadow)(const IValue*, IValue*)) {
 		IValue::copyShadow = copyShadow;
 	};
 
@@ -305,7 +305,7 @@ public:
 		return (void*)((int64_t)value.as_ptr + valueOffset);
 	};
 
-	bool isInitialized() {
+	bool isInitialized() const {
 		return type != PTR_KIND || length > 0;
 	};
 
@@ -323,7 +323,7 @@ public:
 		return type == PTR_KIND;
 	};
 
-	std::string toString();
+	std::string toString() const;
 
 	/**
 	 * Copy the content of this IValue to dest IValue.
@@ -332,7 +332,7 @@ public:
 	 *
 	 * @param dest the destination of the copy.
 	 */
-	void copy(IValue* dest);
+	void copy(IValue* dest) const;
 
 	/**
 	 * Copy the content of kValue to this IValue.
@@ -368,7 +368,7 @@ public:
 	 *
 	 * @return true if this is a trivial write; false otherwise
 	 */
-	bool writeValue(int offset, int byte, IValue* src);
+	bool writeValue(int offset, int byte, const IValue* src);
 
 	/**
 	 * Check whether this is an IValue by comparing its type with its expected

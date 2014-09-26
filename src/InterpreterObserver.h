@@ -49,8 +49,7 @@
 #include <queue>
 #include <vector>
 #include <map>
-
-class IValue;
+#include "IValue.h"
 
 using namespace std;
 
@@ -64,9 +63,9 @@ protected:
 	stack<vector<IValue*>> executionStack;
 	vector<IValue*> globalSymbolTable;
 
-	stack<char> logName;
+	std::string logName;
 
-	stack<KVALUE*> myStack;  // store arguments of call instruction
+	stack<KVALUE> myStack;  // store arguments of call instruction
 	vector<uint64_t> getElementPtrIndexList;  // store indices of getelementptr instruction
 	vector<uint64_t> arraySize;  // store size of array
 	vector<KIND> structType;  // store struct type
@@ -75,13 +74,12 @@ protected:
 
 	stack<int> callerVarIndex;  // index of callee register; to be assigned to the
 	// value of call return
-	stack<IValue*> callArgs;  // copy value from callers to callee arguments
+	stack<IValue> callArgs;  // copy value from callers to callee arguments
 	map<int, KVALUE*> phinodeConstantValues;  // store phinode value pairs for constants
 	map<int, int> phinodeValues;  // store phinode value pairs for values
 
 	stack<int> recentBlock;  // record the most recent block visited
 	vector<IValue*> collect_new;
-	vector<void*> collect_malloc;
 
 	bool isReturn;  // whether return instruction is just executed
 
@@ -465,7 +463,7 @@ public:
 	 */
 	unsigned findIndex(IValue* values, unsigned offset, unsigned length);
 
-	static void copyShadow(IValue* src, IValue* dest);
+	static void copyShadow(const IValue* src, IValue* dest);
 
 	int actualValueToIntValue(int scope, int64_t vori);
 };

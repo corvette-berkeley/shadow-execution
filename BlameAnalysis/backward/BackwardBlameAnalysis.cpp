@@ -10,7 +10,7 @@ int BackwardBlameAnalysis::dpc = 0;
 
 /******* HELPER FUNCTIONS *******/
 
-void BackwardBlameAnalysis::copyShadow(IValue* src, IValue* dest) {
+void BackwardBlameAnalysis::copyShadow(const IValue* src, IValue* dest) {
 	if (src->getShadow() != NULL) {
 		BlameTreeShadowObject<HIGHPRECISION>* btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*)src->getShadow();
 		BlameTreeShadowObject<HIGHPRECISION>* btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);

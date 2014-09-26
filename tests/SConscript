@@ -6,6 +6,7 @@ env = env.Clone()
 SConscript(
     dirs=[
 		'regressions',
+		'nas',
         ],
     exports='env',
     )
