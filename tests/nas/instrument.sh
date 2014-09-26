@@ -21,7 +21,6 @@ $LLVM_BIN_PATH/opt -load $MONITOR_LIB_PATH/MonitorPass.$SHARED_LIB_EXTENSION --m
 $LLVM_BIN_PATH/llvm-dis tmppass-allocas.bc -o $1.ll
 
 # create executable
-echo $CC
 $CC tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 #ld tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
