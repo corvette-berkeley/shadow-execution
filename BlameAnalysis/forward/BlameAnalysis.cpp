@@ -77,7 +77,7 @@ void BlameAnalysis::copyShadow(IValue* src, IValue* dest) {
 }
 
 const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, SCOPE scope, int64_t value) {
-	IValue* iv;
+	IValue* iv = nullptr;
 	switch (scope) {
 		case CONSTANT: {
 			double* ptr = (double*)&value;
@@ -112,8 +112,8 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE
 	const BlameShadowObject lBSO = getShadowObject(liid, lScope, lValue);
 	const BlameShadowObject rBSO = getShadowObject(riid, rScope, rValue);
 
-	HIGHPRECISION hResult;
-	LOWPRECISION lResult;
+	HIGHPRECISION hResult = 0;
+	LOWPRECISION lResult = 0;
 
 	switch (op) {
 		case FADD:
