@@ -1883,7 +1883,8 @@ Total call Instrumented: 3
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 E = 5
-e: 1, f: 0The execution stack is empty.
+Counit: safe assert fail.
+	function: virtual void InterpreterObserver::store(int, SCOPE, kind_t, SCOPE, int, int64_t)	file: src/InterpreterObserver.cpp	line: *
 After allocation: 3
 Sum is: 96writing example2-metadata.txt
 Total add Instrumented: 0
@@ -3372,7 +3373,8 @@ Total call Instrumented: 2
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
 e: 1407374883815424
-The execution stack is empty.
+Counit: safe assert fail.
+	function: virtual void InterpreterObserver::store(int, SCOPE, kind_t, SCOPE, int, int64_t)	file: src/InterpreterObserver.cpp	line: *
 writing nan_conditional-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
@@ -3721,8 +3723,6 @@ Total select Instrumented: 0
 Total call Instrumented: 1
 Total va_arg Instrumented: 0
 Total landingpad Instrumented: 0
-0
-The execution stack is empty.
 writing pointer3-metadata.txt
 Total add Instrumented: 0
 Total fadd Instrumented: 0
