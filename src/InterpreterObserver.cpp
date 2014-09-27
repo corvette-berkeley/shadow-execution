@@ -85,54 +85,13 @@ template <typename T> void clear(T& toclear) {
 	(T()).swap(toclear);
 }
 
-unsigned InterpreterObserver::findIndex(IValue* array, unsigned offset, unsigned length) {
-	int low, high, index;
-
-	// assert: offset cannot larger than the size of the array itself (int byte)
-	// safe_assert(offset <= array[length-1].getFirstByte() +
-	// KIND_GetSize(array[length-1].getType()));
-
-	// initializing lowerbound and upperbound of the index
-	low = 0;
-	high = length - 1;
-
-	DEBUG_STDOUT("\t"
-				 << "[findIndex] Offset: " << offset << " Length: " << length);
-
-	// search for the index using binary search
-	// the IValue at the index should have the largest byteOffset that is less
-	// than or equal to the offset
-	index = -1;
-	while (low < high) {
-
-		unsigned mid, firstByte;
-		mid = (low + high) / 2;
-
-		DEBUG_STDOUT("\t"
-					 << "[findIndex] Mid index: " << mid);
-
-		firstByte = array[mid].getFirstByte();
-
-		DEBUG_STDOUT("\t"
-					 << "[findIndex] Firstbyte: " << firstByte);
-
-		if (firstByte == offset) {
-			index = mid;
-			break;
-		} else if ((mid + 1 <= length - 1) && (firstByte < offset) && (offset < array[mid + 1].getFirstByte())) {
-			index = mid;
-			break;
-		} else if (offset < firstByte) {
-			high = mid - 1;
-		} else {
-			low = mid + 1;
-		}
-	}
-
-	index = (index == -1) ? high : index;
-	DEBUG_STDOUT("\t"
-				 << "[findIndex] Returning index: " << index);
-	return index;
+unsigned InterpreterObserver::findIndex(const IValue* array, unsigned offset, unsigned length) {
+	const IValue* ret =
+		std::lower_bound(array, array + length, IValue(INV_KIND, VALUE(), offset),
+	[](const IValue& a, const IValue& b) {
+		return a.getFirstByte() < b.getFirstByte();
+	});
+	return std::distance(array, ret);
 }
 
 bool InterpreterObserver::checkStore(IValue* dest, KIND srcKind, int64_t srcValue) {
