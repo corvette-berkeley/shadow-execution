@@ -1,4 +1,4 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 import os
 import subprocess
 import time
@@ -44,22 +44,22 @@ class MemMonitor:
                 return 0.0  # invalid format?
             # convert Vm value to bytes
             return float(v[1]) * MemMonitor._scale[v[2]]
-        except Exception,e:
-            print '  Error ::> ',e
+        except e:
+            print('  Error ::> ',e)
             return 0.0  # non-Linux?
-    
+
     def memory(self,since=0.0):
         '''Return memory usage in bytes.
         '''
         return self._VmB('VmSize:') - since
-    
-    
+
+
     def resident(self,since=0.0):
         '''Return resident memory usage in bytes.
         '''
         return self._VmB('VmRSS:') - since
-    
-    
+
+
     def stacksize(self,since=0.0):
         '''Return stack size in bytes.
         '''
@@ -82,7 +82,7 @@ class JobMonitor:
         stdout=None,
         stderr=None,
         shell=True):
-        self.cmd     = cmd 
+        self.cmd     = cmd
         if name == None:
           self.name = cmd
         else:
@@ -102,7 +102,7 @@ class JobMonitor:
         return (self.cmd , self.rc , self.time , self.max)
 
     def printResult(self):
-        print 'stats, %s' % self.cmd + ', ' + str(self.time) + ', ' + str(self.max)
+        print('stats, %s' % self.cmd + ', ' + str(self.time) + ', ' + str(self.max))
 
     def Command(self):
         return self.cmd
@@ -112,13 +112,13 @@ class JobMonitor:
 
     def Time(self):
         return self.time
-    
+
     def MaxMemory(self):
         return self.max
 
     def Run(self):
         if JobMonitor.Debug:
-          print '--- Executing "%s"\n' % self.cmd
+          print('--- Executing "%s"\n' % self.cmd)
         try:
             self.start = time.time()
             p = subprocess.Popen( self.cmd ,
@@ -127,13 +127,13 @@ class JobMonitor:
                 stderr = self.stderr,
                 shell  = self.shell)
             if JobMonitor.Debug:
-                print '  Pid :> ',p.pid
+                print('  Pid :> ',p.pid)
             monitor = MemMonitor(p.pid)
             self.rc = p.poll()
             while( self.rc == None ):
                 mem = monitor.memory()
                 if JobMonitor.Debug:
-                    print '  Mem :> ',mem
+                    print('  Mem :> ',mem)
                 if (mem > self.max):
                     self.max = mem
                 time.sleep(1)
@@ -148,8 +148,8 @@ class JobMonitor:
               if killedpid == 0:
                 print >> sys.stderr, "TODO: FIXME"
             if self.rc == None: #JobMonitor.Debug:
-              print ' %s(%d) :> %f s for %s' % (('Completion','Timeout')[self.rc == None],p.pid,self.time,self.name)
-        except OSError, e:
+              print(' %s(%d) :> %f s for %s' % (('Completion','Timeout')[self.rc == None],p.pid,self.time,self.name))
+        except OSError as e:
             print >>sys.stderr, "  >> Execution failed:",e
             self.rc = self.time = self.max = -60
 

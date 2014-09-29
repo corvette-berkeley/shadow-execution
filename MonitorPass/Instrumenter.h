@@ -200,42 +200,6 @@ public:
 		return I_alloca;
 	}
 
-	/*******************************************************************************************/
-	int KIND_GetSize(int kind) {
-		switch (kind) {
-			case PTR_KIND:
-				return sizeof(void*);
-			case INT8_KIND:
-				return 1;
-			case INT16_KIND:
-				return 2;
-			case INT24_KIND:
-				return 3;
-			case INT32_KIND:
-			case FLP32_KIND:
-				return 4;
-			case INT64_KIND:
-			case FLP64_KIND:
-				return 8;
-			case FLP128_KIND:
-				return 16;
-			case INT80_KIND:
-				return 10;
-			case FLP80X86_KIND:
-				return 16;
-			case FLP128PPC_KIND:
-				return 16;
-			case INT1_KIND:
-				return 0;
-			//      return 1;
-			//      printf("Don't support bit right now!\n");
-			//      safe_assert(false);
-			default:
-				// shouldn't reach here
-				safe_assert(false);
-				return 0;
-		}
-	}
 
 	/*******************************************************************************************/
 	KIND TypeToKind(Type* T) {
