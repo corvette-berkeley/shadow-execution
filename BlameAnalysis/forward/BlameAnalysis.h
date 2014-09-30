@@ -42,7 +42,7 @@ private:
 	// instrumentation phase and is the unique id for each LLVM instruction.
 	// Blame summary is a tree-like data structure which represents the precision
 	// dependency of values used and defined in this instruction.
-	map<IID, BlameNode[PRECISION_NO]> blameSummary;
+	map<IID, std::vector<BlameNode>> blameSummary;
 
 public:
 	BlameAnalysis(std::string name) : InterpreterObserver(name) {}
@@ -65,22 +65,26 @@ public:
 	virtual void post_analysis();
 
 private:
-	// Replace the last "shift" bits of the double value with 0 bits.
-	double clearBits(double v, int shift);
-
-	// Verify whether the two double values v1 and v2 equal within the precision
-	// given.
-	//
-	// This function first clears the last few bits of v1 and v2 to match
-	// with the precision and then compares the resulting values. When comparing
-	// the resulting values, inequality due to rounding is torelated.
-	bool equalWithinPrecision(double v1, double v2, PRECISION prec);
-
-	template <typename T> T feval(T val01, T val02, BINOP bop);
-
 	// Get the shadow object of an LLVM instruction. An LLVM instruction is
 	// identified by its iid, scope and value or index.
 	const BlameShadowObject getShadowObject(IID iid, SCOPE scope, int64_t value);
+
+	void computeBlameSummary(const BlameShadowObject& bso, const BlameShadowObject& lbso, const BlameShadowObject& rbso,
+							 BINOP op);
+
+	const BlameNode computeBlameInformation(const BlameShadowObject& bso, const BlameShadowObject& lbso,
+											const BlameShadowObject& rbso, BINOP op, PRECISION p);
+
+	// Determine whether the result can blame lop and rop given the precision p
+	// of the computation.
+	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, BINOP op, PRECISION p);
+	// Determine whether the compution requires high precision operator.
+	bool isRequiredHigherPrecisionOperator(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, BINOP op,
+										   PRECISION p);
+
+	std::vector<BlameNode> mergeBlame(std::vector<BlameNode> summary, std::vector<BlameNode> blame);
+
+	void mergeBlame(BlameNode& summary, BlameNode& blame);
 
 	void copyShadow(IValue* src, IValue* dest);
 
