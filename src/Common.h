@@ -282,6 +282,37 @@ std::string KIND_ToString(int kind);
  * @param kind the kind to get size from.
  * @return size of kind.
  */
-int KIND_GetSize(int kind);
+inline int KIND_GetSize(int kind) {
+	switch (kind) {
+		case PTR_KIND:
+			return sizeof(void*);
+		case INT1_KIND:
+			return 0;
+		case INT8_KIND:
+			return 1;
+		case INT16_KIND:
+			return 2;
+		case INT24_KIND:
+			return 3;
+		case INT32_KIND:
+		case FLP32_KIND:
+			return 4;
+		case INT64_KIND:
+		case FLP64_KIND:
+			return 8;
+		case INT80_KIND:
+			return 10;
+		case FLP128_KIND:
+			return 16;
+		case FLP80X86_KIND:
+			return 16;
+		case FLP128PPC_KIND:
+			return 16;
+		default:
+			DEBUG_STDERR("Unsupported kind value " << kind);
+			safe_assert(false);
+			return 0;
+	}
+}
 
 #endif /* COMMON_DEFS_H_ */

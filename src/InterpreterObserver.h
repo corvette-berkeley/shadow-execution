@@ -461,7 +461,7 @@ public:
 	 *
 	 * @return the index corresponding to the offset
 	 */
-	unsigned findIndex(IValue* values, unsigned offset, unsigned length);
+	unsigned findIndex(const IValue* values, unsigned offset, unsigned length);
 
 	static void copyShadow(const IValue* src, IValue* dest);
 

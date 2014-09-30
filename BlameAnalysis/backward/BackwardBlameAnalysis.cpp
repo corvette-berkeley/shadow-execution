@@ -128,7 +128,7 @@ void BackwardBlameAnalysis::pre_analysis() {
 	uint64_t iid;
 
 	while (fread(&iid, sizeof(uint64_t), 1, debugFile) && fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-		std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", " << debugInfo.column << std::endl;
+	  //std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", " << debugInfo.column << std::endl;
 		debugInfoMap[iid] = debugInfo;
 	}
 	fclose(debugFile);
@@ -374,6 +374,7 @@ void BackwardBlameAnalysis::post_analysis() {
 	//
 	// Print the trace
 	//
+	/*
 	cout << endl;
 	cout << "Do you want to see the trace (yes|no)?" << endl;
 	std::getline(std::cin, line);
@@ -387,7 +388,7 @@ void BackwardBlameAnalysis::post_analysis() {
 			}
 		}
 	}
-
+	*/
 	//
 	// read rootnode from a file
 	//
@@ -404,7 +405,11 @@ void BackwardBlameAnalysis::post_analysis() {
 	cout << "\t Desired precision: exact to " << BlameTreeUtilities::precisionToString(PRECISION(PRECISION_NO / 2))
 		 << endl;
 
+
 	BlameNodeID rootNode(0, BITS_FLOAT);
+	rootNode = BlameNodeID(dpc - 1, BlameTreeUtilities::exactBitToPrecision(27));
+	/*
+
 	std::getline(std::cin, line);
 
 	if (line.empty()) {
@@ -421,7 +426,7 @@ void BackwardBlameAnalysis::post_analysis() {
 
 		rootNode = BlameNodeID(dpc, BlameTreeUtilities::exactBitToPrecision(prec));
 	}
-
+	*/
 	//
 	// construct blame tree
 	//
@@ -445,7 +450,7 @@ void BackwardBlameAnalysis::post_analysis() {
 	cout << "Analysis result:" << endl;
 
 	bta.printResult();
-
+	/*
 	cout << endl;
 	cout << "Do you want to visualize the blame tree? (yes|no)" << endl;
 	std::getline(std::cin, line);
@@ -460,7 +465,7 @@ void BackwardBlameAnalysis::post_analysis() {
 		blametree << bta.toDot();
 		blametree.close();
 	}
-
+	*/
 	return;
 }
 

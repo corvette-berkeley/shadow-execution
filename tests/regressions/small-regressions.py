@@ -115,7 +115,7 @@ def main():
 
       ############################################
       # running executable file
-      command = ['./' + executable + '.out']
+      command = ['valgrind', './' + executable + '.out']
       retval = call(command, stdin=None, stdout=None, stderr=None)
 
       # return -1 if running LLVM passes fails
