@@ -3,7 +3,9 @@
 # source this file to setup export vars for building, running, and testing
 
 export INSTRUMENTOR_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#TODO: rename INSTRUMENTOR_LIB_PATH to be more meaningful
 export INSTRUMENTOR_LIB_PATH="$INSTRUMENTOR_PATH""/src"
+export BLAMEANALYSIS_LIB_PATH="$INSTRUMENTOR_PATH""/Release+Asserts/lib"
 export MONITOR_LIB_PATH="$INSTRUMENTOR_PATH""/MonitorPass"
 
 if [ "$(readlink "$INSTRUMENTOR_PATH""/.git/hooks")" == "" ]
@@ -66,4 +68,4 @@ export GLOG_log_dir="${GLOG_log_dir:-"/tmp/$(basename $INSTRUMENTOR_PATH)/logs"}
 export CPUPROFILE="${CPUPROFILE:-""}"
 
 # all libs are in the ld path now
-export LD_LIBRARY_PATH="$INSTRUMENTOR_LIB_PATH/:$GPERFTOOLS_LIB_PATH/:$GLOG_LIB_PATH/:$UNWIND_LIB_PATH/:$MONITOR_LIB_PATH/:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$INSTRUMENTOR_LIB_PATH/:$GPERFTOOLS_LIB_PATH/:$GLOG_LIB_PATH/:$UNWIND_LIB_PATH/:$MONITOR_LIB_PATH/:$BLAMEANALYSIS_LIB_PATH/:$LD_LIBRARY_PATH"
