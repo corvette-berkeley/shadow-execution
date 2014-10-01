@@ -6,7 +6,7 @@ import jobmonitor
 import subprocess
 import sys
 
-FUDGE_PERCENT=0.3
+FUDGE_PERCENT=0.35
 
 executable = "./" + sys.argv[1]+".out"
 
