@@ -61,6 +61,7 @@ plugin = env.SharedLibrary(
     '../../Release+Asserts/lib/libfba',
     [
       'BlameAnalysis.cpp',
+      'BlameUtilities.cpp'
         ],
     )
 

@@ -6,14 +6,16 @@
 #include "BlameUtilities.h"
 
 struct BlameNode {
-	IID iid;  // LLVM instruction id.
+	IID iid; // LLVM instruction id.
 	PRECISION precision;
 	bool requireHigherPrecision;
 	bool requireHigherPrecisionOperator;
 	std::vector<BlameNode> children;
 
 	BlameNode(IID i, PRECISION p, bool rhp, bool rhpo, std::vector<BlameNode> c)
-		: iid(i), precision(p), requireHigherPrecision(rhp), requireHigherPrecisionOperator(rhpo), children(c) {};
+		: iid(i), precision(p), requireHigherPrecision(rhp),
+		  requireHigherPrecisionOperator(rhpo), children(c) {}
+	;
 
 	BlameNode& operator=(const BlameNode& rhs) {
 		if (&rhs != this) {
@@ -24,6 +26,14 @@ struct BlameNode {
 			children = rhs.children;
 		}
 		return *this;
+	}
+
+	bool operator<(const BlameNode& rhs) const {
+		if (iid == rhs.iid) {
+			return precision < rhs.precision;
+		}
+
+		return iid < rhs.iid;
 	}
 };
 

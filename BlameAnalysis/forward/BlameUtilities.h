@@ -17,7 +17,9 @@ typedef enum {
 	PRECISION_NO
 } PRECISION;
 
-const map<PRECISION, unsigned> PRECISION_BITS = {{BITS_FLOAT, 23}, {BITS_19, 19}, {BITS_27, 27}, {BITS_DOUBLE, 52}};
+const std::map<PRECISION, unsigned> PRECISION_BITS = {
+	{ BITS_FLOAT, 23 }, { BITS_19, 19 }, { BITS_27, 27 }, { BITS_DOUBLE, 52 }
+};
 
 const unsigned DOUBLE_EXPONENT_LENGTH = 11;
 const unsigned DOUBLE_MANTISSA_LENGTH = 52;
