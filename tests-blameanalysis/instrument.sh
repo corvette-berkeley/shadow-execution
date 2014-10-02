@@ -1,6 +1,11 @@
 #!/bin/bash
 
-LPATH=$GOLD_LLVM_BIN
+if [ -z "$GOLD_LLVM_BIN"]
+then
+  LPATH="$(dirname `which clang++`)"
+else
+  LPATH=$GOLD_LLVM_BIN
+fi
 export CC=$LPATH"/clang -use-gold-plugin"
 export LDFLAGS="-L"$MONITOR_LIB_PATH"/../Release+Asserts/lib -L"$GLOG_LIB_PATH" -L"$PROFILER_PATH"/lib -L"$INSTRUMENTOR_LIB_PATH
 echo $LDFLAGS
@@ -20,7 +25,7 @@ $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --instrument --file $GLOG_log_
 $LPATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
 
 # Create executable 
-$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lbba -lmonitor -lpthread -lm -lrt -lgmp -lglog -ltcmalloc
+$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lbba -lmonitor -lpthread -lm -lrt -lgmp -lglog # -ltcmalloc
 
 # Clean temporary files
 rm $name.bc
