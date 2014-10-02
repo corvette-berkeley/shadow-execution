@@ -16,34 +16,6 @@
 
 class BlameAnalysis : public InterpreterObserver {
 
-public:
-	BlameAnalysis(std::string name) : InterpreterObserver(name) {
-		_precision = BITS_27;
-		_iid = 0;
-	}
-	;
-
-	/*** API FUNCTIONS ***/
-	virtual void pre_analysis();
-
-	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
-						   SCOPE rScope, int64_t lValue, int64_t rValue,
-						   KIND type, int inx);
-
-	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope,
-						   SCOPE rScope, int64_t lValue, int64_t rValue,
-						   KIND type, int inx);
-
-	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope,
-						   SCOPE rScope, int64_t lValue, int64_t rValue,
-						   KIND type, int inx);
-
-	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope,
-						   SCOPE rScope, int64_t lValue, int64_t rValue,
-						   KIND type, int inx);
-
-	virtual void post_analysis();
-
 private:
 	// Return the file separator character depending on the underlying operating
 	// system.
@@ -73,11 +45,39 @@ private:
 	// instrumentation phase and is the unique id for each LLVM instruction.
 	// Blame summary is a tree-like data structure which represents the precision
 	// dependency of values used and defined in this instruction.
-	map<IID, std::vector<BlameNode>> blameSummary;
+	map<IID, std::vector<BlameNode*>> blameSummary;
 
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
 	IID _iid;
+
+public:
+	BlameAnalysis(std::string name) : InterpreterObserver(name) {
+		_precision = BITS_27;
+		_iid = 0;
+	}
+	;
+
+	/*** API FUNCTIONS ***/
+	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
+
+	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
+
+	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
+
+	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
+						   KIND type, int inx);
+
+	virtual void post_analysis();
+
+private:
 
 	// Get the shadow object of an LLVM instruction. An LLVM instruction is
 	// identified by its iid, scope and value or index.
@@ -102,10 +102,9 @@ private:
 										   HIGHPRECISION lop, HIGHPRECISION rop,
 										   BINOP op, PRECISION p);
 
-	std::vector<BlameNode> mergeBlame(std::vector<BlameNode> summary,
-									  std::vector<BlameNode> blame);
+	void mergeBlame(BlameNode* summary, const BlameNode& blame);
 
-	void mergeBlame(BlameNode& summary, BlameNode& blame);
+	void initSummaryIfNotExist(IID id);
 
 	void copyShadow(IValue* src, IValue* dest);
 

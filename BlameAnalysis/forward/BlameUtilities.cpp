@@ -5,7 +5,7 @@
 double clearBits(double v, int shift) {
 	int64_t mask = 0xffffffffffffffff << shift;
 	int64_t* ptr = (int64_t*)&v;
-	*ptr = *ptr * mask;
+	*ptr = *ptr & mask;
 	double* dm = (double*)ptr;
 
 	return *dm;
@@ -29,22 +29,4 @@ bool equalWithinPrecision(double v1, double v2, PRECISION p) {
 
 	// Return true if the two mantissa offset less than or equal to 1.
 	return abs(*ptr1 - *ptr2) <= 1;
-}
-
-template <typename T> T feval(T val01, T val02, BINOP bop) {
-	switch (bop) {
-		case FADD:
-			return val01 + val02;
-		case FSUB:
-			return val01 - val02;
-		case FMUL:
-			return val01 * val02;
-		case FDIV:
-			return val01 / val02;
-		default:
-			safe_assert(false);
-			DEBUG_STDERR("Unsupported floating-point binary operator.");
-	}
-
-	return 0;
 }

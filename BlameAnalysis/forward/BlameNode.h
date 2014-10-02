@@ -10,9 +10,9 @@ struct BlameNode {
 	PRECISION precision;
 	bool requireHigherPrecision;
 	bool requireHigherPrecisionOperator;
-	std::vector<BlameNode> children;
+	std::vector<BlameNode*> children;
 
-	BlameNode(IID i, PRECISION p, bool rhp, bool rhpo, std::vector<BlameNode> c)
+	BlameNode(IID i, PRECISION p, bool rhp, bool rhpo, std::vector<BlameNode*> c)
 		: iid(i), precision(p), requireHigherPrecision(rhp),
 		  requireHigherPrecisionOperator(rhpo), children(c) {}
 	;

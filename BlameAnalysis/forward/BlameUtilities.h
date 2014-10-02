@@ -39,6 +39,23 @@ bool equalWithinPrecision(double v1, double v2, PRECISION p);
 
 // Template function to perform the floating-point binary operator on
 // the two operands and return the computed value.
-template <typename T> T feval(T val01, T val02, BINOP bop);
+template <typename T> T feval(T val01, T val02, BINOP bop) {
+	switch (bop) {
+		case FADD:
+			return val01 + val02;
+		case FSUB:
+			return val01 - val02;
+		case FMUL:
+			return val01 * val02;
+		case FDIV:
+			return val01 / val02;
+		default:
+			safe_assert(false);
+			DEBUG_STDERR("Unsupported floating-point binary operator.");
+	}
+
+	return 0;
+}
+;
 
 #endif
