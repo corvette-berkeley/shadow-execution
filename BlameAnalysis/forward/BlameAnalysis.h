@@ -56,7 +56,6 @@ public:
 		_precision = BITS_27;
 		_iid = 0;
 	}
-	;
 
 	/*** API FUNCTIONS ***/
 	virtual void pre_analysis();

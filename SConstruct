@@ -75,13 +75,30 @@ env.AppendUnique(
 
 flags = [
     '-Wall',
+	 '-Wextra',
+	 '-Wno-conversion',
+	 '-Wno-sign-conversion',
+	 '-Wno-sign-compare',
+	 '-Wundef',
+	 '-pedantic',
     '-Wformat=2',
-    '-Wextra',
     '-std=c++11',
     '-Werror',
     '${("", "-g")[DEBUG]}',
     '${("", "-O")[OPTIMIZE]}',
     ]
+
+if env['CXX'] == 'clang++':
+	flags.extend([
+	#'-Weverything', #TODO: add back in
+	'-Wno-c++98-compat',
+	'-Wno-c++98-compat-pedantic',
+	'-Wno-weak-vtables',
+	'-Wno-global-constructors',
+	'-Wno-exit-time-destructors',
+	'-Wno-float-equal', # necessary for sync
+	'-Wno-padded', #may turn off once in a while
+	])
 
 env.AppendUnique(
     CCFLAGS=flags,
