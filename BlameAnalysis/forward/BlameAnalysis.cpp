@@ -22,7 +22,7 @@ unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
 	return debugInfoMap;
 }
 
-void BlameAnalysis::copyShadow(IValue* src, IValue* dest) {
+void BlameAnalysis::copyShadow(const IValue* src, IValue* dest) {
 	if (src->getShadow() != NULL) {
 		BlameShadowObject* bsoSrc = (BlameShadowObject*)src->getShadow();
 		BlameShadowObject* bsoDest =
@@ -77,6 +77,18 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope,
 	HIGHPRECISION hResult =
 		feval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op);
 	LOWPRECISION lResult = feval<LOWPRECISION>(lBSO.lowValue, rBSO.lowValue, op);
+
+	/*
+	 * Printing shadow execution trace for debugging.
+	DebugInfo debugInfo = debugInfoMap.at(iid);
+	printf("[RESULT] File: %s, Line: %d, Column: %d, High precision result: %.10f,
+	Low precision result: %.10f\n", debugInfo.file,
+	    debugInfo.line, debugInfo.column, hResult, lResult);
+	printf("[LOP] High precision result: %.10f, Low precision result: %.10f\n",
+	lBSO.highValue, lBSO.lowValue);
+	printf("[ROP] High precision result: %.10f, Low precision result: %.10f\n",
+	rBSO.highValue, rBSO.lowValue);
+	*/
 
 	BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
 	executionStack.top()[inx]->setShadow(BSO);
@@ -245,6 +257,10 @@ void BlameAnalysis::initSummaryIfNotExist(IID id) {
 }
 
 /*** API FUNCTIONS ***/
+void BlameAnalysis::pre_analysis() {
+	IValue::setCopyShadow(&copyShadow);
+}
+
 void BlameAnalysis::post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
 							  SCOPE rScope, int64_t lValue, int64_t rValue,
 							  KIND type, int inx) {

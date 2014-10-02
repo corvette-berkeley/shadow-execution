@@ -59,6 +59,8 @@ public:
 	;
 
 	/*** API FUNCTIONS ***/
+	virtual void pre_analysis();
+
 	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
 						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
@@ -106,7 +108,7 @@ private:
 
 	void initSummaryIfNotExist(IID id);
 
-	void copyShadow(IValue* src, IValue* dest);
+	static void copyShadow(const IValue* src, IValue* dest);
 
 	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope,
 					 int64_t lValue, int64_t rValue, KIND type, int inx,
