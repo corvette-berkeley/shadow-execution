@@ -44,7 +44,7 @@ class MemMonitor:
                 return 0.0  # invalid format?
             # convert Vm value to bytes
             return float(v[1]) * MemMonitor._scale[v[2]]
-        except e:
+        except BaseException as e:
             print('  Error ::> ',e)
             return 0.0  # non-Linux?
 
