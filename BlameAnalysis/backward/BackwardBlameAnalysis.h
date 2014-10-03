@@ -12,7 +12,7 @@
 #include "../../src/InterpreterObserver.h"
 #include <math.h>
 #include <fstream>
-using namespace llvm;
+
 using namespace std;
 
 class BackwardBlameAnalysis : public InterpreterObserver {
@@ -69,7 +69,7 @@ private:
 	   * Define how to copy BlameTreeShadowObject from the source IValue to
 	   * the destination IValue.
 	   */
-	static void copyShadow(const IValue* src, IValue* dest);
+	static void* copyShadow(void*);
 
 	/**
 	   * Return BlameTreeShadowObject associated with the given value.

@@ -42,6 +42,7 @@
 #ifndef IVALUE_H_
 #define IVALUE_H_
 
+#include <functional>
 #include "Common.h"
 
 class IValue {
@@ -81,10 +82,11 @@ private:
 	/**
 	 * Define how to copy shadow values. This varies analysis by analysis.
 	 *
-	 * @param IValue the source IValue to get shadow value from.
-	 * @param IValue the destination IValue to copy shadow value to.
+	 * param IValue the source IValue to get shadow value from.
+	 * param IValue the destination IValue to copy shadow value to.
 	 */
-	static void (*copyShadow)(const IValue*, IValue*);
+	static std::function<void* (void*)> copyShadow;
+	static std::function<void(void*)> deleteShadow;
 
 	/**
 	 * Write a chunk of byte to value. This functions returns the actual number
@@ -98,10 +100,6 @@ private:
 	 * @param content the content to read from.
 	 */
 	int setValue(int offset, int byte, uint8_t* content);
-
-	void create(const IValue& iv);
-
-	void uncreate() {};
 
 public:
 	IValue(KIND t, VALUE v, SCOPE s)
@@ -122,7 +120,7 @@ public:
 		// counterNew++;
 	}
 
-	IValue(KIND t, VALUE v, unsigned s, int o, int i, unsigned l)
+	IValue(KIND t, VALUE v, unsigned s, int o, unsigned i, unsigned l)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
 		  bitOffset(0), scope(REGISTER) {
 		// counterNew++;
@@ -141,101 +139,117 @@ public:
 		// counterNew++;
 	}
 
-	IValue(const IValue& iv) {
-		create(iv);
-		// counterNew++;
-	};
+	IValue(const IValue& iv)
+		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())), type(iv.getType()), valueOffset(iv.getValueOffset()),
+		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()), length(iv.getLength()),
+		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()) {}
+
+	IValue(IValue&& iv) {
+		swap(iv);
+	}
 
 	~IValue() {
-		uncreate();
-		// counterDelete++;
-	};
+		deleteShadow(shadow);
+		// TODO: implement destruction of pointed to object
+	}
 
 	IValue& operator=(const IValue& iv) {
-		if (&iv != this) {
-
-			// free the object in the left-hand side
-			uncreate();
-
-			// copy elements from the right-hand side to the left-hand side
-			create(iv);
-			// counterNew++;
-		}
-
+		IValue temp(iv);
+		swap(temp);
 		return *this;
-	};
+	}
 
-	void setType(KIND type) {
-		this->type = type;
-	};
+	IValue& operator=(IValue&& iv) {
+		swap(iv);
+		return *this;
+	}
 
-	void setValue(VALUE value) {
-		this->value = value;
-	};
+	void swap(IValue& iv) {
+		std::swap(type, iv.type);
+		std::swap(value, iv.value);
+		std::swap(valueOffset, iv.valueOffset);
+		std::swap(size, iv.size);
+		std::swap(index, iv.index);
+		std::swap(firstByte, iv.firstByte);
+		std::swap(length, iv.length);
+		std::swap(offset, iv.offset);
+		std::swap(bitOffset, iv.bitOffset);
+		std::swap(scope, iv.scope);
+		std::swap(shadow, iv.shadow);
+	}
+
+	void setType(KIND t) {
+		type = t;
+	}
+
+	void setValue(VALUE v) {
+		value = v;
+	}
 
 	void setValue(int64_t value);
 
-	void setTypeValue(KIND type, VALUE value) {
-		this->type = type;
-		this->value = value;
-	};
+	void setTypeValue(KIND t, VALUE v) {
+		type = t;
+		value = v;
+	}
 
-	void setTypeValue(KIND type, int64_t value) {
-		this->type = type;
-		setValue(value);
-	};
+	void setTypeValue(KIND t, int64_t v) {
+		type = t;
+		setValue(v);
+	}
 
-	void setTypeValueSize(KIND type, VALUE value, unsigned size) {
-		this->type = type;
-		this->value = value;
-		this->size = size;
-	};
+	void setTypeValueSize(KIND t, VALUE v, unsigned s) {
+		type = t;
+		value = v;
+		size = s;
+	}
 
-	void setValueOffset(int64_t valueOffset) {
-		this->valueOffset = valueOffset;
-	};
+	void setValueOffset(int64_t vo) {
+		valueOffset = vo;
+	}
 
-	void setScope(SCOPE scope) {
-		this->scope = scope;
-	};
+	void setScope(SCOPE sc) {
+		scope = sc;
+	}
 
-	void setSize(unsigned int size) {
-		this->size = size;
-	};
+	void setSize(unsigned int s) {
+		size = s;
+	}
 
-	void setIndex(unsigned index) {
-		this->index = index;
-	};
+	void setIndex(unsigned i) {
+		index = i;
+	}
 
-	void setFirstByte(unsigned firstByte) {
-		this->firstByte = firstByte;
-	};
+	void setFirstByte(unsigned fb) {
+		firstByte = fb;
+	}
 
-	void setLength(unsigned length) {
-		this->length = length;
-	};
+	void setLength(unsigned l) {
+		length = l;
+	}
 
-	void setOffset(int offset) {
-		this->offset = offset;
-	};
+	void setOffset(int o) {
+		offset = o;
+	}
 
-	void setBitOffset(int bitOffset) {
-		this->bitOffset = bitOffset;
-	};
+	void setBitOffset(int bo) {
+		bitOffset = bo;
+	}
 
-	void setShadow(void* shadow) {
-		this->shadow = shadow;
-	};
+	void setShadow(void* sh) {
+		shadow = sh;
+	}
 
-	static void setCopyShadow(void (*copyShadow)(const IValue*, IValue*)) {
-		IValue::copyShadow = copyShadow;
-	};
+	static void setShadowHandlers(std::function<void* (void*)> cSh, std::function<void(void*)> dSh) {
+		IValue::copyShadow = cSh;
+		IValue::deleteShadow = dSh;
+	}
 
 	void setInitialized() {
 		if (type == PTR_KIND && length == 0) {
 			length = 1;
 		}
-	};
+	}
 
 	void setStruct(bool flag) {
 		struct_ = flag;
@@ -245,47 +259,47 @@ public:
 
 	KIND getType() const {
 		return this->type;
-	};
+	}
 
 	VALUE getValue() const {
 		return this->value;
-	};
+	}
 
 	unsigned getIndex() const {
 		return this->index;
-	};
+	}
 
 	unsigned getFirstByte() const {
 		return this->firstByte;
-	};
+	}
 
 	unsigned getLength() const {
 		return this->length;
-	};
+	}
 
 	unsigned int getSize() const {
 		return this->size;
-	};
+	}
 
 	SCOPE getScope() const {
 		return this->scope;
-	};
+	}
 
 	int getOffset() const {
 		return this->offset;
-	};
+	}
 
 	int getBitOffset() const {
 		return this->bitOffset;
-	};
+	}
 
 	int64_t getValueOffset() const {
 		return this->valueOffset;
-	};
+	}
 
 	void* getShadow() const {
 		return this->shadow;
-	};
+	}
 
 	int64_t getIntValue();
 
@@ -293,7 +307,7 @@ public:
 
 	void* getPtrValue() {
 		return value.as_ptr;
-	};
+	}
 
 	bool isStruct() {
 		return struct_;
@@ -301,27 +315,27 @@ public:
 
 	double getFlpValue();
 
-	void* getIPtrValue() {
-		return (void*)((int64_t)value.as_ptr + valueOffset);
-	};
+	IValue* getIPtrValue() {
+		return (IValue*)((int64_t)value.as_ptr + valueOffset);
+	}
 
 	bool isInitialized() const {
 		return type != PTR_KIND || length > 0;
-	};
+	}
 
-	bool isIntValue() {
+	bool isIntValue() const {
 		return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND || type == INT24_KIND || type == INT32_KIND ||
 			   type == INT64_KIND || type == INT80_KIND;
-	};
+	}
 
-	bool isFlpValue() {
+	bool isFlpValue() const {
 		return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND || type == FLP128_KIND ||
 			   type == FLP128PPC_KIND;
-	};
+	}
 
-	bool isPtrValue() {
+	bool isPtrValue() const {
 		return type == PTR_KIND;
-	};
+	}
 
 	std::string toString() const;
 
@@ -348,7 +362,6 @@ public:
 	 * @note This function is specialized for pointer value.
 	 *
 	 * @param offset the offset to start reading from.
-	 * @param byte the number of bytes to read.
 	 *
 	 * @return a VALUE object that wrap all the bytes readed.
 	 */

@@ -46,8 +46,6 @@ using namespace std;
 // long IValue::counterNew = 0;
 // long IValue::counterDelete = 0;
 
-void (*IValue::copyShadow)(const IValue*, IValue*) = NULL;
-
 string IValue::toString() const {
 	std::stringstream s;
 
@@ -135,9 +133,7 @@ void IValue::copy(IValue* dest) const {
 	dest->setIndex(index);
 	dest->setLength(length);
 	dest->setValueOffset(valueOffset);
-	if (copyShadow != NULL) {
-		copyShadow(this, dest);
-	}
+	dest->shadow = copyShadow(shadow);
 	return;
 }
 
@@ -451,21 +447,6 @@ double IValue::getFlpValue() {
 			return v;
 	}
 }
-
-void IValue::create(const IValue& iv) {
-	type = iv.getType();
-	value = iv.getValue();
-	valueOffset = iv.getValueOffset();
-	size = iv.getSize();
-	index = iv.getIndex();
-	firstByte = iv.getFirstByte();
-	length = iv.getLength();
-	offset = iv.getOffset();
-	bitOffset = iv.getOffset();
-	scope = iv.getScope();
-	shadow = iv.getShadow();
-}
-
 
 // precondition: setting type first
 void IValue::setValue(int64_t v) {

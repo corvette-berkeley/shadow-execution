@@ -213,11 +213,6 @@ bool InterpreterObserver::checkStore(IValue* dest, KVALUE* kv) {
 	return result;
 }
 
-void InterpreterObserver::copyShadow(const IValue*, IValue*) {
-	// do nothing
-	// shadow value is not used in the core interpreter
-}
-
 std::string InterpreterObserver::BINOP_ToString(int binop) {
 	std::stringstream s;
 	switch (binop) {
@@ -2685,9 +2680,6 @@ void InterpreterObserver::create_stack_frame(int size) {
 void InterpreterObserver::create_global_symbol_table(int size) {
 
 	// pre_create_global_symbol_table();
-
-	// instantiate copyShadow
-	IValue::setCopyShadow(&copyShadow);
 
 	// initialize logger
 	google::InitGoogleLogging(logName.c_str());

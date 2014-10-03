@@ -10,14 +10,13 @@ int BackwardBlameAnalysis::dpc = 0;
 
 /******* HELPER FUNCTIONS *******/
 
-void BackwardBlameAnalysis::copyShadow(const IValue* src, IValue* dest) {
-	if (src->getShadow() != NULL) {
-		BlameTreeShadowObject<HIGHPRECISION>* btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*)src->getShadow();
+void* BackwardBlameAnalysis::copyShadow(void* oldShadow) {
+	if (oldShadow != NULL) {
+		BlameTreeShadowObject<HIGHPRECISION>* btmSOSrc = (BlameTreeShadowObject<HIGHPRECISION>*)oldShadow;
 		BlameTreeShadowObject<HIGHPRECISION>* btmSODest = new BlameTreeShadowObject<HIGHPRECISION>(*btmSOSrc);
-		dest->setShadow(btmSODest);
-	} else {
-		dest->setShadow(NULL);
+		return btmSODest;
 	}
+	return NULL;
 }
 
 void BackwardBlameAnalysis::setShadowObject(SCOPE scope, int64_t inx,
@@ -128,13 +127,15 @@ void BackwardBlameAnalysis::pre_analysis() {
 	uint64_t iid;
 
 	while (fread(&iid, sizeof(uint64_t), 1, debugFile) && fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-	  //std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", " << debugInfo.column << std::endl;
+		// std::cout << iid << ": " << debugInfo.file << ", " << debugInfo.line << ", " << debugInfo.column << std::endl;
 		debugInfoMap[iid] = debugInfo;
 	}
 	fclose(debugFile);
 
 	// Set copy shadow function for blame analysis.
-	IValue::setCopyShadow(&copyShadow);
+	IValue::setShadowHandlers(copyShadow, [](void* a) {
+		delete static_cast<BlameTreeShadowObject<HIGHPRECISION>*>(a);
+	});
 }
 
 void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED, int pc, KIND type UNUSED, int inx,
@@ -380,13 +381,13 @@ void BackwardBlameAnalysis::post_analysis() {
 	std::getline(std::cin, line);
 
 	if (line.compare("yes") == 0) {
-		for (int i = max(0, dpc - 500); i < dpc; i++) {
-			cout << "DPC: " << i << endl;
-			for (unsigned j = 0; j < trace[i].size(); j++) {
-				cout << "\t";
-				trace[i][j].print();
-			}
-		}
+	  for (int i = max(0, dpc - 500); i < dpc; i++) {
+	    cout << "DPC: " << i << endl;
+	    for (unsigned j = 0; j < trace[i].size(); j++) {
+	      cout << "\t";
+	      trace[i][j].print();
+	    }
+	  }
 	}
 	*/
 	//
@@ -413,18 +414,18 @@ void BackwardBlameAnalysis::post_analysis() {
 	std::getline(std::cin, line);
 
 	if (line.empty()) {
-		rootNode = BlameNodeID(dpc - 1, PRECISION(PRECISION_NO / 2));
+	  rootNode = BlameNodeID(dpc - 1, PRECISION(PRECISION_NO / 2));
 	} else {
-		std::stringstream lineStream(line);
-		std::string token;
-		int dpc, prec;
+	  std::stringstream lineStream(line);
+	  std::string token;
+	  int dpc, prec;
 
-		lineStream >> token;
-		dpc = atoi(token.c_str());
-		lineStream >> token;
-		prec = atoi(token.c_str());
+	  lineStream >> token;
+	  dpc = atoi(token.c_str());
+	  lineStream >> token;
+	  prec = atoi(token.c_str());
 
-		rootNode = BlameNodeID(dpc, BlameTreeUtilities::exactBitToPrecision(prec));
+	  rootNode = BlameNodeID(dpc, BlameTreeUtilities::exactBitToPrecision(prec));
 	}
 	*/
 	//
@@ -456,14 +457,14 @@ void BackwardBlameAnalysis::post_analysis() {
 	std::getline(std::cin, line);
 
 	if (line.compare("yes") == 0) {
-		cout << endl;
-		cout << "Blame tree in dot format: blametree.dot" << endl;
-		cout << endl;
+	  cout << endl;
+	  cout << "Blame tree in dot format: blametree.dot" << endl;
+	  cout << endl;
 
-		ofstream blametree;
-		blametree.open("blametree.dot");
-		blametree << bta.toDot();
-		blametree.close();
+	  ofstream blametree;
+	  blametree.open("blametree.dot");
+	  blametree << bta.toDot();
+	  blametree.close();
 	}
 	*/
 	return;
