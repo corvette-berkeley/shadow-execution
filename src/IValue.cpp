@@ -43,6 +43,9 @@
 
 using namespace std;
 
+function<void* (void*)> IValue::copyShadow = [](void *a) { return a; };
+function<void(void*)> IValue::deleteShadow = [](void *a) { delete static_cast<char*>(a); }; // dangerous!
+
 // long IValue::counterNew = 0;
 // long IValue::counterDelete = 0;
 

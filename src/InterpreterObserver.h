@@ -463,8 +463,6 @@ public:
 	 */
 	unsigned findIndex(const IValue* values, unsigned offset, unsigned length);
 
-	static void copyShadow(const IValue* src, IValue* dest);
-
 	int actualValueToIntValue(int scope, int64_t vori);
 };
 
