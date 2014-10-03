@@ -3,7 +3,9 @@
 #ifndef _BLAME_UTILITIES_H_
 #define _BLAME_UTILITIES_H_
 
+#include <math.h>
 #include <map>
+
 #include "../../src/Common.h"
 
 typedef double HIGHPRECISION;

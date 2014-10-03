@@ -3,6 +3,10 @@
 #include "BlameUtilities.h"
 
 double clearBits(double v, int shift) {
+	if (isnan(v) || isinf(v)) {
+		return v;
+	}
+
 	int64_t mask = 0xffffffffffffffff << shift;
 	int64_t* ptr = (int64_t*)&v;
 	*ptr = *ptr & mask;
@@ -12,6 +16,12 @@ double clearBits(double v, int shift) {
 }
 
 bool equalWithinPrecision(double v1, double v2, PRECISION p) {
+	if (isnan(v1)) {
+		return isnan(v2);
+	}
+	if (isinf(v1)) {
+		return isinf(v2);
+	}
 	if (p == BITS_DOUBLE) {
 		return v1 == v2;
 	}
