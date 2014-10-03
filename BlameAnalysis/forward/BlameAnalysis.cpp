@@ -183,6 +183,7 @@ const BlameNode BlameAnalysis::computeBlameInformation(
 	}
 
 	// Construct the associated blame node and return.
+	safe_assert(found);
 	BlameNode* lBlameNode = blameSummary[lbso.id][i];
 	BlameNode* rBlameNode = blameSummary[rbso.id][j];
 	safe_assert(lBlameNode != NULL);

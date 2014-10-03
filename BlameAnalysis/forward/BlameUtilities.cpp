@@ -3,6 +3,9 @@
 #include "BlameUtilities.h"
 
 double clearBits(double v, int shift) {
+	if (isnan(v) || v == INFINITY) {
+		return v;
+	}
 	int64_t mask = 0xffffffffffffffff << shift;
 	int64_t* ptr = (int64_t*)&v;
 	*ptr = *ptr & mask;
