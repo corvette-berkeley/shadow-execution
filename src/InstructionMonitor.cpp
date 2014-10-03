@@ -53,6 +53,11 @@ using std::unique_ptr;
 /*******************************************************************************************/
 vector<unique_ptr<InstructionObserver>> observers_ = {};
 
+#define DISPATCH_TO_OBSERVERS_NOARG(func)                                                                              \
+	for (auto& ob_ptr : observers_) {                                                                                    \
+		ob_ptr->func();                                                                                                    \
+	}
+
 #define DISPATCH_TO_OBSERVERS(func, ...)                                                                               \
 	for (auto& ob_ptr : observers_) {                                                                                    \
 		ob_ptr->func(__VA_ARGS__);                                                                                         \
@@ -160,11 +165,11 @@ void llvm_extractelement(IID iid, KVALUE* op1, KVALUE* op2, int inx) {
 }
 
 void llvm_insertelement() {
-	DISPATCH_TO_OBSERVERS(insertelement)
+	DISPATCH_TO_OBSERVERS_NOARG(insertelement)
 }
 
 void llvm_shufflevector() {
-	DISPATCH_TO_OBSERVERS(shufflevector)
+	DISPATCH_TO_OBSERVERS_NOARG(shufflevector)
 }
 
 // ***** Aggregate Operations ***** //
@@ -203,7 +208,7 @@ void llvm_store(int pInx, SCOPE pScope, KIND srcKind, SCOPE srcScope, int srcInx
 }
 
 void llvm_fence() {
-	DISPATCH_TO_OBSERVERS(fence)
+	DISPATCH_TO_OBSERVERS_NOARG(fence)
 }
 
 void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int inx) {
@@ -211,7 +216,7 @@ void llvm_cmpxchg(IID iid, PTR addr, KVALUE* value1, KVALUE* value2, int inx) {
 }
 
 void llvm_atomicrmw() {
-	DISPATCH_TO_OBSERVERS(atomicrmw)
+	DISPATCH_TO_OBSERVERS_NOARG(atomicrmw)
 }
 
 void llvm_getelementptr(IID iid, int baseInx, SCOPE baseScope, uint64_t baseAddr, int offsetInx, int64_t offsetValue,
@@ -293,9 +298,11 @@ void llvm_indirectbr(IID iid, KVALUE* op1, int inx) {
 	DISPATCH_TO_OBSERVERS(indirectbr, iid, op1, inx)
 }
 
+/*
 void llvm_invoke(IID iid, KVALUE* op, int inx) {
 	DISPATCH_TO_OBSERVERS(invoke, iid, op, inx)
 }
+*/
 
 void llvm_resume(IID iid, KVALUE* op1, int inx) {
 	DISPATCH_TO_OBSERVERS(resume, iid, op1, inx)
@@ -318,7 +325,7 @@ void llvm_switch_(IID iid, KVALUE* op, int inx) {
 }
 
 void llvm_unreachable() {
-	DISPATCH_TO_OBSERVERS(unreachable)
+	DISPATCH_TO_OBSERVERS_NOARG(unreachable)
 }
 
 // ***** Other Operations ***** //
@@ -397,11 +404,11 @@ void llvm_after_call(int retInx, SCOPE retScope, KIND retType, int64_t retValue)
 }
 
 void llvm_after_void_call() {
-	DISPATCH_TO_OBSERVERS(after_void_call)
+	DISPATCH_TO_OBSERVERS_NOARG(after_void_call)
 }
 
 void llvm_after_struct_call() {
-	DISPATCH_TO_OBSERVERS(after_struct_call)
+	DISPATCH_TO_OBSERVERS_NOARG(after_struct_call)
 }
 
 void llvm_create_stack_frame(int size) {
@@ -467,9 +474,9 @@ void llvm_call_malloc(IID iid, bool nounwind, KIND type, int size, int inx, uint
 }
 
 void llvm_vaarg() {
-	DISPATCH_TO_OBSERVERS(vaarg)
+	DISPATCH_TO_OBSERVERS_NOARG(vaarg)
 }
 
 void llvm_landingpad() {
-	DISPATCH_TO_OBSERVERS(landingpad)
+	DISPATCH_TO_OBSERVERS_NOARG(landingpad)
 }

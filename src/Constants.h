@@ -7,7 +7,7 @@
  * Copyright (c) 2013, UC Berkeley All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
+ * modification, are permitted provided that the following conditions are met:
  *
  * 1.  Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
@@ -38,47 +38,74 @@
 #ifndef CONSTANTS_DEFS_H_
 #define CONSTANTS_DEFS_H_
 
-typedef enum {
-  BITWISE_INVALID,
-  SHL, LSHR, ASHR, 
-  AND, OR, XOR
-} BITWISE;
+enum BITWISE {
+	BITWISE_INVALID,
+	SHL,
+	LSHR,
+	ASHR,
+	AND,
+	OR,
+	XOR
+};
 
-typedef enum {
-  BINOP_INVALID,
-  ADD, SUB, MUL, UDIV, SDIV, UREM, SREM,
-  FADD, FSUB, FMUL, FDIV, FREM
-} BINOP;
+enum BINOP {
+	BINOP_INVALID,
+	ADD,
+	SUB,
+	MUL,
+	UDIV,
+	SDIV,
+	UREM,
+	SREM,
+	FADD,
+	FSUB,
+	FMUL,
+	FDIV,
+	FREM
+};
 
-typedef enum {
-  CASTOP_INVALID,
-  BITCAST, TRUNC, ZEXT,
-  FPEXT, FPTOSI, FPTOUI, FPTRUNC,
-  INTTOPTR, PTRTOINT,
-  SEXT, SITOFP, UITOFP
-} CASTOP;
+enum CASTOP {
+	CASTOP_INVALID,
+	BITCAST,
+	TRUNC,
+	ZEXT,
+	FPEXT,
+	FPTOSI,
+	FPTOUI,
+	FPTRUNC,
+	INTTOPTR,
+	PTRTOINT,
+	SEXT,
+	SITOFP,
+	UITOFP
+};
 
-typedef enum {
-  UNINTERPRETEDINST_INVALID,
-  EXTRACTELEMENT, INSERTELEMENT, SHUFFLEVECTOR,
-  INSERTVALUE,
-  UNREACHABLE, RESUME, INVOKE,
-  SELECT, LANDINGPAD,
-  FENCE,
-  VAARG,
-  ATOMICRMW
-} UNINTERPRETEDINST;
+enum UNINTERPRETEDINST {
+	UNINTERPRETEDINST_INVALID,
+	EXTRACTELEMENT,
+	INSERTELEMENT,
+	SHUFFLEVECTOR,
+	INSERTVALUE,
+	UNREACHABLE,
+	RESUME,
+	INVOKE,
+	SELECT,
+	LANDINGPAD,
+	FENCE,
+	VAARG,
+	ATOMICRMW
+};
 
-typedef enum {
-  // not implemented yet
-} MACHINEFLAG;
+enum MACHINEFLAG {
+	// not implemented yet
+};
 
-typedef enum {
-  SCOPE_INVALID,
-  REGISTER,
-  CONSTANT,
-  LOCAL,
-  GLOBAL
-} SCOPE;
+enum SCOPE {
+	SCOPE_INVALID,
+	REGISTER,
+	CONSTANT,
+	LOCAL,
+	GLOBAL
+};
 
 #endif /* CONSTANTS_DEFS_H_ */

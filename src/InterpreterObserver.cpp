@@ -3223,17 +3223,11 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
 		DEBUG_STDOUT("Num Structs: " << numStructs);
 		DEBUG_STDOUT("Number of fields: " << fields);
 
-		KIND fieldTypes[fields];
-		for (unsigned i = 0; i < fields; i++) {
-			fieldTypes[i] = structType[i];
-		}
-		structType.clear();
-
 		unsigned length = 0;
 		unsigned firstByte = 0;
 		for (unsigned i = 0; i < numStructs; i++) {
 			for (unsigned j = 0; j < fields; j++) {
-				KIND type = fieldTypes[j];
+				KIND type = structType[j];
 
 				ptrToStructVar[length].setType(type);
 				ptrToStructVar[length].setFirstByte(firstByte);
@@ -3243,6 +3237,7 @@ void InterpreterObserver::call_malloc(IID iid UNUSED, bool nounwind UNUSED, KIND
 				length++;
 			}
 		}
+		structType.clear();
 
 		VALUE structPtrVal;
 		structPtrVal.as_ptr = (void*)mallocAddress;

@@ -58,6 +58,5 @@ template <typename T> T feval(T val01, T val02, BINOP bop) {
 
 	return 0;
 }
-;
 
 #endif
