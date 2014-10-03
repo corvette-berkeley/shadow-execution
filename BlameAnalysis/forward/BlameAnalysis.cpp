@@ -69,8 +69,6 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope,
 	// The resulting shadow object is computed using the shadow object of the
 	// left and right operand. Update the shadow object for this instruction. At
 	// each time, only the most recent shadow object instant is kept.
-	//  printf("START postfbinop IID: %lu, LIID: %lu, RIID: %lu\n", iid, liid,
-	// riid);
 	const BlameShadowObject lBSO = getShadowObject(liid, lScope, lValue);
 	const BlameShadowObject rBSO = getShadowObject(riid, rScope, rValue);
 
@@ -90,15 +88,21 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope,
 	rBSO.highValue, rBSO.lowValue);
 	*/
 
-	BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
-	executionStack.top()[inx]->setShadow(BSO);
+	if (executionStack.top()[inx]->getShadow() == NULL) {
+		BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
+		executionStack.top()[inx]->setShadow(BSO);
+	} else {
+		*((BlameShadowObject*)executionStack.top()[inx]->getShadow()) =
+			BlameShadowObject(iid, hResult, lResult);
+	}
 
 	// Compute blame summary for the resulting shadow object.
+	BlameShadowObject* BSO =
+		(BlameShadowObject*)executionStack.top()[inx]->getShadow();
 	computeBlameSummary(*BSO, lBSO, rBSO, op);
 
 	// Update iid.
 	_iid = iid;
-	//  printf("END postfbinop\n");
 }
 
 void BlameAnalysis::computeBlameSummary(const BlameShadowObject& bso,
@@ -233,13 +237,8 @@ bool BlameAnalysis::isRequiredHigherPrecisionOperator(HIGHPRECISION result,
 void BlameAnalysis::mergeBlame(BlameNode* summary, const BlameNode& blame) {
 	// Summary and blame node needs to have same precision requirement and same
 	// numbers of blame children.
-	//  printf("START mergeBlame\n");
 	safe_assert(summary->precision == blame.precision &&
 				summary->children.size() == blame.children.size());
-	//  printf("Summary precision: %d, Blame precision: %d\n", summary->precision,
-	// blame.precision);
-	//  printf("Summary children no: %lu, Blame children no: %lu\n",
-	// summary->children.size(), blame.children.size());
 	std::vector<BlameNode*> merge;
 	std::vector<BlameNode*>::iterator sIt;
 	std::vector<BlameNode*>::const_iterator bIt;
@@ -261,7 +260,6 @@ void BlameAnalysis::mergeBlame(BlameNode* summary, const BlameNode& blame) {
 	summary->requireHigherPrecisionOperator =
 		summary->requireHigherPrecisionOperator ||
 		blame.requireHigherPrecisionOperator;
-	//  printf("EXIT mergeBlame\n");
 }
 
 void BlameAnalysis::initSummaryIfNotExist(IID id) {

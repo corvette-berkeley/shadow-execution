@@ -15,6 +15,15 @@ struct BlameShadowObject {
 	BlameShadowObject(IID i, HIGHPRECISION h, LOWPRECISION l)
 		: id(i), highValue(h), lowValue(l) {}
 	;
+
+	BlameShadowObject& operator=(const BlameShadowObject& rhs) {
+		if (&rhs != this) {
+			id = rhs.id;
+			highValue = rhs.highValue;
+			lowValue = rhs.lowValue;
+		}
+		return *this;
+	}
 };
 
 #endif
