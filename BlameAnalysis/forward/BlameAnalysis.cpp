@@ -182,6 +182,24 @@ const BlameNode BlameAnalysis::computeBlameInformation(
 		}
 	}
 
+	/*
+	if (!found) {
+	  DebugInfo debugInfo = debugInfoMap.at(bso.id);
+	  printf("[RESULT] File: %s, Line: %d, Column: %d, High precision result:
+	%.10f, Low precision result: %.10f, Current result: %.10f\n", debugInfo.file,
+	debugInfo.line, debugInfo.column, bso.highValue, bso.lowValue, val);
+	  printf("[LOP] High precision result: %.10f, Low precision result: %.10f\n",
+	lbso.highValue, lbso.lowValue);
+	  printf("[ROP] High precision result: %.10f, Low precision result: %.10f\n",
+	rbso.highValue, rbso.lowValue);
+	  printf("High eval result: %.10f, Low eval result: %.10f\n",
+	feval<HIGHPRECISION>(lbso.lowValue, rbso.lowValue, op),
+	feval<LOWPRECISION>(lbso.highValue, rbso.highValue, op));
+	  printf("Can blame: %d\n", canBlame(val, lbsoVals[BITS_FLOAT],
+	rbsoVals[BITS_FLOAT], op, p));
+	}
+	*/
+
 	// Construct the associated blame node and return.
 	safe_assert(found);
 	BlameNode* lBlameNode = blameSummary[lbso.id][i];
