@@ -104,45 +104,45 @@ private:
 public:
 	IValue(KIND t, VALUE v, SCOPE s)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(s) {
+		  bitOffset(0), scope(s), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned fb)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned s, int o, unsigned i, unsigned l)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t)
 		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-		  scope(REGISTER) {
+		  scope(REGISTER), struct_(false) {
 		value.as_int = 0;
 		// counterNew++;
 	}
 
 	IValue()
 		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER) {
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(const IValue& iv)
 		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())), type(iv.getType()), valueOffset(iv.getValueOffset()),
 		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()), length(iv.getLength()),
-		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()) {}
+		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()), struct_(iv.isStruct()) {}
 
 	IValue(IValue&& iv) {
 		swap(iv);
@@ -175,6 +175,7 @@ public:
 		std::swap(offset, iv.offset);
 		std::swap(bitOffset, iv.bitOffset);
 		std::swap(scope, iv.scope);
+		std::swap(struct_, iv.struct_);
 		std::swap(shadow, iv.shadow);
 	}
 
@@ -309,7 +310,7 @@ public:
 		return value.as_ptr;
 	}
 
-	bool isStruct() {
+	bool isStruct() const {
 		return struct_;
 	}
 

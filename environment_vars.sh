@@ -65,6 +65,12 @@ fi
 export GPERFTOOLS_LIB_PATH="$(get_lib_var "libprofiler" "$PROFILER_PATH" "$PROFILER_PATH/lib")"
 
 export GLOG_log_dir="${GLOG_log_dir:-"/tmp/$(basename $INSTRUMENTOR_PATH)/logs"}"
+if [ ! -d "$GLOG_log_dir" ]
+then
+	echo "Making log dir..."
+	mkdir -p "$GLOG_log_dir"
+
+fi
 export CPUPROFILE="${CPUPROFILE:-""}"
 
 # all libs are in the ld path now

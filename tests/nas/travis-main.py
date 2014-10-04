@@ -15,6 +15,9 @@ result = jobmonitor.RunJob([executable],shell = False, stdout=None, stderr=None)
 names = ["Command", "Return Code", "Runtime", "Max memory usage"]
 
 f = open(executable+".result.ref")
+#f = [ str(a)+"\n" for a in result]
+print(str(result[0])+" returned " + str(result[1]) + ", using " + str(result[2]) + " seconds and " + str(result[3]) + " bytes")
+
 for new_val, str_ref_val, name in zip(result, f, names):
 	str_ref_val = str_ref_val[0:-1]
 	if name == names[0] and str(new_val) != str_ref_val:
@@ -27,4 +30,6 @@ for new_val, str_ref_val, name in zip(result, f, names):
 	if new_val > ref_val * (1+FUDGE_PERCENT):
 		print("New value for " + name + " is much worse than old value: " + str(new_val) + " > " + str(ref_val) + " * " + str(1+FUDGE_PERCENT))
 		exit(1)
-print(str(result[0])+" returned " + str(result[1]) + ", using " + str(result[2]) + " seconds and " + str(result[3]) + " bytes")
+	if new_val*(1+FUDGE_PERCENT*3) < ref_val:
+		print("WARNING: New value for " + name + " is significantly better than old value - please update the ref value: " + str(new_val) + " * " + str(1+FUDGE_PERCENT*2) + " < " + str(ref_val))
+

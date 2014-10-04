@@ -2682,7 +2682,11 @@ void InterpreterObserver::create_global_symbol_table(int size) {
 	// pre_create_global_symbol_table();
 
 	// initialize logger
-	google::InitGoogleLogging(logName.c_str());
+	static bool initted = false;
+	if (!initted) {
+		google::InitGoogleLogging(logName.c_str());
+		initted = true;
+	}
 	DEBUG_LOG("Initialized logger");
 
 	for (int i = 0; i < size; i++) {
