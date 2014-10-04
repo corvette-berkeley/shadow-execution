@@ -3,6 +3,8 @@
 #include "BlameAnalysis.h"
 #include "../../src/InstructionMonitor.h"
 
+using namespace std;
+
 /*** HELPER FUNCTIONS ***/
 
 unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
@@ -22,15 +24,14 @@ unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
 	return debugInfoMap;
 }
 
-void BlameAnalysis::copyShadow(const IValue* src, IValue* dest) {
-	if (src->getShadow() != NULL) {
-		BlameShadowObject* bsoSrc = (BlameShadowObject*)src->getShadow();
+void* BlameAnalysis::copyShadow(void* oldShadow) {
+	if (oldShadow != NULL) {
+		BlameShadowObject* bsoSrc = (BlameShadowObject*)oldShadow;
 		BlameShadowObject* bsoDest =
 			new BlameShadowObject(bsoSrc->id, bsoSrc->highValue, bsoSrc->lowValue);
-		dest->setShadow(bsoDest);
-	} else {
-		dest->setShadow(NULL);
+		return bsoDest;
 	}
+	return NULL;
 }
 
 const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, SCOPE scope,
@@ -275,7 +276,9 @@ void BlameAnalysis::initSummaryIfNotExist(IID id) {
 
 /*** API FUNCTIONS ***/
 void BlameAnalysis::pre_analysis() {
-	IValue::setCopyShadow(&copyShadow);
+	IValue::setShadowHandlers(copyShadow, [](void* a) {
+		delete static_cast<BlameShadowObject*>(a);
+	});
 }
 
 void BlameAnalysis::post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,

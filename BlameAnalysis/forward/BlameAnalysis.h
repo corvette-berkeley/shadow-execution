@@ -34,18 +34,18 @@ private:
 	//
 	// TODO: find a way to make the name debug.bin to be provided as input and
 	// sounds more personal to the application under analysis.
-	unordered_map<IID, DebugInfo> readDebugInfo();
+	std::unordered_map<IID, DebugInfo> readDebugInfo();
 
 	// A map from instruction IID to debug information. IID is computed during
 	// instrumentation phase and is the unique id for each LLVM instruction.
 	// Debug information includes the LoC, column and file of the instruction.
-	const unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
+	const std::unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
 
 	// A map from instruction IID to blame summary. IID is computed during
 	// instrumentation phase and is the unique id for each LLVM instruction.
 	// Blame summary is a tree-like data structure which represents the precision
 	// dependency of values used and defined in this instruction.
-	map<IID, std::vector<BlameNode*>> blameSummary;
+	std::map<IID, std::vector<BlameNode*>> blameSummary;
 
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
@@ -79,7 +79,6 @@ public:
 	virtual void post_analysis();
 
 private:
-
 	// Get the shadow object of an LLVM instruction. An LLVM instruction is
 	// identified by its iid, scope and value or index.
 	const BlameShadowObject getShadowObject(IID iid, SCOPE scope, int64_t value);
@@ -107,7 +106,7 @@ private:
 
 	void initSummaryIfNotExist(IID id);
 
-	static void copyShadow(const IValue* src, IValue* dest);
+	static void* copyShadow(void* oldShadow);
 
 	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope,
 					 int64_t lValue, int64_t rValue, KIND type, int inx,
