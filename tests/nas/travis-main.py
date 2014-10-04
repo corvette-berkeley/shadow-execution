@@ -23,7 +23,6 @@ for new_val, str_ref_val, name in zip(result, f, names):
 	if name == names[0] and str(new_val) != str_ref_val:
 		print("Command ran was different - error!: Expected "+str_ref_val + " but got " + str(new_val))
 		exit(1)
-	exit(0)
 
 	if name == names[0]:
 		continue
