@@ -29,7 +29,8 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
  * EVENT SHALL UC BERKELEY BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR
  * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -53,19 +54,25 @@ private:
 	 * has a corresponding concrete value.
 	 *
 	 * Fields of an IValue object include:
-	 *  value: value of this object, e.g., 10, 5.5, 0x3, etc. For pointers the value is
+	 *  value: value of this object, e.g., 10, 5.5, 0x3, etc. For pointers the
+	value is
 	 *  the corresponding concrete value.
 	 *  shadow: pointer to corresponding shadow object.
 	 *  type: type of this object, e.g. int32, float, ptr, etc.
 	 *  valueOffset: the difference between the IValue address and the
 	 *    corresponding concrete value address (used for pointer value only).
-	 *  size: size of the data this pointer points to (used for pointer value only).
+	 *  size: size of the data this pointer points to (used for pointer value
+	only).
 	 *  index: the current index of this object (used for array pointer only).
 	 *  firstByte: if this object is an element of an array, this is the
-	 *    distance from the base pointer to this object (used for elements in an array).
-	 *  length: number of elements in the array this pointer points to (used for array pointer only).
-	 *  offset: distance from the base pointer to this value (used for pointer value only).
-	 *  bitOffset: to represent data not fiting to a byte, values range from 0 to 7.
+	 *    distance from the base pointer to this object (used for elements in an
+	array).
+	 *  length: number of elements in the array this pointer points to (used for
+	array pointer only).
+	 *  offset: distance from the base pointer to this value (used for pointer
+	value only).
+	 *  bitOffset: to represent data not fiting to a byte, values range from 0 to
+	7.
 	 *  scope: either a GLOBAL, LOCAL or REGISTER.
 	 */
 
@@ -103,46 +110,54 @@ private:
 
 public:
 	IValue(KIND t, VALUE v, SCOPE s)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(s), struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
+		  firstByte(0), length(0), offset(0), bitOffset(0), scope(s),
+		  struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
+		  firstByte(0), length(0), offset(0), bitOffset(0), scope(REGISTER),
+		  struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned fb)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
+		  firstByte(fb), length(0), offset(0), bitOffset(0), scope(REGISTER),
+		  struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned s, int o, unsigned i, unsigned l)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i),
+		  firstByte(0), length(l), offset(o), bitOffset(0), scope(REGISTER),
+		  struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t)
-		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-		  scope(REGISTER), struct_(false) {
+		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0),
+		  length(0), offset(0), bitOffset(0), scope(REGISTER), struct_(false) {
 		value.as_int = 0;
 		// counterNew++;
 	}
 
 	IValue()
-		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0),
+		  firstByte(0), length(0), offset(0), bitOffset(0), scope(REGISTER),
+		  struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(const IValue& iv)
-		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())), type(iv.getType()), valueOffset(iv.getValueOffset()),
-		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()), length(iv.getLength()),
-		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()), struct_(iv.isStruct()) {}
+		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())),
+		  type(iv.getType()), valueOffset(iv.getValueOffset()),
+		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()),
+		  length(iv.getLength()), offset(iv.getOffset()),
+		  bitOffset(iv.getOffset()), scope(iv.getScope()),
+		  struct_(iv.isStruct()) {}
 
 	IValue(IValue&& iv) {
 		swap(iv);
@@ -159,7 +174,7 @@ public:
 		return *this;
 	}
 
-	IValue& operator=(IValue&& iv) {
+	IValue& operator=(IValue &&iv) {
 		swap(iv);
 		return *this;
 	}
@@ -241,7 +256,8 @@ public:
 		shadow = sh;
 	}
 
-	static void setShadowHandlers(std::function<void* (void*)> cSh, std::function<void(void*)> dSh) {
+	static void setShadowHandlers(std::function<void* (void*)> cSh,
+								  std::function<void(void*)> dSh) {
 		IValue::copyShadow = cSh;
 		IValue::deleteShadow = dSh;
 	}
@@ -256,7 +272,8 @@ public:
 		struct_ = flag;
 	}
 
-	void setAll(KIND type, VALUE value, unsigned size, int index, unsigned length, int64_t valueOffset);
+	void setAll(KIND type, VALUE value, unsigned size, int index, unsigned length,
+				int64_t valueOffset);
 
 	KIND getType() const {
 		return this->type;
@@ -317,7 +334,7 @@ public:
 	double getFlpValue();
 
 	IValue* getIPtrValue() {
-		return (IValue*)((int64_t)value.as_ptr + valueOffset);
+		return (IValue*)((int64_t) value.as_ptr + valueOffset);
 	}
 
 	bool isInitialized() const {
@@ -325,13 +342,14 @@ public:
 	}
 
 	bool isIntValue() const {
-		return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND || type == INT24_KIND || type == INT32_KIND ||
-			   type == INT64_KIND || type == INT80_KIND;
+		return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND ||
+			   type == INT24_KIND || type == INT32_KIND || type == INT64_KIND ||
+			   type == INT80_KIND;
 	}
 
 	bool isFlpValue() const {
-		return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND || type == FLP128_KIND ||
-			   type == FLP128PPC_KIND;
+		return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND ||
+			   type == FLP128_KIND || type == FLP128PPC_KIND;
 	}
 
 	bool isPtrValue() const {

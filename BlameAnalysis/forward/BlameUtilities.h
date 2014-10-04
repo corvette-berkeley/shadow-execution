@@ -19,6 +19,17 @@ typedef enum {
 	PRECISION_NO
 } PRECISION;
 
+typedef enum {
+	SIN,
+	ACOS,
+	SQRT,
+	FABS,
+	COS,
+	LOG,
+	FLOOR,
+	MATHFUNC_NO
+} MATHFUNC;
+
 const std::map<PRECISION, unsigned> PRECISION_BITS = {
 	{ BITS_FLOAT, 23 }, { BITS_19, 19 }, { BITS_27, 27 }, { BITS_DOUBLE, 52 }
 };
@@ -52,8 +63,32 @@ template <typename T> T feval(T val01, T val02, BINOP bop) {
 		case FDIV:
 			return val01 / val02;
 		default:
-			safe_assert(false);
 			DEBUG_STDERR("Unsupported floating-point binary operator.");
+			safe_assert(false);
+	}
+
+	return 0;
+}
+
+template <typename T> T mathLibEval(T val, MATHFUNC func) {
+	switch (func) {
+		case SIN:
+			return sin(val);
+		case ACOS:
+			return acos(val);
+		case SQRT:
+			return sqrt(val);
+		case FABS:
+			return fabs(val);
+		case COS:
+			return cos(val);
+		case LOG:
+			return log(val);
+		case FLOOR:
+			return floor(val);
+		default:
+			DEBUG_STDERR("Unsupported math library call.");
+			safe_assert(false);
 	}
 
 	return 0;
