@@ -1,4 +1,3 @@
-simpsons_double_3address
 tao_double_3address
 triangle-area_3address
 triangle-area

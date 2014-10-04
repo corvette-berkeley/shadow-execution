@@ -18,7 +18,7 @@ $LLVM_BIN_PATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --instrument --file $G
 $LLVM_BIN_PATH/opt -load $MONITOR_LIB_PATH/MonitorPass.so --move-allocas -f -o tmppass-allocas.bc tmppass.bc
 
 # Create executable
-$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lfba -lmonitor -lpthread -lm -lrt -lgmp -lglog  #-ltcmalloc
+$CC tmppass-allocas.bc -o $name.out $LDFLAGS -lfba -lmonitor -lpthread -lm -lrt -lgmp -lglog -ltcmalloc
 
 # Clean temporary files
 #rm $name.bc

@@ -136,7 +136,7 @@ class JobMonitor:
                     print('  Mem :> ',mem)
                 if (mem > self.max):
                     self.max = mem
-                time.sleep(1)
+                time.sleep(0.001)
                 self.time = time.time() - self.start
                 self.rc = p.poll()
                 if (self.timeout != None and self.time >= self.timeout):

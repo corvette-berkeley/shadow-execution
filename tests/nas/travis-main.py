@@ -6,30 +6,49 @@ import jobmonitor
 import subprocess
 import sys
 
-FUDGE_PERCENT=0.35
+def main():
+	executable = "./" + sys.argv[1]+".out"
 
-executable = "./" + sys.argv[1]+".out"
+	result = jobmonitor.RunJob([executable],shell = False, stdout=None, stderr=None)
 
-result = jobmonitor.RunJob([executable],shell = False, stdout=None, stderr=None)
+	check_commands = {"Command" : checkCommand, "Return Code" : checkRC, "Runtime" : checkRuntime, "Memory" : checkMemory }
 
-names = ["Command", "Return Code", "Runtime", "Max memory usage"]
+	names = ["Command", "Return Code", "Runtime", "Memory"]
 
-f = open(executable+".result.ref")
-#f = [ str(a)+"\n" for a in result]
-print(str(result[0])+" returned " + str(result[1]) + ", using " + str(result[2]) + " seconds and " + str(result[3]) + " bytes")
+	f = open(executable+".result.ref")
+	#f = [ str(a)+"\n" for a in result]
+	print(str(result[0])+" returned " + str(result[1]) + ", using " + str(result[2]) + " seconds and " + str(result[3]) + " bytes")
 
-for new_val, str_ref_val, name in zip(result, f, names):
-	str_ref_val = str_ref_val[0:-1]
-	if name == names[0] and str(new_val) != str_ref_val:
+	for new_val, str_ref_val, name in zip(result, f, names):
+		if not check_commands[name](str(new_val), str_ref_val[0:-1]):
+			exit(1)
+
+def checkCommand(new_val, old_val):
+	same = new_val == old_val
+	if not same:
 		print("Command ran was different - error!: Expected "+str_ref_val + " but got " + str(new_val))
-		exit(1)
+	return same
 
-	if name == names[0]:
-		continue
-	ref_val = abs(float(str_ref_val))
-	if new_val > ref_val * (1+FUDGE_PERCENT):
-		print("New value for " + name + " is much worse than old value: " + str(new_val) + " > " + str(ref_val) + " * " + str(1+FUDGE_PERCENT))
-		exit(1)
-	if new_val*(1+FUDGE_PERCENT*3) < ref_val:
-		print("WARNING: New value for " + name + " is significantly better than old value - please update the ref value: " + str(new_val) + " * " + str(1+FUDGE_PERCENT*2) + " < " + str(ref_val))
+def checkRC(new_val, old_val):
+	same = int(new_val) == int(old_val)
+	if not same:
+		print("Return Code has changed! Expected " + old_val + ", but got " + new_val);
+	return same
 
+def compareFloats(new_val, old_val, name):
+	FUDGE_PERCENT=0.35
+	same = float(new_val) < float(old_val)*(1+FUDGE_PERCENT)
+	if not same:
+		print(name + " has changed! Expected value to be at most " + old_val + " * " + str(1+FUDGE_PERCENT) + ", but is " + new_val);
+		return same
+	if same and float(new_val)*(1+FUDGE_PERCENT*3) < float(old_val):
+		print("WARNING: " + name + " has improved significantly! Expected reference to be at least " + new_val + " * " + str(1+FUDGE_PERCENT*3) + ", but reference is " + old_val);
+	return same
+
+def checkRuntime(a,b):
+	return compareFloats(a,b, "Runtime")
+
+def checkMemory(a,b):
+	return compareFloats(a,b, "Max memory")
+
+main()
