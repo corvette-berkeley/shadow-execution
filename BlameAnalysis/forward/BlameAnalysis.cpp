@@ -89,17 +89,10 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope,
 	rBSO.highValue, rBSO.lowValue);
 	*/
 
-	if (executionStack.top()[inx]->getShadow() == NULL) {
-		BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
-		executionStack.top()[inx]->setShadow(BSO);
-	} else {
-		*((BlameShadowObject*)executionStack.top()[inx]->getShadow()) =
-			BlameShadowObject(iid, hResult, lResult);
-	}
+	BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
+	executionStack.top()[inx]->setShadow(BSO);
 
 	// Compute blame summary for the resulting shadow object.
-	BlameShadowObject* BSO =
-		(BlameShadowObject*)executionStack.top()[inx]->getShadow();
 	computeBlameSummary(*BSO, lBSO, rBSO, op);
 
 	// Update iid.
