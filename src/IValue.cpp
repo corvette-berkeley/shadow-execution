@@ -46,12 +46,10 @@ using namespace std;
 
 function<void* (void*)> IValue::copyShadow = [](void* a) {
 	return a;
-}
-;
+};
 function<void(void*)> IValue::deleteShadow = [](void* a) {
 	delete static_cast<char*>(a);
-}
-; // dangerous!
+};  // dangerous!
 
 // long IValue::counterNew = 0;
 // long IValue::counterDelete = 0;
@@ -104,13 +102,13 @@ string IValue::toString() const {
 			s << "[INT64: " << value.as_int << "]";
 			break;
 		case FLP32_KIND:
-			s << "[FLP32: " << (float) value.as_flp << "]";
+			s << "[FLP32: " << (float)value.as_flp << "]";
 			break;
 		case FLP64_KIND:
-			s << "[FLP64: " << (double) value.as_flp << "]";
+			s << "[FLP64: " << (double)value.as_flp << "]";
 			break;
 		case FLP80X86_KIND:
-			s << "[FLP80X86: " << (double) value.as_flp << "]";
+			s << "[FLP80X86: " << (double)value.as_flp << "]";
 			break;
 		case VOID_KIND:
 			s << "[VOID]";
@@ -143,6 +141,7 @@ void IValue::copy(IValue* dest) const {
 	dest->setIndex(index);
 	dest->setLength(length);
 	dest->setValueOffset(valueOffset);
+	deleteShadow(dest->shadow);
 	dest->shadow = copyShadow(shadow);
 	return;
 }
@@ -197,9 +196,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 			IValue value;
 
 			value = valueArray[nextIndex];
-			totalByte += KIND_GetSize(
-							 value
-							 .getType()); // TODO: can the value's type change while iterating?
+			totalByte += KIND_GetSize(value.getType());  // TODO: can the value's type change while iterating?
 			nextIndex++;
 		}
 
@@ -219,8 +216,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 
 			value = valueArray[i];
 			type = value.getType();
-			size = KIND_GetSize(
-					   type); // TODO: can the value's type change while iterating?
+			size = KIND_GetSize(type);  // TODO: can the value's type change while iterating?
 			valValue = value.getValue();
 			valueContent = (uint8_t*)&valValue;
 
@@ -233,8 +229,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 		//
 		// truncate content from total content
 		//
-		truncContent =
-			(uint8_t*)calloc(8, sizeof(uint8_t));  // TODO: magic number 8 is 64/8
+		truncContent = (uint8_t*)calloc(8, sizeof(uint8_t));  // TODO: magic number 8 is 64/8
 		trcInx = 0;
 
 		for (int i = offset; i < offset + byte; i++) {
@@ -345,8 +340,7 @@ bool IValue::writeValue(int offset, int byte, const IValue* src) {
 			DEBUG_STDOUT("\t"
 						 << "=== current value: " << currentValue->getValue().as_int);
 
-			byteWrittens +=
-				currentValue->setValue(offset, byte - byteWrittens, content);
+			byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
 			currentValue->setLength(length);
 			currentValue->setValueOffset(valueOffset);
 			currentValue->setBitOffset(bitOffset);
@@ -354,9 +348,8 @@ bool IValue::writeValue(int offset, int byte, const IValue* src) {
 
 			DEBUG_STDOUT("\t"
 						 << "=== byteWrittens: " << byteWrittens);
-			DEBUG_STDOUT(
-				"\t"
-				<< "=== current value after: " << currentValue->getValue().as_int);
+			DEBUG_STDOUT("\t"
+						 << "=== current value after: " << currentValue->getValue().as_int);
 			DEBUG_STDOUT("\t"
 						 << "=== Ivalue after: " << currentValue->toString());
 
@@ -424,15 +417,15 @@ uint64_t IValue::getUIntValue() {
 		case INT1_KIND:
 			return v64;
 		case INT8_KIND:
-			return (uint8_t) v64;
+			return (uint8_t)v64;
 		case INT16_KIND:
-			return (uint16_t) v64;
+			return (uint16_t)v64;
 		case INT24_KIND:
-			return (uint32_t) v64;
+			return (uint32_t)v64;
 		case INT32_KIND:
-			return (uint32_t) v64;
+			return (uint32_t)v64;
 		case INT64_KIND:
-			return (uint64_t) v64;
+			return (uint64_t)v64;
 		case INT80_KIND:
 			DEBUG_STDERR("Unsupported type INT80.");
 			safe_assert(false);
@@ -449,9 +442,9 @@ double IValue::getFlpValue() {
 	//
 	switch (type) {
 		case FLP32_KIND:
-			return (float) v;
+			return (float)v;
 		case FLP64_KIND:
-			return (double) v;
+			return (double)v;
 		case FLP80X86_KIND:
 			return v;
 		case FLP128_KIND:
@@ -481,8 +474,7 @@ void IValue::setValue(int64_t v) {
 	return;
 }
 
-void IValue::setAll(KIND type, VALUE value, unsigned size, int index,
-					unsigned length, int64_t valueOffset) {
+void IValue::setAll(KIND type, VALUE value, unsigned size, int index, unsigned length, int64_t valueOffset) {
 	this->type = type;
 	this->value = value;
 	this->size = size;
