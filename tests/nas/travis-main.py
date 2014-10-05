@@ -33,6 +33,9 @@ def checkRC(new_val, old_val):
 	same = int(new_val) == int(old_val)
 	if not same:
 		print("Return Code has changed! Expected " + old_val + ", but got " + new_val);
+	if same and int(old_val) < 0: # exit rcs are the same, but both errored
+		print("Since the program errored, we are skipping memory and runtime checks!")
+		exit(0)
 	return same
 
 def compareFloats(new_val, old_val, name):

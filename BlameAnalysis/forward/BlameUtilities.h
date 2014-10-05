@@ -3,7 +3,7 @@
 #ifndef _BLAME_UTILITIES_H_
 #define _BLAME_UTILITIES_H_
 
-#include <math.h>
+#include <cmath>
 #include <map>
 
 #include "../../src/Common.h"
@@ -30,9 +30,11 @@ typedef enum {
 	MATHFUNC_NO
 } MATHFUNC;
 
-const std::map<PRECISION, unsigned> PRECISION_BITS = {
-	{ BITS_FLOAT, 23 }, { BITS_19, 19 }, { BITS_27, 27 }, { BITS_DOUBLE, 52 }
-};
+const std::array<unsigned, PRECISION_NO> PRECISION_BITS = {23,  // BITS_FLOAT
+														   19,  // BITS_19
+														   27,  // BITS_27
+														   52  // BITS_DOUBLE
+														  };
 
 const unsigned DOUBLE_EXPONENT_LENGTH = 11;
 const unsigned DOUBLE_MANTISSA_LENGTH = 52;
@@ -40,7 +42,18 @@ const unsigned DOUBLE_MANTISSA_LENGTH = 52;
 /*** HELPER FUNCTIONS ***/
 
 // Replace the last "shift" bits of the double value with 0 bits.
-double clearBits(double v, int shift);
+inline double clearBits(double v, int shift) {
+	if (std::isnan(v) || std::isinf(v)) {
+		return v;
+	}
+
+	int64_t mask = 0xffffffffffffffff << shift;
+	int64_t* ptr = (int64_t*)&v;
+	*ptr = *ptr & mask;
+	double* dm = (double*)ptr;
+
+	return *dm;
+}
 
 // Verify whether the two double values v1 and v2 equal within the precision
 // given.
@@ -48,7 +61,29 @@ double clearBits(double v, int shift);
 // This function first clears the last few bits of v1 and v2 to match
 // with the precision and then compares the resulting values. When comparing
 // the resulting values, inequality due to rounding is torelated.
-bool equalWithinPrecision(double v1, double v2, PRECISION p);
+inline bool equalWithinPrecision(double v1, double v2, PRECISION p) {
+	if (std::isnan(v1)) {
+		return std::isnan(v2);
+	}
+	if (std::isinf(v1)) {
+		return std::isinf(v2);
+	}
+	if (p == BITS_DOUBLE) {
+		return v1 == v2;
+	}
+
+	int64_t* ptr1 = (int64_t*)&v1;
+	int64_t* ptr2 = (int64_t*)&v2;
+
+	// Get the mantissa bits and bit-cast them to integer.
+	*ptr1 = *ptr1 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
+			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
+	*ptr2 = *ptr2 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
+			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
+
+	// Return true if the two mantissa offset less than or equal to 1.
+	return abs(*ptr1 - *ptr2) <= 1;
+}
 
 // Template function to perform the floating-point binary operator on
 // the two operands and return the computed value.

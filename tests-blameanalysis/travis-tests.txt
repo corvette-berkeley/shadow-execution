@@ -1,3 +1,5 @@
 tao_double_3address
 triangle-area_3address
 triangle-area
+simpsons_double_3address
+cg.S.x
