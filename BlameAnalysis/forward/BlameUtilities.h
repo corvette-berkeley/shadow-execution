@@ -30,11 +30,13 @@ typedef enum {
 	MATHFUNC_NO
 } MATHFUNC;
 
-const std::array<unsigned, PRECISION_NO> PRECISION_BITS = {23,  // BITS_FLOAT
-														   19,  // BITS_19
-														   27,  // BITS_27
-														   52  // BITS_DOUBLE
-														  };
+const std::array<unsigned, PRECISION_NO> PRECISION_BITS = {{
+		23, /* BITS_FLOAT */
+		19, /* BITS_19 */
+		27, /* BITS_27 */
+		52 /* BITS_DOUBLE */
+	}
+};
 
 const unsigned DOUBLE_EXPONENT_LENGTH = 11;
 const unsigned DOUBLE_MANTISSA_LENGTH = 52;
