@@ -24,27 +24,23 @@ public:
 
 	BackwardBlameAnalysis(std::string name) : InterpreterObserver(name) {}
 
-	virtual void post_call_sin(IID iid, bool nounwind, int pc, KIND type, int inx,
-							   SCOPE argScope, int64_t argValueOrIndex);
+	virtual void post_call_sin(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_acos(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_cos(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_fabs(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_sqrt(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_log(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_floor(IID iid, IID argIID, SCOPE argScope,
+								 int64_t argVal, KIND type, int inx);
+	virtual void post_call_exp(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
 
-	virtual void post_call_acos(IID iid, bool nounwind, int pc, KIND type,
-								int inx, SCOPE argScope, int64_t argValueOrIndex);
-
-	virtual void post_call_cos(IID iid, bool nounwind, int pc, KIND type, int inx,
-							   SCOPE argScope, int64_t argValueOrIndex);
-
-	virtual void post_call_sqrt(IID iid, bool nounwind, int pc, KIND type,
-								int inx, SCOPE argScope, int64_t argValueOrIndex);
-
-	virtual void post_call_fabs(IID iid, bool nounwind, int pc, KIND type,
-								int inx, SCOPE argScope, int64_t argValueOrIndex);
-
-	virtual void post_call_log(IID iid, bool nounwind, int pc, KIND type, int inx,
-							   SCOPE argScope, int64_t argValueOrIndex);
-
-	virtual void post_call_floor(IID iid, bool nounwind, int pc, KIND type,
-								 int inx, SCOPE argScope,
-								 int64_t argValueOrIndex);
 	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
 						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
@@ -124,8 +120,8 @@ private:
 					 int64_t lValue, int64_t rValue, KIND type, int inx,
 					 BINOP op);
 
-	void post_lib_call(IID iid, bool nounwind, int pc, KIND type, int inx,
-					   SCOPE argScope, int64_t argValueOrIndex, string func);
+	void post_lib_call(IID iid, IID argIID, SCOPE argScope,
+					   int64_t argValueOrIndex, KIND type, int inx, string func);
 };
 
 #endif

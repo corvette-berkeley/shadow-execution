@@ -147,12 +147,16 @@ void BackwardBlameAnalysis::pre_analysis() {
 	});
 }
 
-void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
+void BackwardBlameAnalysis::post_lib_call(IID iid, IID argIID UNUSED,
 		SCOPE argScope,
 		int64_t argValueOrIndex,
+		KIND type UNUSED, int inx,
 		string func) {
 	PRECISION p;
+	DebugInfo debugInfo = debugInfoMap[iid];
+	int line = debugInfo.line;
+	int col = debugInfo.column; // TODO: record col in debug info.
+	string file(debugInfo.file);
 
 	// Obtain actual values and shadow values.
 	LOWPRECISION arg = getActualValue(argScope, argValueOrIndex);
@@ -177,7 +181,7 @@ void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED,
 		}
 
 		shadow = new BlameTreeShadowObject<HIGHPRECISION>(
-			0, pc, 0, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
+			file, line, col, dpc, CONSTANT_INTR, BINOP_INVALID, "NONE", values);
 		setShadowObject(argScope, argValueOrIndex, shadow);
 	}
 
@@ -194,7 +198,7 @@ void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED,
 
 	// creating shadow object for the result
 	BlameTreeShadowObject<HIGHPRECISION>* resultShadow =
-		new BlameTreeShadowObject<HIGHPRECISION>(0, pc, 0, dpc, CALL_INTR,
+		new BlameTreeShadowObject<HIGHPRECISION>(file, line, col, dpc, CALL_INTR,
 				BINOP_INVALID, func, values);
 	executionStack.top()[inx]->setShadow(resultShadow);
 
@@ -208,58 +212,45 @@ void BackwardBlameAnalysis::post_lib_call(IID iid UNUSED, bool nounwind UNUSED,
 	return;
 }
 
-void BackwardBlameAnalysis::post_call_sin(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "sin");
+void BackwardBlameAnalysis::post_call_sin(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "sin");
 }
 
-void BackwardBlameAnalysis::post_call_cos(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "cos");
+void BackwardBlameAnalysis::post_call_exp(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "exp");
 }
 
-void BackwardBlameAnalysis::post_call_acos(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "acos");
+void BackwardBlameAnalysis::post_call_cos(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "cos");
 }
 
-void BackwardBlameAnalysis::post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "sqrt");
+void BackwardBlameAnalysis::post_call_acos(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "acos");
 }
 
-void BackwardBlameAnalysis::post_call_fabs(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "fabs");
+void BackwardBlameAnalysis::post_call_sqrt(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "sqrt");
 }
 
-void BackwardBlameAnalysis::post_call_log(IID iid UNUSED, bool nounwind UNUSED,
-		int pc, KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex, "log");
+void BackwardBlameAnalysis::post_call_fabs(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "fabs");
 }
 
-void BackwardBlameAnalysis::post_call_floor(IID iid UNUSED,
-		bool nounwind UNUSED, int pc,
-		KIND type UNUSED, int inx,
-		SCOPE argScope,
-		int64_t argValueOrIndex) {
-	post_lib_call(iid, nounwind, pc, type, inx, argScope, argValueOrIndex,
-				  "floor");
+void BackwardBlameAnalysis::post_call_log(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type, int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "log");
+}
+
+void BackwardBlameAnalysis::post_call_floor(IID iid, IID argIID, SCOPE argScope,
+		int64_t argVal, KIND type,
+		int inx) {
+	post_lib_call(iid, argIID, argScope, argVal, type, inx, "floor");
 }
 
 void BackwardBlameAnalysis::post_fbinop(IID iid, IID liid UNUSED,
