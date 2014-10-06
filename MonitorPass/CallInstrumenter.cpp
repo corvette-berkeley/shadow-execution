@@ -27,6 +27,24 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 	InstrPtrVector instrs;
 	InstrPtrVector instrsAfter;
 
+	// debugging info
+	string filename = getFileName(callInst);
+	int line = getLineNumber(callInst);
+	int column = getColumnNumber(callInst);
+	DebugInfo* debug = new DebugInfo;
+	sprintf(debug->file, "%.99s", filename.c_str());
+	debug->line = line;
+	debug->column = column;
+	IID address = static_cast<IID>(reinterpret_cast<ADDRINT>(callInst));
+	parent_->debugMap[address] = debug;
+	// end of debugging info
+
+	if (parent_->fileNames.insert(std::make_pair(filename, parent_->fileCount))
+			.second) {
+		// element was inserted
+		parent_->fileCount++;
+	}
+
 	Constant* iid = IID_CONSTANT(callInst);
 	Constant* inx = computeIndex(callInst);
 	Constant* cLine = INT32_CONSTANT(getLineNumber(callInst), SIGNED);
@@ -66,7 +84,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// fields to reconstruct KVALUE during interpretation
 		Value* arg = callInst->getArgOperand(i);
 		Constant* cInx = computeIndex(arg);
-		Constant* cScope = INT32_CONSTANT(getScope(arg), NOSIGN);  // original instrumentation was not signed
+		Constant* cScope = INT32_CONSTANT(
+							   getScope(arg), NOSIGN); // original instrumentation was not signed
 		Constant* cType = KIND_CONSTANT(TypeToKind(arg->getType()));
 		Instruction* argAddress = CAST_VALUE(arg, instrs, NOSIGN);
 
@@ -75,15 +94,18 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		}
 		instrs.push_back(argAddress);
 
-		Instruction* call = CALL_INT_INT_KIND_INT64("llvm_push_stack", cInx, cScope, cType, argAddress);
+		Instruction* call = CALL_INT_INT_KIND_INT64("llvm_push_stack", cInx, cScope,
+							cType, argAddress);
 		instrs.push_back(call);
 	}
 
 	Instruction* call = NULL;
 
 	// the case for MALLOC
-	if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "malloc") {
-		// Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs, NOSIGN);
+	if (callInst->getCalledFunction() != NULL &&
+			callInst->getCalledFunction()->getName() == "malloc") {
+		// Value* callValue = KVALUE_VALUE(callInst->getCalledValue(), instrs,
+		// NOSIGN);
 
 		// there can be more than 1 use
 		// e.g., checking for NULL
@@ -102,7 +124,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 			// PointerType *src = dyn_cast<PointerType>(bitcast->getSrcTy());
 			PointerType* dest = dyn_cast<PointerType>(bitcast->getDestTy());
 
-			// cout << "Sizes: " << src->getElementType()->getPrimitiveSizeInBits() << " " <<
+			// cout << "Sizes: " << src->getElementType()->getPrimitiveSizeInBits() <<
+			// " " <<
 			//  dest->getElementType()->getPrimitiveSizeInBits() << endl;
 
 			// cout << "Number of bytes requested: " << endl;
@@ -115,7 +138,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 			kind = KIND_CONSTANT(returnKind);
 
 			if (TypeToKind(dest->getElementType()) == STRUCT_KIND) {
-				uint64_t allocation = pushStructType((StructType*)dest->getElementType(), instrs);
+				uint64_t allocation =
+					pushStructType((StructType*)dest->getElementType(), instrs);
 				cout << "After allocation: " << allocation << endl;
 
 				StructType* structType = (StructType*)dest->getElementType();
@@ -130,9 +154,10 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
 				size = INT32_CONSTANT(sum, false);
 			} else if (TypeToKind(dest->getElementType()) == PTR_KIND) {
-				size = INT32_CONSTANT(64, false);  // pointers are 64 bits
+				size = INT32_CONSTANT(64, false); // pointers are 64 bits
 			} else {
-				size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(), false);
+				size = INT32_CONSTANT(dest->getElementType()->getPrimitiveSizeInBits(),
+									  false);
 			}
 			// cout << "Size of struct: ";
 			// size->dump();
@@ -147,7 +172,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		noUnwind = false;
 
 		// Value* mallocAddress = KVALUE_VALUE(callInst, instrsAfter, NOSIGN);
-		// call = CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE("llvm_call_malloc", iid, noUnwindC, kind, callValue, size, inx,
+		// call = CALL_IID_BOOL_KIND_KVALUE_INT_INT_KVALUE("llvm_call_malloc", iid,
+		// noUnwindC, kind, callValue, size, inx,
 		// mallocAddress);
 
 		Instruction* mallocAddress = CAST_VALUE(callInst, instrsAfter, NOSIGN);
@@ -157,65 +183,92 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		}
 		instrsAfter.push_back(mallocAddress);
 
-		call = CALL_IID_BOOL_KIND_INT_INT_INT64("llvm_call_malloc", iid, noUnwindC, kind, size, inx, mallocAddress);
+		call = CALL_IID_BOOL_KIND_INT_INT_INT64("llvm_call_malloc", iid, noUnwindC,
+												kind, size, inx, mallocAddress);
 		instrsAfter.push_back(call);
 
 		InsertAllBefore(instrs, callInst);
 		InsertAllAfter(instrsAfter, callInst);
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "sin") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "sin") {
 		// the case for sin function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sin", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sin", iid, argIID, cLine, kind,
+										  inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "acos") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "acos") {
 		// the case for acos function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_acos", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_acos", iid, argIID, cLine,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "sqrt") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "sqrt") {
 		// the case for sqrt function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_sqrt", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sqrt", iid, argIID, cLine,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "fabs") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "fabs") {
 		// the case for fabs function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_fabs", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_fabs", iid, argIID, cLine,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "cos") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "cos") {
 		// the case for cos function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_cos", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_cos", iid, argIID, cLine, kind,
+										  inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	} else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "log") {
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "log") {
 		// the case for cos function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_log", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_log", iid, argIID, cLine, kind,
+										  inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
-	}
-	/*
-	  else if (callInst->getCalledFunction() != NULL &&
-	      callInst->getCalledFunction()->getName() == "exp") {
-	    //
-	    // the case for cos function
-	    //
-	    call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_exp", iid, noUnwindC, cLine, kind, inx);
-	    instrs.push_back(call);
-	    InsertAllBefore(instrs, callInst);
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "exp") {
+		//
+		// the case for exp function
+		//
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_exp", iid, argIID, cLine, kind,
+										  inx);
+		instrs.push_back(call);
+		InsertAllBefore(instrs, callInst);
 
-	    return true;
-	  }
-	  */
-
-	else if (callInst->getCalledFunction() != NULL && callInst->getCalledFunction()->getName() == "floor") {
+		return true;
+	} else if (callInst->getCalledFunction() != NULL &&
+			   callInst->getCalledFunction()->getName() == "floor") {
 		// the case for cos function
-		call = CALL_IID_BOOL_INT_KIND_INT("llvm_call_floor", iid, noUnwindC, cLine, kind, inx);
+		Value* arg = callInst->getArgOperand(0);
+		Constant* argIID = IID_CONSTANT(arg);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_floor", iid, argIID, cLine,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
@@ -227,7 +280,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		InsertAllBefore(instrs, callInst);
 	}
 
-	if (callInst->getCalledFunction() == NULL || callInst->getCalledFunction()->getName() != "malloc") {
+	if (callInst->getCalledFunction() == NULL ||
+			callInst->getCalledFunction()->getName() != "malloc") {
 		Instruction* call = NULL;
 
 		if (returnType->isVoidTy()) {
@@ -247,7 +301,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 			}
 			instrsAfter.push_back(callReturnValue);
 
-			call = CALL_INT_INT_KIND_INT64("llvm_after_call", cInx, cScope, cType, callReturnValue);
+			call = CALL_INT_INT_KIND_INT64("llvm_after_call", cInx, cScope, cType,
+										   callReturnValue);
 		}
 		instrsAfter.push_back(call);
 		InsertAllAfter(instrsAfter, callInst);
@@ -256,8 +311,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 	return true;
 }
 
-
-uint64_t CallInstrumenter::pushStructType(StructType* structType, InstrPtrVector& instrs) {
+uint64_t CallInstrumenter::pushStructType(StructType* structType,
+		InstrPtrVector& instrs) {
 	uint64_t size = structType->getNumElements();
 	uint64_t allocation = 0;
 	for (uint64_t i = 0; i < size; i++) {
@@ -279,8 +334,8 @@ uint64_t CallInstrumenter::pushStructType(StructType* structType, InstrPtrVector
 	return allocation;
 }
 
-
-uint64_t CallInstrumenter::pushStructType(ArrayType* arrayType, InstrPtrVector& instrs) {
+uint64_t CallInstrumenter::pushStructType(ArrayType* arrayType,
+		InstrPtrVector& instrs) {
 	Type* elemTy = arrayType;
 	int size = 1;
 	uint64_t allocation = 0;

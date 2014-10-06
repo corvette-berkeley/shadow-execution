@@ -2276,12 +2276,12 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED,
 		release(executionStack.top()[callerVarIndex.top()]);
 		executionStack.top()[callerVarIndex.top()] = structValue;
 		/*
-			                for (i = 0; i < size; i++) {
+				                for (i = 0; i < size; i++) {
 
 
-		DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-			                }
-			                */
+			DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+				                }
+				                */
 	} else {
 		cout << "The execution stack is empty.\n";
 	}
@@ -2943,7 +2943,7 @@ void InterpreterObserver::call(IID iid UNUSED, bool nounwind UNUSED, KIND type,
 }
 
 void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED,
-								   int pc UNUSED, KIND type, int inx) {
+								   IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -2996,7 +2996,7 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED,
 }
 
 void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED,
-									int pc UNUSED, KIND type, int inx) {
+									IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -3049,7 +3049,7 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED,
 }
 
 void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
-									int pc UNUSED, KIND type, int inx) {
+									IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -3102,7 +3102,7 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
 }
 
 void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED,
-									int pc UNUSED, KIND type, int inx) {
+									IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -3155,7 +3155,7 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED,
 }
 
 void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED,
-								   int pc UNUSED, KIND type, int inx) {
+								   IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -3208,7 +3208,7 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED,
 }
 
 void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED,
-								   int pc UNUSED, KIND type, int inx) {
+								   IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();
@@ -3260,8 +3260,61 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED,
 	return;
 }
 
+void InterpreterObserver::call_exp(IID iid UNUSED, bool nounwind UNUSED,
+								   IID argIID UNUSED, KIND type, int inx) {
+
+	safe_assert(myStack.size() == 1);
+	KVALUE arg = myStack.top();
+	myStack.pop();
+	double argValue;
+	VALUE value;
+	// SCOPE argScope;
+	// int64_t argValueOrIndex;
+
+	// Get the operand value.
+	if (arg.inx != -1) {
+		IValue* iArg;
+
+		if (arg.isGlobal) {
+			iArg = globalSymbolTable[arg.inx];
+			// argScope = GLOBAL;
+		} else {
+			iArg = executionStack.top()[arg.inx];
+			// argScope = LOCAL;
+		}
+
+		safe_assert(iArg);
+
+		argValue = iArg->getFlpValue();
+	} else {
+		// argScope = CONSTANT;
+		argValue = arg.value.as_flp;
+	}
+
+	/*
+	    if (argScope == CONSTANT) {
+	      int64_t *ptr = (int64_t*)&argValue;
+	      argValueOrIndex = *ptr;
+	    }
+	    else {
+	      argValueOrIndex = arg.inx;
+	    }
+	    */
+
+	// pre_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	value.as_flp = exp(argValue);
+	IValue returnValue = IValue(type, value);
+
+	*executionStack.top()[inx] = returnValue;
+
+	DEBUG_STDOUT(executionStack.top()[inx]->toString());
+	// post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+	return;
+}
+
 void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED,
-									 int pc UNUSED, KIND type, int inx) {
+									 IID argIID UNUSED, KIND type, int inx) {
 
 	safe_assert(myStack.size() == 1);
 	KVALUE arg = myStack.top();

@@ -289,13 +289,18 @@ public:
 						int inx);
 
 	virtual void call(IID iid, bool nounwind, KIND type, int inx);
-	virtual void call_floor(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_sin(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_acos(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_sqrt(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_fabs(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_cos(IID iid, bool nounwind, int pc, KIND type, int inx);
-	virtual void call_log(IID iid, bool nounwind, int pc, KIND type, int inx);
+	virtual void call_floor(IID iid, bool nounwind, IID argIID, KIND type,
+							int inx);
+	virtual void call_sin(IID iid, bool nounwind, IID argIID, KIND type, int inx);
+	virtual void call_acos(IID iid, bool nounwind, IID argIID, KIND type,
+						   int inx);
+	virtual void call_sqrt(IID iid, bool nounwind, IID argIID, KIND type,
+						   int inx);
+	virtual void call_fabs(IID iid, bool nounwind, IID argIID, KIND type,
+						   int inx);
+	virtual void call_exp(IID iid, bool nounwind, IID argIID, KIND type, int inx);
+	virtual void call_cos(IID iid, bool nounwind, IID argIID, KIND type, int inx);
+	virtual void call_log(IID iid, bool nounwind, IID argIID, KIND type, int inx);
 
 	virtual void call_malloc(IID iid, bool nounwind, KIND type, int size, int inx,
 							 uint64_t mallocAddress);
