@@ -71,18 +71,6 @@ void BlameAnalysis::post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE
 	HIGHPRECISION hResult = feval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op);
 	LOWPRECISION lResult = feval<LOWPRECISION>(lBSO.lowValue, rBSO.lowValue, op);
 
-	/*
-	 * Printing shadow execution trace for debugging.
-	DebugInfo debugInfo = debugInfoMap.at(iid);
-	printf("[RESULT] File: %s, Line: %d, Column: %d, High precision result: %.10f,
-	Low precision result: %.10f\n", debugInfo.file,
-	    debugInfo.line, debugInfo.column, hResult, lResult);
-	printf("[LOP] High precision result: %.10f, Low precision result: %.10f\n",
-	lBSO.highValue, lBSO.lowValue);
-	printf("[ROP] High precision result: %.10f, Low precision result: %.10f\n",
-	rBSO.highValue, rBSO.lowValue);
-	*/
-
 	BlameShadowObject* BSO = new BlameShadowObject(iid, hResult, lResult);
 	executionStack.top()[inx]->setShadow(BSO);
 
@@ -158,24 +146,6 @@ const BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& 
 			break;
 		}
 	}
-
-	/*
-	if (!found) {
-	  DebugInfo debugInfo = debugInfoMap.at(bso.id);
-	  printf("[RESULT] File: %s, Line: %d, Column: %d, High precision result:
-	%.10f, Low precision result: %.10f, Current result: %.10f\n", debugInfo.file,
-	debugInfo.line, debugInfo.column, bso.highValue, bso.lowValue, val);
-	  printf("[LOP] High precision result: %.10f, Low precision result: %.10f\n",
-	lbso.highValue, lbso.lowValue);
-	  printf("[ROP] High precision result: %.10f, Low precision result: %.10f\n",
-	rbso.highValue, rbso.lowValue);
-	  printf("High eval result: %.10f, Low eval result: %.10f\n",
-	feval<HIGHPRECISION>(lbso.lowValue, rbso.lowValue, op),
-	feval<LOWPRECISION>(lbso.highValue, rbso.highValue, op));
-	  printf("Can blame: %d\n", canBlame(val, lbsoVals[BITS_FLOAT],
-	rbsoVals[BITS_FLOAT], op, p));
-	}
-	*/
 
 	// Construct the associated blame node and return.
 	safe_assert(found);
