@@ -25,7 +25,8 @@ private:
 #else
 		return '/';
 #endif
-	};
+	}
+	;
 
 	// Read debug information from $GLOG_log_dir/debug.bin and wrap into a
 	// mapping from instruction IID to DebugInfo struct. The file debug.bin is
@@ -59,16 +60,37 @@ public:
 	/*** API FUNCTIONS ***/
 	virtual void pre_analysis();
 
-	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+	virtual void post_call_sin(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_acos(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_cos(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_fabs(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_sqrt(IID iid, IID argIID, SCOPE argScope,
+								int64_t argVal, KIND type, int inx);
+	virtual void post_call_log(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+	virtual void post_call_floor(IID iid, IID argIID, SCOPE argScope,
+								 int64_t argVal, KIND type, int inx);
+	virtual void post_call_exp(IID iid, IID argIID, SCOPE argScope,
+							   int64_t argVal, KIND type, int inx);
+
+	virtual void post_fadd(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
 
-	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+	virtual void post_fsub(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
 
-	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+	virtual void post_fmul(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
 
-	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue,
+	virtual void post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope,
+						   SCOPE rScope, int64_t lValue, int64_t rValue,
 						   KIND type, int inx);
 
 	virtual void post_analysis();
@@ -78,19 +100,34 @@ private:
 	// identified by its iid, scope and value or index.
 	const BlameShadowObject getShadowObject(IID iid, SCOPE scope, int64_t value);
 
-	void computeBlameSummary(const BlameShadowObject& bso, const BlameShadowObject& lbso, const BlameShadowObject& rbso,
-							 BINOP op);
+	void computeBlameSummary(const BlameShadowObject& bso,
+							 const BlameShadowObject& lbso,
+							 const BlameShadowObject& rbso, BINOP op);
 
-	const BlameNode computeBlameInformation(const BlameShadowObject& bso, const BlameShadowObject& lbso,
-											const BlameShadowObject& rbso, BINOP op, PRECISION p);
+	void computeBlameSummary(const BlameShadowObject& bso,
+							 const BlameShadowObject& argbso, MATHFUNC func);
+
+	const BlameNode computeBlameInformation(const BlameShadowObject& bso,
+											const BlameShadowObject& lbso,
+											const BlameShadowObject& rbso,
+											BINOP op, PRECISION p);
+
+	const BlameNode computeBlameInformation(const BlameShadowObject& bso,
+											const BlameShadowObject& argbso,
+											MATHFUNC func, PRECISION p);
 
 	// Determine whether the result can blame lop and rop given the precision p
 	// of the computation.
-	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, BINOP op, PRECISION p);
+	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop,
+				  BINOP op, PRECISION p);
+
+	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func,
+				  PRECISION p);
 
 	// Determine whether the compution requires high precision operator.
-	bool isRequiredHigherPrecisionOperator(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, BINOP op,
-										   PRECISION p);
+	bool isRequiredHigherPrecisionOperator(HIGHPRECISION result,
+										   HIGHPRECISION lop, HIGHPRECISION rop,
+										   BINOP op, PRECISION p);
 
 	void mergeBlame(BlameNode* summary, const BlameNode& blame);
 
@@ -98,8 +135,13 @@ private:
 
 	static void* copyShadow(void* oldShadow);
 
-	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope, int64_t lValue, int64_t rValue, KIND type,
-					 int inx, BINOP op);
+	void post_fbinop(IID iid, IID liid, IID riid, SCOPE lScope, SCOPE rScope,
+					 int64_t lValue, int64_t rValue, KIND type, int inx,
+					 BINOP op);
+
+	void post_lib_call(IID iid, IID argIID, SCOPE argScope,
+					   int64_t argValueOrIndex, KIND type, int inx,
+					   MATHFUNC func);
 };
 
 #endif
