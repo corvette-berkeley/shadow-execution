@@ -47,7 +47,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 
 	Constant* iid = IID_CONSTANT(callInst);
 	Constant* inx = computeIndex(callInst);
-	Constant* cLine = INT32_CONSTANT(getLineNumber(callInst), SIGNED);
+	// Constant* cLine = INT32_CONSTANT(getLineNumber(callInst), SIGNED);
 
 	Function* callee = callInst->getCalledFunction();
 
@@ -194,8 +194,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for sin function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sin", iid, argIID, cLine, kind,
-										  inx);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sin", iid, noUnwindC, argIID,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
@@ -204,7 +204,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for acos function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_acos", iid, argIID, cLine,
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_acos", iid, noUnwindC, argIID,
 										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
@@ -214,7 +214,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for sqrt function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sqrt", iid, argIID, cLine,
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_sqrt", iid, noUnwindC, argIID,
 										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
@@ -224,7 +224,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for fabs function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_fabs", iid, argIID, cLine,
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_fabs", iid, noUnwindC, argIID,
 										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
@@ -234,8 +234,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for cos function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_cos", iid, argIID, cLine, kind,
-										  inx);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_cos", iid, noUnwindC, argIID,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
@@ -244,8 +244,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for cos function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_log", iid, argIID, cLine, kind,
-										  inx);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_log", iid, noUnwindC, argIID,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 		return true;
@@ -256,8 +256,8 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		//
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_exp", iid, argIID, cLine, kind,
-										  inx);
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_exp", iid, noUnwindC, argIID,
+										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);
 
@@ -267,7 +267,7 @@ bool CallInstrumenter::CheckAndInstrument(Instruction* I) {
 		// the case for cos function
 		Value* arg = callInst->getArgOperand(0);
 		Constant* argIID = IID_CONSTANT(arg);
-		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_floor", iid, argIID, cLine,
+		call = CALL_IID_BOOL_IID_KIND_INT("llvm_call_floor", iid, noUnwindC, argIID,
 										  kind, inx);
 		instrs.push_back(call);
 		InsertAllBefore(instrs, callInst);

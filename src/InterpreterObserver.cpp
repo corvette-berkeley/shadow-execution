@@ -2276,12 +2276,12 @@ void InterpreterObserver::return_struct_(IID iid UNUSED, int inx UNUSED,
 		release(executionStack.top()[callerVarIndex.top()]);
 		executionStack.top()[callerVarIndex.top()] = structValue;
 		/*
-				                for (i = 0; i < size; i++) {
+						                for (i = 0; i < size; i++) {
 
 
-			DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
-				                }
-				                */
+					DEBUG_STDOUT(executionStack.top()[callerVarIndex.top()][i].toString());
+						                }
+						                */
 	} else {
 		cout << "The execution stack is empty.\n";
 	}
@@ -2991,7 +2991,10 @@ void InterpreterObserver::call_sin(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_sin(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_sin(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3044,7 +3047,10 @@ void InterpreterObserver::call_acos(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_acos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_acos(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3097,7 +3103,10 @@ void InterpreterObserver::call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_sqrt(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_sqrt(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3150,7 +3159,10 @@ void InterpreterObserver::call_fabs(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_fabs(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_fabs(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3203,7 +3215,10 @@ void InterpreterObserver::call_cos(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_cos(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_cos(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3256,7 +3271,10 @@ void InterpreterObserver::call_log(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_log(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3309,7 +3327,10 @@ void InterpreterObserver::call_exp(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_log(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_exp(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 
@@ -3362,7 +3383,10 @@ void InterpreterObserver::call_floor(IID iid UNUSED, bool nounwind UNUSED,
 	*executionStack.top()[inx] = returnValue;
 
 	DEBUG_STDOUT(executionStack.top()[inx]->toString());
-	// post_call_floor(iid, nounwind, pc, type, inx, argScope, argValueOrIndex);
+
+	SCOPE argScope = arg.inx == -1 ? CONSTANT : (arg.isGlobal ? GLOBAL : LOCAL);
+	int64_t argVal = arg.inx == -1 ? arg.value.as_int : arg.inx;
+	post_call_floor(iid, argIID, argScope, argVal, type, inx);
 	return;
 }
 

@@ -337,88 +337,44 @@ public:
 							SCOPE srcScope, int srcInx, int64_t srcValue,
 							int inx);
 
-	virtual void pre_call_sin(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED,
-							  KIND type UNUSED, int inx UNUSED,
-							  SCOPE argScope UNUSED,
-							  int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_sin(IID iid UNUSED, IID argIID UNUSED,
+							   SCOPE argScope UNUSED, int64_t argVal UNUSED,
+							   KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void post_call_sin(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_acos(IID iid UNUSED, IID argIID UNUSED,
+								SCOPE argScope UNUSED, int64_t argVal UNUSED,
+								KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void pre_call_acos(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_sqrt(IID iid UNUSED, IID argIID UNUSED,
+								SCOPE argScope UNUSED, int64_t argVal UNUSED,
+								KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void post_call_acos(IID iid UNUSED, bool nounwind UNUSED,
-								int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-								SCOPE argScope UNUSED,
-								int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_fabs(IID iid UNUSED, IID argIID UNUSED,
+								SCOPE argScope UNUSED, int64_t argVal UNUSED,
+								KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void pre_call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_exp(IID iid UNUSED, IID argIID UNUSED,
+							   SCOPE argScope UNUSED, int64_t argVal UNUSED,
+							   KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void post_call_sqrt(IID iid UNUSED, bool nounwind UNUSED,
-								int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-								SCOPE argScope UNUSED,
-								int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_cos(IID iid UNUSED, IID argIID UNUSED,
+							   SCOPE argScope UNUSED, int64_t argVal UNUSED,
+							   KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void pre_call_fabs(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_log(IID iid UNUSED, IID argIID UNUSED,
+							   SCOPE argScope UNUSED, int64_t argVal UNUSED,
+							   KIND type UNUSED, int inx UNUSED) {}
 	;
 
-	virtual void post_call_fabs(IID iid UNUSED, bool nounwind UNUSED,
-								int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-								SCOPE argScope UNUSED,
-								int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void pre_call_cos(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED,
-							  KIND type UNUSED, int inx UNUSED,
-							  SCOPE argScope UNUSED,
-							  int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void post_call_cos(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void pre_call_log(IID iid UNUSED, bool nounwind UNUSED, int pc UNUSED,
-							  KIND type UNUSED, int inx UNUSED,
-							  SCOPE argScope UNUSED,
-							  int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void post_call_log(IID iid UNUSED, bool nounwind UNUSED,
-							   int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-							   SCOPE argScope UNUSED,
-							   int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void pre_call_floor(IID iid UNUSED, bool nounwind UNUSED,
-								int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-								SCOPE argScope UNUSED,
-								int64_t argValueOrIndex UNUSED) {}
-	;
-
-	virtual void post_call_floor(IID iid UNUSED, bool nounwind UNUSED,
-								 int pc UNUSED, KIND type UNUSED, int inx UNUSED,
-								 SCOPE argScope UNUSED,
-								 int64_t argValueOrIndex UNUSED) {}
+	virtual void post_call_floor(IID iid UNUSED, IID argIID UNUSED,
+								 SCOPE argScope UNUSED, int64_t argVal UNUSED,
+								 KIND type UNUSED, int inx UNUSED) {}
 	;
 
 	virtual void pre_fadd(IID iid, SCOPE lScope, SCOPE rScope, int64_t lValue,
