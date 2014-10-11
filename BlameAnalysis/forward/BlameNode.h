@@ -6,14 +6,17 @@
 #include "BlameUtilities.h"
 
 struct BlameNode {
+	std::array<BlameNode*, 2> children;
 	IID iid;  // LLVM instruction id.
 	PRECISION precision;
-	bool requireHigherPrecision;
-	bool requireHigherPrecisionOperator;
-	std::vector<BlameNode*> children;
+	int size : 3;
+	bool requireHigherPrecision : 1;
+	bool requireHigherPrecisionOperator : 1;
 
-	BlameNode(IID i, PRECISION p, bool rhp, bool rhpo, const std::vector<BlameNode*>& c)
-		: iid(i), precision(p), requireHigherPrecision(rhp), requireHigherPrecisionOperator(rhpo), children(c) {}
+public:
+	BlameNode(IID i, PRECISION p, bool rhp, bool rhpo, const array<BlameNode*, 2>& c)
+		: children(c), iid(i), precision(p), size(c[0] ? (c[1] ? 2 : 1) : 0), requireHigherPrecision(rhp),
+		  requireHigherPrecisionOperator(rhpo) {}
 
 	BlameNode& operator=(const BlameNode& rhs) {
 		if (&rhs != this) {
@@ -32,6 +35,23 @@ struct BlameNode {
 		}
 
 		return iid < rhs.iid;
+	}
+
+	int getSize() const {
+		return size;
+	}
+
+	auto cbegin() const -> decltype(children.cbegin()) {
+		return children.begin();
+	}
+
+	auto cend() const -> decltype(children.cbegin() + size) {
+		return children.cbegin() + size;
+	}
+
+	void setChildren(std::array<BlameNode*, 2> ar) {
+		children = ar;
+		size = ar[0] ? (ar[1] ? 2 : 1) : 0;
 	}
 };
 

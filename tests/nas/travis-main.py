@@ -44,7 +44,7 @@ def compareFloats(new_val, old_val, name):
 	if not same:
 		print(name + " has changed! Expected value to be at most " + old_val + " * " + str(1+FUDGE_PERCENT) + ", but is " + new_val);
 		return same
-	if same and float(new_val)*(1+FUDGE_PERCENT*3) < float(old_val):
+	if same and float(new_val)*(1+FUDGE_PERCENT*2) < float(old_val):
 		print("WARNING: " + name + " has improved significantly! Expected reference to be at least " + new_val + " * " + str(1+FUDGE_PERCENT*3) + ", but reference is " + old_val);
 	return same
 

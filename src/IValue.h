@@ -110,54 +110,46 @@ private:
 
 public:
 	IValue(KIND t, VALUE v, SCOPE s)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
-		  firstByte(0), length(0), offset(0), bitOffset(0), scope(s),
-		  struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
+		  bitOffset(0), scope(s), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
-		  firstByte(0), length(0), offset(0), bitOffset(0), scope(REGISTER),
-		  struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned fb)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0),
-		  firstByte(fb), length(0), offset(0), bitOffset(0), scope(REGISTER),
-		  struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0),
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned s, int o, unsigned i, unsigned l)
-		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i),
-		  firstByte(0), length(l), offset(o), bitOffset(0), scope(REGISTER),
-		  struct_(false) {
+		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t)
-		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0),
-		  length(0), offset(0), bitOffset(0), scope(REGISTER), struct_(false) {
+		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
+		  scope(REGISTER), struct_(false) {
 		value.as_int = 0;
 		// counterNew++;
 	}
 
 	IValue()
-		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0),
-		  firstByte(0), length(0), offset(0), bitOffset(0), scope(REGISTER),
-		  struct_(false) {
+		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
+		  bitOffset(0), scope(REGISTER), struct_(false) {
 		// counterNew++;
 	}
 
 	IValue(const IValue& iv)
-		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())),
-		  type(iv.getType()), valueOffset(iv.getValueOffset()),
-		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()),
-		  length(iv.getLength()), offset(iv.getOffset()),
-		  bitOffset(iv.getOffset()), scope(iv.getScope()),
-		  struct_(iv.isStruct()) {}
+		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())), type(iv.getType()), valueOffset(iv.getValueOffset()),
+		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()), length(iv.getLength()),
+		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()), struct_(iv.isStruct()) {}
 
 	IValue(IValue&& iv) {
 		swap(iv);
@@ -174,7 +166,7 @@ public:
 		return *this;
 	}
 
-	IValue& operator=(IValue &&iv) {
+	IValue& operator=(IValue&& iv) {
 		swap(iv);
 		return *this;
 	}
@@ -252,12 +244,23 @@ public:
 		bitOffset = bo;
 	}
 
-	void setShadow(void* sh) {
-		shadow = sh;
+	void resetShadow() {
+		if (shadow) {
+			IValue::deleteShadow(shadow);
+		}
+		shadow = nullptr;
 	}
 
-	static void setShadowHandlers(std::function<void* (void*)> cSh,
-								  std::function<void(void*)> dSh) {
+	template <typename T> void setShadow(T&& sh) {
+		static_assert(!std::is_pointer<T>::value, "We do not allow pointer to pointer types!");
+		if (!shadow) {
+			shadow = new T(std::move(sh));
+		} else {
+			std::swap(*static_cast<T*>(shadow), sh);
+		}
+	}
+
+	static void setShadowHandlers(std::function<void* (void*)> cSh, std::function<void(void*)> dSh) {
 		IValue::copyShadow = cSh;
 		IValue::deleteShadow = dSh;
 	}
@@ -272,8 +275,7 @@ public:
 		struct_ = flag;
 	}
 
-	void setAll(KIND type, VALUE value, unsigned size, int index, unsigned length,
-				int64_t valueOffset);
+	void setAll(KIND type, VALUE value, unsigned size, int index, unsigned length, int64_t valueOffset);
 
 	KIND getType() const {
 		return this->type;
@@ -319,6 +321,10 @@ public:
 		return this->shadow;
 	}
 
+	template <typename T> T* getShadow() const {
+		return static_cast<T*>(shadow);
+	}
+
 	int64_t getIntValue();
 
 	uint64_t getUIntValue();
@@ -334,7 +340,7 @@ public:
 	double getFlpValue();
 
 	IValue* getIPtrValue() {
-		return (IValue*)((int64_t) value.as_ptr + valueOffset);
+		return (IValue*)((int64_t)value.as_ptr + valueOffset);
 	}
 
 	bool isInitialized() const {
@@ -342,14 +348,13 @@ public:
 	}
 
 	bool isIntValue() const {
-		return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND ||
-			   type == INT24_KIND || type == INT32_KIND || type == INT64_KIND ||
-			   type == INT80_KIND;
+		return type == INT1_KIND || type == INT8_KIND || type == INT16_KIND || type == INT24_KIND || type == INT32_KIND ||
+			   type == INT64_KIND || type == INT80_KIND;
 	}
 
 	bool isFlpValue() const {
-		return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND ||
-			   type == FLP128_KIND || type == FLP128PPC_KIND;
+		return type == FLP32_KIND || type == FLP64_KIND || type == FLP80X86_KIND || type == FLP128_KIND ||
+			   type == FLP128PPC_KIND;
 	}
 
 	bool isPtrValue() const {
@@ -425,5 +430,6 @@ public:
 
 	void clear();
 };
+
 
 #endif /* IVALUE_H_ */
