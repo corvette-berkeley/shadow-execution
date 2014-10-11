@@ -262,7 +262,7 @@ void BlameAnalysis::mergeBlame(BlameNode* summary, const BlameNode& blame) {
 	// Summary and blame node needs to have same precision requirement and same
 	// numbers of blame children.
 	safe_assert(summary->precision == blame.precision && summary->getSize() == blame.getSize());
-	std::array<BlameNode*, 2> merge = {};
+	std::array<BlameNode*, 2> merge = {{nullptr, nullptr}};
 	int i = 0;
 	for (auto sIt = summary->cbegin(), bIt = blame.cbegin(); sIt != summary->cend(); sIt++, bIt++) {
 		BlameNode* sNode = *sIt;
