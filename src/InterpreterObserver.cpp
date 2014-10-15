@@ -1531,7 +1531,6 @@ void InterpreterObserver::getelementptr_array(int baseInx, SCOPE baseScope, uint
 
 		// the first index is for the pointer operand;
 		unsigned offset_into_ptrArray = actualValueToIntValue(scopeInx01, valOrInx01);
-		IValue& array = ptrArray->getIPtrValue(offset_into_ptrArray);
 		safe_assert(scopeInx01 != SCOPE_INVALID);
 		indexVec[0] = actualValueToIntValue(scopeInx02, valOrInx02);
 
