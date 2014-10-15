@@ -41,21 +41,6 @@
 
 #include <cstdlib>
 #include <cstdio>
-/*
-#include <dlfcn.h>
-#include <stdarg.h>
-#include <sys/types.h>
-#include <stdint.h>
-#include <semaphore.h>
-#include <sched.h>
-#include <errno.h>
-#include <unistd.h>
-#include <signal.h>
-#include <string.h>
-#include <pthread.h>
-#include <time.h>
-#include <sys/time.h>
-*/
 #include <string>
 #include <exception>
 #include <iostream>
@@ -119,6 +104,10 @@ union value_t {
 	INT as_int;
 	FLP as_flp;
 	PTR as_ptr;
+
+	value_t(INT a = 0) : as_int(a) {}
+	explicit value_t(PTR a) : as_ptr(a) {}
+	explicit value_t(FLP a) : as_flp(a) {}
 };
 #define VALUE value_t
 
@@ -177,21 +166,19 @@ inline void _safe_assert(bool cond, const char* func, const char* file, int line
 		// TODO: Why are we using _Exit?  is it really that important
 		// that we abandon all state and exit instead of exit safely?
 		_Exit(UNRECOVERABLE_ERROR);
-		__builtin_unreachable();
 	}
 }
 
 /**
  * Printing error messages on unimplemented code and terminate the program.
  */
-inline void unimplemented() {
+[[noreturn]] inline void unimplemented() {
 	cout << "Executing unimplemented code in function: " << __PRETTY_FUNCTION__ << endl;
 	cout << "\tfile: " << __FILE__ << endl;
 	cout << "\tline: " << __LINE__ << endl;
 	// TODO: Why are we using _Exit?  is it really that important
 	// that we abandon all state and exit instead of exit safely?
 	_Exit(UNRECOVERABLE_ERROR);
-	__builtin_unreachable();
 }
 
 /**
@@ -218,7 +205,7 @@ std::string PTR_ToString(PTR& ptr);
  */
 std::string KVALUE_ToString(KVALUE* kv);
 
-std::string SCOPE_ToString(SCOPE scope);
+std::string SCOPE_ToString(SCOPE sc);
 
 /**
  * Return int value for KVALUE depending on its type.
@@ -274,7 +261,7 @@ bool KVALUE_IsPtrValue(KVALUE* kv);
  * @param kind the kind to be printed.
  * @return string reprensetation of kind.
  */
-std::string KIND_ToString(int kind);
+std::string KIND_ToString(KIND kind);
 
 /**
  * Get size of kind.
@@ -282,7 +269,7 @@ std::string KIND_ToString(int kind);
  * @param kind the kind to get size from.
  * @return size of kind.
  */
-inline int KIND_GetSize(int kind) {
+inline unsigned KIND_GetSize(KIND kind) {
 	switch (kind) {
 		case PTR_KIND:
 			return sizeof(void*);
@@ -314,5 +301,4 @@ inline int KIND_GetSize(int kind) {
 			return 0;
 	}
 }
-
 #endif /* COMMON_DEFS_H_ */

@@ -84,6 +84,15 @@ private:
 	int offset, bitOffset;
 	SCOPE scope;
 	bool struct_;
+
+	// set to be true only when we are certain that we own
+	// the data returned by getIPtrValue()
+	// must be set to false whenever value is updated
+	// unless we can PROVE that it is done safely.
+	// (note that proof should be expressed in C++
+	// not half-written somewhere else)
+	bool owns_ptr;
+
 	// static long counterNew, counterDelete;
 
 	/**
@@ -109,62 +118,118 @@ private:
 	int setValue(int offset, int byte, uint8_t* content);
 
 public:
+	explicit IValue(KIND t, int number_of_type, void* concrete_address, KIND k = PTR_KIND, SCOPE s = REGISTER)
+		: value(concrete_address), shadow(nullptr), type(k),
+		  valueOffset(reinterpret_cast<intptr_t>(new IValue[number_of_type]) -
+					  reinterpret_cast<intptr_t>(concrete_address)),
+		  size(KIND_GetSize(t)), index(0), firstByte(0), length(number_of_type), offset(0), bitOffset(0), scope(s),
+		  struct_(false), owns_ptr(true) {
+		IValue* location = reinterpret_cast<IValue*>(reinterpret_cast<intptr_t>(value.as_ptr) + valueOffset);
+		unsigned firstByte = 0, bitOffset = 0;
+		for (int i = 0; i < number_of_type; ++i) {
+			location[i] = IValue(0, i, (firstByte + bitOffset) / 8, bitOffset % 8, t);
+			firstByte += KIND_GetSize(t);
+			// WHY ARE WE DOUBLE INCREMENTING HERE?
+			bitOffset = (t == INT1_KIND) ? bitOffset + 1 : bitOffset;
+			/*if (t == INT1_KIND) {
+			  bitOffset++;
+			}*/
+		}
+	}
+
+	explicit IValue(const std::vector<KIND>& collection, void* concrete_address, KIND k = PTR_KIND, SCOPE s = REGISTER)
+		: value(concrete_address), shadow(nullptr), type(k),
+		  valueOffset(reinterpret_cast<intptr_t>(new IValue[collection.size()]) -
+					  reinterpret_cast<intptr_t>(concrete_address)),
+		  size(KIND_GetSize(collection.size() > 0 ? collection.front() : PTR_KIND)), index(0), firstByte(0),
+		  length(collection.size()), offset(0), bitOffset(0), scope(s), struct_(false), owns_ptr(true) {
+		unsigned firstByte = 0, bitOffset = 0;
+		IValue* locArr = reinterpret_cast<IValue*>(reinterpret_cast<intptr_t>(value.as_ptr) + valueOffset);
+		// TODO: add in assert that collection is only made up on primitive types (not an array? or struct)
+		for (uint64_t i = 0; i < collection.size(); i++) {
+			locArr[i] = IValue(0, i, (firstByte + bitOffset) / 8, bitOffset % 8, collection[i]);
+			firstByte += KIND_GetSize(collection[i]);
+			// WHY ARE WE DOUBLE INCREMENTING HERE?
+			bitOffset = (collection[i] == INT1_KIND) ? bitOffset + 1 : bitOffset;
+			/*if (collection[i] == INT1_KIND) {
+			  bitOffset++;
+			}*/
+		}
+	}
+
+	explicit IValue(INT value_, unsigned index_, unsigned firstByte_, unsigned bitOffset_, KIND type_, SCOPE s = REGISTER)
+		: value(value_), shadow(nullptr), type(type_), valueOffset(-1), size(0), index(index_), firstByte(firstByte_),
+		  length(0), offset(0), bitOffset(bitOffset_), scope(s), owns_ptr(false) {}
+
 	IValue(KIND t, VALUE v, SCOPE s)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(s), struct_(false) {
+		  bitOffset(0), scope(s), struct_(false), owns_ptr(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		  bitOffset(0), scope(REGISTER), struct_(false), owns_ptr(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned fb)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(fb), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		  bitOffset(0), scope(REGISTER), struct_(false), owns_ptr(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t, VALUE v, unsigned s, int o, unsigned i, unsigned l)
 		: value(v), shadow(NULL), type(t), valueOffset(-1), size(s), index(i), firstByte(0), length(l), offset(o),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		  bitOffset(0), scope(REGISTER), struct_(false), owns_ptr(false) {
 		// counterNew++;
 	}
 
 	IValue(KIND t)
 		: shadow(NULL), type(t), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0), bitOffset(0),
-		  scope(REGISTER), struct_(false) {
+		  scope(REGISTER), struct_(false), owns_ptr(false) {
 		value.as_int = 0;
 		// counterNew++;
 	}
 
 	IValue()
 		: shadow(NULL), type(INV_KIND), valueOffset(-1), size(0), index(0), firstByte(0), length(0), offset(0),
-		  bitOffset(0), scope(REGISTER), struct_(false) {
+		  bitOffset(0), scope(REGISTER), struct_(false), owns_ptr(false) {
 		// counterNew++;
 	}
 
 	IValue(const IValue& iv)
 		: value(iv.getValue()), shadow(copyShadow(iv.getShadow())), type(iv.getType()), valueOffset(iv.getValueOffset()),
 		  size(iv.getSize()), index(iv.getIndex()), firstByte(iv.getFirstByte()), length(iv.getLength()),
-		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()), struct_(iv.isStruct()) {}
+		  offset(iv.getOffset()), bitOffset(iv.getOffset()), scope(iv.getScope()), struct_(iv.isStruct()),
+		  owns_ptr(false) {}  // owns_ptr is false here since they both refer to the same value
 
+public:
 	IValue(IValue&& iv) {
 		swap(iv);
 	}
 
 	~IValue() {
 		deleteShadow(shadow);
+		clearValue();
+	}
+
+private:
+	void clearValue() {
+		if (owns_ptr) {
+			delete[](IValue*)((int64_t)value.as_ptr + valueOffset);
+		}
+		owns_ptr = false;
 		// TODO: implement destruction of pointed to object
 	}
 
+public:
 	IValue& operator=(const IValue& iv) {
 		IValue temp(iv);
 		swap(temp);
 		return *this;
 	}
+
 
 	IValue& operator=(IValue&& iv) {
 		swap(iv);
@@ -184,21 +249,23 @@ public:
 		std::swap(scope, iv.scope);
 		std::swap(struct_, iv.struct_);
 		std::swap(shadow, iv.shadow);
+		std::swap(owns_ptr, iv.owns_ptr);
 	}
 
 	void setType(KIND t) {
 		type = t;
 	}
 
+	void setValue(int64_t value);
+
 	void setValue(VALUE v) {
+		clearValue();
 		value = v;
 	}
 
-	void setValue(int64_t value);
-
 	void setTypeValue(KIND t, VALUE v) {
 		type = t;
-		value = v;
+		setValue(v);
 	}
 
 	void setTypeValue(KIND t, int64_t v) {
@@ -208,11 +275,12 @@ public:
 
 	void setTypeValueSize(KIND t, VALUE v, unsigned s) {
 		type = t;
-		value = v;
+		setValue(v);
 		size = s;
 	}
 
 	void setValueOffset(int64_t vo) {
+		owns_ptr = false;
 		valueOffset = vo;
 	}
 
@@ -233,6 +301,7 @@ public:
 	}
 
 	void setLength(unsigned l) {
+		owns_ptr = false;
 		length = l;
 	}
 
@@ -251,12 +320,17 @@ public:
 		shadow = nullptr;
 	}
 
+	void takeShadow(IValue& other) {
+		shadow = other.shadow;
+		other.shadow = nullptr;
+	}
+
 	template <typename T> void setShadow(T&& sh) {
 		static_assert(!std::is_pointer<T>::value, "We do not allow pointer to pointer types!");
 		if (!shadow) {
 			shadow = new T(std::move(sh));
 		} else {
-			std::swap(*static_cast<T*>(shadow), sh);
+			std::swap(*getShadow<T>(), sh);
 		}
 	}
 
@@ -329,7 +403,7 @@ public:
 
 	uint64_t getUIntValue();
 
-	void* getPtrValue() {
+	void* getPtrValue() const {
 		return value.as_ptr;
 	}
 
@@ -339,8 +413,17 @@ public:
 
 	double getFlpValue();
 
-	IValue* getIPtrValue() {
+	IValue& getIPtrValue(unsigned index = 0) const {
+		IValue* iptr = (IValue*)((int64_t)value.as_ptr + valueOffset);
+		return iptr[index];
+	}
+
+	const IValue* cbegin() const {
 		return (IValue*)((int64_t)value.as_ptr + valueOffset);
+	}
+
+	const IValue* cend() const {
+		return (IValue*)((int64_t)value.as_ptr + valueOffset) + getLength();
 	}
 
 	bool isInitialized() const {

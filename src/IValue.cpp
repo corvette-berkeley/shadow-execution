@@ -155,17 +155,15 @@ VALUE IValue::readValue(int offset, KIND type) {
 
 	int byte;
 	VALUE value;
-	IValue* valueArray;
 
 	DEBUG_STDOUT("\t"
 				 << " Reading from IValue object: " << toString());
 	DEBUG_STDOUT("\t"
 				 << " Reading for type: " << KIND_ToString(type));
 
-	valueArray = static_cast<IValue*>(getIPtrValue());
 	byte = KIND_GetSize(type);
 
-	if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
+	if (offset == 0 && KIND_GetSize(getIPtrValue(index).getType()) == byte) {
 
 		//
 		// trivial reading case
@@ -173,7 +171,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 
 		DEBUG_STDOUT("\t"
 					 << "Trivial reading.");
-		value = valueArray[index].getValue();
+		value = getIPtrValue(index).getValue();
 
 	} else {
 
@@ -195,7 +193,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 		while (totalByte < offset + byte && nextIndex < length) {
 			IValue value;
 
-			value = valueArray[nextIndex];
+			value = getIPtrValue(nextIndex);
 			totalByte += KIND_GetSize(value.getType());  // TODO: can the value's type change while iterating?
 			nextIndex++;
 		}
@@ -214,7 +212,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 			VALUE valValue;
 			uint8_t* valueContent;
 
-			value = valueArray[i];
+			value = getIPtrValue(i);
 			type = value.getType();
 			size = KIND_GetSize(type);  // TODO: can the value's type change while iterating?
 			valValue = value.getValue();
@@ -263,6 +261,7 @@ VALUE IValue::readValue(int offset, KIND type) {
 }
 
 int IValue::setValue(int offset, int byte, uint8_t* content) {
+	clearValue();
 	uint8_t* valueBytes;
 	int maxOffset;
 
@@ -282,25 +281,23 @@ int IValue::setValue(int offset, int byte, uint8_t* content) {
 
 bool IValue::writeValue(int offset, int byte, const IValue* src) {
 	int64_t valueOffset, length, bitOffset, newOffset;
-	IValue* valueArray;
 
 	DEBUG_STDOUT("\tWriting value");
 	DEBUG_STDOUT("\tInternal offset: " << offset);
 	DEBUG_STDOUT("\tNumber of bytes to write: " << byte);
 	DEBUG_STDOUT("\tGet value from: " << src->toString());
 
-	valueArray = static_cast<IValue*>(getIPtrValue());
 	valueOffset = src->getValueOffset();
 	length = src->getLength();
 	bitOffset = src->getBitOffset();
 	newOffset = src->getOffset();
 
-	if (offset == 0 && KIND_GetSize(valueArray[index].getType()) == byte) {
+	if (offset == 0 && KIND_GetSize(getIPtrValue(index).getType()) == byte) {
 
 		// trivial writing case
 		DEBUG_STDOUT("\t"
 					 << "Trivial writing.");
-		src->copy(&valueArray[index]);
+		src->copy(&getIPtrValue(index));
 
 		return true;
 
@@ -329,29 +326,27 @@ bool IValue::writeValue(int offset, int byte, const IValue* src) {
 		oldByteWrittens = 0;
 
 		while (byteWrittens < byte) {
-			IValue* currentValue;
-
-			currentValue = &valueArray[currentIndex];
+			IValue& currentValue = getIPtrValue(currentIndex);
 
 			DEBUG_STDOUT("\t"
-						 << "=== Ivalue: " << currentValue->toString());
+						 << "=== Ivalue: " << currentValue.toString());
 			DEBUG_STDOUT("\t"
 						 << "=== current content: " << (int64_t) * content);
 			DEBUG_STDOUT("\t"
-						 << "=== current value: " << currentValue->getValue().as_int);
+						 << "=== current value: " << currentValue.getValue().as_int);
 
-			byteWrittens += currentValue->setValue(offset, byte - byteWrittens, content);
-			currentValue->setLength(length);
-			currentValue->setValueOffset(valueOffset);
-			currentValue->setBitOffset(bitOffset);
-			currentValue->setOffset(newOffset);
+			byteWrittens += currentValue.setValue(offset, byte - byteWrittens, content);
+			currentValue.setLength(length);
+			currentValue.setValueOffset(valueOffset);
+			currentValue.setBitOffset(bitOffset);
+			currentValue.setOffset(newOffset);
 
 			DEBUG_STDOUT("\t"
 						 << "=== byteWrittens: " << byteWrittens);
 			DEBUG_STDOUT("\t"
-						 << "=== current value after: " << currentValue->getValue().as_int);
+						 << "=== current value after: " << currentValue.getValue().as_int);
 			DEBUG_STDOUT("\t"
-						 << "=== Ivalue after: " << currentValue->toString());
+						 << "=== Ivalue after: " << currentValue.toString());
 
 			content += byteWrittens - oldByteWrittens;
 			newOffset = newOffset - byteWrittens;
@@ -459,6 +454,7 @@ double IValue::getFlpValue() {
 
 // precondition: setting type first
 void IValue::setValue(int64_t v) {
+	clearValue();
 	if (isIntValue()) {
 		this->value.as_int = v;
 	} else if (isFlpValue()) {
@@ -475,6 +471,7 @@ void IValue::setValue(int64_t v) {
 }
 
 void IValue::setAll(KIND type, VALUE value, unsigned size, int index, unsigned length, int64_t valueOffset) {
+	clearValue();
 	this->type = type;
 	this->value = value;
 	this->size = size;
@@ -482,6 +479,7 @@ void IValue::setAll(KIND type, VALUE value, unsigned size, int index, unsigned l
 	this->index = index;
 	this->length = length;
 	this->valueOffset = valueOffset;
+	deleteShadow(this->shadow);
 	this->shadow = NULL;
 	this->firstByte = 0;
 	this->bitOffset = 0;
@@ -491,6 +489,7 @@ void IValue::setAll(KIND type, VALUE value, unsigned size, int index, unsigned l
 
 void IValue::clear() {
 	// value;
+	deleteShadow(shadow);
 	shadow = NULL;
 	type = INV_KIND;
 	valueOffset = -1;
