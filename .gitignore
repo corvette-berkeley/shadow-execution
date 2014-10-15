@@ -38,6 +38,7 @@ tmppass-allocas.bc
 i_*.s
 *.out
 *.out.ba
+*.result.new
 *.out2
 
 .sconsign.dblite

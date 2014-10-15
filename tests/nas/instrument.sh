@@ -25,7 +25,7 @@ $CC tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lg
 #ld tmppass-allocas.bc -o $1.out $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # create executable for uninstrumented bitcode
-$CC $1.bc -o $1.out2 $LDFLAGS -lmonitor -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+$CC $1.bc -o $1.out2 $LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # inspecting profile information
 # pprof --text executable.out cpu.prof

@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 # fs-copy dir
+from __future__ import print_function
 
 import jobmonitor
 import subprocess
@@ -15,7 +16,12 @@ def main():
 
 	names = ["Command", "Return Code", "Runtime", "Memory"]
 
-	f = open(executable+".result.ref")
+	fnew = open(executable+".result.new", 'w')
+	for a in result:
+		print(str(a), file=fnew)
+	fnew.close()
+	f = open(executable+".result.ref", 'r')
+
 	#f = [ str(a)+"\n" for a in result]
 	print(str(result[0])+" returned " + str(result[1]) + ", using " + str(result[2]) + " seconds and " + str(result[3]) + " bytes")
 
