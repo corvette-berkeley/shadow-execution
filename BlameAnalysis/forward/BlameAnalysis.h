@@ -104,6 +104,11 @@ private:
 							 const BlameShadowObject& lbso,
 							 const BlameShadowObject& rbso, BINOP op);
 
+	void constructBlameSummary(const BlameShadowObject& bso,
+							   const BlameShadowObject& lbso,
+							   const BlameShadowObject& rbso, BINOP op,
+							   PRECISION p, BlameNode* bn);
+
 	void computeBlameSummary(const BlameShadowObject& bso,
 							 const BlameShadowObject& argbso, MATHFUNC func);
 
