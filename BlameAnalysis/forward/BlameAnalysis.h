@@ -6,6 +6,7 @@
 #include <set>
 #include <cmath>
 #include <queue>
+#include <string>
 #include <unordered_map>
 
 #include "../../src/IValue.h"
@@ -27,6 +28,8 @@ private:
 #endif
 	}
 	;
+
+	std::string get_selfpath();
 
 	// Read debug information from $GLOG_log_dir/debug.bin and wrap into a
 	// mapping from instruction IID to DebugInfo struct. The file debug.bin is
@@ -50,11 +53,13 @@ private:
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
 	IID _iid;
+	std::string _selfpath;
 
 public:
 	BlameAnalysis(std::string name) : InterpreterObserver(name) {
 		_precision = BITS_27;
 		_iid = 0;
+		_selfpath = get_selfpath();
 	}
 
 	/*** API FUNCTIONS ***/

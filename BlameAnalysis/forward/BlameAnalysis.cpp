@@ -1,5 +1,9 @@
 // Author: Cuong Nguyen
 
+#include <unistd.h>
+#include <iostream>
+#include <fstream>
+
 #include "BlameAnalysis.h"
 #include "../../src/InstructionMonitor.h"
 
@@ -22,6 +26,17 @@ unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
 	fclose(debugFile);
 
 	return debugInfoMap;
+}
+
+std::string BlameAnalysis::get_selfpath() {
+	char buff[1024];
+	ssize_t len = ::readlink("/proc/self/exe", buff, sizeof(buff) - 1);
+	if (len != -1) {
+		buff[len] = '\0';
+		return std::string(buff);
+	} else {
+		return "unknown";
+	}
 }
 
 void* BlameAnalysis::copyShadow(void* oldShadow) {
@@ -479,9 +494,12 @@ void BlameAnalysis::post_fdiv(IID iid, IID liid, IID riid, SCOPE lScope,
 // Interpretation of result.
 void BlameAnalysis::post_analysis() {
 	DebugInfo dbg = debugInfoMap.at(_iid);
-	printf("Default starting point: Function %s, Line %d, Column %d, IID %lu\n",
-		   dbg.file, dbg.line, dbg.column, _iid);
-	printf("Default precision: %d\n", PRECISION_BITS[_precision]);
+	ofstream logfile;
+
+	logfile.open(_selfpath + ".ba");
+	logfile << "Default starting point: File " << dbg.file << ", Line "
+			<< dbg.line << ", Column " << dbg.column << ", IID " << _iid << "\n";
+	logfile << "Default precision: " << PRECISION_BITS[_precision] << "\n";
 
 	std::set<BlameNode*> visited;
 	std::queue<BlameNode*> workList;
@@ -505,12 +523,15 @@ void BlameAnalysis::post_analysis() {
 		}
 		DebugInfo dbg = debugInfoMap.at(node->iid);
 		if (node->requireHigherPrecision || node->requireHigherPrecisionOperator) {
-			printf("Function %s, Line %d, Column %d, HigherPrecision: %d, "
-				   "HigherPrecisionOperator: %d\n",
-				   dbg.file, dbg.line, dbg.column, node->requireHigherPrecision,
-				   node->requireHigherPrecisionOperator);
+			logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column "
+					<< dbg.column
+					<< ", HigherPrecision: " << node->requireHigherPrecision
+					<< ", HigherPrecisionOperator: "
+					<< node->requireHigherPrecisionOperator << "\n";
 		}
 	}
+
+	logfile.close();
 
 	// Free memory
 	for (auto it = blameSummary.begin(); it != blameSummary.end(); it++) {
