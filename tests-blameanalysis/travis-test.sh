@@ -14,4 +14,15 @@ do
 	then
 		exit 1
 	fi
+
+	sed -i 's/IID [0-9]*/ IID <ommitted>/' "$program"".out.ba"
+	sed -i 's/IID [0-9]*/ IID <ommitted>/' "$program"".ref.ba"
+
+	if diff "$program"".out.ba" "$program"".ref.ba"
+	then
+		echo "No output change"
+	else
+		echo "Output changed!"
+		exit 1
+	fi
 done < travis-tests.txt
