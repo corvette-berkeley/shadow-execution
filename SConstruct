@@ -115,6 +115,7 @@ SConscript(
     dirs=[
         # our stuff
 	'MonitorPass',
+	'FPPass',
 	'src',
   'BlameAnalysis/backward',
   'BlameAnalysis/forward',
