@@ -24,6 +24,13 @@ tramp
 /auto/
 *.os
 tests/regressions/*.bc
+tests/nas/*.cov
+tests-blameanalysis/*-fp.bc
+tests-blameanalysis/*.cov
+tests-blameanalysis/simpsons_double_3address.bc
+tests-blameanalysis/tao_double_3address.bc
+tests-blameanalysis/triangle-area.bc
+tests-blameanalysis/triangle-area_3address.bc
 i_*.bc
 
 # never read in
