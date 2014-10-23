@@ -24,7 +24,6 @@ tramp
 /auto/
 *.os
 tests/regressions/*.bc
-tests-blameanalysis/*.bc
 i_*.bc
 
 # never read in
