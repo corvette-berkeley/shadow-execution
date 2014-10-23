@@ -61,6 +61,7 @@ plugin = env.SharedLibrary(
     'libba',
     [
     'BlameAnalysis.cpp',
+	 'Glue.cpp',
         ],
     INCPREFIX='-isystem ',
     SHLIBPREFIX=None,

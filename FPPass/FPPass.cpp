@@ -109,7 +109,7 @@ void _handle(BinaryOperator* bin_instr, Function* f) {
 }
 
 bool useful(CallInst* ci) {
-	const set<string> possible = {"fabs", "exp", "sqrt", "log", "exp", "sin", "acos", "cos", "floor", };
+	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", };
 	if (ci->getCalledFunction() == nullptr) {
 		return false;
 	}

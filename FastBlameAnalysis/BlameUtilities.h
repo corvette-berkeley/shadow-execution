@@ -5,7 +5,7 @@
 #include <cmath>
 #include <unordered_map>
 
-typedef uint64_t IID;
+typedef int32_t IID;
 typedef double HIGHPRECISION;
 typedef float LOWPRECISION;
 
@@ -37,10 +37,10 @@ typedef enum {
 	MATHFUNC_NO
 } MATHFUNC;
 
-const std::array<unsigned, PRECISION_NO> PRECISION_BITS = { {
-		23, // BITS_FLOAT
-		19, // BITS_19
-		27, // BITS_27
+const std::array<unsigned, PRECISION_NO> PRECISION_BITS = {{
+		23,  // BITS_FLOAT
+		19,  // BITS_19
+		27,  // BITS_27
 		52  // BITS_DOUBLE
 	}
 };
@@ -91,12 +91,10 @@ inline bool equalWithinPrecision(double v1, double v2, PRECISION p) {
 	int64_t* ptr2 = (int64_t*)&v2;
 
 	// Get the mantissa bits and bit-cast them to integer.
-	*ptr1 =
-		*ptr1 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
-		(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
-	*ptr2 =
-		*ptr2 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
-		(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
+	*ptr1 = *ptr1 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
+			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
+	*ptr2 = *ptr2 << (DOUBLE_EXPONENT_LENGTH + 1) >> (DOUBLE_EXPONENT_LENGTH + 1) >>
+			(DOUBLE_MANTISSA_LENGTH - PRECISION_BITS.at(p) - 1);
 
 	// Return true if the two mantissa offset less than or equal to 1.
 	return abs(*ptr1 - *ptr2) <= 1;
