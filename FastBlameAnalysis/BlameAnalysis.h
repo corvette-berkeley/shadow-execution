@@ -72,6 +72,7 @@ public:
 
 	void load(IID viid, IID piid, HIGHPRECISION v);
 	void store(IID viid, IID piid, HIGHPRECISION v);
+	void getelementptr(IID aiid, IID eiid, HIGHPRECISION v);
 
 	void post_analysis();
 
@@ -114,6 +115,8 @@ private:
 				FBINOP op);
 
 	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
+
+	void copyBlameSummary(IID dest, IID src);
 };
 
 #endif

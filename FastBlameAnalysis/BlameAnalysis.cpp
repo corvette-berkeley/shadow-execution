@@ -215,6 +215,12 @@ bool BlameAnalysis::isRequiredHigherPrecisionOperator(HIGHPRECISION result,
 			   p);
 }
 
+void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
+	if (blameSummary.find(src) != blameSummary.end()) {
+		blameSummary[dest] = blameSummary[src];
+	}
+}
+
 /*** API FUNCTIONS ***/
 void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 						   HIGHPRECISION rv, FBINOP op) {
@@ -254,18 +260,18 @@ void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 }
 
 void BlameAnalysis::load(IID viid, IID piid, HIGHPRECISION v) {
-	trace[piid] = getShadowObject(piid, v);
-	trace[viid] = trace[piid];
-	if (blameSummary.find(piid) != blameSummary.end()) {
-		blameSummary[viid] = blameSummary[piid];
-	}
+	trace[viid] = getShadowObject(piid, v);
+	copyBlameSummary(viid, piid);
 }
 
 void BlameAnalysis::store(IID viid, IID piid, HIGHPRECISION v) {
 	trace[piid] = getShadowObject(viid, v);
-	if (blameSummary.find(viid) != blameSummary.end()) {
-		blameSummary[piid] = blameSummary[viid];
-	}
+	copyBlameSummary(piid, viid);
+}
+
+void BlameAnalysis::getelementptr(IID aiid, IID eiid, HIGHPRECISION v) {
+	trace[eiid] = getShadowObject(aiid, v);
+	copyBlameSummary(eiid, aiid);
 }
 
 void BlameAnalysis::post_analysis() {
