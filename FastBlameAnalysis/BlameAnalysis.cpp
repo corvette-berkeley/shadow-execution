@@ -253,14 +253,19 @@ void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 	fbinop(iid, liid, riid, lv, rv, FDIV);
 }
 
-void BlameAnalysis::load(IID viid, IID piid) {
-	assert(trace.find(piid) != trace.end() &&
-		   "Load pointer operand is not found in the trace.");
+void BlameAnalysis::load(IID viid, IID piid, HIGHPRECISION v) {
+	trace[piid] = getShadowObject(piid, v);
 	trace[viid] = trace[piid];
+	if (blameSummary.find(piid) != blameSummary.end()) {
+		blameSummary[viid] = blameSummary[piid];
+	}
 }
 
 void BlameAnalysis::store(IID viid, IID piid, HIGHPRECISION v) {
 	trace[piid] = getShadowObject(viid, v);
+	if (blameSummary.find(viid) != blameSummary.end()) {
+		blameSummary[piid] = blameSummary[viid];
+	}
 }
 
 void BlameAnalysis::post_analysis() {
@@ -283,6 +288,7 @@ void BlameAnalysis::post_analysis() {
 		for (auto it = node.children.begin(); it != node.children.end(); it++) {
 			BlameNodeID blameNodeID = *it;
 			if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
+				// Children not is either a constant or alloca.
 				continue;
 			}
 			const BlameNode& blameNode =
