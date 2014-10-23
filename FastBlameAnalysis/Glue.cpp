@@ -36,23 +36,23 @@ void llvm_call_fabs(IID iidf, double, IID operand, double operandValue) {
 }
 
 void llvm_call_exp(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_exp(iidf, operand, operandValue);
 }
 void llvm_call_sqrt(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_sqrt(iidf, operand, operandValue);
 }
 void llvm_call_log(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_log(iidf, operand, operandValue);
 }
 void llvm_call_sin(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_sin(iidf, operand, operandValue);
 }
 void llvm_call_acos(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_acos(iidf, operand, operandValue);
 }
 void llvm_call_cos(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_cos(iidf, operand, operandValue);
 }
 void llvm_call_floor(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+	BlameAnalysis::get().call_floor(iidf, operand, operandValue);
 }
