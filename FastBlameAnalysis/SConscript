@@ -58,7 +58,7 @@ env.AppendUnique(
 env.MergeFlags('!llvm-config --cxxflags --ldflags')
 
 plugin = env.SharedLibrary(
-    'libba',
+    '../Release+Asserts/lib/libba2',
     [
     'BlameAnalysis.cpp',
 	 'Glue.cpp',
