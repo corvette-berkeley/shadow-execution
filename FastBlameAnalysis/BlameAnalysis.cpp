@@ -259,6 +259,31 @@ void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 	fbinop(iid, liid, riid, lv, rv, FDIV);
 }
 
+void BlameAnalysis::call_sin(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, SIN);
+}
+void BlameAnalysis::call_acos(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, ACOS);
+}
+void BlameAnalysis::call_cos(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, COS);
+}
+void BlameAnalysis::call_fabs(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, FABS);
+}
+void BlameAnalysis::call_sqrt(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, SQRT);
+}
+void BlameAnalysis::call_log(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, LOG);
+}
+void BlameAnalysis::call_floor(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, FLOOR);
+}
+void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, argv, EXP);
+}
+
 void BlameAnalysis::load(IID viid, IID piid, HIGHPRECISION v) {
 	trace[viid] = getShadowObject(piid, v);
 	copyBlameSummary(viid, piid);
