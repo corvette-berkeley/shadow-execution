@@ -69,8 +69,9 @@ public:
 	void fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 	void fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 
-	void load(IID viid, IID piid);
+	void load(IID viid, IID piid, HIGHPRECISION v);
 	void store(IID viid, IID piid, HIGHPRECISION v);
+	void getelementptr(IID aiid, IID eiid, HIGHPRECISION v);
 
 	void post_analysis();
 
@@ -102,6 +103,8 @@ private:
 	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
 
 	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
+
+	void copyBlameSummary(IID dest, IID src);
 };
 
 #endif

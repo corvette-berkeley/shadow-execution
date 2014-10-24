@@ -13,8 +13,7 @@ $LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -fppass -f -o $name-fp.bc $n
 
 # Create executable
 # TODO: DOES NOT WORK
-#$CC $name-fp.bc -o $name.out $LDFLAGS -lfba -lpthread -lm -lrt -lgmp -lglog  -ltcmalloc
+$CC $name-fp.bc -o $name.out $LDFLAGS -lba2 -lpthread -lm -lrt -lgmp -lglog  -ltcmalloc
 
 # Clean temporary files
-#rm $name.bc
-#rm $name-fp.bc
+rm $name-fp.bc
