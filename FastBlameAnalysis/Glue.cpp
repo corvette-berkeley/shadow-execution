@@ -31,6 +31,7 @@ void llvm_fstore(IID iidV, double value, IID ptr, void*) {
 	BlameAnalysis::get().store(iidV, ptr, value);
 }
 
+void llvm_fphi(IID, double, IID) {}
 
 // ***** Other Operations ***** //
 void llvm_call_fabs(IID iidf, double, IID operand, double operandValue) {

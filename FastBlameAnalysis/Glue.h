@@ -12,6 +12,8 @@ extern "C" {
 	void llvm_fload(IID iidf, double output, IID input, void* input_ptr);
 	void llvm_fstore(IID iidV, double value, IID ptr, void* location);
 
+	void llvm_fphi(IID iidV, double value, IID orig);
+
 	// ***** Other Operations ***** //
 	void llvm_call_fabs(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_exp(IID iidf, double output, IID operand, double operandValue);

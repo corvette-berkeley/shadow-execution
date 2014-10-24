@@ -2,6 +2,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <functional>
 #include <cassert>
 #include <iostream>
 
@@ -201,6 +202,41 @@ void _handle(StoreInst* store_inst, Function* f) {
 	ci->insertAfter(store_inst);
 }
 
+bool useful(PHINode* pi) {
+	return pi->getType()->isFloatingPointTy();
+}
+
+string to_function_name(PHINode*) {
+	return "llvm_fphi";
+}
+
+FunctionType* to_function_type(PHINode* instr) {
+	LLVMContext& cx = instr->getContext();
+	return FunctionType::get(Type::getVoidTy(cx),
+							 vector<Type*>({Type::getInt32Ty(cx), Type::getDoubleTy(cx), Type::getInt32Ty(cx)}), false);
+}
+
+void _handle(PHINode* phi_inst, Function* f) {
+	PHINode* phi_iid = PHINode::Create(Type::getInt32Ty(phi_inst->getContext()), phi_inst->getNumIncomingValues());
+	assert(phi_iid->getNumIncomingValues() == 0);
+	for (int i = 0; i < phi_inst->getNumIncomingValues(); ++i) {
+		phi_iid->addIncoming(getIID(phi_inst->getIncomingValue(i)), phi_inst->getIncomingBlock(i));
+	}
+	phi_iid->insertAfter(phi_inst);
+	assert(!phi_iid->getType()->isFloatingPointTy());
+
+	auto iid = getIID(phi_inst);
+
+	Instruction* last = dyn_cast<Instruction>(castToDouble(phi_inst, phi_inst->getParent()->getFirstInsertionPt()));
+	assert(last);
+
+	vector<Value*> args = {iid, last, phi_iid};
+
+	CallInst* ci = llvm::CallInst::Create(f, args);
+	ci->insertBefore(phi_inst->getParent()->getFirstInsertionPt());
+}
+
+vector<function<void()>> todo;
 
 template <typename T> bool handle(Instruction* inst) {
 	T* value = dyn_cast<T>(inst);
@@ -209,11 +245,20 @@ template <typename T> bool handle(Instruction* inst) {
 	}
 
 	if (useful(value)) {
-		// these really should be in one function, but C++ makes multiple return values painful
-		Function* f = getFunction(to_function_name(value), to_function_type(value), inst);
-		_handle(value, f);
+		todo.push_back([value]() {
+			// these really should be in one function, but C++ makes multiple return values painful
+			Function* f = getFunction(to_function_name(value), to_function_type(value), value);
+			_handle(value, f);
+		});
 	}
 	return true;
+}
+
+void handleAll() {
+	for (auto fn : todo) {
+		fn();
+	}
+	todo.clear();
 }
 
 namespace {
@@ -233,8 +278,13 @@ struct FPPass : public BasicBlockPass {
 	bool runOnBasicBlock(BasicBlock& BB) {
 		bool ret = false;
 		for (Instruction& inst : BB) {
-			ret = handle<BinaryOperator>(&inst) || handle<CallInst>(&inst) || handle<LoadInst>(&inst) ||
-				  handle<StoreInst>(&inst) || ret;
+			if (handle<BinaryOperator>(&inst) || handle<CallInst>(&inst) || handle<LoadInst>(&inst) ||
+					handle<StoreInst>(&inst) || handle<PHINode>(&inst)) {
+				ret = true;
+			}
+		}
+		if (ret) {
+			handleAll();
 		}
 		return ret;
 	}
