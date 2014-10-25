@@ -15,5 +15,7 @@ $LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -fppass -f -o $name-fp.bc $n
 # TODO: DOES NOT WORK
 $CC $name-fp.bc -o $name.out $LDFLAGS -lba2 -lpthread -lm -lrt -lgmp -lglog  -ltcmalloc
 
+$CC $1.bc -o $1.out2 $LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
+
 # Clean temporary files
 rm $name-fp.bc
