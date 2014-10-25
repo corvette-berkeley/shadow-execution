@@ -1,6 +1,4 @@
 bt.S.x
 cg.S.x
-dc.S.x
 ep.S.x
-is.S.x
 sp.S.x
