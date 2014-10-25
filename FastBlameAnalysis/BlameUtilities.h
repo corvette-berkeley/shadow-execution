@@ -4,6 +4,15 @@
 #include <assert.h>
 #include <cmath>
 #include <unordered_map>
+#include <istream>
+
+struct DebugInfo {
+	std::string file;
+	unsigned line, column;
+	DebugInfo() : file("n/a"), line(0), column(0) {}
+};
+
+std::istream& operator>>(std::istream& input, DebugInfo& dbg);
 
 typedef int32_t IID;
 typedef double HIGHPRECISION;
@@ -43,12 +52,6 @@ const std::array<unsigned, PRECISION_NO> PRECISION_BITS = {{
 		27,  // BITS_27
 		52  // BITS_DOUBLE
 	}
-};
-
-struct DebugInfo {
-	int line;
-	int column;
-	char file[100];
 };
 
 const unsigned DOUBLE_EXPONENT_LENGTH = 11;

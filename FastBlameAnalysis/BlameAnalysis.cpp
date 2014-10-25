@@ -6,21 +6,20 @@
 #include <queue>
 
 #include "BlameAnalysis.h"
+using namespace std;
 
 /*** HELPER FUNCTIONS ***/
 
 std::unordered_map<IID, DebugInfo> BlameAnalysis::readDebugInfo() {
-	std::stringstream debugFileName;
-	debugFileName << getenv("GLOG_log_dir") << separator() << "debug.bin";
-	FILE* debugFile = fopen(debugFileName.str().c_str(), "rb");
-	IID iid;
-	struct DebugInfo debugInfo;
+	ifstream fin("debug.bin");
 	std::unordered_map<IID, DebugInfo> debugInfoMap;
-
-	while (fread(&iid, sizeof(IID), 1, debugFile) && fread(&debugInfo, sizeof(struct DebugInfo), 1, debugFile)) {
-		debugInfoMap[iid] = debugInfo;
+	while (fin) {
+		IID id;
+		DebugInfo dbg;
+		string a;
+		fin >> a >> id >> dbg;
+		debugInfoMap[id] = dbg;
 	}
-	fclose(debugFile);
 
 	return debugInfoMap;
 }
@@ -236,21 +235,6 @@ void BlameAnalysis::call_floor(IID iid, IID argIID, HIGHPRECISION argv) {
 }
 void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 	call_lib(iid, argIID, argv, EXP);
-}
-
-void BlameAnalysis::load(IID viid, IID piid, HIGHPRECISION v) {
-	trace[viid] = getShadowObject(piid, v);
-	copyBlameSummary(viid, piid);
-}
-
-void BlameAnalysis::store(IID viid, IID piid, HIGHPRECISION v) {
-	trace[piid] = getShadowObject(viid, v);
-	copyBlameSummary(piid, viid);
-}
-
-void BlameAnalysis::getelementptr(IID aiid, IID eiid, HIGHPRECISION v) {
-	trace[eiid] = getShadowObject(aiid, v);
-	copyBlameSummary(eiid, aiid);
 }
 
 void BlameAnalysis::post_analysis() {

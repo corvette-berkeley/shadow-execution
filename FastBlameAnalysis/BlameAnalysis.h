@@ -55,6 +55,10 @@ public:
 		return global;
 	}
 
+	~BlameAnalysis() {
+		post_analysis();
+	}
+
 	void call_sin(IID iid, IID argIID, HIGHPRECISION argv);
 	void call_acos(IID iid, IID argIID, HIGHPRECISION argv);
 	void call_cos(IID iid, IID argIID, HIGHPRECISION argv);

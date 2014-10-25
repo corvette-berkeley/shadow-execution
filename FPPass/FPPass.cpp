@@ -5,26 +5,59 @@
 #include <functional>
 #include <cassert>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Function.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/Metadata.h"
+#include "llvm/DebugInfo.h"
 #include "llvm/Pass.h"
 
 using namespace std;
 
 using namespace llvm;
 
+class scope_guard {
+	function<void()> end;
+
+public:
+	scope_guard(function<void()> fn1, function<void()> fn2) : end(fn2) {
+		fn1();
+	}
+	~scope_guard() {
+		end();
+	}
+};
+
 Function* getFunction(string fname, FunctionType* ftype, Instruction* instr) {
 	return dyn_cast<Function>(instr->getParent()->getParent()->getParent()->getOrInsertFunction(fname, ftype));
 }
 
 Constant* getIID(Value* v) {
+	static ostringstream output;
+	static scope_guard _([]() {}, []() {
+		ofstream fout("debug.bin");
+		fout << output.str();
+	});
+
 	static unsigned id = 0;
 	static unordered_map<Value*, unsigned> encountered;
 	if (encountered.find(v) == encountered.end()) {
+		MDNode* node = nullptr;
+		Instruction* inst = nullptr;
+		if ((inst = dyn_cast<Instruction>(v)) && (node = inst->getMetadata("dbg"))) {
+			DILocation loc(node);
+			output << "IID: " << id << " file: " << loc.getFilename().str() << " line: " << loc.getLineNumber()
+				   << " column: " << loc.getColumnNumber() << '\n';
+		} else {
+			output << "IID: " << id << " file: "
+				   << "n/a"
+				   << " line: " << 0 << " column: " << 0 << '\n';
+		}
 		encountered[v] = id++;
 	}
 	return ConstantInt::get(Type::getInt32Ty(v->getContext()), encountered[v]);
