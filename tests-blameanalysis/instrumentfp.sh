@@ -11,11 +11,11 @@ $LLVM_BIN_PATH/clang -emit-llvm -g -Xclang -dwarf-column-info -pg -c $name.c -o 
 # Instrument the bitcode
 $LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -fppass -f -o $name-fp.bc $name.bc
 
-# Create executable
-# TODO: DOES NOT WORK
+# Create executable for instrumented bitcode file
 $CC $name-fp.bc -o $name.out $LDFLAGS -lba2 -lpthread -lm -lrt -lgmp -lglog  -ltcmalloc
 
+# Create executable for original bitcode file
 $CC $1.bc -o $1.out2 $LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # Clean temporary files
-rm $name-fp.bc
+#rm $name-fp.bc
