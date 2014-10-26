@@ -6,21 +6,18 @@
 
 struct BlameShadowObject {
 	IID id; // LLVM instruction id.
-	std::array<HIGHPRECISION, PRECISION_NO - 1> highValues;
-	LOWPRECISION lowValue;
+	std::array<HIGHPRECISION, PRECISION_NO> values;
 
-	BlameShadowObject() : id(0), lowValue(0) {}
+	BlameShadowObject() : id(0) {}
 
-	BlameShadowObject(IID i, std::array<HIGHPRECISION, PRECISION_NO - 1> hs,
-					  LOWPRECISION l)
-		: id(i), highValues(hs), lowValue(l) {}
+	BlameShadowObject(IID i, std::array<HIGHPRECISION, PRECISION_NO> v)
+		: id(i), values(v) {}
 	;
 
 	BlameShadowObject& operator=(const BlameShadowObject& rhs) {
 		if (&rhs != this) {
 			id = rhs.id;
-			highValues = rhs.highValues;
-			lowValue = rhs.lowValue;
+			values = rhs.values;
 		}
 		return *this;
 	}
