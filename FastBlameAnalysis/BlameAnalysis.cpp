@@ -281,10 +281,18 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 }
 
 void BlameAnalysis::post_analysis() {
+
 	DebugInfo dbg = debugInfoMap.at(_iid);
 	std::ofstream logfile;
-
 	logfile.open(_selfpath + ".ba");
+
+	ifstream fin(_selfpath + ".point");
+	if (fin.fail()) {
+	  logfile << "File with starting point does not exist" << endl;
+	  return;
+	}
+	fin >> _iid;
+
 	logfile << "Default starting point: File " << dbg.file << ", Line "
 			<< dbg.line << ", Column " << dbg.column << ", IID " << _iid << "\n";
 	logfile << "Default precision: " << PRECISION_BITS[_precision] << "\n";
