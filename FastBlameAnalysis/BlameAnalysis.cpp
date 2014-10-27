@@ -225,6 +225,7 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
 	trace[iid] = BSO;
 	computeBlameSummary(BSO, lBSO, rBSO, op);
+	_iid = iid;
 }
 
 void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv,
@@ -233,6 +234,7 @@ void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv,
 	const BlameShadowObject BSO = shadowFEval(iid, argBSO, func);
 	trace[iid] = BSO;
 	computeBlameSummary(BSO, argBSO, func);
+	_iid = iid;
 }
 
 void BlameAnalysis::fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv,
@@ -282,17 +284,19 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 
 void BlameAnalysis::post_analysis() {
 
-	DebugInfo dbg = debugInfoMap.at(_iid);
 	std::ofstream logfile;
 	logfile.open(_selfpath + ".ba");
 
+	// Read _iid from file or using the default starting point
 	ifstream fin(_selfpath + ".point");
 	if (fin.fail()) {
-	  logfile << "File with starting point does not exist" << endl;
-	  return;
+		logfile << "File with starting point does not exist." << endl;
+		logfile << "Using the default starting point." << endl;
+	} else {
+		fin >> _iid;
 	}
-	fin >> _iid;
 
+	DebugInfo dbg = debugInfoMap.at(_iid);
 	logfile << "Default starting point: File " << dbg.file << ", Line "
 			<< dbg.line << ", Column " << dbg.column << ", IID " << _iid << "\n";
 	logfile << "Default precision: " << PRECISION_BITS[_precision] << "\n";
@@ -322,6 +326,8 @@ void BlameAnalysis::post_analysis() {
 		// Interpret the result for the current blame node.
 		if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {
 			continue;
+			logfile << "ERROR: debug info is not found for iid " << node.id.iid
+					<< endl;
 		}
 		DebugInfo dbg = debugInfoMap.at(node.id.iid);
 		if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
