@@ -143,10 +143,14 @@ void _handle(BinaryOperator* bin_instr, Function* f) {
 }
 
 bool useful(CallInst* ci) {
-	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", };
-	if (ci->getCalledFunction() == nullptr) {
+	return ci->getCalledFunction() != nullptr;
+}
+
+bool usefulMathCall(CallInst* ci) {
+	if (!useful(ci)) {
 		return false;
 	}
+	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", };
 	return possible.find(ci->getCalledFunction()->getName()) != possible.end();
 }
 
@@ -162,18 +166,51 @@ FunctionType* to_function_type(CallInst* instr) {
 							 false);
 }
 
+string to_function_name(Argument*) {
+	return "llvm_arg";
+}
+
+FunctionType* to_function_type(Argument* arg) {
+	LLVMContext& cx = arg->getContext();
+	return FunctionType::get(Type::getVoidTy(cx), vector<Type*>({Type::getInt32Ty(cx), Type::getInt32Ty(cx)}), false);
+}
+
+bool _handleMathCall(CallInst* call_inst, Function* f) {
+	if (usefulMathCall(call_inst)) {
+		auto iidl = getIID(call_inst->getArgOperand(0));
+		auto iid = getIID(call_inst);
+
+		Instruction* last = dyn_cast<Instruction>(castToDouble(call_inst, call_inst));
+		assert(last);
+
+		vector<Value*> args = {iid, last, iidl, castToDouble(call_inst->getArgOperand(0), call_inst), };
+
+		CallInst* ci = llvm::CallInst::Create(f, args);
+		ci->insertAfter(last);
+
+		return true;
+	}
+
+	return false;
+}
+
 void _handle(CallInst* call_inst, Function* f) {
+	if (_handleMathCall(call_inst, f)) {
+		return;
+	}
 
-	auto iidl = getIID(call_inst->getArgOperand(0));
-	auto iid = getIID(call_inst);
-
-	Instruction* last = dyn_cast<Instruction>(castToDouble(call_inst, call_inst));
-	assert(last);
-
-	vector<Value*> args = {iid, last, iidl, castToDouble(call_inst->getArgOperand(0), call_inst), };
-
-	CallInst* ci = llvm::CallInst::Create(f, args);
-	ci->insertAfter(last);
+	for (unsigned i = 0; i < call_inst->getNumArgOperands(); i++) {
+		Argument* arg = (Argument*)call_inst->getArgOperand(i);
+		if (!arg->getType()->isFloatingPointTy()) {
+			continue;
+		}
+		auto aiid = getIID(arg);
+		auto ainx = ConstantInt::get(Type::getInt32Ty(call_inst->getContext()), i + 1);
+		vector<Value*> args = {ainx, aiid};
+		Function* f = getFunction(to_function_name(arg), to_function_type(arg), call_inst);
+		CallInst* ci = llvm::CallInst::Create(f, args);
+		ci->insertBefore(call_inst);
+	}
 }
 
 bool useful(LoadInst* li) {
@@ -224,7 +261,11 @@ FunctionType* to_function_type(StoreInst* instr) {
 }
 
 void _handle(StoreInst* store_inst, Function* f) {
-	auto iid = getIID(store_inst->getValueOperand());
+	Value* v = store_inst->getValueOperand();
+	auto iid = getIID(v);
+	if (Argument* arg = dyn_cast<Argument>(v)) {
+		iid = ConstantInt::get(Type::getInt32Ty(v->getContext()), -arg->getArgNo() - 1);
+	}
 	auto iidl = getIID(store_inst->getPointerOperand());
 
 	vector<Value*> args = {iid,  castToDouble(store_inst->getValueOperand(), store_inst),
