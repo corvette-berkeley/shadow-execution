@@ -294,7 +294,8 @@ void _handle(LoadInst* load_inst, Function* f) {
 }
 
 bool useful(ReturnInst* ri) {
-	return ri->getReturnValue()->getType()->isFloatingPointTy();
+	Value* v = ri->getReturnValue();
+	return v && v->getType()->isFloatingPointTy();
 }
 
 string to_function_name(ReturnInst*) {
