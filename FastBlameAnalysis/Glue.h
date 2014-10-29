@@ -26,4 +26,6 @@ extern "C" {
 
 	// ***** Other Operations ***** //
 	void llvm_arg(unsigned argInx, IID iid);
+	void llvm_return(IID iid);
+	void llvm_after_call(IID iid);
 }

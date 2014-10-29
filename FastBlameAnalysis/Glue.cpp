@@ -6,6 +6,7 @@ using std::unordered_map;
 
 unordered_map<IID, IID> fake_to_real_iid;
 unordered_map<unsigned, IID> arg_to_real_iid;
+IID return_iid;
 
 IID translate_to_real(IID val) {
 	if (fake_to_real_iid.find(val) == fake_to_real_iid.end()) {
@@ -53,6 +54,7 @@ void llvm_fstore(IID iidV, double, IID, void* vptr) {
 	if (iidV >= 0) {
 		ptr_to_iid[vptr] = iidV;
 	} else {
+		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
 		ptr_to_iid[vptr] = fake_to_real_iid[arg_to_real_iid[-iidV]];
 	}
 	//	BlameAnalysis::get().store(iidV, ptr, value);
@@ -99,4 +101,12 @@ void llvm_call_floor(IID iidf, double, IID operand, double operandValue) {
 
 void llvm_arg(unsigned argInx, IID iid) {
 	arg_to_real_iid[argInx] = iid;
+}
+
+void llvm_return(IID iid) {
+	return_iid = iid;
+}
+
+void llvm_after_call(IID iid) {
+	fake_to_real_iid[iid] = fake_to_real_iid[return_iid];
 }
