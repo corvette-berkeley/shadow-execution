@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <set>
@@ -294,21 +295,23 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 }
 
 void BlameAnalysis::post_analysis() {
+	std::ofstream tracefile;
+	tracefile.open(_selfpath + ".trace");
 	// Print the trace
-	cout << "====== execution trace ======" << endl;
+	tracefile << "====== execution trace ======" << endl;
 	for (auto& it : trace) {
 		IID iid = it.first;
 		DebugInfo dbg = debugInfoMap.at(iid);
 		BlameShadowObject bso = it.second;
-		cout << "At file " << dbg.file << ", line " << dbg.line << ", column "
-			 << dbg.column << ", id " << iid << endl;
-		cout << "\t";
+		tracefile << "At file " << dbg.file << ", line " << dbg.line << ", column "
+				  << dbg.column << ", id " << iid << endl;
+		tracefile << "\t";
 		for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
-			printf("%.10f", bso.values[i]);
+			tracefile << setprecision(10) << bso.values[i];
 			if (i != BITS_DOUBLE) {
-				cout << ", ";
+				tracefile << ", ";
 			} else {
-				cout << endl;
+				tracefile << endl;
 			}
 		}
 	}
