@@ -14,7 +14,7 @@ extern "C" {
 
 	void llvm_fphi(IID iidV, double value, IID orig);
 
-	// ***** Other Operations ***** //
+	// ***** Math Call Operations ***** //
 	void llvm_call_fabs(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_exp(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_sqrt(IID iidf, double output, IID operand, double operandValue);
@@ -23,4 +23,7 @@ extern "C" {
 	void llvm_call_acos(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_cos(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_floor(IID iidf, double output, IID operand, double operandValue);
+
+	// ***** Other Operations ***** //
+	void llvm_arg(unsigned argInx, IID iid);
 }

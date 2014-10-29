@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <set>
@@ -293,6 +294,24 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 }
 
 void BlameAnalysis::post_analysis() {
+	// Print the trace
+	cout << "====== execution trace ======" << endl;
+	for (auto& it : trace) {
+		IID iid = it.first;
+		DebugInfo dbg = debugInfoMap.at(iid);
+		BlameShadowObject bso = it.second;
+		cout << "At file " << dbg.file << ", line " << dbg.line << ", column "
+			 << dbg.column << ", id " << iid << endl;
+		cout << "\t";
+		for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
+			printf("%.10f", bso.values[i]);
+			if (i != BITS_DOUBLE) {
+				cout << ", ";
+			} else {
+				cout << endl;
+			}
+		}
+	}
 
 	std::ofstream logfile;
 	std::ofstream logfile2;
@@ -343,8 +362,6 @@ void BlameAnalysis::post_analysis() {
 		// Interpret the result for the current blame node.
 		if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {
 			continue;
-			logfile << "ERROR: debug info is not found for iid " << node.id.iid
-					<< endl;
 		}
 		DebugInfo dbg = debugInfoMap.at(node.id.iid);
 		if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
