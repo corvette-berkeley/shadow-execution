@@ -177,7 +177,7 @@ BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO,
 	// Try all combination of i and j to find the blame that works.
 	for (i = min_i; i < PRECISION_NO; i = PRECISION(i + 1)) {
 		for (j = min_j; j < PRECISION_NO; j = PRECISION(j + 1)) {
-			if (!canBlame(val, lBSO.values[i], rBSO.values[i], op, p)) {
+			if (!canBlame(val, lBSO.values[i], rBSO.values[j], op, p)) {
 				continue;
 			}
 
@@ -235,6 +235,18 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 	const BlameShadowObject lBSO = getShadowObject(liid, lv);
 	const BlameShadowObject rBSO = getShadowObject(riid, rv);
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
+	if (BSO.values[BITS_DOUBLE] != feval<HIGHPRECISION>(lv, rv, op)) {
+		cout << "IID: " << iid << endl;
+		cout << "RIID: " << riid << endl;
+		cout << "LIID: " << liid << endl;
+		cout << setprecision(10) << lv << endl;
+		cout << setprecision(10) << lBSO.values[BITS_DOUBLE] << endl;
+		cout << setprecision(10) << rv << endl;
+		cout << setprecision(10) << rBSO.values[BITS_DOUBLE] << endl;
+		cout << setprecision(1) << BSO.values[BITS_DOUBLE] << endl;
+		exit(5);
+	}
+	assert(BSO.values[BITS_DOUBLE] == feval<HIGHPRECISION>(lv, rv, op));
 	trace[iid] = BSO;
 	computeBlameSummary(BSO, lBSO, rBSO, op);
 	_iid = iid;

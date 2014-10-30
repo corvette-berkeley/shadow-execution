@@ -1,4 +1,5 @@
 #include <unordered_map>
+#include <iostream>
 #include "Glue.h"
 #include "BlameAnalysis.h"
 
@@ -46,13 +47,30 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 
 unordered_map<void*, IID> ptr_to_iid;
 void llvm_fload(IID iidf, double, IID, void* vptr) {
-	fake_to_real_iid[iidf] = ptr_to_iid[vptr];
+	int real_iid = ptr_to_iid[vptr];
+	fake_to_real_iid[iidf] = real_iid;
+	if (BlameAnalysis::get().trace_ptr.find({
+	vptr, real_iid
+}) != BlameAnalysis::get().trace_ptr.end()) {
+		BlameAnalysis::get().trace[real_iid] = BlameAnalysis::get().trace_ptr[ {
+			vptr, real_iid
+		}];
+	}
+	else {
+		BlameAnalysis::get().trace.erase(iidf);
+	}
 	// BlameAnalysis::get().load(iidf, input, value);
 }
 
 void llvm_fstore(IID iidV, double, IID, void* vptr) {
 	if (iidV >= 0) {
 		ptr_to_iid[vptr] = iidV;
+		if (BlameAnalysis::get().trace.find(iidV) !=
+				BlameAnalysis::get().trace.end()) {
+			BlameAnalysis::get().trace_ptr[ {
+				vptr, iidV
+			}] = BlameAnalysis::get().trace[iidV];
+		}
 	} else {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
 		ptr_to_iid[vptr] = fake_to_real_iid[arg_to_real_iid[-iidV]];
