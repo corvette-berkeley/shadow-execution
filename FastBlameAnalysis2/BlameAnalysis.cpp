@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <fstream>
 #include <set>
@@ -114,12 +115,13 @@ BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO,
 	}
 
 	// Compute the minimal blame information.
-	PRECISION i = blameSummary.find(BSO.id) != blameSummary.end()
-				  ? blameSummary[BSO.id][p].children[0].precision
-				  : BITS_FLOAT;
+	PRECISION min_i = blameSummary.find(BSO.id) != blameSummary.end()
+					  ? blameSummary[BSO.id][p].children[0].precision
+					  : BITS_FLOAT;
 
 	// Try all i to find the blame that works.
-	for (; i < PRECISION_NO; i = PRECISION(i + 1)) {
+	PRECISION i;
+	for (i = min_i; i < PRECISION_NO; i = PRECISION(i + 1)) {
 		if (!canBlame(val, argbsoVals[i], func, p)) {
 			continue;
 		}
@@ -156,18 +158,20 @@ BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO,
 
 	// Compute the minimal blame information.
 	bool found = false;
-	PRECISION i = BITS_FLOAT;
-	PRECISION j = BITS_FLOAT;
+	PRECISION min_i = BITS_FLOAT;
+	PRECISION min_j = BITS_FLOAT;
 	if (blameSummary.find(BSO.id) != blameSummary.end()) {
 		BlameNode& bn = blameSummary[BSO.id][p];
-		i = bn.children[0].precision;
-		j = bn.children[1].precision;
+		min_i = bn.children[0].precision;
+		min_j = bn.children[1].precision;
 	}
 
+	PRECISION i = min_i;
+	PRECISION j = min_j;
 	// Try all combination of i and j to find the blame that works.
-	for (; i < PRECISION_NO; i = PRECISION(i + 1)) {
-		for (; j < PRECISION_NO; j = PRECISION(j + 1)) {
-			if (!canBlame(val, lbsoVals[i], rbsoVals[i], op, p)) {
+	for (i = min_i; i < PRECISION_NO; i = PRECISION(i + 1)) {
+		for (j = min_j; j < PRECISION_NO; j = PRECISION(j + 1)) {
+			if (!canBlame(val, lbsoVals[i], rbsoVals[j], op, p)) {
 				continue;
 			}
 
@@ -226,6 +230,18 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 	const BlameShadowObject lBSO = getShadowObject(liid, lv);
 	const BlameShadowObject rBSO = getShadowObject(riid, rv);
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
+	if (BSO.highValue != feval<HIGHPRECISION>(lv, rv, op)) {
+		cout << "IID: " << iid << endl;
+		cout << "RIID: " << riid << endl;
+		cout << "LIID: " << liid << endl;
+		cout << setprecision(10) << lv << endl;
+		cout << setprecision(10) << lBSO.highValue << endl;
+		cout << setprecision(10) << rv << endl;
+		cout << setprecision(10) << rBSO.highValue << endl;
+		cout << setprecision(1) << BSO.highValue << endl;
+		exit(5);
+	}
+	assert(BSO.highValue == feval<HIGHPRECISION>(lv, rv, op));
 	trace[iid] = BSO;
 	computeBlameSummary(BSO, lBSO, rBSO, op);
 }
@@ -284,10 +300,35 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 }
 
 void BlameAnalysis::post_analysis() {
-	DebugInfo dbg = debugInfoMap.at(_iid);
-	std::ofstream logfile;
+	std::ofstream tracefile;
+	tracefile.open(_selfpath + ".trace");
+	// Print the trace
+	tracefile << "====== execution trace ======" << endl;
+	for (auto& it : trace) {
+		IID iid = it.first;
+		DebugInfo dbg = debugInfoMap.at(iid);
+		BlameShadowObject bso = it.second;
+		tracefile << "At file " << dbg.file << ", line " << dbg.line << ", column "
+				  << dbg.column << ", id " << iid << endl;
+		tracefile << "\t" << setprecision(10) << bso.lowValue << ", "
+				  << bso.highValue << endl;
+	}
 
+	std::ofstream logfile;
+	std::ofstream logfile2;
 	logfile.open(_selfpath + ".ba");
+	logfile2.open(_selfpath + ".ba.full");
+
+	// Read _iid from file or using the default starting point
+	ifstream fin(_selfpath + ".point");
+	if (fin.fail()) {
+		logfile << "File with starting point does not exist." << endl;
+		logfile << "Using the default starting point." << endl;
+	} else {
+		fin >> _iid;
+	}
+
+	DebugInfo dbg = debugInfoMap.at(_iid);
 	logfile << "Default starting point: File " << dbg.file << ", Line "
 			<< dbg.line << ", Column " << dbg.column << ", IID " << _iid << "\n";
 	logfile << "Default precision: " << PRECISION_BITS[_precision] << "\n";
@@ -299,9 +340,12 @@ void BlameAnalysis::post_analysis() {
 	while (!workList.empty()) {
 		// Find more blame node and add to the queue.
 		const BlameNode& node = workList.front();
-		workList.pop();
+		logfile2 << "(" << node.id.iid << "," << PRECISION_BITS[node.id.precision]
+				 << ") : ";
 		for (auto it = node.children.begin(); it != node.children.end(); it++) {
 			BlameNodeID blameNodeID = *it;
+			logfile2 << "(" << blameNodeID.iid << ","
+					 << PRECISION_BITS[blameNodeID.precision] << ") ";
 			if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
 				// Children are either a constant or alloca.
 				continue;
@@ -313,6 +357,8 @@ void BlameAnalysis::post_analysis() {
 				workList.push(blameNode);
 			}
 		}
+		logfile2 << endl;
+		workList.pop();
 
 		// Interpret the result for the current blame node.
 		if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {

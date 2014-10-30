@@ -2,6 +2,7 @@
 #define _BLAME_ANALYSIS_H_
 
 #include <unordered_map>
+#include <map>
 
 #include "BlameUtilities.h"
 #include "BlameNode.h"
@@ -35,8 +36,6 @@ private:
 	// Debug information includes the LoC, column and file of the instruction.
 	const std::unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
 
-	std::unordered_map<IID, BlameShadowObject> trace;
-
 	std::unordered_map<IID, std::array<BlameNode, PRECISION_NO>> blameSummary;
 
 	// Global information about the starting point of the analysis.
@@ -51,6 +50,9 @@ private:
 	}
 
 public:
+	std::unordered_map<IID, BlameShadowObject> trace;
+	std::map<std::pair<void*, IID>, BlameShadowObject> trace_ptr;
+
 	static BlameAnalysis& get() {
 		static BlameAnalysis global;
 		return global;
@@ -73,10 +75,6 @@ public:
 	void fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 	void fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 	void fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
-
-	void load(IID viid, IID piid, HIGHPRECISION v);
-	void store(IID viid, IID piid, HIGHPRECISION v);
-	void getelementptr(IID aiid, IID eiid, HIGHPRECISION v);
 
 	void post_analysis();
 
