@@ -119,10 +119,11 @@ private:
 	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func,
 				  PRECISION p);
 
-	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv,
-				FBINOP op);
+	void fbinop(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+				HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
 
-	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
+	void call_lib(IID iid, IID argIID, void* argptr, HIGHPRECISION v,
+				  MATHFUNC func);
 
 	void copyBlameSummary(IID dest, IID src);
 };

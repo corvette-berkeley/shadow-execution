@@ -117,6 +117,7 @@ SConscript(
 	'MonitorPass',
 	'FPPass',
 	'FastBlameAnalysis',
+	'FastBlameAnalysis2',
 	'src',
   'BlameAnalysis/backward',
   'BlameAnalysis/forward',

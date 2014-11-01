@@ -42,7 +42,7 @@ const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, void* ptr,
 		return BlameShadowObject(iid, (LOWPRECISION) v, v);
 	}
 
-	if (trace.find(iid).find(ptr) == trace.find(iid).end()) {
+	if (trace[iid].find(ptr) == trace[iid].end()) {
 		return BlameShadowObject(iid, (LOWPRECISION) v, v);
 	}
 
