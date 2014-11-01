@@ -8,6 +8,9 @@
 #include "BlameNode.h"
 #include "BlameShadowObject.h"
 
+using std::unordered_map;
+using std::string;
+
 class BlameAnalysis {
 private:
 	// Return the file separator character depending on the underlying operating
@@ -21,7 +24,7 @@ private:
 	}
 	;
 
-	std::string get_selfpath();
+	string get_selfpath();
 
 	// Read debug information from $GLOG_log_dir/debug.bin and wrap into a
 	// mapping from instruction IID to DebugInfo struct. The file debug.bin is
@@ -29,19 +32,19 @@ private:
 	//
 	// TODO: find a way to make the name debug.bin to be provided as input and
 	// sounds more personal to the application under analysis.
-	std::unordered_map<IID, DebugInfo> readDebugInfo();
+	unordered_map<IID, DebugInfo> readDebugInfo();
 
 	// A map from instruction IID to debug information. IID is computed during
 	// instrumentation phase and is the unique id for each LLVM instruction.
 	// Debug information includes the LoC, column and file of the instruction.
-	const std::unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
+	const unordered_map<IID, DebugInfo> debugInfoMap = readDebugInfo();
 
-	std::unordered_map<IID, std::array<BlameNode, PRECISION_NO>> blameSummary;
+	unordered_map<IID, std::array<BlameNode, PRECISION_NO>> blameSummary;
 
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
 	IID _iid;
-	std::string _selfpath;
+	string _selfpath;
 
 	BlameAnalysis() {
 		_precision = BITS_27;
@@ -50,8 +53,7 @@ private:
 	}
 
 public:
-	std::unordered_map<IID, BlameShadowObject> trace;
-	std::map<std::pair<void*, IID>, BlameShadowObject> trace_ptr;
+	unordered_map<IID, unordered_map<void*, BlameShadowObject>> trace;
 
 	static BlameAnalysis& get() {
 		static BlameAnalysis global;
@@ -62,24 +64,28 @@ public:
 		post_analysis();
 	}
 
-	void call_sin(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_acos(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_cos(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_fabs(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_sqrt(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_log(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_floor(IID iid, IID argIID, HIGHPRECISION argv);
-	void call_exp(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_sin(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_acos(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_cos(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_fabs(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_sqrt(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_log(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_floor(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_exp(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
 
-	void fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void fadd(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+			  HIGHPRECISION lv, HIGHPRECISION rv);
+	void fsub(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+			  HIGHPRECISION lv, HIGHPRECISION rv);
+	void fmul(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+			  HIGHPRECISION lv, HIGHPRECISION rv);
+	void fdiv(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+			  HIGHPRECISION lv, HIGHPRECISION rv);
 
 	void post_analysis();
 
 private:
-	const BlameShadowObject getShadowObject(IID iid, HIGHPRECISION v);
+	const BlameShadowObject getShadowObject(IID iid, void* ptr, HIGHPRECISION v);
 
 	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& lBSO,
 										const BlameShadowObject& rBSO, FBINOP op);

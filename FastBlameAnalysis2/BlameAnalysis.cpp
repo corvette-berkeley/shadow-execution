@@ -36,13 +36,17 @@ std::string BlameAnalysis::get_selfpath() {
 	}
 }
 
-const BlameShadowObject BlameAnalysis::getShadowObject(IID iid,
+const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, void* ptr,
 		HIGHPRECISION v) {
-	if (trace.find(iid) != trace.end()) {
-		return trace[iid];
+	if (trace.find(iid) == trace.end()) {
+		return BlameShadowObject(iid, (LOWPRECISION) v, v);
 	}
 
-	return BlameShadowObject(iid, (LOWPRECISION) v, v);
+	if (trace.find(iid).find(ptr) == trace.find(iid).end()) {
+		return BlameShadowObject(iid, (LOWPRECISION) v, v);
+	}
+
+	return trace[iid][ptr];
 }
 
 const BlameShadowObject
@@ -225,10 +229,10 @@ void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
 }
 
 /*** API FUNCTIONS ***/
-void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
-						   HIGHPRECISION rv, FBINOP op) {
-	const BlameShadowObject lBSO = getShadowObject(liid, lv);
-	const BlameShadowObject rBSO = getShadowObject(riid, rv);
+void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+						   HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op) {
+	const BlameShadowObject lBSO = getShadowObject(liid, lptr, lv);
+	const BlameShadowObject rBSO = getShadowObject(riid, rptr, rv);
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
 	if (BSO.highValue != feval<HIGHPRECISION>(lv, rv, op)) {
 		cout << "IID: " << iid << endl;
@@ -242,61 +246,69 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv,
 		exit(5);
 	}
 	assert(BSO.highValue == feval<HIGHPRECISION>(lv, rv, op));
-	trace[iid] = BSO;
+	trace[iid][0] = BSO;
 	computeBlameSummary(BSO, lBSO, rBSO, op);
 }
 
-void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv,
-							 MATHFUNC func) {
-	const BlameShadowObject argBSO = getShadowObject(argiid, argv);
+void BlameAnalysis::call_lib(IID iid, IID argiid, void* argptr,
+							 HIGHPRECISION argv, MATHFUNC func) {
+	const BlameShadowObject argBSO = getShadowObject(argiid, argptr, argv);
 	const BlameShadowObject BSO = shadowFEval(iid, argBSO, func);
-	trace[iid] = BSO;
+	trace[iid][0] = BSO;
 	computeBlameSummary(BSO, argBSO, func);
 }
 
-void BlameAnalysis::fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv,
-						 HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FADD);
+void BlameAnalysis::fadd(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+						 HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FADD);
 }
 
-void BlameAnalysis::fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv,
-						 HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FSUB);
+void BlameAnalysis::fsub(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+						 HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FSUB);
 }
 
-void BlameAnalysis::fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv,
-						 HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FMUL);
+void BlameAnalysis::fmul(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+						 HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FMUL);
 }
 
-void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv,
-						 HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FDIV);
+void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, void* lptr, void* rptr,
+						 HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FDIV);
 }
 
-void BlameAnalysis::call_sin(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, SIN);
+void BlameAnalysis::call_sin(IID iid, IID argIID, void* argptr,
+							 HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, SIN);
 }
-void BlameAnalysis::call_acos(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, ACOS);
+void BlameAnalysis::call_acos(IID iid, IID argIID, void* argptr,
+							  HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, ACOS);
 }
-void BlameAnalysis::call_cos(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, COS);
+void BlameAnalysis::call_cos(IID iid, IID argIID, void* argptr,
+							 HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, COS);
 }
-void BlameAnalysis::call_fabs(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, FABS);
+void BlameAnalysis::call_fabs(IID iid, IID argIID, void* argptr,
+							  HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, FABS);
 }
-void BlameAnalysis::call_sqrt(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, SQRT);
+void BlameAnalysis::call_sqrt(IID iid, IID argIID, void* argptr,
+							  HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, SQRT);
 }
-void BlameAnalysis::call_log(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, LOG);
+void BlameAnalysis::call_log(IID iid, IID argIID, void* argptr,
+							 HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, LOG);
 }
-void BlameAnalysis::call_floor(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, FLOOR);
+void BlameAnalysis::call_floor(IID iid, IID argIID, void* argptr,
+							   HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, FLOOR);
 }
-void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, EXP);
+void BlameAnalysis::call_exp(IID iid, IID argIID, void* argptr,
+							 HIGHPRECISION argv) {
+	call_lib(iid, argIID, argptr, argv, EXP);
 }
 
 void BlameAnalysis::post_analysis() {
@@ -307,7 +319,7 @@ void BlameAnalysis::post_analysis() {
 	for (auto& it : trace) {
 		IID iid = it.first;
 		DebugInfo dbg = debugInfoMap.at(iid);
-		BlameShadowObject bso = it.second;
+		BlameShadowObject bso = it.second[0];
 		tracefile << "At file " << dbg.file << ", line " << dbg.line << ", column "
 				  << dbg.column << ", id " << iid << endl;
 		tracefile << "\t" << setprecision(10) << bso.lowValue << ", "
