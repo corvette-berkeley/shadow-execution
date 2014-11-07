@@ -4,6 +4,8 @@
 #include "BlameAnalysis.h"
 
 using std::unordered_map;
+using std::cout;
+using std::endl;
 
 unordered_map<IID, IID> fake_to_real_iid;
 unordered_map<unsigned, IID> arg_to_real_iid;
@@ -15,8 +17,7 @@ IID translate_to_real(IID val) {
 	if (fake_to_real_iid.find(val) == fake_to_real_iid.end()) {
 		return val;
 	}
-	int real_iid = fake_to_real_iid[val];
-	return real_iid;
+	return fake_to_real_iid[val];
 }
 
 void* translate_to_ptr(IID val) {
@@ -70,21 +71,26 @@ void llvm_fload(IID iidf, double, IID, void* vptr) {
 }
 
 void llvm_fstore(IID iidV, double, IID, void* vptr) {
-	if (iidV >= 0) {
-		ptr_to_iid[vptr] = iidV;
-		if (BlameAnalysis::get().trace.find(iidV) !=
-				BlameAnalysis::get().trace.end()) {
-			BlameAnalysis::get().trace[iidV][vptr] =
-				BlameAnalysis::get().trace[iidV][0];
-		}
-	} else {
+	if (iidV < 0) {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
-		ptr_to_iid[vptr] = fake_to_real_iid[arg_to_real_iid[-iidV]];
+		iidV = translate_to_real(arg_to_real_iid[-iidV]);
+	} else {
+		iidV = translate_to_real(iidV);
+	}
+
+	ptr_to_iid[vptr] = iidV;
+	if (BlameAnalysis::get().trace.find(iidV) != BlameAnalysis::get().trace.end()) {
+		BlameAnalysis::get().trace[iidV][vptr] = BlameAnalysis::get().trace[iidV][0];
 	}
 }
 
 void llvm_fphi(IID out, double, IID in) {
-	fake_to_real_iid[out] = in;
+	in = translate_to_real(in);
+	if (BlameAnalysis::get().trace.find(in) != BlameAnalysis::get().trace.end()) {
+		BlameAnalysis::get().trace[out][0] = BlameAnalysis::get().trace[in][0];
+	}
+	// fake_to_real_iid[out] = translate_to_real(in);
+	// fake_to_real_iid[out] = in;
 }
 
 // ***** Other Operations ***** //
@@ -139,5 +145,6 @@ void llvm_return(IID iid) {
 }
 
 void llvm_after_call(IID iid) {
-	fake_to_real_iid[iid] = fake_to_real_iid[return_iid];
+	fake_to_real_iid[iid] = translate_to_real(return_iid);
+	//  fake_to_real_iid[iid] = fake_to_real_iid[return_iid];
 }

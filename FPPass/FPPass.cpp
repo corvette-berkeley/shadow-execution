@@ -16,6 +16,7 @@
 #include "llvm/IR/Metadata.h"
 #include "llvm/DebugInfo.h"
 #include "llvm/Pass.h"
+#include "llvm/Support/CommandLine.h"
 
 using namespace std;
 
@@ -335,6 +336,22 @@ FunctionType* to_function_type(PHINode* instr) {
 							 vector<Type*>({Type::getInt32Ty(cx), Type::getDoubleTy(cx), Type::getInt32Ty(cx)}), false);
 }
 
+Instruction* getFirstNonPHI(BasicBlock* BB) {
+	for (Instruction& inst : *BB) {
+		if (dyn_cast<PHINode>(&inst)) {
+			continue;
+		}
+		if (CallInst* ci = dyn_cast<CallInst>(&inst)) {
+			if (ci->getCalledFunction()->getName() == "llvm_fphi") {
+				continue;
+			}
+		}
+		return &inst;
+	}
+
+	return NULL;
+}
+
 void _handle(PHINode* phi_inst, Function* f) {
 	PHINode* phi_iid = PHINode::Create(Type::getInt32Ty(phi_inst->getContext()), phi_inst->getNumIncomingValues());
 	assert(phi_iid->getNumIncomingValues() == 0);
@@ -346,12 +363,17 @@ void _handle(PHINode* phi_inst, Function* f) {
 
 	auto iid = getIID(phi_inst);
 
+	// Instruction* nonphi = getFirstNonPHI(phi_inst->getParent());
+	// assert(nonphi);
+
 	Instruction* last = dyn_cast<Instruction>(castToDouble(phi_inst, phi_inst->getParent()->getFirstInsertionPt()));
 	assert(last);
 
 	vector<Value*> args = {iid, last, phi_iid};
 
 	CallInst* ci = llvm::CallInst::Create(f, args);
+	// ci->insertBefore(nonphi);
+
 	if (phi_inst == last) {
 		ci->insertBefore(phi_inst->getParent()->getFirstInsertionPt());
 	} else {
@@ -385,21 +407,45 @@ void handleAll() {
 	todo.clear();
 }
 
+cl::opt<string> IncludeFilename("include", cl::desc("Specify include file name"), cl::value_desc("filename"));
+
 namespace {
 
 struct FPPass : public BasicBlockPass {
 	static char ID;
+	bool instrument;
+
 	FPPass() : BasicBlockPass(ID) {}
 	using Pass::doInitialization;
 	using Pass::doFinalization;
-	bool doInitialization(Function&) {
+	bool doInitialization(Function& F) {
+		string name = F.getName();
+		ifstream infile(IncludeFilename.c_str());
+		if (infile.is_open()) {
+			string line;
+			while (getline(infile, line)) {
+				if (line.compare(name) == 0) {
+					instrument = true;
+					cout << name << endl;
+					return true;
+				}
+			}
+			instrument = false;
+		} else {
+			instrument = true;
+			cout << name << endl;
+		}
 		return true;
 	}
+
 	bool doFinalization(Function&) {
 		return true;
 	}
 
 	bool runOnBasicBlock(BasicBlock& BB) {
+		if (!instrument) {
+			return true;
+		}
 		bool ret = false;
 		for (Instruction& inst : BB) {
 			if (handle<BinaryOperator>(&inst) || handle<CallInst>(&inst) || handle<LoadInst>(&inst) ||
