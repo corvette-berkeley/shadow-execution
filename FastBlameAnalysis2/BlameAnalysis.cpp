@@ -49,8 +49,8 @@ const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, void* ptr, HIGHP
 		cout << "Get Shadow" << endl;
 		cout << iid << endl;
 		cout << ptr << endl;
-		cout << trace[iid][ptr].highValue << endl;
-		cout << v << endl;
+		cout << setprecision(10) << trace[iid][ptr].highValue << endl;
+		cout << setprecision(10) << v << endl;
 		exit(5);
 	}
 

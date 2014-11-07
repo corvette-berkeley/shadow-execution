@@ -89,8 +89,6 @@ void llvm_fphi(IID out, double, IID in) {
 	if (BlameAnalysis::get().trace.find(in) != BlameAnalysis::get().trace.end()) {
 		BlameAnalysis::get().trace[out][0] = BlameAnalysis::get().trace[in][0];
 	}
-	// fake_to_real_iid[out] = translate_to_real(in);
-	// fake_to_real_iid[out] = in;
 }
 
 // ***** Other Operations ***** //
@@ -146,5 +144,4 @@ void llvm_return(IID iid) {
 
 void llvm_after_call(IID iid) {
 	fake_to_real_iid[iid] = translate_to_real(return_iid);
-	//  fake_to_real_iid[iid] = fake_to_real_iid[return_iid];
 }
