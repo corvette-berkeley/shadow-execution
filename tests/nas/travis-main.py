@@ -10,6 +10,7 @@ import sys
 def main():
 	executable = "./" + sys.argv[1]+".out"
 
+	#result = jobmonitor.RunJob(['valgrind', '--track-origins=yes', '--leak-check=full', '--log-file=valgrind.out', '--soname-synonyms=somalloc=*tcmalloc*', executable],shell = False, stdout=None, stderr=None)
 	result = jobmonitor.RunJob([executable],shell = False, stdout=None, stderr=None)
 
 	check_commands = {"Command" : checkCommand, "Return Code" : checkRC, "Runtime" : checkRuntime, "Memory" : checkMemory }
@@ -32,14 +33,14 @@ def main():
 def checkCommand(new_val, old_val):
 	same = new_val == old_val
 	if not same:
-		print("Command ran was different - error!: Expected "+str_ref_val + " but got " + str(new_val))
+		print("Command ran was different - error!: Expected "+old_val + " but got " + str(new_val))
 	return same
 
 def checkRC(new_val, old_val):
 	same = int(new_val) == int(old_val)
 	if not same:
 		print("Return Code has changed! Expected " + old_val + ", but got " + new_val);
-	if same and int(old_val) < 0: # exit rcs are the same, but both errored
+	if same and int(old_val) > 128: # exit rcs are the same, but both errored (errored here means exited with negative return code - return codes are 8 bit)
 		print("Since the program errored, we are skipping memory and runtime checks!")
 		exit(0)
 	return same

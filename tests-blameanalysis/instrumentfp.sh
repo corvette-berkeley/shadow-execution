@@ -18,4 +18,4 @@ $CC $name-fp.bc -o $name.out $LDFLAGS -lba2 -lpthread -lm -lrt -lgmp -lglog  -lt
 $CC $1.bc -o $1.out2 $LDFLAGS -lpthread -lm -lrt -lgmp -lglog $PROFILER $MALLOC
 
 # Clean temporary files
-#rm $name-fp.bc
+rm $name-fp.bc

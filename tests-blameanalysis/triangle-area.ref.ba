@@ -1,10 +1,5 @@
-Default starting point: File triangle-area.c, Line 11, Column 3,  IID <ommitted>
-Default precision: 27
-File triangle-area.c, Line 11, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
-File triangle-area.c, Line 11, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
-File triangle-area.c, Line 11, Column 3, HigherPrecision: 0, HigherPrecisionOperator: 1
-File triangle-area.c, Line 11, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
-File triangle-area.c, Line 11, Column 3, HigherPrecision: 0, HigherPrecisionOperator: 1
-File triangle-area.c, Line 9, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
-File triangle-area.c, Line 9, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
+File with starting point does not exist.
+Using the default starting point.
+Default starting point: File triangle-area.c, Line 9, Column 3, IID 10
+Default precision: 52
 File triangle-area.c, Line 9, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
