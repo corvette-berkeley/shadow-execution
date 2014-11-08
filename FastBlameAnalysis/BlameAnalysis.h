@@ -2,11 +2,20 @@
 #define _BLAME_ANALYSIS_H_
 
 #include <unordered_map>
-#include <map>
 
 #include "BlameUtilities.h"
 #include "BlameNode.h"
 #include "BlameShadowObject.h"
+
+namespace std {
+template <> struct hash<pair<void*, IID>> {
+	size_t operator()(const pair<void*, IID>& p) const {
+		hash<void*> vh;
+		hash<IID> vi;
+		return vh(p.first) ^ vi(p.second);
+	}
+};
+}
 
 class BlameAnalysis {
 private:
@@ -18,8 +27,7 @@ private:
 #else
 		return '/';
 #endif
-	}
-	;
+	};
 
 	std::string get_selfpath();
 
@@ -51,7 +59,7 @@ private:
 
 public:
 	std::unordered_map<IID, BlameShadowObject> trace;
-	std::map<std::pair<void*, IID>, BlameShadowObject> trace_ptr;
+	std::unordered_map<std::pair<void*, IID>, BlameShadowObject> trace_ptr;
 
 	static BlameAnalysis& get() {
 		static BlameAnalysis global;
@@ -85,40 +93,29 @@ public:
 private:
 	const BlameShadowObject getShadowObject(IID iid, HIGHPRECISION v);
 
-	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& lBSO,
-										const BlameShadowObject& rBSO, FBINOP op);
+	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, FBINOP op);
 
-	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& argBSO,
-										MATHFUNC func);
+	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& argBSO, MATHFUNC func);
 
-	void computeBlameSummary(const BlameShadowObject& BSO,
-							 const BlameShadowObject& lBSO,
-							 const BlameShadowObject& rBSO, FBINOP op);
+	void computeBlameSummary(const BlameShadowObject& BSO, const BlameShadowObject& lBSO, const BlameShadowObject& rBSO,
+							 FBINOP op);
 
-	void computeBlameSummary(const BlameShadowObject& BSO,
-							 const BlameShadowObject& argBSO, MATHFUNC func);
+	void computeBlameSummary(const BlameShadowObject& BSO, const BlameShadowObject& argBSO, MATHFUNC func);
 
-	BlameNode computeBlameInformation(const BlameShadowObject& BSO,
-									  const BlameShadowObject& lBSO,
-									  const BlameShadowObject& rBSO, FBINOP op,
+	BlameNode computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& lBSO,
+									  const BlameShadowObject& rBSO, FBINOP op, PRECISION p);
+
+	BlameNode computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& argBSO, MATHFUNC func,
 									  PRECISION p);
 
-	BlameNode computeBlameInformation(const BlameShadowObject& BSO,
-									  const BlameShadowObject& argBSO,
-									  MATHFUNC func, PRECISION p);
+	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, FBINOP op, PRECISION p);
 
-	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop,
-				  FBINOP op, PRECISION p);
+	bool isRequiredHigherPrecisionOperator(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, FBINOP op,
+										   PRECISION p);
 
-	bool isRequiredHigherPrecisionOperator(HIGHPRECISION result,
-										   HIGHPRECISION lop, HIGHPRECISION rop,
-										   FBINOP op, PRECISION p);
+	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func, PRECISION p);
 
-	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func,
-				  PRECISION p);
-
-	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv,
-				FBINOP op);
+	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
 
 	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
 
