@@ -47,7 +47,8 @@ def checkRC(new_val, old_val):
 
 def compareFloats(new_val, old_val, name):
 	FUDGE_PERCENT=0.35
-	same = float(new_val) < float(old_val)*(1+FUDGE_PERCENT)
+	MINIMAL_SIGNIFICANCE=0.1
+	same = float(new_val) - float(old_val)*(1+FUDGE_PERCENT) < MINIMAL_SIGNIFICANCE
 	if not same:
 		print(name + " has changed! Expected value to be at most " + old_val + " * " + str(1+FUDGE_PERCENT) + ", but is " + new_val);
 		return same

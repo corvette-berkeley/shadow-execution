@@ -10,10 +10,11 @@ unordered_map<unsigned, IID> arg_to_real_iid;
 IID return_iid;
 
 IID translate_to_real(IID val) {
-	if (fake_to_real_iid.find(val) == fake_to_real_iid.end()) {
+	auto it = fake_to_real_iid.find(val);
+	if (it == fake_to_real_iid.end()) {
 		return val;
 	}
-	return fake_to_real_iid[val];
+	return it->second;
 }
 
 void llvm_fadd(IID iidf, double, IID l, double lo, IID r, double ro) {
@@ -49,12 +50,8 @@ unordered_map<void*, IID> ptr_to_iid;
 void llvm_fload(IID iidf, double, IID, void* vptr) {
 	int real_iid = ptr_to_iid[vptr];
 	fake_to_real_iid[iidf] = real_iid;
-	if (BlameAnalysis::get().trace_ptr.find({
-	vptr, real_iid
-}) != BlameAnalysis::get().trace_ptr.end()) {
-		BlameAnalysis::get().trace[real_iid] = BlameAnalysis::get().trace_ptr[ {
-			vptr, real_iid
-		}];
+	if (BlameAnalysis::get().trace_ptr.find({vptr, real_iid}) != BlameAnalysis::get().trace_ptr.end()) {
+		BlameAnalysis::get().trace[real_iid] = BlameAnalysis::get().trace_ptr[ {vptr, real_iid}];
 	}
 	else {
 		BlameAnalysis::get().trace.erase(iidf);
@@ -65,11 +62,8 @@ void llvm_fload(IID iidf, double, IID, void* vptr) {
 void llvm_fstore(IID iidV, double, IID, void* vptr) {
 	if (iidV >= 0) {
 		ptr_to_iid[vptr] = iidV;
-		if (BlameAnalysis::get().trace.find(iidV) !=
-				BlameAnalysis::get().trace.end()) {
-			BlameAnalysis::get().trace_ptr[ {
-				vptr, iidV
-			}] = BlameAnalysis::get().trace[iidV];
+		if (BlameAnalysis::get().trace.find(iidV) != BlameAnalysis::get().trace.end()) {
+			BlameAnalysis::get().trace_ptr[ {vptr, iidV}] = BlameAnalysis::get().trace[iidV];
 		}
 	} else {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());

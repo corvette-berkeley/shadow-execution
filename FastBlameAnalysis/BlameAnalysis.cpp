@@ -323,7 +323,6 @@ void BlameAnalysis::post_analysis() {
 			}
 		}
 		logfile2 << endl;
-		workList.pop();
 
 		// Interpret the result for the current blame node.
 		if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {
@@ -335,6 +334,7 @@ void BlameAnalysis::post_analysis() {
 					<< ", HigherPrecision: " << node.requireHigherPrecision
 					<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
 		}
+		workList.pop();
 	}
 
 	logfile.close();
