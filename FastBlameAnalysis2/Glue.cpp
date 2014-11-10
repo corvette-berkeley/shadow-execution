@@ -7,18 +7,10 @@ using std::unordered_map;
 using std::cout;
 using std::endl;
 
-unordered_map<IID, IID> fake_to_real_iid;
 unordered_map<unsigned, IID> arg_to_real_iid;
 unordered_map<void*, IID> ptr_to_iid;
 unordered_map<IID, void*> iid_to_ptr;
 IID return_iid;
-
-IID translate_to_real(IID val) {
-	if (fake_to_real_iid.find(val) == fake_to_real_iid.end()) {
-		return val;
-	}
-	return fake_to_real_iid[val];
-}
 
 void* translate_to_ptr(IID val) {
 	if (iid_to_ptr.find(val) != iid_to_ptr.end()) {
@@ -31,32 +23,24 @@ void* translate_to_ptr(IID val) {
 void llvm_fadd(IID iidf, double, IID l, double lo, IID r, double ro) {
 	void* lptr = translate_to_ptr(l);
 	void* rptr = translate_to_ptr(r);
-	l = translate_to_real(l);
-	r = translate_to_real(r);
 	BlameAnalysis::get().fadd(iidf, l, r, lptr, rptr, lo, ro);
 }
 
 void llvm_fsub(IID iidf, double, IID l, double lo, IID r, double ro) {
 	void* lptr = translate_to_ptr(l);
 	void* rptr = translate_to_ptr(r);
-	l = translate_to_real(l);
-	r = translate_to_real(r);
 	BlameAnalysis::get().fsub(iidf, l, r, lptr, rptr, lo, ro);
 }
 
 void llvm_fmul(IID iidf, double, IID l, double lo, IID r, double ro) {
 	void* lptr = translate_to_ptr(l);
 	void* rptr = translate_to_ptr(r);
-	l = translate_to_real(l);
-	r = translate_to_real(r);
 	BlameAnalysis::get().fmul(iidf, l, r, lptr, rptr, lo, ro);
 }
 
 void llvm_fdiv(IID iidf, double, IID l, double lo, IID r, double ro) {
 	void* lptr = translate_to_ptr(l);
 	void* rptr = translate_to_ptr(r);
-	l = translate_to_real(l);
-	r = translate_to_real(r);
 	BlameAnalysis::get().fdiv(iidf, l, r, lptr, rptr, lo, ro);
 }
 
@@ -65,72 +49,57 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 	//	BlameAnalysis::get().frem(iidf, l, r, lo, ro);
 }
 
-void llvm_fload(IID iidf, double, IID, void* vptr) {
-	fake_to_real_iid[iidf] = ptr_to_iid[vptr];
-	iid_to_ptr[iidf] = vptr;
+void llvm_fload(IID iidV, double, IID iid, void* vptr) {
+	iid = ptr_to_iid[vptr];
+	iid_to_ptr[iidV] = vptr;
+	BlameAnalysis::get().fload(iidV, iid, vptr);
 }
 
 void llvm_fstore(IID iidV, double, IID, void* vptr) {
 	if (iidV < 0) {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
-		iidV = translate_to_real(arg_to_real_iid[-iidV]);
-	} else {
-		iidV = translate_to_real(iidV);
+		iidV = arg_to_real_iid[-iidV];
 	}
 
 	ptr_to_iid[vptr] = iidV;
-	if (BlameAnalysis::get().trace.find(iidV) != BlameAnalysis::get().trace.end()) {
-		BlameAnalysis::get().trace[iidV][vptr] = BlameAnalysis::get().trace[iidV][0];
-	}
 }
 
 void llvm_fphi(IID out, double, IID in) {
-	in = translate_to_real(in);
-	if (BlameAnalysis::get().trace.find(in) != BlameAnalysis::get().trace.end()) {
-		BlameAnalysis::get().trace[out][0] = BlameAnalysis::get().trace[in][0];
-	}
+	BlameAnalysis::get().fphi(out, in);
 }
 
 // ***** Other Operations ***** //
 void llvm_call_fabs(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_fabs(iidf, operand, ptr, operandValue);
 }
 
 void llvm_call_exp(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_exp(iidf, operand, ptr, operandValue);
 }
 void llvm_call_sqrt(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_sqrt(iidf, operand, ptr, operandValue);
 }
 void llvm_call_log(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_log(iidf, operand, ptr, operandValue);
 }
 void llvm_call_sin(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_sin(iidf, operand, ptr, operandValue);
 }
 void llvm_call_acos(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_acos(iidf, operand, ptr, operandValue);
 }
 void llvm_call_cos(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_cos(iidf, operand, ptr, operandValue);
 }
 void llvm_call_floor(IID iidf, double, IID operand, double operandValue) {
 	void* ptr = translate_to_ptr(operand);
-	operand = translate_to_real(operand);
 	BlameAnalysis::get().call_floor(iidf, operand, ptr, operandValue);
 }
 
@@ -143,5 +112,6 @@ void llvm_return(IID iid) {
 }
 
 void llvm_after_call(IID iid) {
-	fake_to_real_iid[iid] = translate_to_real(return_iid);
+	BlameAnalysis::get().fafter_call(iid, return_iid);
+	return_iid = -1;  // invalidate this return id
 }

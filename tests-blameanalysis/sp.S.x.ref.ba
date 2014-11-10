@@ -1,7 +1,2 @@
-Default starting point: File n/a, Line 0, Column 0,  IID <ommitted>
-Default precision: 27
-File n/a, Line 0, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File n/a, Line 0, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File n/a, Line 0, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File n/a, Line 0, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File n/a, Line 0, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+Default starting point: File sp.c, Line 196, Column 3, IID 7
+Default precision: 52

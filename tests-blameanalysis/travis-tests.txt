@@ -4,3 +4,6 @@ triangle-area
 simpsons_double_3address
 cg.S.x
 sp.S.x
+bt.S.x
+ep.S.x
+blas

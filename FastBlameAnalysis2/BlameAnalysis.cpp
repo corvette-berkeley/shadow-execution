@@ -233,15 +233,12 @@ void BlameAnalysis::call_lib(IID iid, IID argiid, void* argptr, HIGHPRECISION ar
 void BlameAnalysis::fadd(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv) {
 	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FADD);
 }
-
 void BlameAnalysis::fsub(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv) {
 	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FSUB);
 }
-
 void BlameAnalysis::fmul(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv) {
 	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FMUL);
 }
-
 void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv) {
 	fbinop(iid, liid, riid, lptr, rptr, lv, rv, FDIV);
 }
@@ -269,6 +266,39 @@ void BlameAnalysis::call_floor(IID iid, IID argIID, void* argptr, HIGHPRECISION 
 }
 void BlameAnalysis::call_exp(IID iid, IID argIID, void* argptr, HIGHPRECISION argv) {
 	call_lib(iid, argIID, argptr, argv, EXP);
+}
+
+void BlameAnalysis::fstore(IID iidV, void* vptr) {
+	if (trace.find(iidV) != trace.end()) {
+		trace[iidV][vptr] = trace[iidV][0];
+	}
+}
+
+void BlameAnalysis::fload(IID iidV, IID iid, void* vptr) {
+	if (trace.find(iid) != trace.end()) {
+		trace[iidV][0] = trace[iid][vptr];
+	}
+	if (blameSummary.find(iid) != blameSummary.end()) {
+		blameSummary[iidV] = blameSummary[iid];
+	}
+}
+
+void BlameAnalysis::fphi(IID out, IID in) {
+	if (trace.find(in) != trace.end()) {
+		trace[out][0] = trace[in][0];
+	}
+	if (blameSummary.find(in) != blameSummary.end()) {
+		blameSummary[out] = blameSummary[in];
+	}
+}
+
+void BlameAnalysis::fafter_call(IID iid, IID return_id) {
+	if (trace.find(return_id) != trace.end()) {
+		trace[iid][0] = trace[return_id][0];
+	}
+	if (blameSummary.find(return_id) != blameSummary.end()) {
+		blameSummary[iid] = blameSummary[return_id];
+	}
 }
 
 void BlameAnalysis::post_analysis() {

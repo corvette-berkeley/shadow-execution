@@ -114,15 +114,15 @@ env.AppendUnique(
 SConscript(
     dirs=[
         # our stuff
-	'MonitorPass',
+#	'MonitorPass',
 	'FPPass',
 	'FastBlameAnalysis',
 	'FastBlameAnalysis2',
-	'src',
-  'BlameAnalysis/backward',
-  'BlameAnalysis/forward',
+#	'src',
+#  'BlameAnalysis/backward',
+#  'BlameAnalysis/forward',
   'tests-blameanalysis',
-  'tests',
+#  'tests',
         ],
     exports='env',
     )
