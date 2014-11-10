@@ -281,43 +281,55 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, void* argptr, HIGHPRECISION ar
 }
 
 void BlameAnalysis::fstore(IID iidV, void* vptr) {
+	/*
 	if (iidV == 75) {
-		cout << "STORE" << endl;
-		cout << "IID: " << iidV << endl;
-		cout << "PTR: " << vptr << endl;
+	  cout << "STORE" << endl;
+	  cout << "IID: " << iidV << endl;
+	  cout << "PTR: " << vptr << endl;
 	}
+	*/
 	if (trace.find(iidV) != trace.end()) {
 		trace[iidV][vptr] = trace[iidV][0];
+		/*
 		if (iidV == 75) {
-			cout << "VALUE: " << trace[iidV][vptr].highValue << endl;
+		  cout << "VALUE: " << trace[iidV][vptr].highValue << endl;
 		}
+		*/
 	}
+	/*
 	if (iidV == 75) {
-		cout << "---" << endl;
+	  cout << "---" << endl;
 	}
+	*/
 }
 
 void BlameAnalysis::fload(IID iidV, IID iid, void* vptr) {
+	/*
 	if (iidV == 18 || iidV == 84) {
-		cout << "LOAD" << endl;
-		cout << "PTR: " << vptr << endl;
-		cout << "IID: " << iid << endl;
-		cout << "IIDV: " << iidV << endl;
+	  cout << "LOAD" << endl;
+	  cout << "PTR: " << vptr << endl;
+	  cout << "IID: " << iid << endl;
+	  cout << "IIDV: " << iidV << endl;
 	}
+	*/
 	if (trace.find(iid) != trace.end()) {
 		trace[iidV][0] = trace[iid][vptr];
+		/*
 		if (iidV == 18 || iidV == 84) {
-			cout << trace[iid][vptr].highValue << endl;
+		  cout << trace[iid][vptr].highValue << endl;
 		}
+		*/
 	} else {
 		trace.erase(iidV);
 	}
 	if (blameSummary.find(iid) != blameSummary.end()) {
 		blameSummary[iidV] = blameSummary[iid];
 	}
+	/*
 	if (iidV == 18 || iidV == 84) {
-		cout << "---" << endl;
+	  cout << "---" << endl;
 	}
+	*/
 }
 
 void BlameAnalysis::fphi(IID out, IID in) {

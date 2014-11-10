@@ -49,13 +49,15 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 	//	BlameAnalysis::get().frem(iidf, l, r, lo, ro);
 }
 
-void llvm_fload(IID iidV, double v, IID iid, void* vptr) {
+void llvm_fload(IID iidV, double, IID iid, void* vptr) {
+	/*
 	if (iidV == 84) {
-		cout << "LOAD" << endl;
-		cout << "IIDV: " << iidV << endl;
-		cout << v << endl;
-		cout << "---" << endl;
+	  cout << "LOAD" << endl;
+	  cout << "IIDV: " << iidV << endl;
+	  cout << v << endl;
+	  cout << "---" << endl;
 	}
+	*/
 	iid = ptr_to_iid[vptr];
 	iid_to_ptr[iidV] = vptr;
 	BlameAnalysis::get().fload(iidV, iid, vptr);
