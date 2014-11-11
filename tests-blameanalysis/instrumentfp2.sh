@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CC=$LLVM_BIN_PATH"/clang -use-gold-plugin"
+export CC=$LLVM_BIN_PATH"/clang"
 export LDFLAGS="-L"$INSTRUMENTOR_LIB_PATH" -L"$BLAMEANALYSIS_LIB_PATH" -L"$GLOG_LIB_PATH" -L"$GPERFTOOLS_LIB_PATH" -L"$UNWIND_LIB_PATH" -L"$FPPASS_LIB_PATH
 
 name=$(basename $1 .c)

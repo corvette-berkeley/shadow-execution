@@ -211,7 +211,7 @@ string to_function_name_after_call() {
 
 FunctionType* to_function_type_after_call(CallInst* instr) {
 	LLVMContext& cx = instr->getContext();
-	return FunctionType::get(Type::getVoidTy(cx), vector<Type*>({Type::getInt32Ty(cx)}), false);
+	return FunctionType::get(Type::getVoidTy(cx), vector<Type*>({Type::getInt32Ty(cx), Type::getDoubleTy(cx)}), false);
 }
 
 void _handle(CallInst* call_inst, Function* f) {
@@ -236,8 +236,10 @@ void _handle(CallInst* call_inst, Function* f) {
 		return;
 	}
 
+	Instruction* last = dyn_cast<Instruction>(castToDouble(call_inst, call_inst));
+	assert(last);
 	auto iid = getIID(call_inst);
-	vector<Value*> args_after = {iid};
+	vector<Value*> args_after = {iid, last};
 	Function* f_after = getFunction(to_function_name_after_call(), to_function_type_after_call(call_inst), call_inst);
 	CallInst* ci_after = llvm::CallInst::Create(f_after, args_after);
 	ci_after->insertAfter(call_inst);
