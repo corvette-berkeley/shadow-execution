@@ -62,21 +62,21 @@ public:
 		post_analysis();
 	}
 
-	void call_sin(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_acos(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_cos(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_fabs(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_sqrt(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_log(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_floor(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
-	void call_exp(IID iid, IID argIID, void* argptr, HIGHPRECISION argv);
+	void call_sin(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_acos(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_cos(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_fabs(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_sqrt(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_log(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_floor(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_exp(IID iid, IID argIID, HIGHPRECISION argv);
 
-	void fadd(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fsub(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fmul(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv);
-	void fdiv(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv);
+	void fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 
-	void fload(IID iidV, IID iid, void* vptr);
+	void fload(IID iidV, double v, IID iid, void* vptr);
 	void fstore(IID iidV, void* vptr);
 
 	void fphi(IID out, double v, IID in);
@@ -85,7 +85,7 @@ public:
 	void post_analysis();
 
 private:
-	const BlameShadowObject getShadowObject(IID iid, void* ptr, HIGHPRECISION v);
+	const BlameShadowObject getShadowObject(IID iid, HIGHPRECISION v);
 
 	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, FBINOP op);
 
@@ -109,9 +109,9 @@ private:
 
 	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func, PRECISION p);
 
-	void fbinop(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
+	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
 
-	void call_lib(IID iid, IID argIID, void* argptr, HIGHPRECISION v, MATHFUNC func);
+	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
 
 	void copyBlameSummary(IID dest, IID src);
 };
