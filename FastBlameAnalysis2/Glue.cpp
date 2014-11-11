@@ -106,7 +106,7 @@ void llvm_return(IID iid) {
 	return_iid = iid;
 }
 
-void llvm_after_call(IID iid) {
-	BlameAnalysis::get().fafter_call(iid, return_iid);
+void llvm_after_call(IID iid, double v) {
+	BlameAnalysis::get().fafter_call(iid, v, return_iid);
 	return_iid = -1;  // invalidate this return id
 }

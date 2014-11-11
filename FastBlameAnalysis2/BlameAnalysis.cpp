@@ -36,9 +36,10 @@ std::string BlameAnalysis::get_selfpath() {
 	}
 }
 
+
 const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, HIGHPRECISION v) {
 	if (trace.find(iid) == trace.end()) {
-		//		cout << "IID: " << iid << " is a constant." << endl;
+		//    cout << "IID: " << iid << " is a constant." << endl;
 		return BlameShadowObject(iid, (LOWPRECISION)v, v);
 	}
 
@@ -189,10 +190,16 @@ bool BlameAnalysis::isRequiredHigherPrecisionOperator(HIGHPRECISION result, HIGH
 			   result, clearBits(feval<LOWPRECISION>(lop, rop, op), DOUBLE_MANTISSA_LENGTH - PRECISION_BITS[p]), p);
 }
 
-void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
-	if (blameSummary.find(src) != blameSummary.end()) {
-		blameSummary[dest] = blameSummary[src];
+inline void BlameAnalysis::copyShadowObject(IID dstIID, void* dstPtr, IID srcIID, void* srcPtr, double v) {
+	if (trace.find(srcIID) != trace.end()) {
+		trace[dstIID][dstPtr] = trace[srcIID][srcPtr];
+	} else {
+		trace[dstIID][dstPtr] = BlameShadowObject(dstIID, (LOWPRECISION)v, v);
 	}
+}
+
+inline void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
+	blameSummary[dest] = blameSummary[src];
 }
 
 /*** API FUNCTIONS ***/
@@ -268,44 +275,22 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 void BlameAnalysis::fstore(IID iidV, void* vptr) {
 	if (trace.find(iidV) != trace.end()) {
 		trace[iidV][vptr] = trace[iidV][0];
-		/*
-		if (iidV == 3275) {
-		  cout << "SD VALUE: " << trace[iidV][0].highValue << endl;
-		  cout << "---" << endl;
-		}
-		*/
 	}
 }
 
 void BlameAnalysis::fload(IID iidV, double v, IID iid, void* vptr) {
-	if (trace.find(iid) != trace.end()) {
-		trace[iidV][0] = trace[iid][vptr];
-	} else {
-		trace[iidV][0] = BlameShadowObject(iidV, (LOWPRECISION)v, v);
-	}
-	if (blameSummary.find(iid) != blameSummary.end()) {
-		blameSummary[iidV] = blameSummary[iid];
-	}
+	copyShadowObject(iidV, 0, iid, vptr, v);
+	copyBlameSummary(iidV, iid);
 }
 
 void BlameAnalysis::fphi(IID out, double v, IID in) {
-	if (trace.find(in) != trace.end()) {
-		trace[out][0] = trace[in][0];
-	} else {
-		trace[out][0] = BlameShadowObject(in, (LOWPRECISION)v, v);
-	}
-	if (blameSummary.find(in) != blameSummary.end()) {
-		blameSummary[out] = blameSummary[in];
-	}
+	copyShadowObject(out, 0, in, 0, v);
+	copyBlameSummary(out, in);
 }
 
-void BlameAnalysis::fafter_call(IID iid, IID return_id) {
-	if (trace.find(return_id) != trace.end()) {
-		trace[iid][0] = trace[return_id][0];
-	}
-	if (blameSummary.find(return_id) != blameSummary.end()) {
-		blameSummary[iid] = blameSummary[return_id];
-	}
+void BlameAnalysis::fafter_call(IID iid, double v, IID return_id) {
+	copyShadowObject(iid, 0, return_id, 0, v);
+	copyBlameSummary(iid, return_id);
 }
 
 void BlameAnalysis::post_analysis() {

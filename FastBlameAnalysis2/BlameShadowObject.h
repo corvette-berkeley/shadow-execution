@@ -5,15 +5,13 @@
 #include "BlameUtilities.h"
 
 struct BlameShadowObject {
-	IID id; // LLVM instruction id.
+	IID id;
 	LOWPRECISION lowValue;
 	HIGHPRECISION highValue;
 
 	BlameShadowObject() : id(0), lowValue(0), highValue(0) {}
 
-	BlameShadowObject(IID i, LOWPRECISION l, HIGHPRECISION h)
-		: id(i), lowValue(l), highValue(h) {}
-	;
+	BlameShadowObject(IID i, LOWPRECISION l, HIGHPRECISION h) : id(i), lowValue(l), highValue(h) {};
 
 	BlameShadowObject& operator=(const BlameShadowObject& rhs) {
 		if (&rhs != this) {
@@ -23,7 +21,6 @@ struct BlameShadowObject {
 		}
 		return *this;
 	}
-
 };
 
 #endif

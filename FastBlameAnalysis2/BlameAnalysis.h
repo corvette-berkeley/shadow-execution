@@ -80,7 +80,7 @@ public:
 	void fstore(IID iidV, void* vptr);
 
 	void fphi(IID out, double v, IID in);
-	void fafter_call(IID iid, IID return_id);
+	void fafter_call(IID iid, double v, IID return_id);
 
 	void post_analysis();
 
@@ -114,6 +114,8 @@ private:
 	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
 
 	void copyBlameSummary(IID dest, IID src);
+
+	void copyShadowObject(IID dstIID, void* dstPtr, IID srcIID, void* srcPtr, double v);
 };
 
 #endif
