@@ -9,7 +9,8 @@ name=$(basename $1 .c)
 $LLVM_BIN_PATH/clang -emit-llvm -g -Xclang -dwarf-column-info -pg -c $name.c -o $name.bc
 
 # Instrument the bitcode
-$LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -include include_$name.txt -fppass -f -o $name-fp.bc $name.bc
+$LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -fppass -f -o $name-fp.bc $name.bc
+#-include include_$name.txt 
 
 # Create executable for instrumented bitcode file
 $CC $name-fp.bc -o $name.out $LDFLAGS -lba3 -lpthread -lm -lrt -lgmp -lglog  -ltcmalloc
