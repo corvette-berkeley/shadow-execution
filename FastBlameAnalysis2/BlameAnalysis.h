@@ -79,7 +79,7 @@ public:
 	void fload(IID iidV, IID iid, void* vptr);
 	void fstore(IID iidV, void* vptr);
 
-	void fphi(IID out, IID in);
+	void fphi(IID out, double v, IID in);
 	void fafter_call(IID iid, IID return_id);
 
 	void post_analysis();

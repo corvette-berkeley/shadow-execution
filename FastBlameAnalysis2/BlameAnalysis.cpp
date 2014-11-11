@@ -38,14 +38,14 @@ std::string BlameAnalysis::get_selfpath() {
 
 const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, void* ptr, HIGHPRECISION v) {
 	if (trace.find(iid) == trace.end()) {
-		//    cout << "IID: " << iid << " is a constant." << endl;
+		//		cout << "IID: " << iid << " is a constant." << endl;
 		return BlameShadowObject(iid, (LOWPRECISION)v, v);
 	}
 
 	ptr = 0;
 
 	if (trace[iid].find(ptr) == trace[iid].end()) {
-		//    cout << "Should not be reachable IID: " << iid << " PTR: " << ptr << "." << endl;
+		//		cout << "Should not be reachable IID: " << iid << " PTR: " << ptr << "." << endl;
 		return BlameShadowObject(iid, (LOWPRECISION)v, v);
 	}
 
@@ -55,6 +55,7 @@ const BlameShadowObject BlameAnalysis::getShadowObject(IID iid, void* ptr, HIGHP
 		cout << ptr << endl;
 		cout << setprecision(10) << trace[iid][ptr].highValue << endl;
 		cout << setprecision(10) << v << endl;
+		cout << "----" << endl;
 		exit(5);
 	}
 
@@ -209,7 +210,7 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, void* lptr, void* rptr, 
 	const BlameShadowObject rBSO = getShadowObject(riid, rptr, rv);
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
 
-	if (BSO.highValue != feval<HIGHPRECISION>(lv, rv, op) || iid == 75) {
+	if (BSO.highValue != feval<HIGHPRECISION>(lv, rv, op)) {
 		cout << "IID: " << iid << endl;
 		cout << "RIID: " << riid << endl;
 		cout << "LIID: " << liid << endl;
@@ -220,7 +221,7 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, void* lptr, void* rptr, 
 		cout << setprecision(10) << BSO.highValue << endl;
 		cout << setprecision(10) << feval<HIGHPRECISION>(lv, rv, op) << endl;
 		cout << "---" << endl;
-		//		exit(5);
+		exit(5);
 	}
 
 	assert(BSO.highValue == feval<HIGHPRECISION>(lv, rv, op));
@@ -233,13 +234,6 @@ void BlameAnalysis::call_lib(IID iid, IID argiid, void* argptr, HIGHPRECISION ar
 	const BlameShadowObject BSO = shadowFEval(iid, argBSO, func);
 	trace[iid][0] = BSO;
 	computeBlameSummary(BSO, argBSO, func);
-	/*
-	if (iid == 107) {
-	  cout << "CALL LIB" << endl;
-	  cout << BSO.highValue << endl;
-	  cout << "---" << endl;
-	}
-	*/
 }
 
 void BlameAnalysis::fadd(IID iid, IID liid, IID riid, void* lptr, void* rptr, HIGHPRECISION lv, HIGHPRECISION rv) {
@@ -281,60 +275,27 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, void* argptr, HIGHPRECISION ar
 }
 
 void BlameAnalysis::fstore(IID iidV, void* vptr) {
-	/*
-	if (iidV == 75) {
-	  cout << "STORE" << endl;
-	  cout << "IID: " << iidV << endl;
-	  cout << "PTR: " << vptr << endl;
-	}
-	*/
 	if (trace.find(iidV) != trace.end()) {
 		trace[iidV][vptr] = trace[iidV][0];
-		/*
-		if (iidV == 75) {
-		  cout << "VALUE: " << trace[iidV][vptr].highValue << endl;
-		}
-		*/
 	}
-	/*
-	if (iidV == 75) {
-	  cout << "---" << endl;
-	}
-	*/
 }
 
 void BlameAnalysis::fload(IID iidV, IID iid, void* vptr) {
-	/*
-	if (iidV == 18 || iidV == 84) {
-	  cout << "LOAD" << endl;
-	  cout << "PTR: " << vptr << endl;
-	  cout << "IID: " << iid << endl;
-	  cout << "IIDV: " << iidV << endl;
-	}
-	*/
 	if (trace.find(iid) != trace.end()) {
 		trace[iidV][0] = trace[iid][vptr];
-		/*
-		if (iidV == 18 || iidV == 84) {
-		  cout << trace[iid][vptr].highValue << endl;
-		}
-		*/
 	} else {
 		trace.erase(iidV);
 	}
 	if (blameSummary.find(iid) != blameSummary.end()) {
 		blameSummary[iidV] = blameSummary[iid];
 	}
-	/*
-	if (iidV == 18 || iidV == 84) {
-	  cout << "---" << endl;
-	}
-	*/
 }
 
-void BlameAnalysis::fphi(IID out, IID in) {
+void BlameAnalysis::fphi(IID out, double v, IID in) {
 	if (trace.find(in) != trace.end()) {
 		trace[out][0] = trace[in][0];
+	} else {
+		trace[out][0] = BlameShadowObject(in, (LOWPRECISION)v, v);
 	}
 	if (blameSummary.find(in) != blameSummary.end()) {
 		blameSummary[out] = blameSummary[in];

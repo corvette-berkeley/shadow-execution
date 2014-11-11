@@ -1,16 +1,14 @@
 #include <unordered_map>
-#include <iostream>
 #include "Glue.h"
 #include "BlameAnalysis.h"
 
 using std::unordered_map;
-using std::cout;
-using std::endl;
 
 unordered_map<unsigned, IID> arg_to_real_iid;
 unordered_map<void*, IID> ptr_to_iid;
 unordered_map<IID, void*> iid_to_ptr;
 IID return_iid;
+void* dbg_ptr;
 
 void* translate_to_ptr(IID val) {
 	if (iid_to_ptr.find(val) != iid_to_ptr.end()) {
@@ -50,14 +48,6 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 }
 
 void llvm_fload(IID iidV, double, IID iid, void* vptr) {
-	/*
-	if (iidV == 84) {
-	  cout << "LOAD" << endl;
-	  cout << "IIDV: " << iidV << endl;
-	  cout << v << endl;
-	  cout << "---" << endl;
-	}
-	*/
 	iid = ptr_to_iid[vptr];
 	iid_to_ptr[iidV] = vptr;
 	BlameAnalysis::get().fload(iidV, iid, vptr);
@@ -73,8 +63,8 @@ void llvm_fstore(IID iidV, double, IID, void* vptr) {
 	BlameAnalysis::get().fstore(iidV, vptr);
 }
 
-void llvm_fphi(IID out, double, IID in) {
-	BlameAnalysis::get().fphi(out, in);
+void llvm_fphi(IID out, double v, IID in) {
+	BlameAnalysis::get().fphi(out, v, in);
 }
 
 // ***** Other Operations ***** //
