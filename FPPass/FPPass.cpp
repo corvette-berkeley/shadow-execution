@@ -143,12 +143,14 @@ void _handle(BinaryOperator* bin_instr, Function* f) {
 	ci->insertAfter(last);
 }
 
-bool useful(CallInst* ci) {
-	return ci->getCalledFunction() != nullptr;
+bool useful(CallInst*) {
+	return true;
+	// ci != nullptr;
+	// ci->getCalledFunction() != nullptr;
 }
 
 bool usefulMathCall(CallInst* ci) {
-	if (!useful(ci)) {
+	if (!useful(ci) || ci->getCalledFunction() == nullptr) {
 		return false;
 	}
 	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", };
@@ -156,7 +158,11 @@ bool usefulMathCall(CallInst* ci) {
 }
 
 string to_function_name(CallInst* ci) {
-	return "llvm_call_" + string(ci->getCalledFunction()->getName());
+	if (ci->getCalledFunction() != nullptr) {
+		return "llvm_call_" + string(ci->getCalledFunction()->getName());
+	} else {
+		return "llvm_call_functor";
+	}
 }
 
 FunctionType* to_function_type(CallInst* instr) {
