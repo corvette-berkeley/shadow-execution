@@ -242,7 +242,7 @@ void _handle(CallInst* call_inst, Function* f) {
 	vector<Value*> args_after = {iid, last};
 	Function* f_after = getFunction(to_function_name_after_call(), to_function_type_after_call(call_inst), call_inst);
 	CallInst* ci_after = llvm::CallInst::Create(f_after, args_after);
-	ci_after->insertAfter(call_inst);
+	ci_after->insertAfter(last);
 }
 
 bool useful(LoadInst* li) {
