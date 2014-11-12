@@ -1,9 +1,4 @@
 File with starting point does not exist.
 Using the default starting point.
-Default starting point: File simpsons_double_3address.c, Line 60, Column 15, IID 66
-Default precision: 52
-File simpsons_double_3address.c, Line 60, Column 15, HigherPrecision: 1, HigherPrecisionOperator: 1
-File simpsons_double_3address.c, Line 49, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
-File simpsons_double_3address.c, Line 56, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
-File simpsons_double_3address.c, Line 48, Column 19, HigherPrecision: 1, HigherPrecisionOperator: 1
-File simpsons_double_3address.c, Line 55, Column 18, HigherPrecision: 1, HigherPrecisionOperator: 1
+Default starting point: File n/a, Line 0, Column 0, IID 0
+Default precision: 27

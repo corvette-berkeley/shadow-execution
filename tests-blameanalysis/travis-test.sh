@@ -8,7 +8,7 @@ while read program
 do
 	echo "Instrumenting $program ..."
 	#./instrument-forward.sh $program > /dev/null 2>/dev/null
-	./instrumentfp.sh $program > /dev/null 2>/dev/null
+	./instrumentfp2.sh $program > /dev/null 2>/dev/null
 	echo "Running $program ..."
 	python2 travis-main.py $program
 	if [ "$?" != "0" ]

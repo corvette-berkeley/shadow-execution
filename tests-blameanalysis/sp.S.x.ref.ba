@@ -1,2 +1,3 @@
 Default starting point: File sp.c, Line 196, Column 3, IID 7
-Default precision: 52
+Default precision: 27
+File sp.c, Line 196, Column 3, HigherPrecision: 1, HigherPrecisionOperator: 1
