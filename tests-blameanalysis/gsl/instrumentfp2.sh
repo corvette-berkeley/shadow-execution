@@ -5,9 +5,6 @@ export LDFLAGS="-L"$INSTRUMENTOR_LIB_PATH" -L"$BLAMEANALYSIS_LIB_PATH" -L"$GLOG_
 
 name=$(basename $1 .c)
 
-# Compile into bitcode
-$LLVM_BIN_PATH/clang -emit-llvm -g -Xclang -dwarf-column-info -pg -c $name.c -o $name.bc
-
 # Instrument the bitcode
 $LLVM_BIN_PATH/opt -load $FPPASS_LIB_PATH/FPPass.so -fppass -f -o $name-fp.bc $name.bc
 #-include include_$name.txt 
