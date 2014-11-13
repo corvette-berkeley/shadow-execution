@@ -33,31 +33,11 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 }
 
 void llvm_fload(IID iidV, double v, IID iid, void* vptr) {
-	/*
-	if (iidV == 3499) {
-	  cout << "LOAD" << endl;
-	  cout << "IIDV: " << iidV << endl;
-	  cout << "IID: " << iid << endl;
-	  cout << "PTR: " << vptr << endl;
-	  cout << "REAL IID: " << ptr_to_iid[vptr] << endl;
-	  cout << "VALUE: " << v << endl;
-	  cout << "-----" << endl;
-	}
-	*/
 	iid = ptr_to_iid[vptr];
 	BlameAnalysis::get().fload(iidV, v, iid, vptr);
 }
 
 void llvm_fstore(IID iidV, double, IID, void* vptr) {
-	/*
-	if (iidV == 3275) {
-	  cout << "STORE" << endl;
-	  cout << "IIDV: " << iidV << endl;
-	  cout << "PTR: " << vptr << endl;
-	  cout << "VALUE: " << v << endl;
-	  cout << "----" << endl;
-	}
-	*/
 	if (iidV < 0) {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
 		iidV = arg_to_real_iid[-iidV];
@@ -96,6 +76,9 @@ void llvm_call_cos(IID iidf, double, IID operand, double operandValue) {
 }
 void llvm_call_floor(IID iidf, double, IID operand, double operandValue) {
 	BlameAnalysis::get().call_floor(iidf, operand, operandValue);
+}
+void llvm_call_pow(IID iidf, double, IID operand01, double operandValue01, IID operand02, double operandValue02) {
+	BlameAnalysis::get().call_pow(iidf, operand01, operandValue01, operand02, operandValue02);
 }
 
 void llvm_arg(unsigned argInx, IID iid) {

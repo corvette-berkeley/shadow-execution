@@ -23,6 +23,7 @@ extern "C" {
 	void llvm_call_acos(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_cos(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_floor(IID iidf, double output, IID operand, double operandValue);
+	void llvm_call_pow(IID iidf, double output, IID operand01, double operandValue01, IID operand02, double operandValue02);
 
 	// ***** Other Operations ***** //
 	void llvm_arg(unsigned argInx, IID iid);

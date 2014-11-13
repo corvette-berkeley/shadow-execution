@@ -2,7 +2,7 @@
 #define _BLAME_ANALYSIS_H_
 
 #include <unordered_map>
-#include <map>
+#include <set>
 
 #include "BlameUtilities.h"
 #include "BlameNode.h"
@@ -40,6 +40,7 @@ private:
 
 	unordered_map<IID, unordered_map<void*, BlameShadowObject>> trace;
 	unordered_map<IID, std::array<BlameNode, PRECISION_NO>> blameSummary;
+	unordered_map<IID, std::set<IID>> alias;
 
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
@@ -70,6 +71,7 @@ public:
 	void call_log(IID iid, IID argIID, HIGHPRECISION argv);
 	void call_floor(IID iid, IID argIID, HIGHPRECISION argv);
 	void call_exp(IID iid, IID argIID, HIGHPRECISION argv);
+	void call_pow(IID iid, IID argIID01, HIGHPRECISION argv01, IID argIID02, HIGHPRECISION argv02);
 
 	void fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 	void fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
@@ -101,6 +103,9 @@ private:
 
 	BlameNode computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& argBSO, MATHFUNC func,
 									  PRECISION p);
+
+	BlameNode computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& lBSO,
+									  const BlameShadowObject& rBSO, PRECISION p);
 
 	bool canBlame(HIGHPRECISION result, HIGHPRECISION lop, HIGHPRECISION rop, FBINOP op, PRECISION p);
 
