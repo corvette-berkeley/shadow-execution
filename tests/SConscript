@@ -5,8 +5,9 @@ Import('env')
 env = env.Clone()
 SConscript(
     dirs=[
-		'regressions',
-		'nas',
+	   'blameanalysis',
+#		'regressions',
+#		'nas',
         ],
     exports='env',
     )

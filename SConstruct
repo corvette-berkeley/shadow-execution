@@ -121,8 +121,7 @@ SConscript(
 #	'src',
 #  'BlameAnalysis/backward',
 #  'BlameAnalysis/forward',
-  'tests-blameanalysis',
-#  'tests',
+  'tests',
         ],
     exports='env',
     )
