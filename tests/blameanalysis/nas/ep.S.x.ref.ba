@@ -1,0 +1,28 @@
+Default starting point: File ep.c, Line 252, Column 5, IID 112
+Default precision: 27
+File ep.c, Line 251, Column 14, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 251, Column 14, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 208, Column 9, HigherPrecision: 1, HigherPrecisionOperator: 0
+File ep.c, Line 208, Column 9, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 204, Column 9, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 199, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 202, Column 16, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 199, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 202, Column 28, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 137, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 202, Column 28, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 200, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 136, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 202, Column 28, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 200, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 200, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 134, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 198, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 134, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ep.c, Line 198, Column 7, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 133, Column 5, HigherPrecision: 0, HigherPrecisionOperator: 1
+File randdp.c, Line 117, Column 3, HigherPrecision: 0, HigherPrecisionOperator: 1
+File randdp.c, Line 130, Column 5, HigherPrecision: 0, HigherPrecisionOperator: 1
+File randdp.c, Line 131, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 131, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1
+File randdp.c, Line 131, Column 5, HigherPrecision: 1, HigherPrecisionOperator: 1

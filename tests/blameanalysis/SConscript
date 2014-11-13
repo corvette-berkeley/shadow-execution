@@ -1,0 +1,9 @@
+import SCons.Warnings
+
+Import('env')
+
+env = env.Clone()
+
+# Test the library
+env.Test("test.out", ["travis-test.sh", '../../FPPass/FPPass.so', '../../Release+Asserts/lib/libba3.so'])
+Default("test.out")

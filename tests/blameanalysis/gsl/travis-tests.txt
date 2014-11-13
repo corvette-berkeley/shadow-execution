@@ -1,0 +1,7 @@
+blas
+cdf
+fft
+intro
+polyroots
+roots
+sum

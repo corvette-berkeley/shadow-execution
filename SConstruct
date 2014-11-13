@@ -91,6 +91,7 @@ flags = [
 if env['CXX'] == 'clang++':
 	flags.extend([
 	#'-Weverything', #TODO: add back in
+	'-Wno-mismatched-tags',
 	'-Wno-c++98-compat',
 	'-Wno-c++98-compat-pedantic',
 	'-Wno-weak-vtables',
@@ -121,8 +122,7 @@ SConscript(
 #	'src',
 #  'BlameAnalysis/backward',
 #  'BlameAnalysis/forward',
-  'tests-blameanalysis',
-#  'tests',
+  'tests',
         ],
     exports='env',
     )
