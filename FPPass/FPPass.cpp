@@ -153,7 +153,7 @@ bool usefulMathCall(CallInst* ci) {
 	if (!useful(ci) || ci->getCalledFunction() == nullptr) {
 		return false;
 	}
-	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", };
+	const set<string> possible = {"fabs", "exp", "sqrt", "log", "sin", "acos", "cos", "floor", "pow"};
 	return possible.find(ci->getCalledFunction()->getName()) != possible.end();
 }
 
@@ -167,10 +167,14 @@ string to_function_name(CallInst* ci) {
 
 FunctionType* to_function_type(CallInst* instr) {
 	LLVMContext& cx = instr->getContext();
-	return FunctionType::get(Type::getVoidTy(cx), vector<Type*>({Type::getInt32Ty(cx), Type::getDoubleTy(cx),
-							 Type::getInt32Ty(cx), Type::getDoubleTy(cx),
-																}),
-							 false);
+	unsigned argNo = instr->getNumArgOperands();
+	vector<Type*> types = {Type::getInt32Ty(cx), Type::getDoubleTy(cx)};
+	for (unsigned i = 0; i < argNo; i++) {
+		types.push_back(Type::getInt32Ty(cx));
+		types.push_back(Type::getDoubleTy(cx));
+	}
+
+	return FunctionType::get(Type::getVoidTy(cx), types, false);
 }
 
 string to_function_name(Argument*) {
@@ -184,13 +188,18 @@ FunctionType* to_function_type(Argument* arg) {
 
 bool _handleMathCall(CallInst* call_inst, Function* f) {
 	if (usefulMathCall(call_inst)) {
-		auto iidl = getIID(call_inst->getArgOperand(0));
 		auto iid = getIID(call_inst);
 
 		Instruction* last = dyn_cast<Instruction>(castToDouble(call_inst, call_inst));
 		assert(last);
 
-		vector<Value*> args = {iid, last, iidl, castToDouble(call_inst->getArgOperand(0), call_inst), };
+		unsigned argNo = call_inst->getNumArgOperands();
+		vector<Value*> args = {iid, last};
+		for (unsigned i = 0; i < argNo; i++) {
+			auto iidl = getIID(call_inst->getArgOperand(i));
+			args.push_back(iidl);
+			args.push_back(castToDouble(call_inst->getArgOperand(i), call_inst));
+		}
 
 		CallInst* ci = llvm::CallInst::Create(f, args);
 		ci->insertAfter(last);
