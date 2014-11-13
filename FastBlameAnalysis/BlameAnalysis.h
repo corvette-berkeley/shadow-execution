@@ -8,8 +8,7 @@
 #include "BlameShadowObject.h"
 
 namespace std {
-template <> class hash<pair<void*, IID>> {
-	public:
+template <> struct hash<pair<void*, IID>> {
 	size_t operator()(const pair<void*, IID>& p) const {
 		hash<void*> vh;
 		hash<IID> vi;
