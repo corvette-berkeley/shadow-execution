@@ -1,0 +1,26 @@
+Default starting point: File ./fft.c, Line 53, Column 0, IID 24
+Default precision: 27
+File ./fft.c, Line 53, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 162, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 162, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 159, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 159, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 159, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 145, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 146, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 145, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 145, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 146, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 146, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 160, Column 0, HigherPrecision: 0, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 145, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 114, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 146, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 160, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 160, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 112, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 114, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 113, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 110, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 113, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./c_radix2.c, Line 110, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1

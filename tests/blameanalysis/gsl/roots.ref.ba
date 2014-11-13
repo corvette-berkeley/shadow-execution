@@ -1,0 +1,26 @@
+Default starting point: File ./roots.c, Line 55, Column 0, IID 25
+Default precision: 27
+File ./roots.c, Line 55, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 179, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 179, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 156, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 169, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 156, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 169, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 156, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 152, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 157, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 156, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 157, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 115, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File ./demo_fn.c, Line 13, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 152, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 0
+File brent.c, Line 115, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 115, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./demo_fn.c, Line 13, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./demo_fn.c, Line 13, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File brent.c, Line 115, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./demo_fn.c, Line 13, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./demo_fn.c, Line 13, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
