@@ -1,7 +1,7 @@
-blas
-cdf
-fft
-intro
-polyroots
-roots
-sum
+blas/blas
+cdf/cdf
+fft/fft
+intro/intro
+polyroots/polyroots
+roots/roots
+sum/sum
