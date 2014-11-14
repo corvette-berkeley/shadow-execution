@@ -3,7 +3,7 @@ Default precision: 27
 File ./roots.c, Line 55, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
 File ./roots.c, Line 55, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
 File ./roots.c, Line 36, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File fsolver.c, Line 93, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File fsolver.c, Line 94, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
 File brent.c, Line 216, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
 File brent.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
 File brent.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
