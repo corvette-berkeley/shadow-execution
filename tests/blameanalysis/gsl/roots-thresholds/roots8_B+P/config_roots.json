@@ -1,0 +1,114 @@
+{"config": [
+	{"localVar": {
+		"function": "main",
+		"name": "r_expected",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "a",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "b",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "c",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "x_hi",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "finputs",
+		"type": "float[30]"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "x_lo",
+		"type": "double"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "r",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "x_lower",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "abs_upper",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "x_upper",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "min_abs",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "epsrel",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "tolerance",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "epsabs",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "convergence.c",
+		"function": "gsl_root_test_interval",
+		"name": "abs_lower",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "fsolver.c",
+		"function": "gsl_root_fsolver_set",
+		"name": "x_lower",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "fsolver.c",
+		"function": "gsl_root_fsolver_set",
+		"name": "x_upper",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "../gsl/gsl_minmax.h",
+		"function": "GSL_MIN_DBL",
+		"name": "a",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "../gsl/gsl_minmax.h",
+		"function": "GSL_MIN_DBL",
+		"name": "b",
+		"type": "double"
+	}}
+]}
