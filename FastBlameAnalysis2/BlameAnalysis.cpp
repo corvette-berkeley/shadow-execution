@@ -473,9 +473,9 @@ void BlameAnalysis::post_analysis() {
 		}
 		DebugInfo dbg = debugInfoMap.at(node.id.iid);
 		if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
-			logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
-					<< ", HigherPrecision: " << node.requireHigherPrecision
-					<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
+		  logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column << endl;
+			  //					<< ", HigherPrecision: " << node.requireHigherPrecision
+			  //		<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
 		}
 	}
 

@@ -1,8 +1,8 @@
 Default starting point: File ./cdf.c, Line 21, Column 0, IID 23
 Default precision: 27
-File ./cdf.c, Line 21, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./cdf.c, Line 21, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./cdf.c, Line 9, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File gauss.c, Line 278, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File gauss.c, Line 255, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File gauss.c, Line 252, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./cdf.c, Line 21, Column 0
+File ./cdf.c, Line 21, Column 0
+File ./cdf.c, Line 9, Column 0
+File gauss.c, Line 278, Column 0
+File gauss.c, Line 255, Column 0
+File gauss.c, Line 252, Column 0

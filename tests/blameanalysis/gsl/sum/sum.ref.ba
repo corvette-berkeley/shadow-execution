@@ -1,13 +1,13 @@
 Default starting point: File ./sum.c, Line 50, Column 0, IID 30
 Default precision: 27
-File ./sum.c, Line 50, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./sum.c, Line 50, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./sum.c, Line 49, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 215, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 215, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 215, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 215, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 110, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File levin_u.c, Line 107, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./sum.c, Line 27, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./sum.c, Line 50, Column 0
+File ./sum.c, Line 50, Column 0
+File ./sum.c, Line 49, Column 0
+File levin_u.c, Line 215, Column 0
+File levin_u.c, Line 215, Column 0
+File levin_u.c, Line 215, Column 0
+File levin_u.c, Line 195, Column 0
+File levin_u.c, Line 215, Column 0
+File levin_u.c, Line 110, Column 0
+File levin_u.c, Line 107, Column 0
+File ./sum.c, Line 27, Column 0

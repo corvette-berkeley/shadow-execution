@@ -1,147 +1,147 @@
 Default starting point: File ./polyroots.c, Line 35, Column 0, IID 17
 Default precision: 27
-File ./polyroots.c, Line 35, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./polyroots.c, Line 35, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./polyroots.c, Line 34, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 94, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 94, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 80, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 80, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 61, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 76, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 76, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 239, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 71, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 61, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 239, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 239, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 239, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 218, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 221, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 222, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 236, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 238, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 235, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 218, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 218, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 221, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 221, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 222, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 222, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 236, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 236, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 206, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 235, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 235, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 218, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 221, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 221, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 222, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 222, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 236, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 206, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 206, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 231, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 235, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 217, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 213, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 204, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 203, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 142, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 202, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 195, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 217, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 217, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 205, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 205, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 213, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 213, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 204, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 204, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 203, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 203, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 207, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 207, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 142, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 142, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 184, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 202, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 202, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 191, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 0, HigherPrecisionOperator: 1
-File ./qr.c, Line 217, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 143, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 213, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 213, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 175, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 141, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 191, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 0, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 0, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 143, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 143, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 185, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 141, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 141, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 183, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 178, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 176, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 139, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 0, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 136, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 174, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 176, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 138, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 135, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 136, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 136, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 140, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 188, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 134, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 135, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 135, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 137, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 72, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 72, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
-File ./qr.c, Line 72, Column 0, HigherPrecision: 1, HigherPrecisionOperator: 1
+File ./polyroots.c, Line 35, Column 0
+File ./polyroots.c, Line 35, Column 0
+File ./polyroots.c, Line 34, Column 0
+File ./qr.c, Line 94, Column 0
+File ./qr.c, Line 94, Column 0
+File ./qr.c, Line 80, Column 0
+File ./qr.c, Line 80, Column 0
+File ./qr.c, Line 61, Column 0
+File ./qr.c, Line 76, Column 0
+File ./qr.c, Line 76, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 239, Column 0
+File ./qr.c, Line 71, Column 0
+File ./qr.c, Line 61, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 239, Column 0
+File ./qr.c, Line 239, Column 0
+File ./qr.c, Line 239, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 218, Column 0
+File ./qr.c, Line 221, Column 0
+File ./qr.c, Line 222, Column 0
+File ./qr.c, Line 236, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 238, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 235, Column 0
+File ./qr.c, Line 218, Column 0
+File ./qr.c, Line 218, Column 0
+File ./qr.c, Line 221, Column 0
+File ./qr.c, Line 221, Column 0
+File ./qr.c, Line 222, Column 0
+File ./qr.c, Line 222, Column 0
+File ./qr.c, Line 236, Column 0
+File ./qr.c, Line 236, Column 0
+File ./qr.c, Line 206, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 235, Column 0
+File ./qr.c, Line 235, Column 0
+File ./qr.c, Line 195, Column 0
+File ./qr.c, Line 218, Column 0
+File ./qr.c, Line 221, Column 0
+File ./qr.c, Line 221, Column 0
+File ./qr.c, Line 222, Column 0
+File ./qr.c, Line 222, Column 0
+File ./qr.c, Line 236, Column 0
+File ./qr.c, Line 206, Column 0
+File ./qr.c, Line 206, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 231, Column 0
+File ./qr.c, Line 235, Column 0
+File ./qr.c, Line 195, Column 0
+File ./qr.c, Line 217, Column 0
+File ./qr.c, Line 213, Column 0
+File ./qr.c, Line 204, Column 0
+File ./qr.c, Line 203, Column 0
+File ./qr.c, Line 142, Column 0
+File ./qr.c, Line 202, Column 0
+File ./qr.c, Line 195, Column 0
+File ./qr.c, Line 217, Column 0
+File ./qr.c, Line 217, Column 0
+File ./qr.c, Line 205, Column 0
+File ./qr.c, Line 205, Column 0
+File ./qr.c, Line 213, Column 0
+File ./qr.c, Line 213, Column 0
+File ./qr.c, Line 204, Column 0
+File ./qr.c, Line 204, Column 0
+File ./qr.c, Line 203, Column 0
+File ./qr.c, Line 203, Column 0
+File ./qr.c, Line 207, Column 0
+File ./qr.c, Line 207, Column 0
+File ./qr.c, Line 142, Column 0
+File ./qr.c, Line 142, Column 0
+File ./qr.c, Line 184, Column 0
+File ./qr.c, Line 202, Column 0
+File ./qr.c, Line 202, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 191, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 217, Column 0
+File ./qr.c, Line 143, Column 0
+File ./qr.c, Line 213, Column 0
+File ./qr.c, Line 213, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 175, Column 0
+File ./qr.c, Line 141, Column 0
+File ./qr.c, Line 191, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 143, Column 0
+File ./qr.c, Line 143, Column 0
+File ./qr.c, Line 185, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 141, Column 0
+File ./qr.c, Line 141, Column 0
+File ./qr.c, Line 183, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 178, Column 0
+File ./qr.c, Line 176, Column 0
+File ./qr.c, Line 139, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 136, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 174, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 176, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 138, Column 0
+File ./qr.c, Line 135, Column 0
+File ./qr.c, Line 136, Column 0
+File ./qr.c, Line 136, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 140, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 188, Column 0
+File ./qr.c, Line 134, Column 0
+File ./qr.c, Line 135, Column 0
+File ./qr.c, Line 135, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 137, Column 0
+File ./qr.c, Line 72, Column 0
+File ./qr.c, Line 72, Column 0
+File ./qr.c, Line 72, Column 0
