@@ -1,0 +1,101 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "float[600]",
+		"name": "a",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float[600]",
+		"name": "b",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double[400]",
+		"name": "c",
+	},
+	"localVar": {
+		"function": "gsl_blas_dgemm",
+		"type": "float",
+		"name": "alpha",
+		"file": "blas.c",
+	},
+	"localVar": {
+		"function": "gsl_blas_dgemm",
+		"type": "float",
+		"name": "beta",
+		"file": "blas.c",
+	},
+	"localVar": {
+		"function": "gsl_matrix_view_array",
+		"type": "float*",
+		"name": "array",
+		"file": "./view_source.c",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float*",
+		"name": "A",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float*",
+		"name": "B",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "double*",
+		"name": "C",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "alpha",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float*",
+		"name": "F",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float*",
+		"name": "G",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "temp1",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "temp2",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "temp",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "temp3",
+		"file": "./source_gemm_r.h",
+	},
+	"localVar": {
+		"function": "cblas_dgemm",
+		"type": "float",
+		"name": "beta",
+		"file": "./source_gemm_r.h",
+	},
+}

@@ -1,0 +1,15 @@
+localVar: a  at main double[600] -> float[600]
+localVar: b  at main double[600] -> float[600]
+localVar: alpha  at gsl_blas_dgemm at blas.c double -> float
+localVar: beta  at gsl_blas_dgemm at blas.c double -> float
+localVar: array  at gsl_matrix_view_array at ./view_source.c double* -> float*
+localVar: A  at cblas_dgemm at ./source_gemm_r.h double* -> float*
+localVar: B  at cblas_dgemm at ./source_gemm_r.h double* -> float*
+localVar: alpha  at cblas_dgemm at ./source_gemm_r.h double -> float
+localVar: F  at cblas_dgemm at ./source_gemm_r.h double* -> float*
+localVar: G  at cblas_dgemm at ./source_gemm_r.h double* -> float*
+localVar: temp1  at cblas_dgemm at ./source_gemm_r.h double -> float
+localVar: temp2  at cblas_dgemm at ./source_gemm_r.h double -> float
+localVar: temp  at cblas_dgemm at ./source_gemm_r.h double -> float
+localVar: temp3  at cblas_dgemm at ./source_gemm_r.h double -> float
+localVar: beta  at cblas_dgemm at ./source_gemm_r.h double -> float

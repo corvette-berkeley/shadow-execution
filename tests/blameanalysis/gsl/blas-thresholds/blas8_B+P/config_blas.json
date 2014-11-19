@@ -1,0 +1,101 @@
+{"config": [
+	{"localVar": {
+		"function": "main",
+		"name": "a",
+		"type": "double[600]"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "b",
+		"type": "double[600]"
+	}},
+	{"localVar": {
+		"function": "main",
+		"name": "c",
+		"type": "double[400]"
+	}},
+	{"localVar": {
+		"file": "blas.c",
+		"function": "gsl_blas_dgemm",
+		"name": "alpha",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "blas.c",
+		"function": "gsl_blas_dgemm",
+		"name": "beta",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./view_source.c",
+		"function": "gsl_matrix_view_array",
+		"name": "array",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "A",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "B",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "C",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "alpha",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "F",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "G",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "temp1",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "temp2",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "temp",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "temp3",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./source_gemm_r.h",
+		"function": "cblas_dgemm",
+		"name": "beta",
+		"type": "double"
+	}}
+]}
