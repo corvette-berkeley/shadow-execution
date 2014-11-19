@@ -1,0 +1,9 @@
+*/*.full
+*/*.trace
+*/debug.bin
+*/*-fp.bc
+*/*/*.full
+*/*/*.trace
+*/*/debug.bin
+*/*/*-fp.bc
+*/*/temp_*.bc

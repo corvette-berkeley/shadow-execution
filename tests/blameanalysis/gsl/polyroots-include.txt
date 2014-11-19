@@ -1,9 +1,0 @@
-balance_companion_matrix
-gsl_error
-gsl_poly_complex_solve
-gsl_poly_complex_workspace_alloc
-gsl_poly_complex_workspace_free
-gsl_stream_printf
-main
-qr_companion
-set_companion_matrix

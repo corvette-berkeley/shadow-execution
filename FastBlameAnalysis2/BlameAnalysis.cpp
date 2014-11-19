@@ -425,9 +425,9 @@ void BlameAnalysis::post_analysis() {
 		cout << "Using the default starting point." << endl;
 		starts.push_back(_iid);
 	} else {
-		while (pin) {
-			pin >> _iid;
-			starts.push_back(_iid);
+		int start;
+		while (pin >> start) {
+			starts.push_back(start);
 		}
 	}
 	pin.close();
@@ -440,8 +440,8 @@ void BlameAnalysis::post_analysis() {
 		cout << "Using the default starting point." << endl;
 		precisions.push_back(_precision);
 	} else {
-		while (prin) {
-			int decimal;
+		int decimal;
+		while (prin >> decimal) {
 			prin >> decimal;
 			switch (decimal) {
 				case 10:
@@ -509,9 +509,9 @@ void BlameAnalysis::post_analysis() {
 			}
 			DebugInfo dbg = debugInfoMap.at(node.id.iid);
 			if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
-				logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
-						<< ", HigherPrecision: " << node.requireHigherPrecision
-						<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
+				logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column << endl;
+				//						<< ", HigherPrecision: " << node.requireHigherPrecision
+				//						<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
 			}
 		}
 

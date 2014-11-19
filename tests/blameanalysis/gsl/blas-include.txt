@@ -1,7 +1,0 @@
-cblas_dgemm
-cblas_xerbla
-gsl_blas_dgemm
-gsl_error
-gsl_matrix_view_array
-gsl_stream_printf
-main

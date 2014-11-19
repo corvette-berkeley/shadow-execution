@@ -1,0 +1,17 @@
+*.bc
+gsl/*
+Makefile
+*/.deps
+.deps/
+.libs/
+cblas/.libs/
+config.h
+config.status
+gsl-config
+gsl-histogram
+gsl-randist
+gsl.pc
+gsl.spec
+libtool
+siman/siman_tsp
+stamp-h1

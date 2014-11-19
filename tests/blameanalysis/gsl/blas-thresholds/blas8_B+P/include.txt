@@ -1,0 +1,13 @@
+cblas_dgemm
+cblas_xerbla
+cov_check
+cov_deserialize
+cov_log
+cov_serialize
+current_time_ns
+get_time
+gsl_blas_dgemm
+gsl_error
+gsl_matrix_view_array
+gsl_stream_printf
+main
