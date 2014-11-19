@@ -1,11 +1,3 @@
-#include <unistd.h>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <fstream>
-#include <set>
-#include <queue>
-
 #include "BlameAnalysis.h"
 using namespace std;
 
@@ -365,41 +357,19 @@ void BlameAnalysis::fafter_call(IID iid, double v, IID return_id) {
 	copyBlameSummary(iid, return_id);
 }
 
-void BlameAnalysis::post_analysis() {
+void BlameAnalysis::dumpTrace() {
 	std::ofstream tracefile;
 	tracefile.open(_selfpath + ".trace");
-	// Print the trace
-	tracefile << "====== execution trace ======" << endl;
 	for (auto& it : trace) {
 		IID iid = it.first;
 		DebugInfo dbg = debugInfoMap.at(iid);
 		BlameShadowObject bso = it.second[0];
-		tracefile << "At file " << dbg.file << ", line " << dbg.line << ", column " << dbg.column << ", id " << iid << endl;
-		double d = clearBits(bso.highValue, 25);
-		tracefile << "\t" << setprecision(20) << bso.lowValue << ", " << d << ", " << bso.highValue << endl;
+		tracefile << "At file " << dbg.file << ", line " << dbg.line << ", column" << dbg.column << ", id " << iid << endl;
+		tracefile << bso.lowValue << ", " << bso.highValue << endl;
 	}
+}
 
-	std::ofstream logfile;
-	std::ofstream logfile2;
-	logfile.open(_selfpath + ".ba");
-	logfile2.open(_selfpath + ".ba.full");
-
-	// Read _iid from file or using the default starting point
-	ifstream fin(_selfpath + ".point");
-	if (fin.fail()) {
-		logfile << "File with starting point does not exist." << endl;
-		logfile << "Using the default starting point." << endl;
-	} else {
-		fin >> _iid;
-	}
-
-	DebugInfo dbg = debugInfoMap.at(_iid);
-	logfile << "Default starting point: File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
-			<< ", IID " << _iid << "\n";
-	logfile << "Default precision: " << PRECISION_BITS[_precision] << "\n";
-
-
-	// Construct blame summary for alias
+void BlameAnalysis::constructAliasBlame() {
 	for (auto it : alias) {
 		IID first = it.first;
 		std::set<IID> second = it.second;
@@ -441,43 +411,111 @@ void BlameAnalysis::post_analysis() {
 			blameSummary[first][p] = BlameNode(first, p, requireHigherPrecision, requireHigherPrecisionOperator, bnids);
 		}
 	}
+}
 
-	// Interpreting results
-	std::set<BlameNode> visited;
-	std::queue<BlameNode> workList;
-	workList.push(blameSummary[_iid][_precision]);
+void BlameAnalysis::post_analysis() {
+	// dumpTrace()
+	constructAliasBlame();
 
-	while (!workList.empty()) {
-		// Find more blame node and add to the queue.
-		const BlameNode& node = workList.front();
-		logfile2 << "(" << node.id.iid << "," << PRECISION_BITS[node.id.precision] << ") : ";
-		for (auto it = node.children.begin(); it != node.children.end(); it++) {
-			BlameNodeID blameNodeID = *it;
-			logfile2 << "(" << blameNodeID.iid << "," << PRECISION_BITS[blameNodeID.precision] << ") ";
-			if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
-				// Children are either a constant or alloca.
-				continue;
-			}
-			const BlameNode& blameNode = blameSummary[blameNodeID.iid][blameNodeID.precision];
-			if (visited.find(blameNode) == visited.end()) {
-				visited.insert(blameNode);
-				workList.push(blameNode);
-			}
+	// obtain all starting points
+	vector<IID> starts;
+	ifstream pin(_selfpath + ".point");
+	if (pin.fail()) {
+		cout << "File with starting point does not exist." << endl;
+		cout << "Using the default starting point." << endl;
+		starts.push_back(_iid);
+	} else {
+		while (pin) {
+			pin >> _iid;
+			starts.push_back(_iid);
 		}
-		logfile2 << endl;
-		workList.pop();
+	}
+	pin.close();
 
-		// Interpret the result for the current blame node.
-		if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {
-			continue;
-		}
-		DebugInfo dbg = debugInfoMap.at(node.id.iid);
-		if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
-			logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
-					<< ", HigherPrecision: " << node.requireHigherPrecision
-					<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
+	// obtain all precisions
+	vector<PRECISION> precisions;
+	ifstream prin(_selfpath + ".precision");
+	if (prin.fail()) {
+		cout << "File with starting point does not exist." << endl;
+		cout << "Using the default starting point." << endl;
+		precisions.push_back(_precision);
+	} else {
+		while (prin) {
+			int decimal;
+			prin >> decimal;
+			switch (decimal) {
+				case 10:
+					precisions.push_back(BITS_33);
+					break;
+				case 8:
+					precisions.push_back(BITS_27);
+					break;
+				case 6:
+					precisions.push_back(BITS_19);
+					break;
+				case 4:
+					precisions.push_back(BITS_13);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
-	logfile.close();
+	for (PRECISION p : precisions) {
+		std::ofstream logfile;
+		std::ofstream logfile2;
+		logfile.open(_selfpath + "_" + std::to_string(PRECISION_BITS[_precision]) + ".ba");
+		logfile2.open(_selfpath + "_" + std::to_string(PRECISION_BITS[_precision]) + ".ba.full");
+
+		for (IID iid : starts) {
+			DebugInfo dbg = debugInfoMap.at(iid);
+			logfile << "Default starting point: File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
+					<< ", IID " << iid << "\n";
+			logfile << "Default precision: " << PRECISION_BITS[p] << "\n";
+		}
+
+
+		// Interpreting results
+		std::set<BlameNode> visited;
+		std::queue<BlameNode> workList;
+		for (IID iid : starts) {
+			workList.push(blameSummary[iid][p]);
+		}
+
+		while (!workList.empty()) {
+			// Find more blame node and add to the queue.
+			const BlameNode& node = workList.front();
+			logfile2 << "(" << node.id.iid << "," << PRECISION_BITS[node.id.precision] << ") : ";
+			for (auto it = node.children.begin(); it != node.children.end(); it++) {
+				BlameNodeID blameNodeID = *it;
+				logfile2 << "(" << blameNodeID.iid << "," << PRECISION_BITS[blameNodeID.precision] << ") ";
+				if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
+					// Children are either a constant or alloca.
+					continue;
+				}
+				const BlameNode& blameNode = blameSummary[blameNodeID.iid][blameNodeID.precision];
+				if (visited.find(blameNode) == visited.end()) {
+					visited.insert(blameNode);
+					workList.push(blameNode);
+				}
+			}
+			logfile2 << endl;
+			workList.pop();
+
+			// Interpret the result for the current blame node.
+			if (debugInfoMap.find(node.id.iid) == debugInfoMap.end()) {
+				continue;
+			}
+			DebugInfo dbg = debugInfoMap.at(node.id.iid);
+			if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
+				logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column
+						<< ", HigherPrecision: " << node.requireHigherPrecision
+						<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";
+			}
+		}
+
+		logfile.close();
+		logfile2.close();
+	}
 }

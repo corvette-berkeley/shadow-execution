@@ -2,6 +2,13 @@
 #define _BLAME_ANALYSIS_H_
 
 #include <unordered_map>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <unistd.h>
+#include <iomanip>
+#include <set>
+#include <queue>
 #include <set>
 
 #include "BlameUtilities.h"
@@ -121,6 +128,10 @@ private:
 	void copyBlameSummary(IID dest, IID src);
 
 	void copyShadowObject(IID dstIID, void* dstPtr, IID srcIID, void* srcPtr, double v);
+
+	void dumpTrace();
+
+	void constructAliasBlame();
 };
 
 #endif
