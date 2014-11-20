@@ -18,10 +18,10 @@ function test_this_dir() {
 #		sed -i 's/IID [0-9]\+/ IID <ommitted>/' "$program"".out.ba"
 #		sed -i 's/IID [0-9]\+/ IID <ommitted>/' "$program"".ref.ba"
 
-		if diff "$program"".out_27.ba" "$program"".ref.ba"
+if diff <(sort -u "$program"".out_27.ba") <(sort -u "$program"".ref.ba")
 		then
 			echo "No output change"
-			rm "$program"".out.ba"
+			rm "$program"".out_27.ba"
 		else
 			echo "Output changed!"
 			exit 1
