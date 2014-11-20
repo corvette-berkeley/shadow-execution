@@ -436,13 +436,12 @@ void BlameAnalysis::post_analysis() {
 	vector<PRECISION> precisions;
 	ifstream prin(_selfpath + ".precision");
 	if (prin.fail()) {
-		cout << "File with starting point does not exist." << endl;
-		cout << "Using the default starting point." << endl;
+		cout << "File with precisions does not exist." << endl;
+		cout << "Using the default precision." << endl;
 		precisions.push_back(_precision);
 	} else {
 		int decimal;
 		while (prin >> decimal) {
-			prin >> decimal;
 			switch (decimal) {
 				case 10:
 					precisions.push_back(BITS_33);
@@ -465,8 +464,8 @@ void BlameAnalysis::post_analysis() {
 	for (PRECISION p : precisions) {
 		std::ofstream logfile;
 		std::ofstream logfile2;
-		logfile.open(_selfpath + "_" + std::to_string(PRECISION_BITS[_precision]) + ".ba");
-		logfile2.open(_selfpath + "_" + std::to_string(PRECISION_BITS[_precision]) + ".ba.full");
+		logfile.open(_selfpath + "_" + std::to_string(PRECISION_BITS[p]) + ".ba");
+		logfile2.open(_selfpath + "_" + std::to_string(PRECISION_BITS[p]) + ".ba.full");
 
 		for (IID iid : starts) {
 			DebugInfo dbg = debugInfoMap.at(iid);
