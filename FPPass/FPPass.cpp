@@ -424,7 +424,7 @@ void handleAll() {
 	todo.clear();
 }
 
-cl::opt<string> IncludeFilename("include", cl::desc("Specify include file name"), cl::value_desc("filename"));
+cl::opt<string> ExcludeFilename("exclude", cl::desc("Specify include file name"), cl::value_desc("filename"));
 
 namespace {
 
@@ -437,20 +437,19 @@ struct FPPass : public BasicBlockPass {
 	using Pass::doFinalization;
 	bool doInitialization(Function& F) {
 		string name = F.getName();
-		ifstream infile(IncludeFilename.c_str());
+		ifstream infile(ExcludeFilename.c_str());
 		if (infile.is_open()) {
 			string line;
 			while (getline(infile, line)) {
 				if (line.compare(name) == 0) {
-					instrument = true;
-					cout << name << endl;
+					instrument = false;
+					cout << "Exclude: " << name << endl;
 					return true;
 				}
 			}
-			instrument = false;
+			instrument = true;
 		} else {
 			instrument = true;
-			cout << name << endl;
 		}
 		return true;
 	}
