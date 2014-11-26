@@ -33,7 +33,11 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 }
 
 void llvm_fload(IID iidV, double v, IID iid, void* vptr) {
-	iid = ptr_to_iid[vptr];
+	if (ptr_to_iid.find(vptr) == ptr_to_iid.end()) {
+		iid = -1;
+	} else {
+		iid = ptr_to_iid[vptr];
+	}
 	BlameAnalysis::get().fload(iidV, v, iid, vptr);
 }
 
