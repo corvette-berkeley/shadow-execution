@@ -32,7 +32,35 @@ void llvm_frem(IID, double, IID, double, IID, double) {
 	//	BlameAnalysis::get().frem(iidf, l, r, lo, ro);
 }
 
+void llvm_oeq(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().oeq(iidf, l, r, lo, ro);
+}
+
+void llvm_ogt(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().ogt(iidf, l, r, lo, ro);
+}
+
+void llvm_oge(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().oge(iidf, l, r, lo, ro);
+}
+
+void llvm_olt(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().olt(iidf, l, r, lo, ro);
+}
+
+void llvm_ole(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().ole(iidf, l, r, lo, ro);
+}
+
+void llvm_one(IID iidf, bool, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().one(iidf, l, r, lo, ro);
+}
+
 void llvm_fload(IID iidV, double v, IID iid, void* vptr) {
+	if (!BlameAnalysis::get().startTrack(iid)) {
+		return;
+	}
+
 	if (ptr_to_iid.find(vptr) == ptr_to_iid.end()) {
 		iid = -1;
 	} else {
@@ -41,14 +69,18 @@ void llvm_fload(IID iidV, double v, IID iid, void* vptr) {
 	BlameAnalysis::get().fload(iidV, v, iid, vptr);
 }
 
-void llvm_fstore(IID iidV, double, IID, void* vptr) {
+void llvm_fstore(IID iidV, double, IID iid, void* vptr) {
+	if (!BlameAnalysis::get().startTrack(iid)) {
+		return;
+	}
+
 	if (iidV < 0) {
 		assert(arg_to_real_iid.find(-iidV) != arg_to_real_iid.end());
 		iidV = arg_to_real_iid[-iidV];
 	}
 
 	ptr_to_iid[vptr] = iidV;
-	BlameAnalysis::get().fstore(iidV, vptr);
+	BlameAnalysis::get().fstore(iidV, iid, vptr);
 }
 
 void llvm_fphi(IID out, double v, IID in) {

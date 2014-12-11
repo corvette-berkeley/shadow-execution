@@ -16,6 +16,7 @@
 #include "BlameShadowObject.h"
 
 using std::unordered_map;
+using std::set;
 using std::string;
 
 class BlameAnalysis {
@@ -48,6 +49,11 @@ private:
 	unordered_map<IID, unordered_map<void*, BlameShadowObject>> trace;
 	unordered_map<IID, std::array<BlameNode, PRECISION_NO>> blameSummary;
 	unordered_map<IID, std::set<IID>> alias;
+	set<BlameNodeID> diverge;
+	uint64_t inst_count;
+	uint64_t total_inst_count;
+	//  unordered_map<IID, uint64_t> start;
+	//  unordered_map<IID, uint64_t> counter;
 
 	// Global information about the starting point of the analysis.
 	PRECISION _precision;
@@ -58,12 +64,34 @@ private:
 		_precision = BITS_27;
 		_iid = 0;
 		_selfpath = get_selfpath();
+		pre_analysis();
 	}
 
 public:
 	static BlameAnalysis& get() {
 		static BlameAnalysis global;
 		return global;
+	}
+
+	inline bool startTrack(IID) {
+		if (inst_count == total_inst_count * 9 / 10) {
+			return true;
+		} else {
+			inst_count++;
+			return false;
+		}
+		/*
+		counter[iid] += 1;
+		if (start.find(iid) != start.end()) {
+		  if (counter[iid] >= start[iid]) {
+		    return true;
+		  } else {
+		    return false;
+		  }
+		}
+
+		return true;
+		*/
 	}
 
 	~BlameAnalysis() {
@@ -85,12 +113,20 @@ public:
 	void fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 	void fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
 
+	void oeq(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void ogt(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void oge(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void olt(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void ole(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+	void one(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv);
+
 	void fload(IID iidV, double v, IID iid, void* vptr);
-	void fstore(IID iidV, void* vptr);
+	void fstore(IID iidV, IID iid, void* vptr);
 
 	void fphi(IID out, double v, IID in);
 	void fafter_call(IID iid, double v, IID return_id);
 
+	void pre_analysis();
 	void post_analysis();
 
 private:
@@ -99,6 +135,8 @@ private:
 	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, FBINOP op);
 
 	const BlameShadowObject shadowFEval(IID iid, const BlameShadowObject& argBSO, MATHFUNC func);
+
+	void computeDivergeNode(const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, CMPOP op);
 
 	void computeBlameSummary(const BlameShadowObject& BSO, const BlameShadowObject& lBSO, const BlameShadowObject& rBSO,
 							 FBINOP op);
@@ -122,6 +160,8 @@ private:
 	bool canBlame(HIGHPRECISION result, HIGHPRECISION arg, MATHFUNC func, PRECISION p);
 
 	void fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op);
+
+	void fcmp(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, CMPOP op);
 
 	void call_lib(IID iid, IID argIID, HIGHPRECISION v, MATHFUNC func);
 

@@ -14,6 +14,14 @@ extern "C" {
 
 	void llvm_fphi(IID iidV, double value, IID orig);
 
+	// ***** Cmp Operations ***** //
+	void llvm_oeq(IID iidf, bool output, IID l, double lo, IID r, double ro);
+	void llvm_ogt(IID iidf, bool output, IID l, double lo, IID r, double ro);
+	void llvm_oge(IID iidf, bool output, IID l, double lo, IID r, double ro);
+	void llvm_olt(IID iidf, bool output, IID l, double lo, IID r, double ro);
+	void llvm_ole(IID iidf, bool output, IID l, double lo, IID r, double ro);
+	void llvm_one(IID iidf, bool output, IID l, double lo, IID r, double ro);
+
 	// ***** Math Call Operations ***** //
 	void llvm_call_fabs(IID iidf, double output, IID operand, double operandValue);
 	void llvm_call_exp(IID iidf, double output, IID operand, double operandValue);

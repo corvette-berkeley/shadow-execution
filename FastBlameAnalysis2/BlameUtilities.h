@@ -37,6 +37,16 @@ typedef enum {
 } FBINOP;
 
 typedef enum {
+	OEQ,
+	OGT,
+	OGE,
+	OLT,
+	OLE,
+	ONE,
+	CMPOP_NO
+} CMPOP;
+
+typedef enum {
 	SIN,
 	ACOS,
 	SQRT,
@@ -124,6 +134,27 @@ template <typename T> T feval(T val01, T val02, FBINOP bop) {
 	}
 
 	return 0;
+}
+
+template <typename T> bool fcmp_eval(T val01, T val02, CMPOP op) {
+	switch (op) {
+		case OEQ:
+			return val01 == val02;
+		case OGT:
+			return val01 > val02;
+		case OGE:
+			return val01 >= val02;
+		case OLT:
+			return val01 < val02;
+		case OLE:
+			return val01 <= val02;
+		case ONE:
+			return val01 != val02;
+		default:
+			assert(false && "Unsupported floating-point comparision operator.");
+	}
+
+	return false;
 }
 
 template <typename T> T mathLibEval(T val, MATHFUNC func) {

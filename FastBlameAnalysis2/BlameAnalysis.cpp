@@ -233,7 +233,7 @@ bool BlameAnalysis::isRequiredHigherPrecisionOperator(HIGHPRECISION result, HIGH
 }
 
 inline void BlameAnalysis::copyShadowObject(IID dstIID, void* dstPtr, IID srcIID, void* srcPtr, double v) {
-	if (trace.find(srcIID) != trace.end()) {
+	if (trace.find(srcIID) != trace.end() && trace[srcIID].find(srcPtr) != trace[srcIID].end()) {
 		BlameShadowObject bso = trace[srcIID][srcPtr];
 		trace[dstIID][dstPtr] = BlameShadowObject(dstIID, bso.lowValue, bso.highValue);
 	} else {
@@ -245,22 +245,68 @@ inline void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
 	alias[dest].insert(src);
 }
 
+inline void BlameAnalysis::computeDivergeNode(const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, CMPOP op) {
+	bool truthVal = fcmp_eval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op);
+	for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
+		for (PRECISION j = BITS_FLOAT; j < PRECISION_NO; j = PRECISION(j + 1)) {
+			double left =
+				(i != BITS_FLOAT) ? clearBits(lBSO.highValue, DOUBLE_MANTISSA_LENGTH - PRECISION_BITS[i]) : lBSO.lowValue;
+			double right =
+				(j != BITS_FLOAT) ? clearBits(rBSO.highValue, DOUBLE_MANTISSA_LENGTH - PRECISION_BITS[j]) : rBSO.lowValue;
+			if (fcmp_eval<HIGHPRECISION>(left, right, op) == truthVal) {
+				diverge.insert(BlameNodeID(lBSO.id, i));
+				diverge.insert(BlameNodeID(rBSO.id, j));
+				return;
+			}
+		}
+	}
+}
+
 /*** API FUNCTIONS ***/
+void BlameAnalysis::fcmp(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, CMPOP op) {
+	if (!startTrack(iid)) {
+		return;
+	}
+
+	const BlameShadowObject lBSO = getShadowObject(liid, lv);
+	const BlameShadowObject rBSO = getShadowObject(riid, rv);
+	if (fcmp_eval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op) !=
+			fcmp_eval<LOWPRECISION>(lBSO.lowValue, rBSO.lowValue, op)) {
+		/*
+		   cout << "Divergence happend." << endl;
+		   cout << "IID: " << iid << endl;
+		   cout << "RIID: " << riid << endl;
+		   cout << "R high: " << rBSO.highValue << " R low: " << rBSO.lowValue << endl;
+		   cout << "LIID: " << liid << endl;
+		   cout << "L high: " << lBSO.highValue << " L low: " << lBSO.lowValue << endl;
+		   cout << "----" << endl;
+		   */
+		//    exit(5);
+		computeDivergeNode(lBSO, rBSO, op);
+	}
+}
+
 void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op) {
+	if (!startTrack(iid)) {
+		return;
+	}
 	const BlameShadowObject lBSO = getShadowObject(liid, lv);
 	const BlameShadowObject rBSO = getShadowObject(riid, rv);
 	const BlameShadowObject BSO = shadowFEval(iid, lBSO, rBSO, op);
 
-	if (BSO.highValue != feval<HIGHPRECISION>(lv, rv, op)) {
+	if ((BSO.highValue != feval<HIGHPRECISION>(lv, rv, op))) {
 		cout << "IID: " << iid << endl;
 		cout << "RIID: " << riid << endl;
 		cout << "LIID: " << liid << endl;
-		cout << setprecision(10) << lv << endl;
-		cout << setprecision(10) << lBSO.highValue << endl;
-		cout << setprecision(10) << rv << endl;
-		cout << setprecision(10) << rBSO.highValue << endl;
-		cout << setprecision(10) << BSO.highValue << endl;
-		cout << setprecision(10) << feval<HIGHPRECISION>(lv, rv, op) << endl;
+		cout << setprecision(20) << lv << endl;
+		cout << setprecision(20) << lBSO.highValue << endl;
+		cout << setprecision(20) << lBSO.lowValue << endl;
+		cout << setprecision(20) << rv << endl;
+		cout << setprecision(20) << rBSO.highValue << endl;
+		cout << setprecision(20) << rBSO.lowValue << endl;
+		cout << setprecision(20) << feval<HIGHPRECISION>(lv, rv, op) << endl;
+		cout << setprecision(20) << BSO.highValue << endl;
+		cout << setprecision(20) << BSO.lowValue << endl;
 		cout << "---" << endl;
 		exit(5);
 	}
@@ -271,6 +317,9 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPR
 }
 
 void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv, MATHFUNC func) {
+	if (!startTrack(iid)) {
+		return;
+	}
 	const BlameShadowObject argBSO = getShadowObject(argiid, argv);
 	const BlameShadowObject BSO = shadowFEval(iid, argBSO, func);
 	trace[iid][0] = BSO;
@@ -278,6 +327,9 @@ void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv, MATHFUNC f
 }
 
 void BlameAnalysis::call_pow(IID iid, IID argiid01, HIGHPRECISION argv01, IID argiid02, HIGHPRECISION argv02) {
+	if (!startTrack(iid)) {
+		return;
+	}
 	const BlameShadowObject argBSO01 = getShadowObject(argiid01, argv01);
 	const BlameShadowObject argBSO02 = getShadowObject(argiid02, argv02);
 
@@ -296,6 +348,30 @@ void BlameAnalysis::call_pow(IID iid, IID argiid01, HIGHPRECISION argv01, IID ar
 	}
 
 	blameSummary[BSO.id] = blames;
+}
+
+void BlameAnalysis::oeq(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, OEQ);
+}
+
+void BlameAnalysis::ogt(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, OGT);
+}
+
+void BlameAnalysis::oge(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, OGE);
+}
+
+void BlameAnalysis::olt(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, OLT);
+}
+
+void BlameAnalysis::ole(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, OLE);
+}
+
+void BlameAnalysis::one(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fcmp(iid, liid, riid, lv, rv, ONE);
 }
 
 void BlameAnalysis::fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
@@ -336,23 +412,35 @@ void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
 	call_lib(iid, argIID, argv, EXP);
 }
 
-void BlameAnalysis::fstore(IID iidV, void* vptr) {
+void BlameAnalysis::fstore(IID iidV, IID, void* vptr) {
+	//  if (!startTrack(iid)) {
+	//    return;
+	//  }
 	if (trace.find(iidV) != trace.end()) {
 		trace[iidV][vptr] = trace[iidV][0];
 	}
 }
 
 void BlameAnalysis::fload(IID iidV, double v, IID iid, void* vptr) {
+	//  if (!startTrack(iidV)) {
+	//    return;
+	//  }
 	copyShadowObject(iidV, 0, iid, vptr, v);
 	copyBlameSummary(iidV, iid);
 }
 
 void BlameAnalysis::fphi(IID out, double v, IID in) {
+	if (!startTrack(out)) {
+		return;
+	}
 	copyShadowObject(out, 0, in, 0, v);
 	copyBlameSummary(out, in);
 }
 
 void BlameAnalysis::fafter_call(IID iid, double v, IID return_id) {
+	if (!startTrack(iid)) {
+		return;
+	}
 	copyShadowObject(iid, 0, return_id, 0, v);
 	copyBlameSummary(iid, return_id);
 }
@@ -410,6 +498,28 @@ void BlameAnalysis::constructAliasBlame() {
 			}
 			blameSummary[first][p] = BlameNode(first, p, requireHigherPrecision, requireHigherPrecisionOperator, bnids);
 		}
+	}
+}
+
+void BlameAnalysis::pre_analysis() {
+	total_inst_count = 0;
+	inst_count = 0;
+	ifstream cin(_selfpath + ".ic");
+	if (cin.fail()) {
+		cout << "Instruction counter file does not exist." << endl;
+		cout << "Compute blames for all instruction instances." << endl;
+		return;
+	}
+	while (cin) {
+		IID iid;
+		uint64_t count;
+		cin >> iid >> count;
+		total_inst_count += count;
+		/*
+		if (count > 2000) {
+		  start[iid] = count - 1000;
+		}
+		*/
 	}
 }
 
@@ -480,6 +590,9 @@ void BlameAnalysis::post_analysis() {
 		std::queue<BlameNode> workList;
 		for (IID iid : starts) {
 			workList.push(blameSummary[iid][p]);
+		}
+		for (auto& nodeid : diverge) {
+			workList.push(blameSummary[nodeid.iid][nodeid.precision]);  // Diverge nodes prevent divergence
 		}
 
 		while (!workList.empty()) {
