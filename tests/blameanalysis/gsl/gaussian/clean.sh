@@ -1,0 +1,17 @@
+rm debug.bin
+rm *.bc
+rm *.o
+rm *.out
+rm *.out2
+rm *.ba.full
+rm sorted_*
+rm *-include.txt
+rm out13
+rm out19
+rm out27
+rm out33
+rm score.cov
+rm sat.cov
+rm *.ll
+rm log.cov
+rm out

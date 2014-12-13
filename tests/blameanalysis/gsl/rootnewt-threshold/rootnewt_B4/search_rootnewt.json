@@ -1,0 +1,8 @@
+{"config": [
+	{"localVar": {
+		"file": "./rootnewt.c",
+		"function": "main",
+		"name": "x",
+		"type": ["float", "double"]
+	}}
+]}

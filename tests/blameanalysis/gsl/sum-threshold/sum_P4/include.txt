@@ -1,0 +1,13 @@
+GSL_MAX_DBL
+cov_arr_log
+cov_check
+cov_deserialize
+cov_serialize
+gsl_error
+gsl_stream_printf
+gsl_sum_levin_u_accel
+gsl_sum_levin_u_alloc
+gsl_sum_levin_u_free
+gsl_sum_levin_u_minmax
+gsl_sum_levin_u_step
+main

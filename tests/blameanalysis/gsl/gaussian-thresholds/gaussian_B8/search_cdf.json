@@ -1,0 +1,326 @@
+{"config": [
+	{"localVar": {
+		"file": "./cdf.c",
+		"function": "main",
+		"name": "P",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cdf.c",
+		"function": "main",
+		"name": "Q",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cdf.c",
+		"function": "main",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cdf.c",
+		"function": "main",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gsl_cdf_ugaussian_P",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gsl_cdf_ugaussian_P",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_small",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_small",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_small",
+		"name": "xnum",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_small",
+		"name": "xsq",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_small",
+		"name": "xden",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "temp",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "xnum",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "absx",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_medium",
+		"name": "xden",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "temp",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "xnum",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "xsq",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "absx",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gauss_large",
+		"name": "xden",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gsl_cdf_ugaussian_Q",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "gsl_cdf_ugaussian_Q",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "get_del",
+		"name": "del",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "get_del",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "get_del",
+		"name": "rational",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "get_del",
+		"name": "xsq",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gauss.c",
+		"function": "get_del",
+		"name": "result",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Pinv",
+		"name": "P",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Pinv",
+		"name": "pp",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Pinv",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Pinv",
+		"name": "dP",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Pinv",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "small",
+		"name": "q",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "small",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "small",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "intermediate",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "intermediate",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "tail",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "tail",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Qinv",
+		"name": "pp",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Qinv",
+		"name": "Q",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Qinv",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Qinv",
+		"name": "dQ",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "gaussinv.c",
+		"function": "gsl_cdf_ugaussian_Qinv",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "a",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "b",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "u",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "v",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./rat_eval.h",
+		"function": "rat_eval",
+		"name": "x",
+		"type": ["float", "double"]
+	}}
+]}

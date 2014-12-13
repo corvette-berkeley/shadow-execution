@@ -1,0 +1,268 @@
+{"config": [
+	{"globalVar": {
+		"name": "x",
+		"type": ["float[131072]", "double[131072]"]
+	}},
+	{"globalVar": {
+		"name": "q",
+		"type": ["float[10]", "double[10]"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "sx",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "sy",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "t1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "t2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "t3",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "t4",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "x1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "x2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "gc",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "an",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "ep.c",
+		"function": "main",
+		"name": "Mops",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "a",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t3",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t4",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "x1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "x2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "a1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "a2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "r23",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "x",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t23",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "z",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "r46",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "randlc",
+		"name": "t46",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "a",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t3",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t4",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "x1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "x2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "a1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "a2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "r23",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "x",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "y",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t23",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "z",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "r46",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "randdp.c",
+		"function": "vranlc",
+		"name": "t46",
+		"type": ["float", "double"]
+	}}
+]}

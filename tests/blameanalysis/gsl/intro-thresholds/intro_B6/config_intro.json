@@ -1,0 +1,36 @@
+{"config": [
+	{"localVar": {
+		"file": "./intro.c",
+		"function": "main",
+		"name": "y",
+		"type": "double"
+	}},
+	{"call": {
+		"id": "349528",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "sin",
+		"switch": "sin",
+		"type": ["double","double"]
+	}},
+	{"call": {
+		"id": "349534",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "cos",
+		"switch": "cos",
+		"type": ["double","double"]
+	}},
+	{"call": {
+		"id": "349597",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "sin",
+		"switch": "sin",
+		"type": ["double","double"]
+	}},
+	{"call": {
+		"id": "349602",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "cos",
+		"switch": "cos",
+		"type": ["double","double"]
+	}}
+]}

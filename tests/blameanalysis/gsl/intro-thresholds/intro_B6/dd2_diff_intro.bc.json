@@ -1,0 +1,5 @@
+localVar: y  at main at ./intro.c double -> float
+call: sin at gsl_sf_bessel_cos_pi4_esin -> sinf
+call: cos at gsl_sf_bessel_cos_pi4_ecos -> cosf
+call: sin at gsl_sf_bessel_cos_pi4_esin -> sinf
+call: cos at gsl_sf_bessel_cos_pi4_ecos -> cosf

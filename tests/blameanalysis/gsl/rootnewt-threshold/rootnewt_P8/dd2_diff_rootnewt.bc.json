@@ -1,0 +1,8 @@
+localVar: a  at main at ./rootnewt.c double -> float
+localVar: c  at main at ./rootnewt.c double -> float
+localVar: b  at main at ./rootnewt.c double -> float
+localVar: y  at newton_iterate at newton.c double -> float
+localVar: x  at newton_init at newton.c double -> float
+localVar: epsrel  at gsl_root_test_delta at convergence.c double -> float
+localVar: epsabs  at gsl_root_test_delta at convergence.c double -> float
+localVar: root  at gsl_root_fdfsolver_set at fdfsolver.c double -> float

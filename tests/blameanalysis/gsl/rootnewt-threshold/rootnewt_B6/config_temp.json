@@ -1,0 +1,8 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "x",
+		"file": "./rootnewt.c",
+	},
+}

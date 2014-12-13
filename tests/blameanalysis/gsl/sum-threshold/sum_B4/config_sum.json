@@ -1,0 +1,146 @@
+{"config": [
+	{"localVar": {
+		"file": "./sum.c",
+		"function": "main",
+		"name": "sum_accel",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./sum.c",
+		"function": "main",
+		"name": "t",
+		"type": "double[100]"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_accel",
+		"name": "array",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_accel",
+		"name": "sum_accel",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "array",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "dn2",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "variance",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "noise_n",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "actual_trunc_nm1",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "actual_trunc_n",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "trunc_n",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "least_trunc_result",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "t1",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "result_nm1",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "sum_accel",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_minmax",
+		"name": "result_n",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "ratio",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "result",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "c",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "term",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "sum_accel",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "levin_u.c",
+		"function": "gsl_sum_levin_u_step",
+		"name": "factor",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "../gsl/gsl_minmax.h",
+		"function": "GSL_MAX_DBL",
+		"name": "a",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "../gsl/gsl_minmax.h",
+		"function": "GSL_MAX_DBL",
+		"name": "b",
+		"type": "double"
+	}}
+]}

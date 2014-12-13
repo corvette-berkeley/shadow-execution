@@ -1,56 +1,72 @@
-// #include "../../../logging/cov_log.h"
-// #include "../../../logging/cov_checker.h"
+#include "../logging/cov_log.h"
+#include "../logging/cov_checker.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <float.h>
+#include <math.h>
+#include <time.h>
+#include <inttypes.h>
+#include <stdarg.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sum.h>
 
-#define N 20
+// #define ITERS 1000
+#define ITERS 1
 
-int
-main (void)
-{
-  double t[N];
+int main (void) {
+//  uint64_t start, end;
+//  long long int diff = 0;
+
+//  long double log;
+//  double epsilon = -4.0;
+//  long double threshold = 0.0;
+  int i, j;
+
   double sum_accel, err;
-  double sum = 0;
+  double t[100];
   int n;
-  
+
   gsl_sum_levin_u_workspace * w 
-    = gsl_sum_levin_u_alloc (N);
+    = gsl_sum_levin_u_alloc (100);
 
-  const double zeta_2 = M_PI * M_PI / 6.0;
-  
-  /* terms for zeta(2) = \sum_{n=1}^{\infty} 1/n^2 */
+  for (n = 0; n < 100; n++) {
+    float np1 = n + 1.0;
+    t[n] = 1.0 / (np1 * np1);
+  }
 
-  for (n = 0; n < N; n++)
-    {
-      double np1 = n + 1.0;
-      t[n] = 1.0 / (np1 * np1);
-      sum += t[n];
-    }
-  
-  gsl_sum_levin_u_accel (t, N, w, &sum_accel, &err);
 
-  printf ("term-by-term sum = % .16f using %d terms\n", 
-          sum, N);
+//  start = current_time_us();
+  // computation
+  for (j = 0; j < ITERS; j++) {
+    sum_accel = 0;
+    err = 0;
+    gsl_sum_levin_u_accel (t, 100, w, &sum_accel, &err);
 
-  printf ("term-by-term sum = % .16f using %d terms\n", 
-          w->sum_plain, w->terms_used);
+  }
+  // end computation
+//  end = current_time_us();
+//  diff += (long long int) (end - start);
 
-  printf ("exact value      = % .16f\n", zeta_2);
-  printf ("accelerated sum  = % .16f using %d terms\n", 
-          sum_accel, w->terms_used);
-
-  printf ("estimated error  = % .16f\n", err);
-  printf ("actual error     = % .16f\n", 
-          sum_accel - zeta_2);
+  sum_accel = sum_accel + 0;
 
   gsl_sum_levin_u_free (w);
 
-  double res = w->sum_plain;
-  res = res + 0;
 
-  //cov_spec_log("spec.cov", 0, 4, (long double) sum, (long double) w->sum_plain, (long double) sum_accel, (long double) err);
-//  cov_log("result", "log.cov", 4, (long double) sum, (long double) w->sum_plain, (long double) sum_accel, (long double) err);
-//  cov_check("log.cov", "spec.cov", 4);
+//  log = (long double) sum_accel;
+
+//  if (pow(10.0, epsilon) * sum_accel > threshold) {
+//    threshold = (long double) pow(10.0, epsilon) * sum_accel;
+//  }
+
+
+//  cov_spec_log("spec.cov", threshold, 1, log);
+//  cov_log("result", "log.cov", 1 , log);
+//  cov_check("log.cov", "spec.cov", 1);
+
+//  FILE* file;
+//  file = fopen("score.cov", "w");
+//  fprintf(file, "%lld\n", diff);
+//  fclose(file);
+
   return 0;
 }

@@ -1,0 +1,32 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "x",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "newton_iterate",
+		"type": "double",
+		"name": "e",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "newton_iterate",
+		"type": "double",
+		"name": "y",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "newton_init",
+		"type": "double*",
+		"name": "root",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "newton_init",
+		"type": "double",
+		"name": "x",
+		"file": "newton.c",
+	},
+}

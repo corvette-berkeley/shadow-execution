@@ -1,0 +1,158 @@
+{"config": [
+	{"localVar": {
+		"file": "./intro.c",
+		"function": "main",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./intro.c",
+		"function": "main",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "s",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "d",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "e2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "eps",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "abs_sum",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "seps",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "sy",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "cy",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel.c",
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"name": "ceps",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0_e",
+		"name": "sqrty",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0_e",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0_e",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0_e",
+		"name": "z",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0_e",
+		"name": "ampl",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "d",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "e",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "temp",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "dd",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "y2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./cheb_eval.c",
+		"function": "cheb_eval_e2234",
+		"name": "temp1",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "bessel_J0.c",
+		"function": "gsl_sf_bessel_J0",
+		"name": "x",
+		"type": ["float", "double"]
+	}}
+]}

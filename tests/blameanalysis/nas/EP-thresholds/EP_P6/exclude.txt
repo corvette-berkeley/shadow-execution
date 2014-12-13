@@ -1,0 +1,8 @@
+print_results
+randlc
+timer_clear
+timer_read
+timer_start
+timer_stop
+vranlc
+wtime_

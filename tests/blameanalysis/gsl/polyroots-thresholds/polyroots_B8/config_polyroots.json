@@ -1,0 +1,128 @@
+{"config": [
+	{"localVar": {
+		"file": "./polyroots.c",
+		"function": "main",
+		"name": "a",
+		"type": "double[6]"
+	}},
+	{"localVar": {
+		"file": "./polyroots.c",
+		"function": "main",
+		"name": "z_max",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "zsolve.c",
+		"function": "gsl_poly_complex_solve",
+		"name": "a",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "zsolve.c",
+		"function": "gsl_poly_complex_solve",
+		"name": "m",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./companion.c",
+		"function": "set_companion_matrix",
+		"name": "a",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./companion.c",
+		"function": "set_companion_matrix",
+		"name": "m",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "f",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "g",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "m",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "h",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "p",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "q",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "r",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "s",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a3",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a2",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "w",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "x",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "y",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "z",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a1",
+		"type": "double"
+	}}
+]}

@@ -1,0 +1,16 @@
+cov_arr_log
+cov_check
+cov_deserialize
+cov_serialize
+current_time_ns
+get_time
+gsl_error
+gsl_root_fdfsolver_alloc
+gsl_root_fdfsolver_free
+gsl_root_fdfsolver_iterate
+gsl_root_fdfsolver_name
+gsl_root_fdfsolver_root
+gsl_root_fdfsolver_set
+gsl_root_test_delta
+gsl_stream_printf
+main

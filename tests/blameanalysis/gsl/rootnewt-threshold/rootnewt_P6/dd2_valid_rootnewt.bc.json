@@ -1,0 +1,92 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "a",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "longdouble[10]",
+		"name": "log",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "c",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "b",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "x0",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float[30]",
+		"name": "finputs",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "threshold",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "x",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "epsilon",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "x0",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "x1",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "epsrel",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "tolerance",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "epsabs",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_fdfsolver_set",
+		"type": "float",
+		"name": "root",
+		"file": "fdfsolver.c",
+	},
+}

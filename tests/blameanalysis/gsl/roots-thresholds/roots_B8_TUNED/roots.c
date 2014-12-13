@@ -11,15 +11,17 @@
 
 #include "demo_fn.h"
 
+extern uint64_t current_time_ns(void);
+
 #define ITER 5000000
 
 int main () {
   int it = 0;
 
-//  uint64_t start, end, diff;
+  uint64_t start, end, diff;
   double r = 0; 
   float r_expected = sqrt (5.0);
-//  diff = 0;
+  diff = 0;
 
   for (it = 0; it < ITER; it++) {
     r = 0;
@@ -31,7 +33,7 @@ int main () {
     gsl_function F;
     struct quadratic_params params = {1.0, 0.0, -5.0};
 
-//    start = current_time_ns();
+    start = current_time_ns();
 
     F.function = &quadratic;
     F.params = &params;
@@ -72,8 +74,8 @@ int main () {
     gsl_root_fsolver_free (s);
 
     r = r + 0;
-//    end = current_time_ns();
-//    diff += end - start;
+    end = current_time_ns();
+    diff += end - start;
   }
 
 //  printf("Time %ld\n", diff/1000000);
@@ -87,9 +89,9 @@ int main () {
 //  cov_check("log.cov", "spec.cov", 1);
 
   // 2. print store (diff) to a file
-//  FILE* file = fopen("score.cov", "w");
-//  fprintf(file, "%ld\n", diff);
-//  fclose(file);
+ FILE* file = fopen("score.cov", "w");
+  fprintf(file, "%ld\n", diff);
+  fclose(file);
 
   return 0;
 }

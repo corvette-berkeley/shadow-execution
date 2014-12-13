@@ -1,0 +1,6 @@
+gauss_large.p
+gauss_large.q
+gauss_medium.c
+gauss_medium.d
+gauss_small.a
+gauss_small.b

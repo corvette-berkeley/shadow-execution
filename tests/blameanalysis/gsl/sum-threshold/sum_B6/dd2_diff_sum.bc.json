@@ -1,0 +1,13 @@
+localVar: array  at gsl_sum_levin_u_accel at levin_u.c double* -> float*
+localVar: sum_accel  at gsl_sum_levin_u_accel at levin_u.c double* -> float*
+localVar: dn2  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: variance  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: noise_n  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: actual_trunc_nm1  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: actual_trunc_n  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: trunc_n  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: least_trunc_result  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: result_nm1  at gsl_sum_levin_u_minmax at levin_u.c double -> float
+localVar: result  at gsl_sum_levin_u_step at levin_u.c double -> float
+localVar: a  at GSL_MAX_DBL at ../gsl/gsl_minmax.h double -> float
+localVar: b  at GSL_MAX_DBL at ../gsl/gsl_minmax.h double -> float

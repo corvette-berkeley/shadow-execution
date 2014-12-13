@@ -1,0 +1,32 @@
+{"config": [
+	{"localVar": {
+		"file": "./rootnewt.c",
+		"function": "main",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "newton.c",
+		"function": "newton_iterate",
+		"name": "e",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "newton.c",
+		"function": "newton_iterate",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "newton.c",
+		"function": "newton_init",
+		"name": "root",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "newton.c",
+		"function": "newton_init",
+		"name": "x",
+		"type": ["float", "double"]
+	}}
+]}

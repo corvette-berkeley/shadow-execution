@@ -597,11 +597,14 @@ void BlameAnalysis::post_analysis() {
 
 		while (!workList.empty()) {
 			// Find more blame node and add to the queue.
-			const BlameNode& node = workList.front();
+			BlameNode& node = workList.front();
 			logfile2 << "(" << node.id.iid << "," << PRECISION_BITS[node.id.precision] << ") : ";
 			for (auto it = node.children.begin(); it != node.children.end(); it++) {
 				BlameNodeID blameNodeID = *it;
 				logfile2 << "(" << blameNodeID.iid << "," << PRECISION_BITS[blameNodeID.precision] << ") ";
+				if (blameNodeID.iid == -1) {
+					node.requireHigherPrecision = true;
+				}
 				if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
 					// Children are either a constant or alloca.
 					continue;

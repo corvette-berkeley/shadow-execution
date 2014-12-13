@@ -1,0 +1,6 @@
+print_results
+timer_clear
+timer_read
+timer_start
+timer_stop
+wtime_

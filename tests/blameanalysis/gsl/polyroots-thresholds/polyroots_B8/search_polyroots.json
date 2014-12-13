@@ -1,0 +1,128 @@
+{"config": [
+	{"localVar": {
+		"file": "./polyroots.c",
+		"function": "main",
+		"name": "a",
+		"type": ["float[6]", "double[6]"]
+	}},
+	{"localVar": {
+		"file": "./polyroots.c",
+		"function": "main",
+		"name": "z_max",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "zsolve.c",
+		"function": "gsl_poly_complex_solve",
+		"name": "a",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "zsolve.c",
+		"function": "gsl_poly_complex_solve",
+		"name": "m",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./companion.c",
+		"function": "set_companion_matrix",
+		"name": "a",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./companion.c",
+		"function": "set_companion_matrix",
+		"name": "m",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "f",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "g",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./balance.c",
+		"function": "balance_companion_matrix",
+		"name": "m",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "h",
+		"type": ["float*", "double*"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "p",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "q",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "r",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "s",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a3",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a2",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "w",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "x",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "y",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "z",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"file": "./qr.c",
+		"function": "qr_companion",
+		"name": "a1",
+		"type": ["float", "double"]
+	}}
+]}

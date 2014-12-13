@@ -1,7 +1,7 @@
-#include "../logging/cov_checker.h"
-#include "../logging/cov_log.h"
-#include "../logging/cov_rand.h"
-#include "../logging/cov_serializer.h"
+#include "../../logging/cov_checker.h"
+#include "../../logging/cov_log.h"
+#include "../../logging/cov_rand.h"
+#include "../../logging/cov_serializer.h"
 
 #include <stdio.h>
 #include <inttypes.h>
@@ -10,6 +10,8 @@
 #include <gsl/gsl_roots.h>
 
 #include "demo_fn.h"
+
+extern uint64_t current_time_ns(void);
 
 #define ITER 5000000
 
@@ -81,8 +83,8 @@ int main () {
 
   // 1. creating spec, or checking results
 //  cov_spec_log("spec.cov", threshold, 1, (long float) r);
-  cov_log("result", "log.cov", 1, (long double) r);
-  cov_check("log.cov", "spec.cov", 1);
+//  cov_log("result", "log.cov", 1, (long double) r);
+//  cov_check("log.cov", "spec.cov", 1);
 
   // 2. print store (diff) to a file
   FILE* file = fopen("score.cov", "w");

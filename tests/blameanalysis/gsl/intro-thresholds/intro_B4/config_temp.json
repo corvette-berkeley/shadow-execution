@@ -1,0 +1,36 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "y",
+		"file": "./intro.c",
+	},
+	"call": {
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"switch": "sinf",
+		"type": ["float","float"],
+		"id": "349528",
+		"name": "sin",
+	},
+	"call": {
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"switch": "cosf",
+		"type": ["float","float"],
+		"id": "349534",
+		"name": "cos",
+	},
+	"call": {
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"switch": "sinf",
+		"type": ["float","float"],
+		"id": "349597",
+		"name": "sin",
+	},
+	"call": {
+		"function": "gsl_sf_bessel_cos_pi4_e",
+		"switch": "cosf",
+		"type": ["float","float"],
+		"id": "349602",
+		"name": "cos",
+	},
+}

@@ -1,0 +1,90 @@
+{
+	"globalVar": {
+		"type": "double[131072]",
+		"name": "x",
+	},
+	"globalVar": {
+		"type": "double[10]",
+		"name": "q",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "sx",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "sy",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "t1",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "t2",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "t3",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "t4",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "x1",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "x2",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "gc",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "an",
+		"file": "ep.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "Mops",
+		"file": "ep.c",
+	},
+	"call": {
+		"function": "main",
+		"switch": "logf",
+		"type": ["float","float"],
+		"id": "131",
+		"name": "log",
+	},
+	"call": {
+		"function": "main",
+		"switch": "logf",
+		"type": ["float","float"],
+		"id": "268",
+		"name": "log",
+	},
+}

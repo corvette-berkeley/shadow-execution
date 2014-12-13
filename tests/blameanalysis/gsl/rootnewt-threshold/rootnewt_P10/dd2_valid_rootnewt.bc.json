@@ -1,0 +1,86 @@
+{
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "a",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "c",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "b",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "float",
+		"name": "x0",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "main",
+		"type": "double",
+		"name": "x",
+		"file": "./rootnewt.c",
+	},
+	"localVar": {
+		"function": "newton_iterate",
+		"type": "float",
+		"name": "e",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "newton_iterate",
+		"type": "float",
+		"name": "y",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "newton_init",
+		"type": "float",
+		"name": "x",
+		"file": "newton.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "x0",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "x1",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "epsrel",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "tolerance",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_test_delta",
+		"type": "float",
+		"name": "epsabs",
+		"file": "convergence.c",
+	},
+	"localVar": {
+		"function": "gsl_root_fdfsolver_set",
+		"type": "float",
+		"name": "root",
+		"file": "fdfsolver.c",
+	},
+}

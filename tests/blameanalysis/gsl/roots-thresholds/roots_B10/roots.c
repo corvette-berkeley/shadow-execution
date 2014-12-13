@@ -1,7 +1,7 @@
-#include "../logging/cov_checker.h"
-#include "../logging/cov_log.h"
-#include "../logging/cov_rand.h"
-#include "../logging/cov_serializer.h"
+#include "../../logging/cov_checker.h"
+#include "../../logging/cov_log.h"
+#include "../../logging/cov_rand.h"
+#include "../../logging/cov_serializer.h"
 
 #include <stdio.h>
 #include <inttypes.h>

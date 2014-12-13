@@ -87,6 +87,62 @@ CastInst* castToVoid(Value* v, Instruction* i) {
 	return ci;
 }
 
+bool useful(FCmpInst* fci) {
+	switch (fci->getPredicate()) {
+		case CmpInst::Predicate::FCMP_OEQ:
+		case CmpInst::Predicate::FCMP_OGT:
+		case CmpInst::Predicate::FCMP_OGE:
+		case CmpInst::Predicate::FCMP_OLT:
+		case CmpInst::Predicate::FCMP_OLE:
+		case CmpInst::Predicate::FCMP_ONE:
+			return true;
+		default:
+			return false;
+	}
+}
+
+string to_function_name(FCmpInst* fci) {
+	switch (fci->getPredicate()) {
+		case CmpInst::Predicate::FCMP_OEQ:
+			return "llvm_oeq";
+		case CmpInst::Predicate::FCMP_OGT:
+			return "llvm_ogt";
+		case CmpInst::Predicate::FCMP_OGE:
+			return "llvm_oge";
+		case CmpInst::Predicate::FCMP_OLT:
+			return "llvm_olt";
+		case CmpInst::Predicate::FCMP_OLE:
+			return "llvm_ole";
+		case CmpInst::Predicate::FCMP_ONE:
+			return "llvm_one";
+		default:
+			return "";
+	}
+}
+
+FunctionType* to_function_type(FCmpInst* instr) {
+	LLVMContext& cx = instr->getContext();
+	return FunctionType::get(Type::getVoidTy(cx),
+							 vector<Type*>({Type::getInt32Ty(cx),  Type::getInt1Ty(cx),  Type::getInt32Ty(cx),
+											Type::getDoubleTy(cx), Type::getInt32Ty(cx), Type::getDoubleTy(cx)
+										   }),
+							 false);
+}
+
+void _handle(FCmpInst* fci_instr, Function* f) {
+	auto iidl = getIID(fci_instr->getOperand(0));
+	auto iidr = getIID(fci_instr->getOperand(1));
+	auto iid = getIID(fci_instr);
+
+	vector<Value*> args = {iid,  fci_instr,
+						   iidl, castToDouble(fci_instr->getOperand(0), fci_instr),
+						   iidr, castToDouble(fci_instr->getOperand(1), fci_instr)
+						  };
+	CallInst* ci = llvm::CallInst::Create(f, args);
+	ci->insertAfter(fci_instr);
+}
+
+
 bool useful(BinaryOperator* bi) {
 	switch (bi->getOpcode()) {
 		case Instruction::BinaryOps(Instruction::FAdd) :
@@ -464,8 +520,8 @@ struct FPPass : public BasicBlockPass {
 		}
 		bool ret = false;
 		for (Instruction& inst : BB) {
-			if (handle<BinaryOperator>(&inst) || handle<CallInst>(&inst) || handle<LoadInst>(&inst) ||
-					handle<StoreInst>(&inst) || handle<PHINode>(&inst) || handle<ReturnInst>(&inst)) {
+			if (handle<BinaryOperator>(&inst) || handle<FCmpInst>(&inst) || handle<CallInst>(&inst) ||
+					handle<LoadInst>(&inst) || handle<StoreInst>(&inst) || handle<PHINode>(&inst) || handle<ReturnInst>(&inst)) {
 				ret = true;
 			}
 		}

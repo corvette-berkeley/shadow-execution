@@ -1,0 +1,7 @@
+localVar: x  at gauss_small at gauss.c double -> float
+localVar: xnum  at gauss_small at gauss.c double -> float
+localVar: xsq  at gauss_small at gauss.c double -> float
+localVar: xden  at gauss_small at gauss.c double -> float
+localVar: result  at gauss_medium at gauss.c double -> float
+localVar: temp  at gauss_medium at gauss.c double -> float
+localVar: x  at gauss_medium at gauss.c double -> float
