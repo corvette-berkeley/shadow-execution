@@ -1,0 +1,1 @@
+$SCRIPTS/dd2.py cg.A.x.bc search_cg.A.x.json config_cg.A.x.json

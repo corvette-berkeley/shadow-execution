@@ -1,0 +1,248 @@
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse0 is valid: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+		 Delta inverse1 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 6
+	 Searching with div = 12
+		 Delta inverse2 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 11
+		 Delta inverse4 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 10
+		 Delta inverse9 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 9
+	 Searching with div = 18
+		 Delta inverse0 is valid: [5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 17
+		 Delta inverse2 is valid: [5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 16
+		 Delta inverse2 is valid: [5, 6, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 15
+		 Delta inverse3 is valid: [5, 6, 15, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 14
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 13
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 12
+		 Delta inverse8 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28, 29]
+	 Searching with div = 11
+		 Delta inverse10 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28]
+	 Searching with div = 10
+		 Delta inverse6 is valid: [5, 6, 15, 17, 20, 23, 25, 27, 28]
+	 Searching with div = 9
+Search totally 304 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse0 is valid: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+		 Delta inverse1 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 6
+	 Searching with div = 12
+		 Delta inverse2 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 11
+		 Delta inverse4 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 10
+		 Delta inverse9 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 9
+	 Searching with div = 18
+		 Delta inverse0 is valid: [5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 17
+		 Delta inverse2 is valid: [5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 16
+		 Delta inverse2 is valid: [5, 6, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 15
+		 Delta inverse3 is valid: [5, 6, 15, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 14
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 13
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 12
+		 Delta inverse8 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28, 29]
+	 Searching with div = 11
+		 Delta inverse10 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28]
+	 Searching with div = 10
+		 Delta inverse6 is valid: [5, 6, 15, 17, 20, 23, 25, 27, 28]
+	 Searching with div = 9
+Search totally 304 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse0 is valid: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+		 Delta inverse1 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 6
+	 Searching with div = 12
+		 Delta inverse2 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 11
+		 Delta inverse4 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 10
+		 Delta inverse9 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 9
+	 Searching with div = 18
+		 Delta inverse0 is valid: [5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 17
+		 Delta inverse2 is valid: [5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 16
+		 Delta inverse2 is valid: [5, 6, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 15
+		 Delta inverse3 is valid: [5, 6, 15, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 14
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 22, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 13
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 26, 27, 28, 29]
+	 Searching with div = 12
+		 Delta inverse8 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28, 29]
+	 Searching with div = 11
+		 Delta inverse10 is valid: [5, 6, 15, 17, 20, 23, 24, 25, 27, 28]
+	 Searching with div = 10
+		 Delta inverse6 is valid: [5, 6, 15, 17, 20, 23, 25, 27, 28]
+	 Searching with div = 9
+Search totally 304 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse0 is valid: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+		 Delta inverse1 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 6
+		 Delta inverse5 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+	 Searching with div = 5
+	 Searching with div = 10
+		 Delta inverse2 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+	 Searching with div = 9
+		 Delta inverse4 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27]
+	 Searching with div = 8
+		 Delta inverse6 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27]
+	 Searching with div = 7
+	 Searching with div = 14
+		 Delta inverse0 is valid: [5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27]
+	 Searching with div = 13
+		 Delta inverse2 is valid: [5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27]
+	 Searching with div = 12
+		 Delta inverse2 is valid: [5, 6, 15, 16, 17, 20, 21, 22, 23, 26, 27]
+	 Searching with div = 11
+		 Delta inverse3 is valid: [5, 6, 15, 17, 20, 21, 22, 23, 26, 27]
+	 Searching with div = 10
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 22, 23, 26, 27]
+	 Searching with div = 9
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 23, 26, 27]
+	 Searching with div = 8
+		 Delta inverse6 is valid: [5, 6, 15, 17, 20, 23, 27]
+	 Searching with div = 7
+Search totally 228 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse0 is valid: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+		 Delta inverse1 is valid: [4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 6
+	 Searching with div = 12
+		 Delta inverse2 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 11
+		 Delta inverse4 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 10
+		 Delta inverse6 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 9
+		 Delta inverse8 is valid: [4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 8
+	 Searching with div = 16
+		 Delta inverse0 is valid: [5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 15
+		 Delta inverse2 is valid: [5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 14
+		 Delta inverse2 is valid: [5, 6, 15, 16, 17, 20, 21, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 13
+		 Delta inverse3 is valid: [5, 6, 15, 17, 20, 21, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 12
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 22, 23, 26, 27, 28, 29]
+	 Searching with div = 11
+		 Delta inverse5 is valid: [5, 6, 15, 17, 20, 23, 26, 27, 28, 29]
+	 Searching with div = 10
+		 Delta inverse6 is valid: [5, 6, 15, 17, 20, 23, 27, 28, 29]
+	 Searching with div = 9
+		 Delta inverse8 is valid: [5, 6, 15, 17, 20, 23, 27, 28]
+	 Searching with div = 8
+Search totally 278 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+	 Searching with div = 16
+		 Delta inverse4 is valid: [0, 1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 15
+	 Searching with div = 30
+		 Delta inverse2 is valid: [0, 1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 29
+		 Delta inverse3 is valid: [0, 1, 3, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 28
+		 Delta inverse5 is valid: [0, 1, 3, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 27
+		 Delta inverse5 is valid: [0, 1, 3, 5, 6, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 26
+		 Delta inverse10 is valid: [0, 1, 3, 5, 6, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 25
+		 Delta inverse11 is valid: [0, 1, 3, 5, 6, 11, 12, 13, 14, 15, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 24
+		 Delta inverse5 is valid: [0, 1, 3, 5, 6, 12, 13, 14, 15, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 23
+		 Delta inverse12 is valid: [0, 1, 3, 5, 6, 12, 13, 14, 15, 17, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 22
+		 Delta inverse12 is valid: [0, 1, 3, 5, 6, 12, 13, 14, 15, 17, 19, 20, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 21
+		 Delta inverse15 is valid: [0, 1, 3, 5, 6, 12, 13, 14, 15, 17, 19, 20, 23, 24, 25, 27, 28, 29, 30, 31]
+	 Searching with div = 20
+		 Delta inverse19 is valid: [0, 1, 3, 5, 6, 12, 13, 14, 15, 17, 19, 20, 23, 24, 25, 27, 28, 29, 30]
+	 Searching with div = 19
+Search totally 501 configurations.
+Searching for valid configuration using delta-debugging algorithm ...
+Original sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 2
+	 Searching with div = 4
+	 Searching with div = 8
+		 Delta inverse2 is valid: [0, 1, 2, 3, 4, 5, 6, 7, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 7
+	 Searching with div = 14
+		 Delta inverse4 is valid: [0, 1, 2, 3, 4, 5, 6, 7, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 13
+		 Delta inverse6 is valid: [0, 1, 2, 3, 4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 12
+	 Searching with div = 24
+		 Delta inverse2 is valid: [0, 1, 3, 4, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 23
+		 Delta inverse3 is valid: [0, 1, 3, 5, 6, 7, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 22
+		 Delta inverse5 is valid: [0, 1, 3, 5, 6, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 21
+		 Delta inverse5 is valid: [0, 1, 3, 5, 6, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 20
+		 Delta inverse6 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 19
+		 Delta inverse9 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 18
+		 Delta inverse10 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 23, 25, 26, 27, 28, 29, 30, 31]
+	 Searching with div = 17
+		 Delta inverse11 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 23, 25, 27, 28, 29, 30, 31]
+	 Searching with div = 16
+		 Delta inverse13 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 23, 25, 27, 28, 30, 31]
+	 Searching with div = 15
+		 Delta inverse13 is valid: [0, 1, 3, 5, 6, 15, 17, 20, 21, 23, 25, 27, 28, 31]
+	 Searching with div = 14
+Search totally 409 configurations.

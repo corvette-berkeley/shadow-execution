@@ -1,0 +1,206 @@
+{"config": [
+	{"localVar": {
+		"file": "cg.c",
+		"function": "main",
+		"name": "norm_temp1",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "main",
+		"name": "norm_temp2",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "main",
+		"name": "rnorm",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "main",
+		"name": "zeta",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "makea",
+		"name": "a",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "makea",
+		"name": "aelt",
+		"type": "double[8]*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "makea",
+		"name": "vc",
+		"type": "double[8]"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "a",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "d",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "alpha",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "rho",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "rnorm",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "p",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "q",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "r",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "sum",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "x",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "rho0",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "z",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "conj_grad",
+		"name": "beta",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sprnvc",
+		"name": "vecelt",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sprnvc",
+		"name": "v",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sprnvc",
+		"name": "vecloc",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "vecset",
+		"name": "val",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "vecset",
+		"name": "v",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "aelt",
+		"type": "double[8]*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "va",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "size",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "shift",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "a",
+		"type": "double*"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "ratio",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "scale",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "sparse",
+		"name": "rcond",
+		"type": "double"
+	}},
+	{"localVar": {
+		"file": "cg.c",
+		"function": "icnvrt",
+		"name": "x",
+		"type": "double"
+	}}
+]}

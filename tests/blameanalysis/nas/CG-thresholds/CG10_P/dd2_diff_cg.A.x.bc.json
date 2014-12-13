@@ -1,0 +1,16 @@
+localVar: rnorm  at main at cg.c double -> float
+
+localVar: a  at makea at cg.c double* -> float*
+
+localVar: alpha  at conj_grad at cg.c double -> float
+localVar: rho  at conj_grad at cg.c double -> float
+localVar: rnorm  at conj_grad at cg.c double* -> float*
+localVar: p  at conj_grad at cg.c double* -> float*
+localVar: rho0  at conj_grad at cg.c double -> float
+localVar: beta  at conj_grad at cg.c double -> float
+
+localVar: vecelt  at sprnvc at cg.c double -> float
+
+localVar: val  at vecset at cg.c double -> float
+
+localVar: shift  at sparse at cg.c double -> float

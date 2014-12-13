@@ -1,0 +1,6 @@
+t
+mflops
+tmax
+zeta_verify_value
+epsilon
+err
