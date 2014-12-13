@@ -5,11 +5,12 @@ cd "$THIS_DIR"
 function test_this_dir() {
 	while read program
 	do
+    cd $program
 		echo "Instrumenting $program ..."
 #		./instrument-forward.sh $program > /dev/null 2>/dev/null
-		./instrumentfp2.sh $program > /dev/null 2>/dev/null
+		../instrumentfp2.sh $program > /dev/null 2>/dev/null
 		echo "Running $program ..."
-		python2 ../travis-main.py $program
+		python2 ../../travis-main.py $program
 		if [ "$?" != "0" ]
 		then
 			exit 1
@@ -26,6 +27,7 @@ if diff <(sort -u "$program"".out_27.ba") <(sort -u "$program"".ref.ba")
 			echo "Output changed!"
 			exit 1
 		fi
+    cd ..
 	done < travis-tests.txt
 }
 
