@@ -28,8 +28,7 @@ std::string BlameAnalysis::get_selfpath() {
 	}
 }
 
-void BlameAnalysis::computeBlameSummary(const BlameShadowObject& BSO, const BlameShadowObject& lBSO,
-										const BlameShadowObject& rBSO, FBINOP op) {
+void BlameAnalysis::computeBlameSummary(const Value& BSO, const Value& lBSO, const Value& rBSO, FBINOP op) {
 	std::array<BlameNode, PRECISION_NO> blames;
 
 	for (PRECISION p = PRECISION(BITS_FLOAT); p < PRECISION_NO; p = PRECISION(p + 1)) {
@@ -39,7 +38,7 @@ void BlameAnalysis::computeBlameSummary(const BlameShadowObject& BSO, const Blam
 	blameSummary[BSO.id] = blames;
 }
 
-void BlameAnalysis::computeBlameSummary(const BlameShadowObject& BSO, const BlameShadowObject& argBSO, MATHFUNC func) {
+void BlameAnalysis::computeBlameSummary(const Value& BSO, const Value& argBSO, MATHFUNC func) {
 	std::array<BlameNode, PRECISION_NO> blames;
 
 	for (PRECISION p = PRECISION(BITS_FLOAT); p < PRECISION_NO; p = PRECISION(p + 1)) {
@@ -49,10 +48,9 @@ void BlameAnalysis::computeBlameSummary(const BlameShadowObject& BSO, const Blam
 	blameSummary[BSO.id] = blames;
 }
 
-BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& argBSO,
-		MATHFUNC func, PRECISION p) {
+BlameNode BlameAnalysis::computeBlameInformation(const Value& BSO, const Value& argBSO, MATHFUNC func, PRECISION p) {
 	HIGHPRECISION val = BSO.highValue;
-	bool requireHigherPrecision = val != (LOWPRECISION)val;
+	bool requireHigherPrecision = p != BITS_FLOAT;
 	bool requireHigherPrecisionOperator = true;
 
 	// Compute the values of argbso in different precision.
@@ -85,10 +83,10 @@ BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO, c
 	return BlameNode(BSO.id, p, requireHigherPrecision, requireHigherPrecisionOperator, {BlameNodeID(argBSO.id, i)});
 }
 
-BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& lBSO,
-		const BlameShadowObject& rBSO, FBINOP op, PRECISION p) {
+BlameNode BlameAnalysis::computeBlameInformation(const Value& BSO, const Value& lBSO, const Value& rBSO, FBINOP op,
+		PRECISION p) {
 	HIGHPRECISION val = BSO.highValue;
-	bool requireHigherPrecision = val != (LOWPRECISION)val;
+	bool requireHigherPrecision = p != BITS_FLOAT;
 	bool requireHigherPrecisionOperator = true;
 
 	// Compute values for lbso and rbso in different precision.
@@ -143,10 +141,9 @@ BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO, c
 	{BlameNodeID(lBSO.id, i), BlameNodeID(rBSO.id, j)});
 }
 
-BlameNode BlameAnalysis::computeBlameInformation(const BlameShadowObject& BSO, const BlameShadowObject& lBSO,
-		const BlameShadowObject& rBSO, PRECISION p) {
+BlameNode BlameAnalysis::computeBlameInformation(const Value& BSO, const Value& lBSO, const Value& rBSO, PRECISION p) {
 	HIGHPRECISION val = BSO.highValue;
-	bool requireHigherPrecision = val != (LOWPRECISION)val;
+	bool requireHigherPrecision = p != BITS_FLOAT;
 	bool requireHigherPrecisionOperator = true;
 
 	// Compute values for lbso and rbso in different precision.
@@ -227,7 +224,7 @@ inline void BlameAnalysis::copyBlameSummary(IID dest, IID src) {
 	alias[dest].insert(src);
 }
 
-inline void BlameAnalysis::computeDivergeNode(const BlameShadowObject& lBSO, const BlameShadowObject& rBSO, CMPOP op) {
+inline void BlameAnalysis::computeDivergeNode(const Value& lBSO, const Value& rBSO, CMPOP op) {
 	bool truthVal = fcmp_eval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op);
 	for (PRECISION i = BITS_FLOAT; i < PRECISION_NO; i = PRECISION(i + 1)) {
 		for (PRECISION j = BITS_FLOAT; j < PRECISION_NO; j = PRECISION(j + 1)) {
@@ -250,26 +247,19 @@ void BlameAnalysis::fcmp(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPREC
 		return;
 	}
 
-	const BlameShadowObject lBSO = BlameShadowObject(liid, lv);
-	const BlameShadowObject rBSO = BlameShadowObject(riid, rv);
-	//	if (fcmp_eval<HIGHPRECISION>(lBSO.highValue, rBSO.highValue, op) !=
-	//		   cout << "Divergence happend." << endl;
-	//		   cout << "IID: " << iid << endl;
-	//		   cout << "RIID: " << riid << endl;
-	//		   cout << "LIID: " << liid << endl;
-	//		   cout << "----" << endl;
-	//		   exit(5);
+	const Value lBSO = Value(liid, lv);
+	const Value rBSO = Value(riid, rv);
 	computeDivergeNode(lBSO, rBSO, op);
-	//	}
 }
 
-void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv, FBINOP op) {
+void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION v, HIGHPRECISION lv, HIGHPRECISION rv,
+						   FBINOP op) {
 	if (!startTrack(iid)) {
 		return;
 	}
-	const BlameShadowObject lBSO = BlameShadowObject(liid, lv);
-	const BlameShadowObject rBSO = BlameShadowObject(riid, rv);
-	const BlameShadowObject BSO = BlameShadowObject(iid, feval<HIGHPRECISION>(lv, rv, op));
+	const Value lBSO = Value(liid, lv);
+	const Value rBSO = Value(riid, rv);
+	const Value BSO = Value(iid, v);
 
 	if ((BSO.highValue != feval<HIGHPRECISION>(lv, rv, op))) {
 		cout << "IID: " << iid << endl;
@@ -289,12 +279,12 @@ void BlameAnalysis::fbinop(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPR
 	computeBlameSummary(BSO, lBSO, rBSO, op);
 }
 
-void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION argv, MATHFUNC func) {
+void BlameAnalysis::call_lib(IID iid, IID argiid, HIGHPRECISION v, HIGHPRECISION argv, MATHFUNC func) {
 	if (!startTrack(iid)) {
 		return;
 	}
-	const BlameShadowObject argBSO = BlameShadowObject(argiid, argv);
-	const BlameShadowObject BSO = BlameShadowObject(iid, mathLibEval<HIGHPRECISION>(argv, func));
+	const Value argBSO = Value(argiid, argv);
+	const Value BSO = Value(iid, v);
 	computeBlameSummary(BSO, argBSO, func);
 }
 
@@ -302,11 +292,11 @@ void BlameAnalysis::call_pow(IID iid, IID argiid01, HIGHPRECISION argv01, IID ar
 	if (!startTrack(iid)) {
 		return;
 	}
-	const BlameShadowObject argBSO01 = BlameShadowObject(argiid01, argv01);
-	const BlameShadowObject argBSO02 = BlameShadowObject(argiid02, argv02);
+	const Value argBSO01 = Value(argiid01, argv01);
+	const Value argBSO02 = Value(argiid02, argv02);
 
 	// shadow function eval
-	const BlameShadowObject BSO = BlameShadowObject(iid, pow(argBSO01.highValue, argBSO02.highValue));
+	const Value BSO = Value(iid, pow(argBSO01.highValue, argBSO02.highValue));
 
 	// compute blame summary
 	std::array<BlameNode, PRECISION_NO> blames;
@@ -344,42 +334,42 @@ void BlameAnalysis::one(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECI
 	fcmp(iid, liid, riid, lv, rv, ONE);
 }
 
-void BlameAnalysis::fadd(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FADD);
+void BlameAnalysis::fadd(IID iid, IID liid, IID riid, HIGHPRECISION v, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, v, lv, rv, FADD);
 }
-void BlameAnalysis::fsub(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FSUB);
+void BlameAnalysis::fsub(IID iid, IID liid, IID riid, HIGHPRECISION v, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, v, lv, rv, FSUB);
 }
-void BlameAnalysis::fmul(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FMUL);
+void BlameAnalysis::fmul(IID iid, IID liid, IID riid, HIGHPRECISION v, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, v, lv, rv, FMUL);
 }
-void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION lv, HIGHPRECISION rv) {
-	fbinop(iid, liid, riid, lv, rv, FDIV);
+void BlameAnalysis::fdiv(IID iid, IID liid, IID riid, HIGHPRECISION v, HIGHPRECISION lv, HIGHPRECISION rv) {
+	fbinop(iid, liid, riid, v, lv, rv, FDIV);
 }
 
-void BlameAnalysis::call_sin(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, SIN);
+void BlameAnalysis::call_sin(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, SIN);
 }
-void BlameAnalysis::call_acos(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, ACOS);
+void BlameAnalysis::call_acos(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, ACOS);
 }
-void BlameAnalysis::call_cos(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, COS);
+void BlameAnalysis::call_cos(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, COS);
 }
-void BlameAnalysis::call_fabs(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, FABS);
+void BlameAnalysis::call_fabs(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, FABS);
 }
-void BlameAnalysis::call_sqrt(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, SQRT);
+void BlameAnalysis::call_sqrt(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, SQRT);
 }
-void BlameAnalysis::call_log(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, LOG);
+void BlameAnalysis::call_log(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, LOG);
 }
-void BlameAnalysis::call_floor(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, FLOOR);
+void BlameAnalysis::call_floor(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, FLOOR);
 }
-void BlameAnalysis::call_exp(IID iid, IID argIID, HIGHPRECISION argv) {
-	call_lib(iid, argIID, argv, EXP);
+void BlameAnalysis::call_exp(IID iid, HIGHPRECISION v, IID argIID, HIGHPRECISION argv) {
+	call_lib(iid, argIID, v, argv, EXP);
 }
 
 void BlameAnalysis::fload(IID iidV, double, IID iid, void*) {
@@ -407,39 +397,12 @@ void BlameAnalysis::constructAliasBlame() {
 		IID first = it.first;
 		std::set<IID> second = it.second;
 
-		// find a close set of aliases
-		std::set<IID> closeset;
-		std::queue<IID> workList;
-		workList.push(first);
-		while (!workList.empty()) {
-			IID id = workList.front();
-			workList.pop();
-			if (alias.find(id) == alias.end()) {
-				continue;
-			}
-			std::set<IID> al = alias[id];
-			for (auto iid : al) {
-				if (closeset.find(iid) == closeset.end()) {
-					closeset.insert(iid);
-					workList.push(iid);
-				}
-			}
-		}
-
 		for (PRECISION p = BITS_FLOAT; p < PRECISION_NO; p = PRECISION(p + 1)) {
 			std::vector<BlameNodeID> bnids;
-			bool requireHigherPrecision = false;
-			bool requireHigherPrecisionOperator = false;
+			bool requireHigherPrecision = p != BITS_FLOAT;
+			bool requireHigherPrecisionOperator = true;
 			for (auto iid : second) {
 				bnids.push_back(BlameNodeID(iid, p));
-			}
-			for (auto iid : closeset) {
-				if (blameSummary.find(iid) == blameSummary.end()) {
-					continue;
-				}
-				requireHigherPrecision = requireHigherPrecision || blameSummary[iid][p].requireHigherPrecision;
-				requireHigherPrecisionOperator =
-					requireHigherPrecisionOperator || blameSummary[iid][p].requireHigherPrecisionOperator;
 			}
 			blameSummary[first][p] = BlameNode(first, p, requireHigherPrecision, requireHigherPrecisionOperator, bnids);
 		}
@@ -472,7 +435,6 @@ void BlameAnalysis::post_analysis() {
 	// dumpTrace()
 	constructAliasBlame();
 
-	cout << "After constructing alias blame" << endl;
 	cout << "This is Blame Analysis without shadow execution" << endl;
 
 	// obtain all starting points
@@ -550,9 +512,6 @@ void BlameAnalysis::post_analysis() {
 			for (auto it = node.children.begin(); it != node.children.end(); it++) {
 				BlameNodeID blameNodeID = *it;
 				logfile2 << "(" << blameNodeID.iid << "," << PRECISION_BITS[blameNodeID.precision] << ") ";
-				if (blameNodeID.iid == -1) {
-					node.requireHigherPrecision = true;
-				}
 				if (blameSummary.find(blameNodeID.iid) == blameSummary.end()) {
 					// Children are either a constant or alloca.
 					continue;
@@ -571,7 +530,7 @@ void BlameAnalysis::post_analysis() {
 				continue;
 			}
 			DebugInfo dbg = debugInfoMap.at(node.id.iid);
-			if (node.requireHigherPrecision || node.requireHigherPrecisionOperator) {
+			if (node.requireHigherPrecision) {
 				logfile << "File " << dbg.file << ", Line " << dbg.line << ", Column " << dbg.column << endl;
 				//						<< ", HigherPrecision: " << node.requireHigherPrecision
 				//						<< ", HigherPrecisionOperator: " << node.requireHigherPrecisionOperator << "\n";

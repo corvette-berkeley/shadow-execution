@@ -11,20 +11,20 @@ unordered_map<unsigned, IID> arg_to_real_iid;
 unordered_map<void*, IID> ptr_to_iid;
 IID return_iid;
 
-void llvm_fadd(IID iidf, double, IID l, double lo, IID r, double ro) {
-	BlameAnalysis::get().fadd(iidf, l, r, lo, ro);
+void llvm_fadd(IID iidf, double v, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().fadd(iidf, l, r, v, lo, ro);
 }
 
-void llvm_fsub(IID iidf, double, IID l, double lo, IID r, double ro) {
-	BlameAnalysis::get().fsub(iidf, l, r, lo, ro);
+void llvm_fsub(IID iidf, double v, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().fsub(iidf, l, r, v, lo, ro);
 }
 
-void llvm_fmul(IID iidf, double, IID l, double lo, IID r, double ro) {
-	BlameAnalysis::get().fmul(iidf, l, r, lo, ro);
+void llvm_fmul(IID iidf, double v, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().fmul(iidf, l, r, v, lo, ro);
 }
 
-void llvm_fdiv(IID iidf, double, IID l, double lo, IID r, double ro) {
-	BlameAnalysis::get().fdiv(iidf, l, r, lo, ro);
+void llvm_fdiv(IID iidf, double v, IID l, double lo, IID r, double ro) {
+	BlameAnalysis::get().fdiv(iidf, l, r, v, lo, ro);
 }
 
 void llvm_frem(IID, double, IID, double, IID, double) {
@@ -87,30 +87,30 @@ void llvm_fphi(IID out, double v, IID in) {
 }
 
 // ***** Other Operations ***** //
-void llvm_call_fabs(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_fabs(iidf, operand, operandValue);
+void llvm_call_fabs(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_fabs(iidf, v, operand, operandValue);
 }
 
-void llvm_call_exp(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_exp(iidf, operand, operandValue);
+void llvm_call_exp(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_exp(iidf, v, operand, operandValue);
 }
-void llvm_call_sqrt(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_sqrt(iidf, operand, operandValue);
+void llvm_call_sqrt(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_sqrt(iidf, v, operand, operandValue);
 }
-void llvm_call_log(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_log(iidf, operand, operandValue);
+void llvm_call_log(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_log(iidf, v, operand, operandValue);
 }
-void llvm_call_sin(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_sin(iidf, operand, operandValue);
+void llvm_call_sin(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_sin(iidf, v, operand, operandValue);
 }
-void llvm_call_acos(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_acos(iidf, operand, operandValue);
+void llvm_call_acos(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_acos(iidf, v, operand, operandValue);
 }
-void llvm_call_cos(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_cos(iidf, operand, operandValue);
+void llvm_call_cos(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_cos(iidf, v, operand, operandValue);
 }
-void llvm_call_floor(IID iidf, double, IID operand, double operandValue) {
-	BlameAnalysis::get().call_floor(iidf, operand, operandValue);
+void llvm_call_floor(IID iidf, double v, IID operand, double operandValue) {
+	BlameAnalysis::get().call_floor(iidf, v, operand, operandValue);
 }
 void llvm_call_pow(IID iidf, double, IID operand01, double operandValue01, IID operand02, double operandValue02) {
 	BlameAnalysis::get().call_pow(iidf, operand01, operandValue01, operand02, operandValue02);
